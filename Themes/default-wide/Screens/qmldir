@@ -1,0 +1,16 @@
+module Screens
+ChannelEditor 1.0 ThemedMenu.qml
+ComingSoon 1.0 ComingSoon.qml
+IconView 1.0 IconView.qml
+ImageView 1.0 ImageView.qml
+InternalPlayer 1.0 InternalPlayer.qml
+PictureByPicture 1.0 PictureByPicture.qml
+RadioPlayer 1.0 RadioPlayer.qml
+RSSFeeds 1.0 RSSFeeds.qml
+SettingEditor 1.0 SettingEditor.qml
+TestPage 1.0 TestPage.qml
+ThemedMenu 1.0 ThemedMenu.qml
+VideosGrid 1.0 VideosGrid.qml
+VideosGridFolder 1.0 VideosGridFolder
+WebBrowser 1.0 WebBrowser.qml
+ZMConsole 1.0 ZMConsole.qml

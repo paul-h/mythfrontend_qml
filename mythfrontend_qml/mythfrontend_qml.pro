@@ -1,0 +1,33 @@
+
+include(../QmlVlc/QmlVlc.pri)
+include(../SortFilterProxyModel/SortFilterProxyModel.pri)
+
+INCLUDEPATH += ../QmlVlc
+
+QT += qml quick sql xml webengine
+CONFIG += c++11
+
+TEMPLATE = app
+
+TARGET = mythfrontend_qml
+target.path = $${PREFIX}/bin
+INSTALLS = target
+
+qml.path = $${PREFIX}/share/mythtv/qml
+qml.files += Themes Models MenuThemes Scripts main.qml Util.js
+
+INSTALLS += qml
+
+# Additional import path used to resolve QML modules in Qt Creator's code model
+QML_IMPORT_PATH = Themes Models MenuThemes
+
+QMAKE_CLEAN += $(TARGET)
+
+# Input
+HEADERS += sqlquerymodel.h databaseutils.h urlinterceptor.h settings.h mythutils.h process.h downloadmanager.h
+HEADERS += mythincrementalmodel.h recordingsmodel.h
+
+SOURCES += main.cpp
+SOURCES += sqlquerymodel.cpp databaseutils.cpp urlinterceptor.cpp mythutils.cpp downloadmanager.cpp
+SOURCES += mythincrementalmodel.cpp recordingsmodel.cpp
+
