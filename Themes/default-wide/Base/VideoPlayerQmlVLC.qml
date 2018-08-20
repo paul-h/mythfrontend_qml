@@ -93,6 +93,8 @@ FocusScope
                      changeVolume(1.0);
                  else if (event.key === Qt.Key_F11)
                      toggleMute();
+                 else if (event.key === Qt.Key_F10)
+                     mediaplayer.play();
                  else if (event.key === Qt.Key_D)
                      toggleInterlacer();
                  else if (event.key === Qt.Key_PageUp && mediaplayer.seekable)

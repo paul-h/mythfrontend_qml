@@ -12,6 +12,7 @@ Item
     property bool   oldShowTime: false
     property bool   oldShowVideo: false
     property bool   oldShowImage: false
+    property bool   oldShowMouse: false
 
     x: 0; y: 0; width: parent.width; height: parent.height
 
@@ -52,6 +53,11 @@ Item
         screenBackground.pauseVideo(pause);
     }
 
+    function showMouse(show)
+    {
+        screenBackground.showMouse = show;
+    }
+
     Component.onCompleted:
     {
         oldShowTitle = screenBackground.showTitle;
@@ -61,6 +67,7 @@ Item
         oldShowTime = screenBackground.showTime;
         oldShowVideo = screenBackground.showVideo;
         oldShowImage = screenBackground.showImage;
+        oldShowMouse = screenBackground.showMouse;
     }
 
     Component.onDestruction:
@@ -72,5 +79,6 @@ Item
         screenBackground.showTime = oldShowTime;
         screenBackground.showVideo = oldShowVideo;
         screenBackground.showImage = oldShowImage;
+        screenBackground.showMouse = oldShowMouse;
     }
 }

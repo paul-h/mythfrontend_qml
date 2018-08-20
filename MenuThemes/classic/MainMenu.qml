@@ -17,8 +17,9 @@ ListModel
     ListElement
     {
         menutext: "Internet Video"
-        loaderSource: "ComingSoon.qml"
-        waterMark: "watermark/tv.png"
+        loaderSource: "ThemedMenu.qml"
+        waterMark: "watermark/stream.png"
+        menuSource: "InternetVideoMenu.qml"
     }
     ListElement
     {
@@ -43,14 +44,9 @@ ListModel
     ListElement
     {
         menutext:"Weather"
-        loaderSource: "ComingSoon.qml"
+        loaderSource: "ThemedMenu.qml"
         waterMark: "watermark/weather.png"
-    }
-    ListElement
-    {
-        menutext:"Weather Station"
-        loaderSource: "ComingSoon.qml"
-        waterMark: "watermark/weather.png"
+        menuSource: "WeatherMenu.qml"
     }
     ListElement
     {

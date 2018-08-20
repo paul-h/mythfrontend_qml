@@ -427,7 +427,7 @@ BaseScreen
         KeyNavigation.left: button1;
         KeyNavigation.right: videoplayer;
         KeyNavigation.down: checkbox1;
-        onClicked: console.log("button 2 clicked");
+        onClicked: textEditDialog.show();
     }
 
     BaseEdit
@@ -501,6 +501,26 @@ BaseScreen
         {
             console.log("Dialog cancelled signal received.");
             button1.focus = true;
+        }
+    }
+
+    TextEditDialog
+    {
+        id: textEditDialog
+
+        title: "Enter Text"
+        message: "Enter some text"
+
+        width: xscale(600); height: yscale(350)
+
+        onResultText:
+        {
+            console.log("Text is: " + text);
+            button2.focus = true
+        }
+        onCancelled:
+        {
+            button2.focus = true
         }
     }
 

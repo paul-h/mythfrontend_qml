@@ -20,6 +20,14 @@ ApplicationWindow
     property double hmult: height / 720
     property alias theme: themeLoader.item
 
+    Component.onCompleted: keyPressListener.listenTo(window)
+
+    Connections
+    {
+        target: keyPressListener
+        onKeyPressed: idleTimer.restart();
+    }
+
     // theme background video downloader
     Process
     {
@@ -98,14 +106,6 @@ ApplicationWindow
         }
     }
 
-    function showMouse(show)
-    {
-         if (show)
-             mouseArea.cursorShape = Qt.Arrow
-         else
-             mouseArea.cursorShape = Qt.BlankCursor
-    }
-
     function xscale(x)
     {
         return x * wmult;
@@ -164,6 +164,17 @@ ApplicationWindow
         id: tickerUpdateTimer
         interval: 600000; running: true; repeat: true
         onTriggered: tickerProcess.start(settings.sharePath.replace("file://", "") + "/qml/Scripts/ticker-grabber.py", [settings.configPath + "/MythNews/ticker.xml"]);
+    }
+
+    Timer
+    {
+        id: idleTimer
+        interval: 3600000; running: true; repeat: true
+        onTriggered:
+        {
+            stop();
+            stack.push({item: mythUtils.findThemeFile("Screens/IdleScreen.qml")});
+        }
     }
 
     TickerModel

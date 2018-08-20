@@ -196,48 +196,6 @@ FocusScope
         }
     }
 
-    function findNode(node, title, data, addMissing)
-    {
-        console.info("search for: " + title + ", node.length: " + node.count);
-
-        for (var i = 0; i < node.count; ++i)
-        {
-            console.info("title: " + title + ", node: " + node.get(i).itemTitle);
-            if (node.get(i).itemTitle == title)
-                return node.get(i);
-        }
-
-        if (!addMissing)
-            return undefined;
-
-        node.append({"itemTitle": title, "itemData": data, "subNodes": []});
-        return node.get(node.count - 1);
-    }
-
-    function addNodeEx(path, data)
-    {
-        var szSplit = path.split('\n')
-        if (szSplit.length === 1)
-        {
-            objRoot.model.append({"itemTitle": szSplit[0], "itemData": data, "subNodes": []})
-        }
-        else
-        {
-            // find the node
-            var node = findNode(objRoot.model, szSplit[0], undefined, true);
-
-            for (var i = 1; i < szSplit.length - 1; ++i)
-            {
-                node = findNode(node, szSplit[i], undefined, true);
-            }
-
-            if (node.subNodes == undefined)
-                node.subNodes = [];
-
-            node.subNodes.append({"itemTitle": szSplit[i], "itemData": data, "subNodes": []});
-        }
-    }
-
     //FIXME: 
     function setFocusedNode(path)
     {

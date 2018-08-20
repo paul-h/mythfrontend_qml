@@ -17,6 +17,7 @@ class Settings : public QObject
     Q_PROPERTY(QString picturePath READ picturePath WRITE setPicturePath NOTIFY picturePathChanged)
     Q_PROPERTY(QString sdChannels READ sdChannels WRITE setSdChannels NOTIFY sdChannelsChanged)
     Q_PROPERTY(bool    startFullscreen READ startFullscreen WRITE setStartFullscreen NOTIFY startFullscreenChanged)
+    Q_PROPERTY(QString webcamPath READ webcamPath WRITE setWebcamPath NOTIFY webcamPathChanged)
 
     // vbox
     Q_PROPERTY(QString vboxFreeviewIP READ vboxFreeviewIP WRITE setVboxFreeviewIP NOTIFY vboxFreeviewIPChanged)
@@ -46,7 +47,7 @@ class Settings : public QObject
      void hdmiEncoderChanged(void);
      void showTextBorderChanged(void);
      void startFullscreenChanged(void);
-
+     void webcamPathChanged(void);
 
   public:
     QString themeName(void) {return m_themeName;}
@@ -100,6 +101,9 @@ class Settings : public QObject
     bool    startFullscreen(void) {return m_startFullscreen;}
     void    setStartFullscreen(const bool startFullscreen) {m_startFullscreen = startFullscreen; emit startFullscreenChanged();}
 
+    QString webcamPath(void) {return m_webcamPath;}
+    void    setWebcamPath(const QString &webcamPath) {m_webcamPath = webcamPath; emit webcamPathChanged();}
+
   private:
     QString m_themeName;
     QString m_hostName;
@@ -108,6 +112,7 @@ class Settings : public QObject
     QString m_qmlPath;
     QString m_themePath;
     QString m_menuPath;
+    QString m_webcamPath;
 
     QString m_masterBackend;
     QString m_webSocketUrl;
@@ -122,6 +127,7 @@ class Settings : public QObject
 
     bool    m_showTextBorder;
     bool    m_startFullscreen;
+
 };
 
 extern Settings *gSettings;

@@ -5,6 +5,7 @@ BusyDialog 1.0 BusyDialog.qml
 OkCancelDialog 1.0 OkCancelDialog.qml
 PopupMenu 1.0 PopupMenu.qml
 RecordingFilterDialog 1.0 RecordingFilterDialog.qml
-VideoFilterDialog 1.0 VideoFilterDialog.qml
+SearchListDialog 1.0 SearchListDialog.qml
 StreamFilterDialog 1.0 StreamFilterDialog.qml
-
+TextEditDialog 1.0 TextEditDialog.qml
+VideoFilterDialog 1.0 VideoFilterDialog.qml

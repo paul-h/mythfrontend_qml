@@ -145,7 +145,7 @@ BaseScreen
         {
             id: folderModel
             folder: settings.videoPath
-            nameFilters: ["*.mp4", "*.flv", "*.mp2", "*.wmv", "*.avi", "*.mkv", "*.mpg"]
+            nameFilters: ["*.mp4", "*.flv", "*.mp2", "*.wmv", "*.avi", "*.mkv", "*.mpg", "*.iso", "*.ISO", "*.mov"]
         }
 
         model: folderModel
@@ -154,7 +154,12 @@ BaseScreen
         Keys.onReturnPressed:
         {
             if (model.get(currentIndex, "fileIsDir"))
-                stack.push({item: Qt.resolvedUrl("VideosGridFolder.qml"), properties:{folder: model.get(currentIndex, "filePath")}});
+            {
+                if (model.get(currentIndex, "filePath").endsWith("/VIDEO_TS"))
+                    stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{source1: "file://" + model.get(currentIndex, "filePath")}});
+                else
+                    stack.push({item: Qt.resolvedUrl("VideosGridFolder.qml"), properties:{folder: model.get(currentIndex, "filePath")}});
+            }
             else
                 stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{source1: "file://" + model.get(currentIndex, "filePath")}});
             event.accepted = true;

@@ -23,18 +23,18 @@ BaseScreen
         treeView.addNode("Rating");
 
         // All
-        treeView.addNodeEx("All Test\nXTitle 1");
-        treeView.addNodeEx("All Test\nXTitle 2");
-        treeView.addNodeEx("All Test\nXTitle 3");
-        treeView.addNodeEx("All Test\nXTitle 4");
-        treeView.addNodeEx("All Test\nXTitle 5");
-        treeView.addNodeEx("All Test\nXTitle 6");
-        treeView.addNodeEx("All Test\nXTitle 7");
-        treeView.addNodeEx("All Test\nXTitle 8");
-        treeView.addNodeEx("All Test\nXTitle 9");
-        treeView.addNodeEx("All Test\nXTitle 10");
-        treeView.addNodeEx("All Test\nXTitle 11");
-        treeView.addNodeEx("All Test\nXTitle 12");
+        treeView.addNode("0,Title 1");
+        treeView.addNode("0,Title 2");
+        treeView.addNode("0,Title 3");
+        treeView.addNode("0,Title 4");
+        treeView.addNode("0,Title 5");
+        treeView.addNode("0,Title 6");
+        treeView.addNode("0,Title 7");
+        treeView.addNode("0,Title 8");
+        treeView.addNode("0,Title 9");
+        treeView.addNode("0,Title 10");
+        treeView.addNode("0,Title 11");
+        treeView.addNode("0,Title 12");
 
         // title
         treeView.addNode("1,All");
@@ -62,9 +62,6 @@ BaseScreen
         treeView.addNode("1,1,1,Title 11");
         treeView.addNode("1,1,1,Title 12");
         //treeView.setFocusedNode("0");
-        
-        treeView.addNodeEx("Year\n2000\nFilm (2000)");
-
     }
 /*
     ListModel

@@ -14,6 +14,7 @@ XmlListModel
     XmlRole { name: "releasedate"; query: "releasedate/string()" }
     XmlRole { name: "runtime"; query: "runtime/string()" }
     XmlRole { name: "runtimesecs"; query: "runtimesecs/string()" }
+    XmlRole { name: "categories"; query: "string-join(categories/category/name, ', ')" }
 
     onStatusChanged:
     {

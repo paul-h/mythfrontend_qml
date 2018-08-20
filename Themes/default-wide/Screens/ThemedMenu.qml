@@ -131,6 +131,12 @@ BaseScreen
                     menuLoader.source = settings.menuPath + model.get(currentIndex).menuSource;
                     stack.push({item: Qt.resolvedUrl("ThemedMenu.qml"), properties:{model: menuLoader.item}});
                 }
+                else if (model.get(currentIndex).loaderSource === "WebBrowser.qml")
+                {
+                    var url = model.get(currentIndex).url
+                    var zoom = xscale(model.get(currentIndex).zoom)
+                    stack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: url, fullscreen: true, zoomFactor: zoom}});
+                }
                 else
                 {
                     stack.push({item: Qt.resolvedUrl(model.get(currentIndex).loaderSource)})

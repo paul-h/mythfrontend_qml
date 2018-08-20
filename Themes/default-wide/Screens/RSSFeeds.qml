@@ -99,48 +99,10 @@ BaseScreen
         KeyNavigation.right: articleList;
     }
 
-    XmlListModel
+    RssFeedModel
     {
         id: feedModel
-
         source: root.currentFeed
-        query: "/rss/channel/item"
-        namespaceDeclarations: "declare namespace media = 'http://search.yahoo.com/mrss/'; " +
-                               "declare namespace content = 'http://purl.org/rss/1.0/modules/content/';" +
-                               "declare namespace slash = 'http://purl.org/rss/1.0/modules/slash/';" +
-                               "declare namespace wfw = 'http://wellformedweb.org/CommentAPI/';" +
-                               "declare namespace dc = 'http://purl.org/dc/elements/1.1/';";
-        XmlRole { name: "title"; query: "title/string()" }
-        // Remove any links from the description
-        XmlRole { name: "description"; query: "fn:replace(description/string(), '\&lt;a href=.*\/a\&gt;', '')" }
-        XmlRole { name: "encodedContent"; query: "content:encoded/string()"}
-        XmlRole { name: "mediaContentUrl"; query: "media:group/media:content[1]/@url/string()" }
-        XmlRole { name: "image"; query: "media:thumbnail/@url/string()" }
-        XmlRole { name: "enclosureUrl"; query: "enclosure/@url/string()" }
-        XmlRole { name: "enclosureType"; query: "enclosure/@type/string()" }
-        XmlRole { name: "link"; query: "link/string()" }
-        XmlRole { name: "pubDate"; query: "pubDate/string()" }
-
-        onStatusChanged:
-        {
-            if (status == XmlListModel.Ready)
-            {
-                console.log("FeedModel Status: ready")
-            }
-            else if (status == XmlListModel.Error)
-            {
-                console.log("FeedModel Status: error")
-            }
-            else if (status == XmlListModel.Loading)
-            {
-                console.log("feedModel Status: loading")
-            }
-        }
-
-        onSourceChanged:
-        {
-            console.log("Current feed url changed: " + source)
-        }
     }
 
     Component
@@ -170,7 +132,7 @@ BaseScreen
                 x: icon.width + xscale(20); y: yscale(10)
                 width: parent.width - icon.width - xscale(30)
                 height: parent.height - yscale(20)
-                text: title
+                text: mythUtils.replaceHtmlChar(title)
                 multiline: true
             }
 
@@ -207,12 +169,12 @@ BaseScreen
 
         onCurrentIndexChanged:
         {
-            console.log("Current articleList index is:" + currentIndex)
-            console.log("image: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).image : ""))
-            console.log("mediaContentUrl: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).mediaContentUrl : ""))
-            console.log("enclosureURL: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).enclosureUrl : ""))
-            console.log("enclosureType: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).enclosureType : ""))
-            console.log("link: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).link : ""))
+            //console.log("Current articleList index is:" + currentIndex)
+            //console.log("image: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).image : ""))
+            //console.log("mediaContentUrl: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).mediaContentUrl : ""))
+            //console.log("enclosureURL: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).enclosureUrl : ""))
+            //console.log("enclosureType: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).enclosureType : ""))
+            //console.log("link: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).link : ""))
         }
     }
 
@@ -233,7 +195,7 @@ BaseScreen
         id: titleText
         x: xscale(230); y: yscale(510); width: xscale(900); height: yscale(50)
         font { pixelSize: 24; bold: true }
-        text: feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).title : ""
+        text: feedModel.get(articleList.currentIndex) ? mythUtils.replaceHtmlChar(feedModel.get(articleList.currentIndex).title) : ""
         color: "#ffffff"
     }
 
@@ -243,7 +205,7 @@ BaseScreen
         x: xscale(230); y: yscale(550); width: xscale(900); height: yscale(100)
         font { pixelSize: 18; bold: true }
         wrapMode: Text.WordWrap
-        text: feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).description: ""
+        text: feedModel.get(articleList.currentIndex) ? mythUtils.replaceHtmlChar(feedModel.get(articleList.currentIndex).description) : ""
         color: "#ff00ff"
     }
 

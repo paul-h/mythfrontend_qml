@@ -13,7 +13,7 @@
 
 // from QmlVlc
 #include <QmlVlc.h>
-#include <QmlVlcConfig.h>
+#include <QmlVlc/QmlVlcConfig.h>
 
 // mythfrontend_qml
 #include "recordingsmodel.h"
@@ -23,6 +23,7 @@
 #include "settings.h"
 #include "urlinterceptor.h"
 #include "process.h"
+#include "keypresslistener.h"
 
 #define SHAREPATH "file:///usr/share/mythtv/"
 
@@ -34,7 +35,7 @@ static QString dbName;
 
 //#undef QT_NO_DEBUG_OUTPUT
 
-extern Settings *gSettings = NULL;
+Settings *gSettings = NULL;
 
 static bool loadDBSettings(void)
 {
@@ -140,6 +141,7 @@ int main(int argc, char *argv[])
     gSettings->setVideoPath(databaseUtils.getSetting("Qml_videoPath", hostName));
     gSettings->setPicturePath(databaseUtils.getSetting("Qml_picturePath", hostName));
     gSettings->setSdChannels(databaseUtils.getSetting("Qml_sdChannels", hostName));
+    gSettings->setWebcamPath(databaseUtils.getSetting("Qml_webcamPath", hostName));
 
     // set the websocket url using the master backend as a starting point
     QUrl url(gSettings->masterBackend());
@@ -175,6 +177,10 @@ int main(int argc, char *argv[])
     // create the myth utils
     MythUtils mythUtils(&engine);
     engine.rootContext()->setContextProperty("mythUtils", &mythUtils);
+
+    // create keypresslistener
+    KeyPressListener kpl;
+    engine.rootContext()->setContextProperty("keyPressListener", &kpl);
 
     // create the radio streams model
     SqlQueryModel *radioStreamsModel = new SqlQueryModel(&engine);

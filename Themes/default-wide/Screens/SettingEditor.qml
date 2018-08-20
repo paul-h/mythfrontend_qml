@@ -210,7 +210,41 @@ BaseScreen
         x: xscale(400); y: yscale(500)
         checked: settings.startFullscreen
         KeyNavigation.up: themeEdit;
+        KeyNavigation.down: webcamPathEdit;
+    }
+
+    //
+    LabelText
+    {
+        x: xscale(50); y: yscale(550)
+        text: "Webcam Path:"
+    }
+
+    BaseEdit
+    {
+        id: webcamPathEdit
+        x: xscale(400); y: yscale(550)
+        width: xscale(700)
+        height: yscale(50)
+        text: settings.webcamPath
+        KeyNavigation.up: startFullscreenCheck;
+        KeyNavigation.right: webcamPathButton
         KeyNavigation.down: saveButton;
+    }
+
+    BaseButton
+    {
+        id: webcamPathButton;
+        x: xscale(1120); y: yscale(550);
+        width: xscale(50); height: yscale(50)
+        text: "";
+        KeyNavigation.up: startFullscreenCheck
+        KeyNavigation.left: webcamPathEdit
+        KeyNavigation.down: saveButton;
+        onClicked:
+        {
+            // TODO show directory finder popup
+        }
     }
 
     BaseButton
@@ -218,7 +252,7 @@ BaseScreen
         id: saveButton;
         x: xscale(900); y: yscale(630);
         text: "Save";
-        KeyNavigation.up: startFullscreenCheck
+        KeyNavigation.up: webcamPathEdit
         KeyNavigation.down: masterBEEdit
         onClicked:
         {
@@ -232,6 +266,7 @@ BaseScreen
             dbUtils.setSetting("Qml_hdmiEncoder",     settings.hostName, hdmiEncoderEdit.text);
             dbUtils.setSetting("Qml_theme",           settings.hostName, themeEdit.text);
             dbUtils.setSetting("Qml_startFullScreen", settings.hostName, startFullscreenCheck.checked);
+            dbUtils.setSetting("Qml_webcamPath",      settings.hostName, webcamPathEdit.text);
 
             settings.masterBackend   = masterBEEdit.text;
             settings.videoPath       = videoPathEdit.text;
@@ -242,6 +277,7 @@ BaseScreen
             settings.hdmiEncoder     = hdmiEncoderEdit.text;
             settings.themeName       = themeEdit.text;
             settings.startFullscreen = startFullscreenCheck.checked;
+            settings.webcamPath      = webcamPathEdit.text;
 
             returnSound.play();
             stack.pop();

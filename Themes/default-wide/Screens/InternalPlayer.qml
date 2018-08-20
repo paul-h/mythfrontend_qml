@@ -284,8 +284,8 @@ BaseScreen
             player1.width = root.width;
             player1.height = root.height;
 
-            if (player1.source != dbUtils.getSetting("Qml_player1Source", settings.hostName))
-                player1.source = dbUtils.getSetting("Qml_player1Source", settings.hostName)
+            //if (player1.source != dbUtils.getSetting("Qml_player1Source", settings.hostName))
+            //    player1.source = dbUtils.getSetting("Qml_player1Source", settings.hostName)
 
             player1.play();
             player2.stop();

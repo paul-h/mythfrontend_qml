@@ -13,8 +13,7 @@ XmlListModel
                            "declare namespace wfw = 'http://wellformedweb.org/CommentAPI/';" +
                            "declare namespace dc = 'http://purl.org/dc/elements/1.1/';";
     XmlRole { name: "title"; query: "title/string()" }
-    // Remove any links from the description
-    XmlRole { name: "description"; query: "fn:replace(description/string(), '\&lt;a href=.*\/a\&gt;', '')" }
+    XmlRole { name: "description"; query: "description/string()" }
     XmlRole { name: "encodedContent"; query: "content:encoded/string()"}
     XmlRole { name: "mediaContentUrl"; query: "media:group/media:content[1]/@url/string()" }
     XmlRole { name: "image"; query: "media:thumbnail/@url/string()" }
@@ -25,22 +24,9 @@ XmlListModel
 
     onStatusChanged:
     {
-        if (status == XmlListModel.Ready)
+        if (status == XmlListModel.Error)
         {
-            console.info("FeedModel Status: ready")
+            console.info("FeedModel Error: " + errorString + "\n" + source.toString())
         }
-        else if (status == XmlListModel.Error)
-        {
-            console.info("FeedModel Status: error")
-        }
-        else if (status == XmlListModel.Loading)
-        {
-            console.info("feedModel Status: loading")
-        }
-    }
-
-    onSourceChanged:
-    {
-        console.log("Current feed url changed: " + source)
     }
 }
