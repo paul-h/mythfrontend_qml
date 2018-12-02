@@ -16,6 +16,7 @@ QtObject
                                             "-f", "bestvideo[height<=720]+bestaudio/best[height<=720]",
                                             "https://www.youtube.com/watch?v=X-dMOvEOQiM"
                                         ]
+
     // main menu font
     property string menuFontFamily:     "Liberation Sans"
     property int    menuFontPixelSize:  30
@@ -120,6 +121,10 @@ QtObject
     property color txTextColorFocused:           "#000000"
     property color txTextBackgroundColorNormal:  "#a8ffffff"
     property color txTextBackgroundColorFocused: "#c8ffffff"
+
+    // ticker text
+    property color tiTextColor:       "green"
+    property color tiBackgroundColor: "#88101010"
 
     readonly property color colorDumb : "#FF00FF"; // magenta
     readonly property color colorNone : "transparent";

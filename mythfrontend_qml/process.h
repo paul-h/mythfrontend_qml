@@ -20,8 +20,23 @@ public:
         QProcess::start(program, args);
     }
 
-    Q_INVOKABLE QByteArray readAll() 
+    Q_INVOKABLE void stop()
+    {
+        QProcess::terminate();
+    }
+
+    Q_INVOKABLE QByteArray readAll()
     {
         return QProcess::readAll();
+    }
+
+    Q_INVOKABLE int getState()
+    {
+        return QProcess::state();
+    }
+
+    Q_INVOKABLE bool waitForFinished(int msecs = 30000)
+    {
+        return QProcess::waitForFinished(msecs);
     }
 };

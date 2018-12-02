@@ -81,4 +81,9 @@ QtObject
     property color lvBackgroundBorderColor:  "transparent";
     property int   lvBackgroundBorderWidth:  0;
     property int   lvBackgroundBorderRadius: 0;
+
+    // ticker text
+    property color tiTextColor:       "green"
+    property color tiBackgroundColor: "#88101010"
+
 }

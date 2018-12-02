@@ -59,6 +59,8 @@ ListModel
         menutext:"Web"
         loaderSource: "WebBrowser.qml"
         waterMark: "watermark/browser.png"
+        url: "https://www.google.co.uk"
+        zoom: 1.0
     }
     ListElement
     {
@@ -75,9 +77,9 @@ ListModel
     }
     ListElement
     {
-        menutext: "Advent Calender"
-        loaderSource:"AdventCalender.qml"
-        waterMark: "watermark/adventcalender.jpg"
+        menutext: "Advent Calendar"
+        loaderSource:"AdventCalendar.qml"
+        waterMark: "watermark/adventcalendar.jpg"
     }
     ListElement
     {

@@ -16,9 +16,15 @@ BaseScreen
         showTime(false);
         showTicker(false);
         showMouse(true);
+        pauseVideo(true);
+        showVideo(false);
     }
 
-    Component.onDestruction: showMouse(false)
+    Component.onDestruction:
+    {
+        showMouse(false)
+        pauseVideo(false);
+    }
 
     Action
     {

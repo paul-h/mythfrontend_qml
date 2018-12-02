@@ -649,7 +649,7 @@ static int QueryRecording(stream_t *p_access)
     int   i_len;
     char *psz_filename = var_GetString(p_access, "myth-filename");
 
-    input_thread_t *p_input = access_GetParentInput(p_access);
+    input_thread_t *p_input = p_access->p_input;
     if (!p_input)
     {
         msg_Dbg( p_access, "Unable to find parent input thread. Access may not be from video." );
@@ -751,7 +751,7 @@ static int QueryLiveTVRecording(stream_t *p_access)
     int   i_len;
     int   i_encoder = var_GetInteger(p_access, "myth-encoder");
 
-    input_thread_t *p_input = access_GetParentInput(p_sys);
+    input_thread_t *p_input = p_access->p_input;
     if (!p_input)
     {
         msg_Dbg(p_access, "Unable to find parent input thread. Access may not be from video.");
@@ -1512,7 +1512,7 @@ static int Control(stream_t *p_access, int i_query, va_list args)
                 //Seek( p_access, (int64_t)p_sys->titles[0]->seekpoint[i_skp]->i_byte_offset);
 
                 /* do the seeking */
-                input_thread_t *p_input = access_GetParentInput(p_access);
+                input_thread_t *p_input = p_access->p_input;
                 // FIXME:
                 //input_Control(p_input, INPUT_SET_POSITION, (double)p_sys->titles[0]->seekpoint[i_skp]->i_byte_offset / p_sys->i_size);
                 vlc_object_release(p_input);

@@ -18,4 +18,10 @@ ListModel
         loaderSource:"WebCamViewer.qml"
         waterMark: "watermark/webcam.png"
     }
+    ListElement
+    {
+        menutext: "WebVideo Viewer"
+        loaderSource:"WebVideoViewer.qml"
+        waterMark: "watermark/video.png"
+    }
 }

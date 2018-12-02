@@ -178,7 +178,7 @@ BaseScreen
         height: yscale(50)
         text: settings.hdmiEncoder
         KeyNavigation.up: vboxFreesatIPEdit;
-        KeyNavigation.down: themeEdit;
+        KeyNavigation.down: themeSelector;
     }
 
     LabelText
@@ -187,15 +187,46 @@ BaseScreen
         text: "Theme:"
     }
 
-    BaseEdit
+        ListModel
     {
-        id: themeEdit
+        id: themeModel
+
+        ListElement
+        {
+            itemText: "MythCenter-wide"
+        }
+        ListElement
+        {
+            itemText: "MythCenterAUTUMN-wide"
+        }
+        ListElement
+        {
+            itemText: "MythCenterFIREWORKS-wide"
+        }
+        ListElement
+        {
+            itemText: "MythCenterHALLOWEEN-wide"
+        }
+        ListElement
+        {
+            itemText: "MythCenterXMAS-wide"
+        }
+    }
+
+    BaseSelector
+    {
+        id: themeSelector
         x: xscale(400); y: yscale(450)
         width: xscale(700)
         height: yscale(50)
-        text: settings.themeName
+        showBackground: true
+        pageCount: 5
+        model: themeModel
+
         KeyNavigation.up: hdmiEncoderEdit;
         KeyNavigation.down: startFullscreenCheck;
+
+        Component.onCompleted: selectItem(settings.themeName)
     }
 
     LabelText
@@ -209,7 +240,7 @@ BaseScreen
         id: startFullscreenCheck
         x: xscale(400); y: yscale(500)
         checked: settings.startFullscreen
-        KeyNavigation.up: themeEdit;
+        KeyNavigation.up: themeSelector;
         KeyNavigation.down: webcamPathEdit;
     }
 
@@ -264,7 +295,7 @@ BaseScreen
             dbUtils.setSetting("Qml_vboxFreeviewIP",  settings.hostName, vboxFreeviewIPEdit.text);
             dbUtils.setSetting("Qml_vboxFreesatIP",   settings.hostName, vboxFreesatIPEdit.text);
             dbUtils.setSetting("Qml_hdmiEncoder",     settings.hostName, hdmiEncoderEdit.text);
-            dbUtils.setSetting("Qml_theme",           settings.hostName, themeEdit.text);
+            dbUtils.setSetting("Qml_theme",           settings.hostName, themeModel.get(themeSelector.currentIndex).itemText);
             dbUtils.setSetting("Qml_startFullScreen", settings.hostName, startFullscreenCheck.checked);
             dbUtils.setSetting("Qml_webcamPath",      settings.hostName, webcamPathEdit.text);
 
@@ -275,9 +306,14 @@ BaseScreen
             settings.vboxFreeviewIP  = vboxFreeviewIPEdit.text;
             settings.vboxFreesatIP   = vboxFreesatIPEdit.text;
             settings.hdmiEncoder     = hdmiEncoderEdit.text;
-            settings.themeName       = themeEdit.text;
+            settings.themeName       = themeModel.get(themeSelector.currentIndex).itemText;
             settings.startFullscreen = startFullscreenCheck.checked;
             settings.webcamPath      = webcamPathEdit.text;
+
+            // update the theme path and reload the theme
+            settings.qmlPath = settings.sharePath + "qml/Themes/" + settings.themeName + "/";
+            themeLoader.source = settings.qmlPath + "Theme.qml";
+            screenBackground.setVideo("file://" + theme.backgroundVideo);
 
             returnSound.play();
             stack.pop();

@@ -462,9 +462,9 @@ BaseScreen
         {
             if (status == XmlListModel.Ready)
             {
-                groupMenu.addMenuItem("All Channels", -1);
+                groupMenu.addMenuItem("", "All Channels", -1);
                 for (var x = 0; x < count; x++)
-                    groupMenu.addMenuItem(get(x).Name, get(x).GroupId);
+                    groupMenu.addMenuItem("", get(x).Name, get(x).GroupId);
             }
         }
     }

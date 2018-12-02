@@ -17,17 +17,18 @@ BaseDialog
     {
         if (!restoreSelected)
             menuList.setFocusedNode(0);
+
         popupMenu.state = "show";
     }
 
     function clearMenuItems()
     {
-        menuList.model.clear()
+        menuList.reset();
     }
 
-    function addMenuItem(path, data)
+    function addMenuItem(path, title, data)
     {
-        menuList.addNode(path, data);
+        menuList.addNode(path, title, data);
     }
 
     Keys.onPressed:

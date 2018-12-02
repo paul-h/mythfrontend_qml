@@ -25,6 +25,9 @@
 #include "process.h"
 #include "keypresslistener.h"
 
+// from vlc_qt
+//#include <VLCQtQml/Qml.h>
+
 #define SHAREPATH "file:///usr/share/mythtv/"
 
 static QString dbHost;
@@ -100,6 +103,8 @@ int main(int argc, char *argv[])
     config.enableLoopPlayback(false);
     config.setTrustedEnvironment(true);
 
+    //VlcQml::registerTypes();
+
     QQmlApplicationEngine engine;
 
     // get the database login details from ~/.mythtv/config.xml
@@ -171,6 +176,11 @@ int main(int argc, char *argv[])
 
     // show text borders debug flag
     gSettings->setShowTextBorder(false);
+
+    // default OSD timeouts TODO add user settings for these?
+    gSettings->setOsdTimeoutShort(4000);
+    gSettings->setOsdTimeoutMedium(8000);
+    gSettings->setOsdTimeoutLong(30000);
 
     engine.rootContext()->setContextProperty("settings", gSettings);
 

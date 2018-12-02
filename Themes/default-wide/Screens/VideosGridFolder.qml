@@ -17,6 +17,20 @@ BaseScreen
         showTicker(false);
     }
 
+    ListModel
+    {
+        id: mediaModel
+        ListElement
+        {
+            no: "1"
+            title: ""
+            icon: ""
+            url: ""
+            player: "Internal"
+            duration: ""
+        }
+    }
+
     BaseBackground
     {
         x: xscale(15); y: yscale(50); width: xscale(1250); height: yscale(655)
@@ -145,7 +159,7 @@ BaseScreen
         {
             id: folderModel
             folder: settings.videoPath
-            nameFilters: ["*.mp4", "*.flv", "*.mp2", "*.wmv", "*.avi", "*.mkv", "*.mpg", "*.iso", "*.ISO", "*.mov"]
+            nameFilters: ["*.mp4", "*.flv", "*.mp2", "*.wmv", "*.avi", "*.mkv", "*.mpg", "*.iso", "*.ISO", "*.mov", "*.webm"]
         }
 
         model: folderModel
@@ -153,15 +167,18 @@ BaseScreen
 
         Keys.onReturnPressed:
         {
+            mediaModel.get(0).title = model.get(currentIndex, "filePath");
+            mediaModel.get(0).url = "file://" + model.get(currentIndex, "filePath");
+
             if (model.get(currentIndex, "fileIsDir"))
             {
                 if (model.get(currentIndex, "filePath").endsWith("/VIDEO_TS"))
-                    stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{source1: "file://" + model.get(currentIndex, "filePath")}});
+                    stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{feedList:  mediaModel, currentFeed: 0}});
                 else
                     stack.push({item: Qt.resolvedUrl("VideosGridFolder.qml"), properties:{folder: model.get(currentIndex, "filePath")}});
             }
             else
-                stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{source1: "file://" + model.get(currentIndex, "filePath")}});
+                stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{feedList:  mediaModel, currentFeed: 0}});
             event.accepted = true;
             returnSound.play();
         }

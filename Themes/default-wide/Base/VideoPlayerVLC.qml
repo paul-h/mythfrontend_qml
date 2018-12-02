@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import VLCQt 1.2
+import VLCQt 1.1
 
 import "../../../Util.js" as Util
 
@@ -13,15 +13,11 @@ FocusScope
     property alias audioTrack: mediaplayer.audioTrack
     property bool loop: false
 
-    anchors.fill: parent
-
     Rectangle
     {
         id: background
-        property alias source: mediaplayer.url
 
         color: "black"
-
         anchors.fill: parent
 
         VlcVideoPlayer
@@ -150,7 +146,7 @@ FocusScope
 
     function togglePaused()
     {
-        if (mediaplayer.playbackState === MediaPlayer.PausedState) mediaplayer.play(); else mediaplayer.pause();
+        if (mediaplayer.playbackState === VlcVideoPlayer.PausedState) mediaplayer.play(); else mediaplayer.pause();
     }
 
     function changeVolume(amount)

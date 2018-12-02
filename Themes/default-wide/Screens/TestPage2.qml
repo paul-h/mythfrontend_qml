@@ -15,52 +15,52 @@ BaseScreen
         showTicker(false);
         screenBackground.muteAudio(true);
 
-        treeView.addNode("All");
-        treeView.addNode("Title");
-        treeView.addNode("Type");
-        treeView.addNode("Category");
-        treeView.addNode("Year");
-        treeView.addNode("Rating");
+        treeView.addNode("", "All");
+        treeView.addNode("", "Title");
+        treeView.addNode("", "Type");
+        treeView.addNode("", "Category");
+        treeView.addNode("", "Year");
+        treeView.addNode("", "Rating");
 
         // All
-        treeView.addNode("0,Title 1");
-        treeView.addNode("0,Title 2");
-        treeView.addNode("0,Title 3");
-        treeView.addNode("0,Title 4");
-        treeView.addNode("0,Title 5");
-        treeView.addNode("0,Title 6");
-        treeView.addNode("0,Title 7");
-        treeView.addNode("0,Title 8");
-        treeView.addNode("0,Title 9");
-        treeView.addNode("0,Title 10");
-        treeView.addNode("0,Title 11");
-        treeView.addNode("0,Title 12");
+        treeView.addNode("0", "Title 1");
+        treeView.addNode("0", "Title 2");
+        treeView.addNode("0", "Title 3");
+        treeView.addNode("0", "Title 4");
+        treeView.addNode("0", "Title 5");
+        treeView.addNode("0", "Title 6");
+        treeView.addNode("0", "Title 7");
+        treeView.addNode("0", "Title 8");
+        treeView.addNode("0", "Title 9");
+        treeView.addNode("0", "Title 10");
+        treeView.addNode("0", "Title 11");
+        treeView.addNode("0", "Title 12");
 
         // title
-        treeView.addNode("1,All");
-        treeView.addNode("1,Type");
-        treeView.addNode("1,Category");
-        treeView.addNode("1,Year");
-        treeView.addNode("1,Rating");
+        treeView.addNode("1", "All");
+        treeView.addNode("1", "Type");
+        treeView.addNode("1", "Category");
+        treeView.addNode("1", "Year");
+        treeView.addNode("1", "Rating");
 
         // title/Type
-        treeView.addNode("1,1,All");
-        treeView.addNode("1,1,Television");
-        treeView.addNode("1,1,Films");
+        treeView.addNode("1,1", "All");
+        treeView.addNode("1,1", "Television");
+        treeView.addNode("1,1", "Films");
 
         // title/Type/All
-        treeView.addNode("1,1,1,Title 1");
-        treeView.addNode("1,1,1,Title 2");
-        treeView.addNode("1,1,1,Title 3");
-        treeView.addNode("1,1,1,Title 4");
-        treeView.addNode("1,1,1,Title 5");
-        treeView.addNode("1,1,1,Title 6");
-        treeView.addNode("1,1,1,Title 7");
-        treeView.addNode("1,1,1,Title 8");
-        treeView.addNode("1,1,1,Title 9");
-        treeView.addNode("1,1,1,Title 10");
-        treeView.addNode("1,1,1,Title 11");
-        treeView.addNode("1,1,1,Title 12");
+        treeView.addNode("1,1,1", "Title 1");
+        treeView.addNode("1,1,1", "Title 2");
+        treeView.addNode("1,1,1", "Title 3");
+        treeView.addNode("1,1,1", "Title 4");
+        treeView.addNode("1,1,1", "Title 5");
+        treeView.addNode("1,1,1", "Title 6");
+        treeView.addNode("1,1,1", "Title 7");
+        treeView.addNode("1,1,1", "Title 8");
+        treeView.addNode("1,1,1", "Title 9");
+        treeView.addNode("1,1,1", "Title 10");
+        treeView.addNode("1,1,1", "Title 11");
+        treeView.addNode("1,1,1", "Title 12");
         //treeView.setFocusedNode("0");
     }
 /*

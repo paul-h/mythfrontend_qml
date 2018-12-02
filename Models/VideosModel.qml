@@ -43,6 +43,9 @@ XmlListModel
     XmlRole { name: "Screenshot"; query: "Screenshot/string()" }
     XmlRole { name: "Trailer"; query: "Trailer/string()" }
 
+    XmlRole { name: "url"; query: "FileName/string()" }
+    XmlRole { name: "player"; query: "xs:string('Internal')" }
+
     signal loaded();
 
     onStatusChanged:

@@ -23,6 +23,7 @@ ListBackground 1.0 ListBackground.qml
 ListHighlight 1.0 ListHighlight.qml
 ListItem 1.0 ListItem.qml
 ListText 1.0 ListText.qml
+MediaPlayer 1.0 MediaPlayer.qml
 MenuButton 1.0 MenuButton.qml
 OkCancelDialog 1.0 OkCancelDialog.qml
 PopupMenu 1.0 PopupMenu.qml

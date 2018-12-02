@@ -29,6 +29,11 @@ class Settings : public QObject
     // debugging
     Q_PROPERTY(bool showTextBorder READ showTextBorder WRITE setShowTextBorder NOTIFY showTextBorderChanged)
 
+    // default OSD timeouts
+    Q_PROPERTY(int osdTimeoutShort READ osdTimeoutShort WRITE setOsdTimeoutShort NOTIFY osdTimeoutShortChanged)
+    Q_PROPERTY(int osdTimeoutMedium READ osdTimeoutMedium WRITE setOsdTimeoutMedium NOTIFY osdTimeoutMediumChanged)
+    Q_PROPERTY(int osdTimeoutLong READ osdTimeoutLong WRITE setOsdTimeoutLong NOTIFY osdTimeoutLongChanged)
+
   signals:
      void themeNameChanged(void);
      void hostNameChanged(void);
@@ -48,6 +53,9 @@ class Settings : public QObject
      void showTextBorderChanged(void);
      void startFullscreenChanged(void);
      void webcamPathChanged(void);
+     void osdTimeoutShortChanged(void);
+     void osdTimeoutMediumChanged(void);
+     void osdTimeoutLongChanged(void);
 
   public:
     QString themeName(void) {return m_themeName;}
@@ -104,6 +112,15 @@ class Settings : public QObject
     QString webcamPath(void) {return m_webcamPath;}
     void    setWebcamPath(const QString &webcamPath) {m_webcamPath = webcamPath; emit webcamPathChanged();}
 
+    int     osdTimeoutShort(void) {return m_osdTimeoutShort;}
+    void    setOsdTimeoutShort(const int &osdTimeoutShort) {m_osdTimeoutShort = osdTimeoutShort; emit osdTimeoutShortChanged();}
+
+    int     osdTimeoutMedium(void) {return m_osdTimeoutMedium;}
+    void    setOsdTimeoutMedium(const int &osdTimeoutMedium) {m_osdTimeoutMedium = osdTimeoutMedium; emit osdTimeoutMediumChanged();}
+
+    int     osdTimeoutLong(void) {return m_osdTimeoutLong;}
+    void    setOsdTimeoutLong(const int &osdTimeoutLong) {m_osdTimeoutLong = osdTimeoutLong; emit osdTimeoutLongChanged();}
+
   private:
     QString m_themeName;
     QString m_hostName;
@@ -128,6 +145,9 @@ class Settings : public QObject
     bool    m_showTextBorder;
     bool    m_startFullscreen;
 
+    int     m_osdTimeoutShort;
+    int     m_osdTimeoutMedium;
+    int     m_osdTimeoutLong;
 };
 
 extern Settings *gSettings;

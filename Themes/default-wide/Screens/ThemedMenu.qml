@@ -28,7 +28,7 @@ BaseScreen
         x: xscale(24); y: yscale(28)
         width: xscale(sourceSize.width)
         height: yscale(sourceSize.height)
-        source: settings.themePath + "title/title_tv.png"
+        source: mythUtils.findThemeFile("title/title_tv.png")
     }
 
     Image
@@ -37,7 +37,7 @@ BaseScreen
         x: xscale(30); y: yscale(594)
         width: xscale(sourceSize.width)
         height: yscale(sourceSize.height)
-        source: settings.themePath + "ui/mythtv_logo.png"
+        source: mythUtils.findThemeFile("ui/mythtv_logo.png")
     }
 
     Image
@@ -46,7 +46,7 @@ BaseScreen
         x: xscale(550); y: yscale(500)
         width: xscale(sourceSize.width)
         height: yscale(sourceSize.height)
-        source: settings.themePath + "ui/horizon.png"
+        source: mythUtils.findThemeFile("ui/horizon.png")
     }
 
     Rectangle
@@ -90,7 +90,7 @@ BaseScreen
             id: listView
             width: parent.width; height: parent.height
             delegate: menuDelegate
-            highlight: Image {source: settings.themePath + "ui/button_on.png"}
+            highlight: Image {source: mythUtils.findThemeFile("ui/button_on.png")}
             focus: true
             clip: true
             keyNavigationWraps: true
@@ -145,7 +145,7 @@ BaseScreen
                 event.accepted = true;
             }
 
-            onCurrentItemChanged: watermark.swapImage(settings.themePath + model.get(currentIndex).waterMark)
+            onCurrentItemChanged: watermark.swapImage(mythUtils.findThemeFile(model.get(currentIndex).waterMark))
         }
     }
 
@@ -153,7 +153,7 @@ BaseScreen
     {
         id: watermark
         x: xscale(832); y: yscale(196); width: xscale(300); height: yscale(300)
-        source: settings.themePath + "watermark/tv.png"
+        source: mythUtils.findThemeFile("watermark/tv.png")
     }
 
 

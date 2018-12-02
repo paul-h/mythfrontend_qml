@@ -43,7 +43,6 @@ BaseScreen
         id: videoPlayer
         x: xscale(50); width: parent.width - xscale(100);
         y: yscale(110); height: parent.height - yscale(140);
-        source: ""
 
         KeyNavigation.up: urlEdit;
         KeyNavigation.down: urlEdit;

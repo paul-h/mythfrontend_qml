@@ -32,7 +32,7 @@ BaseScreen
     {
         id: urlEdit
         x: xscale(200); y: yscale(50); width: parent.width - xscale(250)
-        onTextHasChanged: videoPlayer.source = text;
+        onEditingFinished: videoPlayer.source = text;
 
         KeyNavigation.up: videoPlayer;
         KeyNavigation.down: videoPlayer;

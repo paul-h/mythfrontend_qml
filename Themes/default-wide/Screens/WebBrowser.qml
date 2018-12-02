@@ -18,6 +18,14 @@ BaseScreen
         showTime(false);
         showTicker(false);
         showMouse(true);
+        pauseVideo(true);
+        showVideo(false);
+    }
+
+    Component.onDestruction:
+    {
+        showMouse(false)
+        pauseVideo(false);
     }
 
     Action
@@ -32,6 +40,13 @@ BaseScreen
             else
                 if (stack.depth > 1) {stack.pop(); escapeSound.play();} else Qt.quit();
         }
+    }
+
+    Action
+    {
+        shortcut: "F1"
+        onTriggered: mythUtils.fakeKeyPress(browser, "F");
+        enabled: browser.focus
     }
 
     Action
@@ -69,8 +84,6 @@ BaseScreen
         y: root.fullscreen ? 0 : yscale(50);
         width: root.fullscreen ? parent.width : parent.width - xscale(20);
         height: root.fullscreen ? parent.height : parent.height - yscale(60)
-        zoomFactor: xscale(1.0)
-        url: "https://www.google.co.uk"
 
         settings.pluginsEnabled: true
         settings.javascriptCanOpenWindows: true;
@@ -118,10 +131,10 @@ BaseScreen
 
         Component.onCompleted:
         {
-            addMenuItem("Enter URL", "enterurl");
-            addMenuItem("Zoom In", "zoomin");
-            addMenuItem("Zoom Out", "zoomout");
-            addMenuItem("Toggle Full Screen", "fullscreen");
+            addMenuItem("", "Enter URL", "enterurl");
+            addMenuItem("", "Zoom In", "zoomin");
+            addMenuItem("", "Zoom Out", "zoomout");
+            addMenuItem("", "Toggle Full Screen", "fullscreen");
         }
     }
 

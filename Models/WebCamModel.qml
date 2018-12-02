@@ -7,7 +7,7 @@ XmlListModel
 
     property var categoryList: ListModel{}
 
-    source: settings.webcamPath + "/WebCam.xml"
+    source: ""
     query: "/webcam/item"
     XmlRole { name: "id"; query: "id/number()" }
     XmlRole { name: "title"; query: "title/string()" }

@@ -25,14 +25,14 @@ Item
     Rectangle
     {
         id: background
-        color: "#88101010"
+        color: theme.tiBackgroundColor
         anchors.fill: parent
     }
 
     Text
     {
         id: text2
-        color: "green"
+        color: theme.tiTextColor
         font.pixelSize: xscale(25)
         width: parent.width - xscale(10)
         height: parent.height

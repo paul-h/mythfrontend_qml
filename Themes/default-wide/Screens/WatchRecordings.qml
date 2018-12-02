@@ -318,6 +318,20 @@ BaseScreen
         }
     }
 
+    ListModel
+    {
+        id: mediaModel
+        ListElement
+        {
+            no: "1"
+            title: ""
+            icon: ""
+            url: ""
+            player: "Internal"
+            duration: ""
+        }
+    }
+
     ButtonList
     {
         id: recordingList
@@ -330,7 +344,14 @@ BaseScreen
         {
             var hostname = model.get(currentIndex).HostName === settings.hostName ? "localhost" : model.get(currentIndex).HostName
             var filename = "myth://" + "type=recording:server=" + hostname + ":port=6543:filename=" + model.get(currentIndex).FileName;
-            stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{source1: filename }});
+            var title = ""
+
+            if (model.get(currentIndex).HostName != "")
+                title = (model.get(currentIndex).SubTitle != "" ? model.get(currentIndex).Title + ": " + model.get(currentIndex).SubTitle : model.get(currentIndex).Title)
+
+            mediaModel.get(0).title = title;
+            mediaModel.get(0).url = filename;
+            stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{feedList:  mediaModel, currentFeed: 0}});
             event.accepted = true;
             returnSound.play();
         }

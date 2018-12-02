@@ -232,7 +232,7 @@ ApplicationWindow
 
         Keys.onPressed:
         {
-            if (event.key === Qt.Key_F)
+            if (event.key === Qt.Key_F8)
             {
                 if (visibility == 5)
                     visibility = 2

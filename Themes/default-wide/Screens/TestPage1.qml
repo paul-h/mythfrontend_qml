@@ -581,19 +581,19 @@ BaseScreen
 
         Component.onCompleted:
         {
-            addMenuItem("Apple", "apples=1");
-            addMenuItem("Orange", "oranges=2");
-            addMenuItem("Banana", "banana=3");
-            addMenuItem("Pear", "pear=4");
-            addMenuItem("Grape", "grape=5");
-            addMenuItem("Lemon", "lemon=6");
-            addMenuItem("Pineapple", "pineapple=7");
+            addMenuItem("", "Apple", "apples=1");
+            addMenuItem("", "Orange", "oranges=2");
+            addMenuItem("", "Banana", "banana=3");
+            addMenuItem("", "Pear", "pear=4");
+            addMenuItem("", "Grape", "grape=5");
+            addMenuItem("", "Lemon", "lemon=6");
+            addMenuItem("", "Pineapple", "pineapple=7");
 
-            addMenuItem("0,Apple 1", "apple=0,1");
-            addMenuItem("0,Apple 2", "apple=0,2");
-            addMenuItem("0,Apple 3", "apple=0,3");
-            addMenuItem("0,Apple 4", "apple=0,4");
-            addMenuItem("0,Apple 5", "apple=0,5");
+            addMenuItem("0", "Apple 1", "apple=0,1");
+            addMenuItem("0", "Apple 2", "apple=0,2");
+            addMenuItem("0", "Apple 3", "apple=0,3");
+            addMenuItem("0", "Apple 4", "apple=0,4");
+            addMenuItem("0", "Apple 5", "apple=0,5");
         }
     }
 }

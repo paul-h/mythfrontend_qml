@@ -8,16 +8,29 @@ BaseScreen
 {
     defaultFocusItem: webcamGrid
 
+    property var webcamPaths
+    property int webcamPathIndex: 0
+
     property string filterCategory
     property bool titleSorterActive: true
 
     Component.onCompleted:
     {
+        var path;
         showTitle(true, "WebCam Viewer");
         showTime(false);
         showTicker(false);
 
         while (stack.busy) {};
+
+        // get list of webcam paths
+        webcamPaths =  settings.webcamPath.split(",")
+
+        path = dbUtils.getSetting("Qml_lastWebcamPath", settings.hostName, webcamPaths[0])
+        path = path.replace("/WebCam.xml", "")
+        webcamPathIndex = webcamPaths.indexOf(path)
+        webcamModel.source = path + "/WebCam.xml"
+
 
         filterCategory = dbUtils.getSetting("Qml_lastWebcamCategory", settings.hostName)
 
@@ -31,6 +44,7 @@ BaseScreen
 
     Component.onDestruction:
     {
+        dbUtils.setSetting("Qml_lastWebcamPath", settings.hostName, webcamPaths[webcamPathIndex])
         dbUtils.setSetting("Qml_lastWebcamCategory", settings.hostName, filterCategory)
     }
 
@@ -108,6 +122,22 @@ BaseScreen
             event.accepted = true;
             returnSound.play();
         }
+        else if (event.key === Qt.Key_F5)
+        {
+            webcamPathIndex++;
+
+            if (webcamPathIndex >= webcamPaths.length)
+                webcamPathIndex = 0;
+
+            filterCategory = "";
+            show.text = "Show (All Webcams)"
+
+            titleSorterActive = true
+            webcamProxyModel.sorters = titleSorter;
+            sort.text = "Sort (Name)";
+
+            webcamModel.source = webcamPaths[webcamPathIndex] + "/WebCam.xml"
+        }
     }
 
     BaseBackground
@@ -152,7 +182,7 @@ BaseScreen
             }
         }
 
-        highlight: Rectangle { z: 99; color: "red"; opacity: 0.4; radius: 5 }
+        highlight: Rectangle { z: 99; color: "orange"; opacity: 0.5; radius: 5}
         model: webcamProxyModel
         delegate: webcamDelegate
         focus: true
@@ -160,22 +190,11 @@ BaseScreen
         Keys.onReturnPressed:
         {
             returnSound.play();
-            if (webcamGrid.model.get(webcamGrid.currentIndex).player === "YouTube")
-                stack.push({item: Qt.resolvedUrl("YouTube.qml"), properties:{url: webcamGrid.model.get(webcamGrid.currentIndex).url}});
-            else if (webcamGrid.model.get(webcamGrid.currentIndex).player === "WebBrowser")
-            {
-                var url = webcamGrid.model.get(webcamGrid.currentIndex).url
-                stack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: url, fullscreen: true, zoom: 1.0}});
-            }
-            else if (webcamGrid.model.get(webcamGrid.currentIndex).player === "RailCam")
-            {
-                var url = webcamGrid.model.get(webcamGrid.currentIndex).url;
-                var website = webcamGrid.model.get(webcamGrid.currentIndex).website;
-                var zoomFactor = xscale(1.0)
-                stack.push({item: Qt.resolvedUrl("RailCam.qml"), properties:{videoUrl: url, website: website, zoomFactor: zoomFactor}});
-            }
-            else
-                stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{source1: webcamGrid.model.get(webcamGrid.currentIndex).url, title1: webcamGrid.model.get(webcamGrid.currentIndex).title}});
+            var url = webcamGrid.model.get(webcamGrid.currentIndex).url;
+            var website = webcamGrid.model.get(webcamGrid.currentIndex).website;
+            var zoomFactor = xscale(1.0)
+            var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{feedList:  webcamGrid.model, currentFeed: webcamGrid.currentIndex}});
+            item.feedChanged.connect(feedChanged);
             event.accepted = true;
         }
 
@@ -284,29 +303,6 @@ BaseScreen
         text: "Go To Website"
     }
 
-    PopupMenu
-    {
-        id: popupMenu
-
-        title: "Menu"
-        message: "Webcam Viewer Options"
-
-        onItemSelected:
-        {
-            webcamGrid.focus = true;
-
-            if (itemText == "Close All Windows")
-            {
-                //TODO
-            }
-        }
-
-        onCancelled:
-        {
-            webcamGrid.focus = true;
-        }
-    }
-
     SearchListDialog
     {
         id: searchDialog
@@ -344,6 +340,11 @@ BaseScreen
         }
     }
 
+    function feedChanged(index)
+    {
+        webcamGrid.currentIndex = index;
+    }
+
     function getIconURL(iconURL)
     {
         if (iconURL)
@@ -351,7 +352,7 @@ BaseScreen
             if (iconURL.startsWith("file://") || iconURL.startsWith("http://") || iconURL.startsWith("https://"))
                 return iconURL;
             else
-                return settings.webcamPath + "/" + iconURL;
+                return webcamPaths[webcamPathIndex] + "/" + iconURL;
         }
 
         return ""

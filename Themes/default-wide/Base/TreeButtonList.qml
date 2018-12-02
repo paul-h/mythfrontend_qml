@@ -106,7 +106,7 @@ FocusScope
     {
         var i;
 
-        if (lists[nodeID].model.get(index) === undefined)
+        if (lists[nodeID].model === null || lists[nodeID].model === undefined ||  lists[nodeID].model.get(index) === undefined)
             return;
 
         if (nodeID == _focusedList)
@@ -162,15 +162,16 @@ FocusScope
         return list;
     }
 
-    function addNode(path, data)
+    function addNode(path, title, data)
     {
-        var szSplit = path.split(',')
-        if (szSplit.length === 1)
+        if (path === "")
         {
-            objRoot.model.append({"itemTitle": szSplit[0], "itemData": data, "subNodes": []})
+            objRoot.model.append({"itemTitle": title, "itemData": data, "subNodes": []})
         }
         else
         {
+            var szSplit = path.split(',')
+
             if (objRoot.model.get(parseInt(szSplit[0])) === undefined)
             {
                 console.log("Error - Given node does not exist !")
@@ -179,7 +180,7 @@ FocusScope
 
             var node = treeModel.get(parseInt(szSplit[0]))
 
-            for (var i = 1; i < szSplit.length - 1; ++i)
+            for (var i = 1; i < szSplit.length; ++i)
             {
                 if (node.subNodes.get(parseInt(szSplit[i])) === undefined)
                 {
@@ -192,7 +193,7 @@ FocusScope
             if (node.subNodes == undefined)
                 node.subNodes = [];
 
-            node.subNodes.append({"itemTitle": szSplit[i], "itemData": data, "subNodes": []})
+            node.subNodes.append({"itemTitle": title, "itemData": data, "subNodes": []})
         }
     }
 
@@ -231,6 +232,20 @@ FocusScope
             node = node.subNode.get(parseInt(szSplit[i]))
         }
         */
+    }
+
+    function reset()
+    {
+        model.clear();
+
+        for (var x = 0; x < lists.length; x++)
+            lists[x].destroy();
+
+        lists.length = 0;
+        lists.push(createList(0, model));
+        lists[0].focus = true;
+        _focusedList = 0;
+        nodeSelectedHandler(0, 0);
     }
 
     function getActiveNodePath()
