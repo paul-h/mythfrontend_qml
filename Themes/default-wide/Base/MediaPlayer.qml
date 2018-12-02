@@ -271,7 +271,6 @@ FocusScope
                 color: 'transparent'
                 border.width: xscale(1)
                 border.color: 'white'
-                anchors.verticalCenter: parent.verticalCenter
                 Rectangle
                 {
                     width:
