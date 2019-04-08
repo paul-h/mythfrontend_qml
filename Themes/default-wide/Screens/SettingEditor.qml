@@ -201,6 +201,10 @@ BaseScreen
         }
         ListElement
         {
+            itemText: "MythCenterEASTER-wide"
+        }
+        ListElement
+        {
             itemText: "MythCenterFIREWORKS-wide"
         }
         ListElement
