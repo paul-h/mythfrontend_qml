@@ -65,6 +65,17 @@ BaseScreen
         }
     }
 
+    // cvlc player for fullscreen DVD playback
+    Process
+    {
+        id: vlcPlayerProcess
+        onFinished:
+        {
+            showVideo(true);
+            pauseVideo(false);
+        }
+    }
+
     OkCancelDialog
     {
         id: dialog
@@ -132,7 +143,7 @@ BaseScreen
                     {
                         var result = mythUtils.findThemeFile(filePath + ".png");
 
-                        if (result == "")
+                        if (result === "")
                             result = mythUtils.findThemeFile("images/grid_noimage.png");
 
                         return result;
@@ -173,16 +184,33 @@ BaseScreen
             if (model.get(currentIndex, "fileIsDir"))
             {
                 if (model.get(currentIndex, "filePath").endsWith("/VIDEO_TS"))
-                    stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{feedList:  mediaModel, currentFeed: 0}});
+                {
+                    playDVD(model.get(currentIndex, "filePath"))
+                }
                 else
                     stack.push({item: Qt.resolvedUrl("VideosGridFolder.qml"), properties:{folder: model.get(currentIndex, "filePath")}});
             }
             else
-                stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{feedList:  mediaModel, currentFeed: 0}});
+            {
+                if (model.get(currentIndex, "filePath").endsWith(".ISO") || model.get(currentIndex, "filePath").endsWith(".iso"))
+                {
+                    playDVD(model.get(currentIndex, "filePath"))
+                }
+                else
+                    stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{feedList:  mediaModel, currentFeed: 0}});
+            }
+
             event.accepted = true;
             returnSound.play();
         }
     }
+
+    function playDVD(filename)
+    {
+        pauseVideo(true);
+        showVideo(false);
+        vlcPlayerProcess.start("/usr/bin/cvlc", ["--play-and-exit",  "--fullscreen",
+                                                 "--key-quit", "Esc", "--key-leave-fullscreen", "Ctrl+F",
+                                                 filename]);
+    }
 }
-
-
