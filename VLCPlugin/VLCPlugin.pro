@@ -14,5 +14,5 @@ LIBS += $$system(pkg-config --libs vlc-plugin)
 # Input
 SOURCES += myth.c
 
-target.path = $$system(pkg-config --variable pluginsdir vlc-plugin)
+target.path = $$system(pkg-config --variable pluginsdir vlc-plugin)/access
 INSTALLS += target
