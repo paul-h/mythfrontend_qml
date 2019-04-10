@@ -22,7 +22,7 @@ qml.files += ../Themes ../Models ../MenuThemes ../Scripts main.qml Util.js
 INSTALLS += qml
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
-QML_IMPORT_PATH = Themes Models MenuThemes
+QML_IMPORT_PATH = Themes/default-wide Models MenuThemes
 
 QMAKE_CLEAN += $(TARGET)
 
