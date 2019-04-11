@@ -155,7 +155,7 @@ BaseScreen
         horizontalAlignment: Text.AlignRight
     }
 
-    GridView
+    ButtonGrid
     {
         id: webcamGrid
         x: xscale(22)
@@ -164,25 +164,27 @@ BaseScreen
         height: yscale(390)
         cellWidth: xscale(206)
         cellHeight: yscale(130)
-        clip: true
 
         Component
         {
             id: webcamDelegate
-            Image
+            Item
             {
-                id: wrapper
-                //visible: opened
-                x: xscale(5)
-                y: yscale(5)
-                opacity: 1.0
-                asynchronous: true
-                width: webcamGrid.cellWidth - 10; height: webcamGrid.cellHeight - 10
-                source: getIconURL(icon);
+                x: 0;
+                y: 0;
+                width: webcamGrid.cellWidth;
+                height: webcamGrid.cellHeight;
+                Image
+                {
+                    opacity: 0.80
+                    asynchronous: true
+                    anchors.fill: parent
+                    anchors.margins: xscale(5)
+                    source: getIconURL(icon);
+                }
             }
         }
 
-        highlight: Rectangle { z: 99; color: "orange"; opacity: 0.5; radius: 5}
         model: webcamProxyModel
         delegate: webcamDelegate
         focus: true

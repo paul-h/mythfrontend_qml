@@ -12,6 +12,7 @@ BaseMultilineEdit 1.0 BaseMultilineEdit.qml
 BaseScreen 1.0 BaseScreen.qml
 BaseSelector 1.0 BaseSelector.qml
 ButtonList 1.0 ButtonList.qml
+ButtonGrid 1.0 ButtonGrid.qml
 Clock 1.0 Clock.qml
 CoverFlow 1.0 CoverFlow.qml
 DigitalClock 1.0 DigitalClock.qml

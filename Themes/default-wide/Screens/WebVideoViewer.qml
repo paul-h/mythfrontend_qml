@@ -155,7 +155,7 @@ BaseScreen
         horizontalAlignment: Text.AlignRight
     }
 
-    GridView
+    ButtonGrid
     {
         id: webvideoGrid
         x: xscale(22)
@@ -169,20 +169,23 @@ BaseScreen
         Component
         {
             id: webvideoDelegate
-            Image
+            Item
             {
-                id: wrapper
-                //visible: opened
-                x: xscale(5)
-                y: yscale(5)
-                opacity: 1.0
-                asynchronous: true
-                width: webvideoGrid.cellWidth - 10; height: webvideoGrid.cellHeight - 10
-                source: getIconURL(icon);
+                x: 0;
+                y: 0;
+                width: webvideoGrid.cellWidth;
+                height: webvideoGrid.cellHeight;
+                Image
+                {
+                    opacity: 0.80
+                    asynchronous: true
+                    anchors.fill: parent
+                    anchors.margins: xscale(5)
+                    source: getIconURL(icon);
+                }
             }
         }
 
-        highlight: Rectangle { z: 99; color: "red"; opacity: 0.4; radius: 5 }
         model: webvideoProxyModel
         delegate: webvideoDelegate
         focus: true
