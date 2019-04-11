@@ -1,0 +1,6 @@
+mythfrontend-qml (2:31.0~master-0ubuntu1) artful; urgency=medium
+
+  * First public build of standalone qml frontend
+
+ -- Paul Harrison <pharrison@mythtv.org>  Mon, 08 Apr 2019 12:00:00 +0100
+

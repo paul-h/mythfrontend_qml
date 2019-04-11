@@ -1,0 +1,54 @@
+Source: mythfrontend-qml
+Section: graphics
+Priority: optional
+Maintainer: Paul Harrison <pharrison@mythtv.org>
+Uploaders: Paul Harrison <pharrison@mythtv.org>
+Homepage: http://www.mythtv.org
+Standards-Version: 3.9.4
+Vcs-Git: https://github.com/paul-h/packaging.git
+Build-Conflicts: libqt3-mt-dev
+Build-Depends:  debhelper (>= 9),
+                qtdeclarative5-dev,
+                libqt5opengl5-dev,
+                qtscript5-dev,
+                qt5-qmake,
+                dh-python | python-central,
+                python,
+                python-oauth,
+                python-lxml,
+                python-mysqldb,
+                python-pycurl,
+                python-urlgrabber,
+                libqt5webenginecore5,
+                qml-module-qtwebengine,
+                qtwebengine5-dev,
+                qml-module-qtpositioning,
+                qtpositioning5-dev,
+                libvlccore-dev,
+                libvlc-dev
+
+
+Package: mythfrontend-qml
+Architecture: any
+Depends: python,
+         python3-streamlink,
+         streamlink,
+         qml-module-qtav,
+         qml-module-qtwebengine,
+         qml-module-qtwebsockets,
+         python3-streamlink,
+         streamlink
+Description: Personal video recorder application (QML client)
+ MythTV provides a unified graphical interface for recording and viewing
+ television programs. Refer to the mythtv package for more information.
+ .
+ This package contains only the QML client software, which provides a front-end
+ for playback and configuration. It requires access to a mythtv-backend
+ installation, either on the same system or one reachable via the network.
+ .
+ A database is also required. The mythtv-database package must be installed,
+ either on the same system, or one reachable via the network.
+ .
+ For a complete installation of all MythTV components, install the 'mythtv'
+ package.
+
