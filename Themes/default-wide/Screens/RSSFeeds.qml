@@ -190,23 +190,19 @@ BaseScreen
         source: findArticleImage(articleList.currentIndex)
     }
 
-    Text
+    TitleText
     {
         id: titleText
         x: xscale(230); y: yscale(510); width: xscale(900); height: yscale(50)
-        font { pixelSize: 24; bold: true }
         text: feedModel.get(articleList.currentIndex) ? mythUtils.replaceHtmlChar(feedModel.get(articleList.currentIndex).title) : ""
-        color: "#ffffff"
     }
 
-    Text
+    InfoText
     {
         id: descText
         x: xscale(230); y: yscale(550); width: xscale(900); height: yscale(100)
-        font { pixelSize: 18; bold: true }
-        wrapMode: Text.WordWrap
+        multiline: true
         text: feedModel.get(articleList.currentIndex) ? mythUtils.replaceHtmlChar(feedModel.get(articleList.currentIndex).description) : ""
-        color: "#ff00ff"
     }
 
     function findArticleImage(index)
