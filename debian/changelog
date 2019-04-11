@@ -1,4 +1,4 @@
-mythfrontend-qml (2:31.0~master-0ubuntu1) artful; urgency=medium
+mythfrontend-qml (2:31.0~master) artful; urgency=medium
 
   * First public build of standalone qml frontend
 
