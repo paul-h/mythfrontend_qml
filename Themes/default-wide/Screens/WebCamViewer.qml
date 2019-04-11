@@ -220,7 +220,7 @@ BaseScreen
     {
         id: title
         x: xscale(30); y: yscale(470)
-        width: xscale(900); height: yscale(65)
+        width: xscale(900); height: yscale(75)
         verticalAlignment: Text.AlignTop
         multiline: true
     }
