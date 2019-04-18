@@ -18,6 +18,7 @@ CoverFlow 1.0 CoverFlow.qml
 DigitalClock 1.0 DigitalClock.qml
 DropDown 1.0 DropDown.qml
 FadeImage 1.0 FadeImage.qml
+Footer 1.0 Footer.qml
 InfoText 1.0 InfoText.qml
 LabelText 1.0 LabelText.qml
 ListBackground 1.0 ListBackground.qml
