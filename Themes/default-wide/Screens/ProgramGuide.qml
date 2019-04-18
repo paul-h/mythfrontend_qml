@@ -129,7 +129,7 @@ BaseScreen
         {
             // YELLOW
             channelsModel.orderByName = !channelsModel.orderByName;
-            sort.text = "Sort " + (channelsModel.orderByName ? "(Channel Name)" : "(Channel Number)")
+            footer.yellowText = "Sort " + (channelsModel.orderByName ? "(Channel Name)" : "(Channel Number)")
         }
         else if (event.key === Qt.Key_F4)
         {
@@ -346,54 +346,13 @@ BaseScreen
         onCurrentIndexChanged: updateProgramDetails();
     }
 
-    Image
+    Footer
     {
-        x: xscale(30); y: yscale(682); width: xscale(32); height: yscale(32)
-        source: mythUtils.findThemeFile("images/red_bullet.png")
-    }
-
-    InfoText
-    {
-        x: xscale(65); y: yscale(682); width: xscale(250); height: yscale(32)
-        text: "Options"
-    }
-
-    Image
-    {
-        x: xscale(350); y: yscale(682); width: xscale(32); height: yscale(32)
-        source: mythUtils.findThemeFile("images/green_bullet.png")
-    }
-
-    InfoText
-    {
-        id: show
-        x: xscale(385); y: yscale(682); width: xscale(250); height: yscale(32)
-        text: "Show (All Channels)"
-    }
-
-    Image
-    {
-        x: xscale(670); y: yscale(682); width: xscale(32); height: yscale(32)
-        source: mythUtils.findThemeFile("images/yellow_bullet.png")
-    }
-
-    InfoText
-    {
-        id: sort
-        x: xscale(705); y: yscale(682); width: xscale(250); height: yscale(32)
-        text: "Sort (Channel Number)"
-    }
-
-    Image
-    {
-        x: xscale(990); y: yscale(682); width: xscale(32); height: yscale(32)
-        source: mythUtils.findThemeFile("images/blue_bullet.png")
-    }
-
-    InfoText
-    {
-        x: xscale(1025); y: yscale(682); width: xscale(250); height: yscale(32)
-        text: "Record Options"
+        id: footer
+        redText: "Options"
+        greenText: "Show (All Channels)"
+        yellowText: "Sort (Channel Number)"
+        blueText: "Record Options"
     }
 
     VideoPlayerQmlVLC
@@ -482,7 +441,7 @@ BaseScreen
         onItemSelected:
         {
             channelList.focus = true;
-            show.text = "Show (" + itemText +")";
+            footer.greenText = "Show (" + itemText +")";
 
             channelsModel.channelGroupId = itemData;
         }

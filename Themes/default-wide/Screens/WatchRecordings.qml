@@ -83,7 +83,7 @@ BaseScreen
 
             dateSorterActive = !dateSorterActive;
 
-            sort.text = "Sort " + (dateSorterActive ? "(Date & Time)" : "(Season & Episode)")
+            footer.yellowText = "Sort " + (dateSorterActive ? "(Date & Time)" : "(Season & Episode)")
         }
         else if (event.key === Qt.Key_F4)
         {
@@ -447,54 +447,13 @@ BaseScreen
         x: xscale(1130); y: yscale(460); height: yscale(200); width: xscale(120)
     }
 
-    Image
+    Footer
     {
-        x: xscale(30); y: yscale(682); width: xscale(32); height: yscale(32)
-        source: mythUtils.findThemeFile("images/red_bullet.png")
-    }
-
-    InfoText
-    {
-        x: xscale(65); y: yscale(682); width: xscale(250); height: yscale(32)
-        text: "Options"
-    }
-
-    Image
-    {
-        x: xscale(350); y: yscale(682); width: xscale(32); height: yscale(32)
-        source: mythUtils.findThemeFile("images/green_bullet.png")
-    }
-
-    InfoText
-    {
-        id: show
-        x: xscale(385); y: yscale(682); width: xscale(250); height: yscale(32)
-        text: "Show (All Recordings)"
-    }
-
-    Image
-    {
-        x: xscale(670); y: yscale(682); width: xscale(32); height: yscale(32)
-        source: mythUtils.findThemeFile("images/yellow_bullet.png")
-    }
-
-    InfoText
-    {
-        id: sort
-        x: xscale(705); y: yscale(682); width: xscale(250); height: yscale(32)
-        text: "Sort (Time)"
-    }
-
-    Image
-    {
-        x: xscale(990); y: yscale(682); width: xscale(32); height: yscale(32)
-        source: mythUtils.findThemeFile("images/blue_bullet.png")
-    }
-
-    InfoText
-    {
-        x: xscale(1025); y: yscale(682); width: xscale(250); height: yscale(32)
-        text: "Info"
+        id: footer
+        redText: "Options"
+        greenText: "Show (All Recordings)"
+        yellowText: "Sort (Time)"
+        blueText: "Info"
     }
 
     RecordingFilterDialog
@@ -527,9 +486,9 @@ BaseScreen
         recordingsModel.reload();
 
         if (recordingsModel.titleRegExp == "" && recordingsModel.category == "" && recordingsModel.recGroup == "")
-            show.text = "Show (All Recordings)";
+            footer.greenText = "Show (All Recordings)";
         else
-            show.text = "Show (Filtered Recordings)";
+            footer.greenText = "Show (Filtered Recordings)";
     }
 
     function updateProgramDetails()

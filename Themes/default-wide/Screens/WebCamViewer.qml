@@ -35,9 +35,9 @@ BaseScreen
         filterCategory = dbUtils.getSetting("Qml_lastWebcamCategory", settings.hostName)
 
         if (filterCategory == "<All Webcams>" || filterCategory == "")
-            show.text = "Show (All Webcams)"
+            footer.greenText = "Show (All Webcams)"
         else
-            show.text = "Show (" + filterCategory + ")"
+            footer.greenText = "Show (" + filterCategory + ")"
 
         webcamProxyModel.sourceModel = webcamModel
     }
@@ -89,12 +89,12 @@ BaseScreen
             if (titleSorterActive)
             {
                 webcamProxyModel.sorters = idSorter;
-                sort.text = "Sort (No.)";
+                footer.redText = "Sort (No.)";
             }
             else
             {
                 webcamProxyModel.sorters = titleSorter;
-                sort.text = "Sort (Name)";
+                footer.redText = "Sort (Name)";
             }
 
             titleSorterActive = !titleSorterActive;
@@ -130,11 +130,11 @@ BaseScreen
                 webcamPathIndex = 0;
 
             filterCategory = "";
-            show.text = "Show (All Webcams)"
+            footer.redText = "Show (All Webcams)"
 
             titleSorterActive = true
             webcamProxyModel.sorters = titleSorter;
-            sort.text = "Sort (Name)";
+            footer.redText = "Sort (Name)";
 
             webcamModel.source = webcamPaths[webcamPathIndex] + "/WebCam.xml"
         }
@@ -255,54 +255,13 @@ BaseScreen
         source: mythUtils.findThemeFile("images/website.png")
     }
 
-    Image
+    Footer
     {
-        x: xscale(30); y: yscale(682); width: xscale(32); height: yscale(32)
-        source: mythUtils.findThemeFile("images/red_bullet.png")
-    }
-
-    InfoText
-    {
-        id: sort
-        x: xscale(65); y: yscale(682); width: xscale(285); height: yscale(32)
-        text: "Sort (Name)"
-    }
-
-    Image
-    {
-        x: xscale(350); y: yscale(682); width: xscale(32); height: yscale(32)
-        source: mythUtils.findThemeFile("images/green_bullet.png")
-    }
-
-    InfoText
-    {
-        id: show
-        x: xscale(385); y: yscale(682); width: xscale(285); height: yscale(32)
-        text: "Show (All Webcams)"
-    }
-
-    Image
-    {
-        x: xscale(670); y: yscale(682); width: xscale(32); height: yscale(32)
-        source: mythUtils.findThemeFile("images/yellow_bullet.png")
-    }
-
-    InfoText
-    {
-        x: xscale(705); y: yscale(682); width: xscale(285); height: yscale(32)
-        text: ""
-    }
-
-    Image
-    {
-        x: xscale(990); y: yscale(682); width: xscale(32); height: yscale(32)
-        source: mythUtils.findThemeFile("images/blue_bullet.png")
-    }
-
-    InfoText
-    {
-        x: xscale(1025); y: yscale(682); width: xscale(285); height: yscale(32)
-        text: "Go To Website"
+        id: footer
+        redText: "Sort (Name)"
+        greenText: "Show (All Webcams)"
+        yellowText: ""
+        blueText: "Go To Website"
     }
 
     SearchListDialog
@@ -327,12 +286,12 @@ BaseScreen
             if (itemText != "<All Webcams>")
             {
                 filterCategory = itemText;
-                show.text = "Show (" + itemText + ")"
+                footer.greenText = "Show (" + itemText + ")"
             }
             else
             {
                 filterCategory = "";
-                show.text = "Show (All Webcams)"
+                footer.greenText = "Show (All Webcams)"
 
             }
 
