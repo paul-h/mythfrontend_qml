@@ -143,7 +143,7 @@ BaseScreen
     BaseBackground
     {
         id: listBackground
-        x: xscale(10); y: yscale(50); width: parent.width - x - xscale(10); height: yscale(400)
+        x: xscale(10); y: yscale(45); width: parent.width - x - xscale(10); height: yscale(410)
     }
 
     BaseBackground { x: xscale(10); y: yscale(465); width: parent.width - xscale(20); height: yscale(210) }
@@ -159,7 +159,7 @@ BaseScreen
     {
         id: webcamGrid
         x: xscale(22)
-        y: yscale(60)
+        y: yscale(55)
         width: xscale(1280) - xscale(44)
         height: yscale(390)
         cellWidth: xscale(206)
