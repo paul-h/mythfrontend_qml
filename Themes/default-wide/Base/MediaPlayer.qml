@@ -107,7 +107,7 @@ FocusScope
 
         onLoadingChanged:
         {
-            if (loadRequest.status == WebEngineLoadRequest.LoadSucceededStatus)
+            if (loadRequest.status === WebEngineLoadRequest.LoadSucceededStatus)
             {
                 x = (parent.width - contentsSize.width) / 2;
                 y = parent.height - contentsSize.height - yscale(20);
@@ -197,7 +197,7 @@ FocusScope
             x: xscale(10); y: yscale(5); width: parent.width - xscale(20)
             text:
             {
-                if (root.feedList.get(root.currentFeed).title != "")
+                if (root.feedList.get(root.currentFeed).title !== "")
                     return root.feedList.get(root.currentFeed).title
                 else
                     return root.feedList.get(root.currentFeed).url
@@ -320,7 +320,7 @@ FocusScope
         if (!timeOut)
             timeOut = settings.osdTimeoutMedium;
 
-        if (message != "")
+        if (message !== "")
         {
             messageText.text = message;
             messagePanel.visible = true;
@@ -351,7 +351,7 @@ FocusScope
 
     function startPlayback()
     {
-        if (root.feedList == undefined)
+        if (root.feedList === undefined)
             return;
 
         var newPlayer = root.feedList.get(root.currentFeed).player;

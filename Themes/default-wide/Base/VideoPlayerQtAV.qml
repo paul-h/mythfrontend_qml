@@ -53,38 +53,38 @@ FocusScope
                     console.info("status: no media");
                     showMessage("No Media", settings.osdTimeoutMedium);
                 }
-                else if (status == status == MediaPlayer.Loading)
+                else if (status === MediaPlayer.Loading)
                 {
                     console.info("status: loading");
                 }
-                else if (status == MediaPlayer.Loaded)
+                else if (status === MediaPlayer.Loaded)
                 {
                     console.info("status: loaded");
                 }
-                else if (status == MediaPlayer.Buffering)
+                else if (status === MediaPlayer.Buffering)
                 {
                     console.info("status: buffering");
                     showMessage("Buffering", settings.osdTimeoutLong);
                 }
-                else if (status == MediaPlayer.Stalled)
+                else if (status === MediaPlayer.Stalled)
                 {
                     console.info("status: Stalled");
                 }
-                else if (status == MediaPlayer.Buffered)
+                else if (status === MediaPlayer.Buffered)
                 {
                     console.info("status: Buffered");
                     showMessage("", settings.osdTimeoutShort);
                 }
-                else if (status == MediaPlayer.EndOfMedia)
+                else if (status === MediaPlayer.EndOfMedia)
                 {
                     console.info("status: EndOfMedia");
                     playbackEnded();
                 }
-                else if (status == MediaPlayer.InvalidMedia)
+                else if (status === MediaPlayer.InvalidMedia)
                 {
                     console.info("status: InvalidMedia");
                 }
-                else if (status == MediaPlayer.UnknownStatus)
+                else if (status === MediaPlayer.UnknownStatus)
                 {
                     console.info("status: UnknownStatus");
                 }
@@ -157,7 +157,7 @@ FocusScope
 
     function setMute(mute)
     {
-        if (mute != mediaplayer.muted)
+        if (mute !== mediaplayer.muted)
             mediaplayer.muted = mute;
     }
 

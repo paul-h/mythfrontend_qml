@@ -127,7 +127,7 @@ FocusScope
     {
         root.muteAudio = mute;
 
-        if (mute != mediaplayer.audio.mute)
+        if (mute !== mediaplayer.audio.mute)
             mediaplayer.audio.mute = mute;
     }
 

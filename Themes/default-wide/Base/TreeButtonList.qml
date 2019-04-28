@@ -109,10 +109,10 @@ FocusScope
         if (lists[nodeID].model === null || lists[nodeID].model === undefined ||  lists[nodeID].model.get(index) === undefined)
             return;
 
-        if (nodeID == _focusedList)
+        if (nodeID === _focusedList)
             objRoot.nodeSelected(lists[nodeID].model.get(index));
 
-        if (nodeID == _focusedList && lists[nodeID].model.get(index).subNodes.count && nodeID >= lists.length - 1)
+        if (nodeID === _focusedList && lists[nodeID].model.get(index).subNodes.count && nodeID >= lists.length - 1)
         {
             // we need to add a new list for this node
             lists[nodeID + 1] = createList(nodeID + 1, lists[nodeID].model.get(index).subNodes);
@@ -148,7 +148,7 @@ FocusScope
                                                 "model": model,
                                                 "delegate":  listItem});
 
-        if (list == null)
+        if (list === null)
         {
             // Error Handling
             console.log("Error creating object");
@@ -190,7 +190,7 @@ FocusScope
                 node = node.subNodes.get(parseInt(szSplit[i]))
             }
 
-            if (node.subNodes == undefined)
+            if (node.subNodes === undefined)
                 node.subNodes = [];
 
             node.subNodes.append({"itemTitle": title, "itemData": data, "subNodes": []})

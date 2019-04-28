@@ -223,7 +223,7 @@ FocusScope
     {
         for (var x = 1; x < model.count; x++)
         {
-            if (model.get(x).itemText == item)
+            if (model.get(x).itemText === item)
             {
                 selectorList.positionViewAtIndex(x, ListView.Beginning);
                 selectorList.currentIndex = x;

@@ -38,7 +38,7 @@ Item
 
         onLoadingChanged:
         {
-            if (loadRequest.status == WebEngineLoadRequest.LoadSucceededStatus && root.source != "")
+            if (loadRequest.status === WebEngineLoadRequest.LoadSucceededStatus && root.source !== "")
             {
                 _playerLoaded = true;
                 runJavaScript("loadVideo(" + root.source + ")");
