@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import Base 1.0
-import "../../../Models"
+import Models 1.0
 
 BaseScreen
 {

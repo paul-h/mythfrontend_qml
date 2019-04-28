@@ -2,7 +2,7 @@ import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
 import QtQuick.Controls 1.4
 import Base 1.0
-import "../../../Models"
+import Models 1.0
 
 BaseScreen
 {
@@ -207,13 +207,13 @@ BaseScreen
 
     function findArticleImage(index)
     {
-        if (feedModel.get(index) && feedModel.get(index).image != "")
+        if (feedModel.get(index) && feedModel.get(index).image !== "")
             return feedModel.get(index).image;
-        else if (feedModel.get(index) && feedModel.get(index).mediaContentUrl != "")
+        else if (feedModel.get(index) && feedModel.get(index).mediaContentUrl !== "")
             return feedModel.get(index).mediaContentUrl;
-        else if (feedModel.get(index) && feedModel.get(index).enclosureType === "image" && feedModel.get(index).enclosureUrl != "")
+        else if (feedModel.get(index) && feedModel.get(index).enclosureType === "image" && feedModel.get(index).enclosureUrl !== "")
             return feedModel.get(index).enclosureUrl;
-        else if (rssFeedsModel.data(rssFeedsModel.index(feedList.currentIndex, 2)) != "")
+        else if (rssFeedsModel.data(rssFeedsModel.index(feedList.currentIndex, 2)) !== "")
             return rssFeedsModel.data(rssFeedsModel.index(feedList.currentIndex, 2))
             else
                 return mythUtils.findThemeFile("images/grid_noimage.png");

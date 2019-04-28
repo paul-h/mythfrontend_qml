@@ -14,7 +14,7 @@ BaseScreen
         for (var i = 0; i < calendarModel.count; i++)
         {
             var day = dbUtils.getSetting("Qml_adventDay" + i, settings.hostName);
-            calendarGrid.model.get(i).opened = (day == "opened");
+            calendarGrid.model.get(i).opened = (day === "opened");
         }
     }
 

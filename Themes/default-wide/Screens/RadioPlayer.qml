@@ -39,15 +39,15 @@ BaseScreen
             playedModel.insert(0, {"trackArtistTitle": trackArtistTitle, "title": title, "artist": artist, "broadcaster": broadcaster, "channel": channel, "icon": icon, "length": 0});
         playedList.currentIndex = 0;
         trackStart = streamPlayer.time;
-        trackTitle.text = title != undefined ? title : "";
-        trackArtist.text = artist != undefined ? artist : "";
+        trackTitle.text = title !== undefined ? title : "";
+        trackArtist.text = artist !== undefined ? artist : "";
     }
 
     VlcPlayer
     {
         id: streamPlayer
 
-        onTimeChanged: if (trackArtistTitle != undefined && playedModel.get(0) != undefined && trackArtistTitle == playedModel.get(0).trackArtistTitle) playedModel.get(0).length = time - trackStart;
+        onTimeChanged: if (trackArtistTitle != undefined && playedModel.get(0) !== undefined && trackArtistTitle === playedModel.get(0).trackArtistTitle) playedModel.get(0).length = time - trackStart;
 
         Component.onCompleted:
         {
@@ -58,11 +58,11 @@ BaseScreen
             {
                 var itemUrl = radioStreamsModel.data(radioStreamsModel.index(i, 4));
 
-                if (itemUrl == url)
+                if (itemUrl === url)
                 {
                     streamList.currentIndex = i;
 
-                    if (streamList.model.data(streamList.model.index(streamList.currentIndex, 1)) != "")
+                    if (streamList.model.data(streamList.model.index(streamList.currentIndex, 1)) !== "")
                         channel.text = streamList.model.data(streamList.model.index(streamList.currentIndex, 1)) + " - " + streamList.model.data(streamList.model.index(streamList.currentIndex, 2));
                     else
                         channel.text = streamList.model.data(streamList.model.index(streamList.currentIndex, 2));
@@ -77,7 +77,7 @@ BaseScreen
             streamPlayer.mrl = url;
 
             var vol = dbUtils.getSetting("Qml_radioPlayerVolume", settings.hostName)
-            if (vol != undefined && vol != "")
+            if (vol !== undefined && vol !== "")
                 audio.volume = vol;
             else
                 audio.volume = 80
@@ -158,7 +158,7 @@ BaseScreen
             streamPlayer.mrl = url;
             urlText.text = url
 
-            if (streamList.model.data(streamList.model.index(streamList.currentIndex, 1)) != "")
+            if (streamList.model.data(streamList.model.index(streamList.currentIndex, 1)) !== "")
                 channel.text = streamList.model.data(streamList.model.index(streamList.currentIndex, 1)) + " - " + streamList.model.data(streamList.model.index(streamList.currentIndex, 2));
             else
                 channel.text = streamList.model.data(streamList.model.index(streamList.currentIndex, 2));

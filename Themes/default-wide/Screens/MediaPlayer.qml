@@ -7,7 +7,7 @@ BaseScreen
 {
     id: root
     defaultFocusItem: browser
-    property url: ""
+    property string url: ""
 
     // one of VLC, BROWSER, YOUTUBE
     property string type: "VLC"

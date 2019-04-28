@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import Base 1.0
-import "../../../Models"
+import Models 1.0
 
 BaseScreen
 {
@@ -527,48 +527,48 @@ BaseScreen
         // only update the metadata that has actually changed
 
         // page 1
-        if (titleEdit.text != videosModel.get(currentIndex).Title)
+        if (titleEdit.text !== videosModel.get(currentIndex).Title)
             params += "&Title=%1".arg(titleEdit.text);
 
-        if (subtitleEdit.text != videosModel.get(currentIndex).SubTitle)
+        if (subtitleEdit.text !== videosModel.get(currentIndex).SubTitle)
             params += "&SubTitle=%1".arg(subtitleEdit.text);
 
-        if (seasonEdit.text != videosModel.get(currentIndex).Season)
+        if (seasonEdit.text !== videosModel.get(currentIndex).Season)
             params += "&Season=%1".arg(seasonEdit.text);
 
-        if (episodeEdit.text != videosModel.get(currentIndex).Episode)
+        if (episodeEdit.text !== videosModel.get(currentIndex).Episode)
             params += "&Episode=%1".arg(episodeEdit.text);
 
-        if (descriptionEdit.text != videosModel.get(currentIndex).Description)
+        if (descriptionEdit.text !== videosModel.get(currentIndex).Description)
             params += "&Description=%1".arg(descriptionEdit.text);
 
-        if (taglineEdit.text != videosModel.get(currentIndex).Tagline)
+        if (taglineEdit.text !== videosModel.get(currentIndex).Tagline)
             params += "&TagLine=%1".arg(taglineEdit.text);
 
         // page 2
-        if (coverartEdit.text != videosModel.get(currentIndex).Coverart)
+        if (coverartEdit.text !== videosModel.get(currentIndex).Coverart)
             params += "&Coverart=%1".arg(coverartEdit.text);
 
-        if (fanartEdit.text != videosModel.get(currentIndex).Fanart)
+        if (fanartEdit.text !== videosModel.get(currentIndex).Fanart)
             params += "&Fanart=%1".arg(fanartEdit.text);
 
-        if (bannerEdit.text != videosModel.get(currentIndex).Banner)
+        if (bannerEdit.text !== videosModel.get(currentIndex).Banner)
             params += "&Banner=%1".arg(bannerEdit.text);
 
-        if (screenshotEdit.text != videosModel.get(currentIndex).Screenshot)
+        if (screenshotEdit.text !== videosModel.get(currentIndex).Screenshot)
             params += "&Screenshot=%1".arg(screenshotEdit.text);
 
         // page 3
-        if (genreEdit.text != videosModel.get(currentIndex).Genre)
+        if (genreEdit.text !== videosModel.get(currentIndex).Genre)
             params += "&Genres=%1".arg(genreEdit.text);
 
-        if (studioEdit.text != videosModel.get(currentIndex).Studio)
+        if (studioEdit.text !== videosModel.get(currentIndex).Studio)
             params += "&Studio=%1".arg(studioEdit.text);
 
-        if (inetrefEdit.text != videosModel.get(currentIndex).Inetref)
+        if (inetrefEdit.text !== videosModel.get(currentIndex).Inetref)
             params += "&Inetref=%1".arg(inetrefEdit.text);
 
-        if (typeEdit.text != videosModel.get(currentIndex).ContentType)
+        if (typeEdit.text !== videosModel.get(currentIndex).ContentType)
             params += "&ContentType=%1".arg(typeEdit.text);
 
         http.open("POST", url, true);

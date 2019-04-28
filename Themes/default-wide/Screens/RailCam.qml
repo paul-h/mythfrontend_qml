@@ -89,7 +89,7 @@ BaseScreen
 
         onLoadingChanged:
         {
-            if (loadRequest.status == WebEngineLoadRequest.LoadSucceededStatus)
+            if (loadRequest.status === WebEngineLoadRequest.LoadSucceededStatus)
             {
                 x = (parent.width - contentsSize.width) / 2;
                 y = parent.height - contentsSize.height - yscale(20);

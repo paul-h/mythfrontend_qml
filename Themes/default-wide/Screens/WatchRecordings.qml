@@ -2,7 +2,7 @@ import QtQuick 2.7
 import Base 1.0
 import Dialogs 1.0
 import RecordingsModel 1.0
-import "../../../Models"
+import Models 1.0
 
 BaseScreen
 {
@@ -313,7 +313,7 @@ BaseScreen
         onDataChanged:
         {
             console.log("onDatachanged row: " + topLeft.row + ", currentIndex: " + recordingList.currentIndex);
-            if (topLeft.row == recordingList.currentIndex)
+            if (topLeft.row === recordingList.currentIndex)
                 updateProgramDetails();
         }
     }
@@ -346,8 +346,8 @@ BaseScreen
             var filename = "myth://" + "type=recording:server=" + hostname + ":port=6543:filename=" + model.get(currentIndex).FileName;
             var title = ""
 
-            if (model.get(currentIndex).HostName != "")
-                title = (model.get(currentIndex).SubTitle != "" ? model.get(currentIndex).Title + ": " + model.get(currentIndex).SubTitle : model.get(currentIndex).Title)
+            if (model.get(currentIndex).HostName !== "")
+                title = (model.get(currentIndex).SubTitle !== "" ? model.get(currentIndex).Title + ": " + model.get(currentIndex).SubTitle : model.get(currentIndex).Title)
 
             mediaModel.get(0).title = title;
             mediaModel.get(0).url = filename;
@@ -498,28 +498,28 @@ BaseScreen
         var subtitle = recordingList.model.get(recordingList.currentIndex).SubTitle;
         var result = "";
 
-        if (progtitle != undefined && progtitle.length > 0)
+        if (progtitle !== undefined && progtitle.length > 0)
             result = progtitle;
 
-        if (subtitle != undefined && subtitle.length > 0)
+        if (subtitle !== undefined && subtitle.length > 0)
             result += " - " + subtitle;
 
         title.text = result;
 
         // description
-        if (recordingList.model.get(recordingList.currentIndex).Description != undefined)
+        if (recordingList.model.get(recordingList.currentIndex).Description !== undefined)
             description.text = recordingList.model.get(recordingList.currentIndex).Description
         else
             description.text = ""
 
         // recording
-        recordingStatus.visible = (recordingList.model.get(recordingList.currentIndex).Status == "Recording");
+        recordingStatus.visible = (recordingList.model.get(recordingList.currentIndex).Status === "Recording");
 
         // start time
         startTime.text = Qt.formatDateTime(recordingList.model.get(recordingList.currentIndex).StartTime, "ddd dd MMM yyyy hh:mm")
 
         // category
-        if (recordingList.model.get(recordingList.currentIndex).Category != undefined)
+        if (recordingList.model.get(recordingList.currentIndex).Category !== undefined)
             programCategory.text = recordingList.model.get(recordingList.currentIndex).Category
         else
             programCategory.text = ""
@@ -552,7 +552,7 @@ BaseScreen
         programEpisode.text = res;
 
         // first aired
-        if (recordingList.model.get(recordingList.currentIndex).Airdate != undefined)
+        if (recordingList.model.get(recordingList.currentIndex).Airdate !== undefined)
             programFirstAired.text = "First Aired: " + Qt.formatDateTime(recordingList.model.get(recordingList.currentIndex).Airdate, "dd/MM/yyyy");
         else
             programFirstAired.text = ""

@@ -1,5 +1,5 @@
 import QtQuick 2.7
-import "../../../Models"
+import Models 1.0
 import Base 1.0
 import Dialogs 1.0
 import SortFilterProxyModel 0.2

@@ -1,5 +1,4 @@
 import QtQuick 2.0
-import "../../../Models"
 import Qt.labs.folderlistmodel 2.1
 import Base 1.0
 

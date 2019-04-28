@@ -606,20 +606,19 @@ FocusScope
     function takeSnapshot()
     {
         var filename;
+        var index = 0;
+        var padding = "";
 
-        if (root.feedList.get(root.currentFeed).url.indexOf("file://") == 0)
+        if (root.feedList.get(root.currentFeed).url.indexOf("file://") === 0)
             filename = root.feedList.get(root.currentFeed).url.substring(7, root.feedList.get(root.currentFeed).url.length);
         else
             filename = settings.configPath + "snapshot";
 
         if (mythUtils.fileExists(filename + ".png"))
         {
-            var index = 0;
-
             do
             {
                 index += 1;
-                var padding = "";
 
                 if (index < 10)
                     padding = "00";
@@ -627,9 +626,13 @@ FocusScope
                     padding = "0";
 
             }  while (mythUtils.fileExists(filename + padding + index + ".png"));
-        }
 
-        filename = filename + padding + index + ".png";
+            filename = filename + padding + index + ".png";
+        }
+        else
+           filename = filename + ".png";
+
+
 
         if (getActivePlayer() === "VLC")
             vlcPlayer.takeSnapshot(filename)

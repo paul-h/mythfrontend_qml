@@ -223,6 +223,7 @@ int main(int argc, char *argv[])
     engine.setUrlInterceptor(&interceptor);
 
     engine.addImportPath(QString(SHAREPATH) + "qml/Themes/default-wide");
+    engine.addImportPath(QString(SHAREPATH) + "qml");
 
     engine.load(QUrl(QString(SHAREPATH) + "qml/main.qml"));
 

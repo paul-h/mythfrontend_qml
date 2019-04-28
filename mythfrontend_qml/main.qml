@@ -6,7 +6,7 @@ import QtWebSockets 1.0
 import Process 1.0
 import Base 1.0
 import Screens 1.0
-import "Models"
+import Models 1.0
 
 ApplicationWindow
 {
@@ -34,7 +34,7 @@ ApplicationWindow
         id: themeDLProcess
         onFinished:
         {
-            if (exitStatus == Process.NormalExit)
+            if (exitStatus === Process.NormalExit)
             {
                 screenBackground.showVideo = true;
                 screenBackground.setVideo("file://" + theme.backgroundVideo);
@@ -84,7 +84,7 @@ ApplicationWindow
 
         onLoaded:
         {
-            if (theme.backgroundVideo != "")
+            if (theme.backgroundVideo !== "")
             {
                 if (theme.needsDownload && !mythUtils.fileExists(theme.backgroundVideo))
                 {

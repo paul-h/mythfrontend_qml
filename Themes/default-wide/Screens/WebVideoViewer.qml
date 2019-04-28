@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import Base 1.0
 import Dialogs 1.0
-import "../../../Models"
+import Models 1.0
 import SortFilterProxyModel 0.2
 
 BaseScreen
@@ -112,7 +112,7 @@ BaseScreen
         else if (event.key === Qt.Key_F4)
         {
             //BLUE
-            if (webvideoGrid.model.get(webvideoGrid.currentIndex).website != undefined)
+            if (webvideoGrid.model.get(webvideoGrid.currentIndex).website !== undefined)
             {
                 var website = webvideoGrid.model.get(webvideoGrid.currentIndex).website;
                 var zoom = xscale(webvideoGrid.model.get(webvideoGrid.currentIndex).zoom);
@@ -317,7 +317,7 @@ BaseScreen
         title.text = webvideoGrid.model.get(webvideoGrid.currentIndex).title;
 
         // description
-        if (webvideoGrid.model.get(webvideoGrid.currentIndex).description != undefined)
+        if (webvideoGrid.model.get(webvideoGrid.currentIndex).description !== undefined)
             description.text = webvideoGrid.model.get(webvideoGrid.currentIndex).description
         else
             description.text = ""
@@ -328,6 +328,6 @@ BaseScreen
         // icon
         webvideoIcon.source = getIconURL(webvideoGrid.model.get(webvideoGrid.currentIndex).icon);
 
-        websiteIcon.visible = ((webvideoGrid.model.get(webvideoGrid.currentIndex).website != undefined && webvideoGrid.model.get(webvideoGrid.currentIndex).website != "" ) ? true : false)
+        websiteIcon.visible = ((webvideoGrid.model.get(webvideoGrid.currentIndex).website !== undefined && webvideoGrid.model.get(webvideoGrid.currentIndex).website !== "" ) ? true : false)
     }
 }

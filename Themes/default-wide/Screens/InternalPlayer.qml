@@ -5,7 +5,7 @@ import QtQuick.Controls 1.0
 import QtQuick.XmlListModel 2.0
 import Base 1.0
 import Dialogs 1.0
-import "../../../Models"
+import Models 1.0
 import "../../../Util.js" as Util
 
 BaseScreen
@@ -211,6 +211,11 @@ BaseScreen
         }
         else if (event.key === Qt.Key_M)
         {
+            var x;
+            var path;
+            var title;
+            var data;
+
             popupMenu.clearMenuItems();
 
             popupMenu.addMenuItem("", "Switch Layout");
@@ -223,22 +228,22 @@ BaseScreen
             popupMenu.addMenuItem("0", "PBP 1 + 2");
             popupMenu.addMenuItem("0", "Quad Screen");
 
-            for (var x = 0; x < mediaPlayer1.feedList.count; x++)
+            for (x = 0; x < mediaPlayer1.feedList.count; x++)
             {
-                var path = "1"
-                var title = mediaPlayer1.feedList.get(x).title;
-                var data = "source=1\n" + x;
+                path = "1"
+                title = mediaPlayer1.feedList.get(x).title;
+                data = "source=1\n" + x;
                 popupMenu.addMenuItem(path, title, data);
             }
 
             if (root.layout > 0)
             {
                 popupMenu.addMenuItem("", "Player 2");
-                for (var x = 0; x < mediaPlayer2.feedList.count; x++)
+                for (x = 0; x < mediaPlayer2.feedList.count; x++)
                 {
-                    var path = "2"
-                    var title = mediaPlayer2.feedList.get(x).title;
-                    var data = "source=2\n" + x;
+                    path = "2"
+                    title = mediaPlayer2.feedList.get(x).title;
+                    data = "source=2\n" + x;
                     popupMenu.addMenuItem(path, title, data);
                 }
             }
@@ -246,11 +251,11 @@ BaseScreen
             if (root.layout > 3)
             {
                 popupMenu.addMenuItem("", "Player 3");
-                for (var x = 0; x < mediaPlayer3.feedList.count; x++)
+                for (x = 0; x < mediaPlayer3.feedList.count; x++)
                 {
-                    var path = "3"
-                    var title = mediaPlayer3.feedList.get(x).title;
-                    var data = "source=3\n" + x;
+                    path = "3"
+                    title = mediaPlayer3.feedList.get(x).title;
+                    data = "source=3\n" + x;
                     popupMenu.addMenuItem(path, title, data);
                 }
             }
@@ -258,11 +263,11 @@ BaseScreen
             if (root.layout > 4)
             {
                 popupMenu.addMenuItem("", "Player 4");
-                for (var x = 0; x < mediaPlayer4.feedList.count; x++)
+                for (x = 0; x < mediaPlayer4.feedList.count; x++)
                 {
-                    var path = "4"
-                    var title = mediaPlayer4.feedList.get(x).title;
-                    var data = "source=4\n" + x;
+                    path = "4"
+                    title = mediaPlayer4.feedList.get(x).title;
+                    data = "source=4\n" + x;
                     popupMenu.addMenuItem(path, title, data);
                 }
             }
@@ -410,32 +415,33 @@ BaseScreen
             else if (itemData.startsWith("source="))
             {
                var list = itemData.split("\n");
+               var feedIndex
                console.info("found source=, list size: " + list.length);
 
                if (list.length == 2)
                 {
-                    if (list[0] == "source=1")
+                    if (list[0] === "source=1")
                     {
-                        var feedIndex = list[1]
+                        feedIndex = list[1]
                         dbUtils.setSetting("Qml_player1Source", settings.hostName, feedIndex)
                         mediaPlayer1.currentFeed = feedIndex;
                         mediaPlayer1.startPlayback();
                     }
-                    else if (list[0] == "source=2")
+                    else if (list[0] === "source=2")
                     {
-                        var feedIndex = list[1]
+                        feedIndex = list[1]
                         dbUtils.setSetting("Qml_player2Source", settings.hostName, feedIndex)
                         mediaPlayer2.currentFeed = feedIndex;
                         mediaPlayer2.startPlayback();                    }
-                    else if (list[0] == "source=3")
+                    else if (list[0] === "source=3")
                     {
-                        var feedIndex = list[1]
+                        feedIndex = list[1]
                         dbUtils.setSetting("Qml_player3Source", settings.hostName, feedIndex)
                         mediaPlayer3.currentFeed = feedIndex;
                         mediaPlayer3.startPlayback();                    }
-                    else if (list[0] == "source=4")
+                    else if (list[0] === "source=4")
                     {
-                        var feedIndex = list[1]
+                        feedIndex = list[1]
                         dbUtils.setSetting("Qml_player4Source", settings.hostName, feedIndex)
                         mediaPlayer4.currentFeed = feedIndex;
                         mediaPlayer4.startPlayback();                    }

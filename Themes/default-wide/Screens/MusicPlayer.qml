@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import "../../../Models"
+import Models 1.0
 import Base 1.0
 import Dialogs 1.0
 import SortFilterProxyModel 0.2
@@ -215,7 +215,7 @@ BaseScreen
             //var total = musicList.model.get(musicList.currentIndex).TotalEpisodes;
             var result = "";
 
-            if (title != undefined && title.length > 0)
+            if (title !== undefined && title.length > 0)
                 result = title;
 
             //if (subtitle != undefined && subtitle.length > 0)
@@ -361,7 +361,7 @@ BaseScreen
 //             streamPlayer.mrl = url;
 
             var vol = dbUtils.getSetting("Qml_musicPlayerVolume", settings.hostName)
-            if (vol != undefined && vol != "")
+            if (vol !== undefined && vol !== "")
                 audio.volume = vol;
             else
                 audio.volume = 80

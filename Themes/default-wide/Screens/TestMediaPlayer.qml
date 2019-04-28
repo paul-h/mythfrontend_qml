@@ -5,7 +5,7 @@ import QtQuick.Controls 1.0
 import QtQuick.XmlListModel 2.0
 import Base 1.0
 import Dialogs 1.0
-import "../../../Models"
+import Models 1.0
 import "../../../Util.js" as Util
 
 BaseScreen

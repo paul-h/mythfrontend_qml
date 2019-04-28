@@ -2,7 +2,7 @@ import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
 import Base 1.0
 import Dialogs 1.0
-import "../../../Models"
+import Models 1.0
 
 BaseScreen
 {
@@ -102,9 +102,9 @@ BaseScreen
             if (channelList.focus)
             {
                 timeSelector.selectNext();
-                var now = timeSelector.model.get(timeSelector.currentIndex).itemData;
-                guideModel.startTime = Qt.formatDateTime(now, "yyyy-MM-ddThh:mm:ss");
-                now.setDate(now.getDate() + 1);
+                var now2 = timeSelector.model.get(timeSelector.currentIndex).itemData;
+                guideModel.startTime = Qt.formatDateTime(now2, "yyyy-MM-ddThh:mm:ss");
+                now2.setDate(now2.getDate() + 1);
                 guideModel.endTime = Qt.formatDateTime(now, "yyyy-MM-ddThh:mm:ss");
                 guideModel.load();
             }
@@ -368,7 +368,7 @@ BaseScreen
         {
             programTitle.text = programList.model.get(programList.currentIndex).Title
 
-            if (programList.model.get(programList.currentIndex).SubTitle != "")
+            if (programList.model.get(programList.currentIndex).SubTitle !== "")
                 programDesc.text = "\"" + programList.model.get(programList.currentIndex).SubTitle + "\"  " + programList.model.get(programList.currentIndex).Description
             else
                 programDesc.text = programList.model.get(programList.currentIndex).Description
@@ -398,7 +398,7 @@ BaseScreen
 
             programEpisode.text = res;
 
-            if (programList.model.get(programList.currentIndex).AirDate != undefined)
+            if (programList.model.get(programList.currentIndex).AirDate !== undefined)
                 programFirstAired.text = "First Aired: " + Qt.formatDateTime(programList.model.get(programList.currentIndex).AirDate, "dd/MM/yyyy");
             else
                 programFirstAired.text = ""
