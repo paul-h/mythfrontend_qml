@@ -116,100 +116,51 @@ BaseScreen
         }
     }
 
-    Keys.onPressed:
+    Action
     {
-        event.accepted = true;
-
-        if (event.key === Qt.Key_F3)
+        shortcut: "F3" // YELLOW
+        enabled: _actionsEnabled
+        onTriggered:
         {
-            // YELLOW
             getActivePlayer().showRailCamDiagram();
         }
-        else if (event.key === Qt.Key_F4)
+    }
+
+    Action
+    {
+        shortcut: "F4" // BLUE
+        enabled: _actionsEnabled
+        onTriggered:
         {
-            // BLUE
             // TODO show web site?
         }
-        else if (event.key === Qt.Key_F9)
+    }
+
+    Action
+    {
+        shortcut: "F9" // toggle mute
+        enabled: _actionsEnabled
+        onTriggered:
         {
             getActivePlayer().toggleMute();
         }
-        else if (event.key === Qt.Key_F)
-        {
-            if (layout === 0)
-                return;
+    }
 
-            if (mediaPlayer2.focus)
-            {
-                mediaPlayer1.feedList = mediaPlayer2.feedList;
-                mediaPlayer1.currentFeed = mediaPlayer2.currentFeed;
-            }
-            else if (mediaPlayer3.focus)
-            {
-                mediaPlayer1.feedList = mediaPlayer3.feedList;
-                mediaPlayer1.currentFeed = mediaPlayer3.currentFeed;
-            }
-            else if (mediaPlayer4.focus)
-            {
-                mediaPlayer1.feedList = mediaPlayer4.feedList;
-                mediaPlayer1.currentFeed = mediaPlayer4.currentFeed;
-            }
-
-            mediaPlayer1.focus = true;
-            mediaPlayer1.startPlayback();
-            setLayout(0);
-
-        }
-        else if (event.key === Qt.Key_O)
-        {
-            getActivePlayer().stop();
-        }
-        else if (event.key === Qt.Key_P)
-        {
-            getActivePlayer().togglePaused();
-            showInfo(true);
-        }
-        else if (event.key === Qt.Key_Less || event.key === Qt.Key_Comma)
-        {
-            getActivePlayer().skipBack(30000); // 30 seconds
-            showInfo(true);
-        }
-        else if (event.key === Qt.Key_Greater || event.key === Qt.Key_Period)
-        {
-            getActivePlayer().skipForward(30000); // 30 seconds
-            showInfo(true);
-        }
-        else if (event.key === Qt.Key_PageUp)
-        {
-            getActivePlayer().skipBack(600000); // 10 minutes
-            showInfo(true);
-        }
-        else if (event.key === Qt.Key_PageDown)
-        {
-            getActivePlayer().skipForward(600000); // 10 minutes
-            showInfo(true);
-        }
-        else if (event.key === Qt.Key_BracketLeft)
-        {
-            getActivePlayer().changeVolume(-1.0);
-        }
-        else if (event.key === Qt.Key_BracketRight)
-        {
-            getActivePlayer().changeVolume(1.0);
-        }
-        else if (event.key === Qt.Key_D)
-        {
-              getActivePlayer().toggleInterlacer();
-        }
-        else if (event.key === Qt.Key_S)
-        {
-            getActivePlayer().takeSnapshot();
-        }
-        else if (event.key === Qt.Key_I)
+    Action
+    {
+        shortcut: "I" // Info
+        enabled: _actionsEnabled
+        onTriggered:
         {
             showInfo(false);
         }
-        else if (event.key === Qt.Key_M)
+    }
+
+    Action
+    {
+        shortcut: "M" // Menu
+        enabled: _actionsEnabled
+        onTriggered:
         {
             var x;
             var path;
@@ -274,10 +225,142 @@ BaseScreen
 
             _actionsEnabled = false;
             popupMenu.show();
-       }
-        else
+        }
+    }
+
+    Action
+    {
+        shortcut: "F" // Switch active player to fullscreen
+        enabled: _actionsEnabled
+        onTriggered:
         {
-            event.accepted = false;
+            if (layout === 0)
+                return;
+
+            if (mediaPlayer2.focus)
+            {
+                mediaPlayer1.feedList = mediaPlayer2.feedList;
+                mediaPlayer1.currentFeed = mediaPlayer2.currentFeed;
+            }
+            else if (mediaPlayer3.focus)
+            {
+                mediaPlayer1.feedList = mediaPlayer3.feedList;
+                mediaPlayer1.currentFeed = mediaPlayer3.currentFeed;
+            }
+            else if (mediaPlayer4.focus)
+            {
+                mediaPlayer1.feedList = mediaPlayer4.feedList;
+                mediaPlayer1.currentFeed = mediaPlayer4.currentFeed;
+            }
+
+            mediaPlayer1.focus = true;
+            mediaPlayer1.startPlayback();
+            setLayout(0);
+        }
+    }
+
+    Action
+    {
+        shortcut: "O" // stop
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            getActivePlayer().stop();
+        }
+    }
+
+    Action
+    {
+        shortcut: "P" // Play/Pause
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            getActivePlayer().togglePaused();
+            showInfo(true);
+        }
+    }
+
+    Action
+    {
+        shortcut: "[" // volume down
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            getActivePlayer().changeVolume(-1.0);
+        }
+    }
+
+    Action
+    {
+        shortcut: "]" // volume up
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            getActivePlayer().changeVolume(1.0);
+        }
+    }
+
+    Action
+    {
+        shortcut: "D" // switch deinterlacer
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            getActivePlayer().toggleInterlacer();
+        }
+    }
+
+    Action
+    {
+        shortcut: "S" // take snapshot
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            getActivePlayer().takeSnapshot();
+        }
+    }
+
+    Action
+    {
+        shortcut: "<" // skip back 30 seconds
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            getActivePlayer().skipBack(30000);
+            showInfo(true);
+        }
+    }
+
+    Action
+    {
+        shortcut: "<" // skip forward 30 seconds
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            getActivePlayer().skipForward(30000);
+            showInfo(true);
+        }
+    }
+
+    Action
+    {
+        shortcut: "PageUp" // skip back 10 minutes
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            getActivePlayer().skipBack(600000);
+            showInfo(true);
+        }
+    }
+
+    Action
+    {
+        shortcut: "PageDown" // skip forward 10 minutess
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            getActivePlayer().skipForward(600000);
+            showInfo(true);
         }
     }
 
