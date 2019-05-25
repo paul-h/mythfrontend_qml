@@ -37,8 +37,7 @@
                 {
                 height: window.innerHeight,
                 width: window.innerWidth,
-                //videoId: 'M7lc1UVf-VE',
-                playerVars: { 'controls': 0 },
+                playerVars: { 'autoplay': 1, 'controls': 0 },
                 events:
                 {
                     'onReady': onPlayerReady,
@@ -58,7 +57,7 @@
             // 4. The API will call this function when the video player is ready.
             function onPlayerReady(event)
             {
-            playerReady = true;
+                playerReady = true;
                 if (videoId)
                 {
                     player.loadVideoById({'videoId': videoId, 'suggestedQuality': 'default'});
@@ -161,7 +160,10 @@
             {
                 videoId = Id;
                 if (playerReady)
+                {
                     player.loadVideoById({'videoId': videoId, 'suggestedQuality': 'default'});
+                    player.playVideo();
+                }
             }
         </script>
     </body>
