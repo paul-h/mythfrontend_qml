@@ -37,6 +37,11 @@ FocusScope
 
     Process
     {
+        id: mouseProcess
+    }
+
+    Process
+    {
         id: streamLinkProcess
         onFinished:
         {
@@ -89,6 +94,25 @@ FocusScope
         url: ""
         settings.pluginsEnabled: true
         settings.javascriptEnabled: true
+        audioMuted: false;
+
+        onLoadingChanged:
+        {
+            if (loadRequest.status === WebEngineLoadRequest.LoadSucceededStatus)
+            {
+                // hack to defeat Chrome's Web Audio autoplay policy
+                if (root.feedList.get(root.currentFeed).url.includes("railcam.co.uk"))
+                {
+                    // unmute the audio
+                    var point1 = playerRect.mapToGlobal(xscale(1168), yscale(699));
+                    var point2 = playerRect.mapToGlobal(width / 2, height / 2);
+
+                    mouseProcess.start("xdotool", ["mousemove", point2.x, point1.y, "sleep", "2", "mousemove", point1.x, point1.y,
+                                                   "click", "1", "click", "1", "sleep", "2", "click", "1", "sleep", "0.5",
+                                                   "mousemove", point2.x, point2.y, "click", "2"]);
+                }
+            }
+        }
     }
 
     WebEngineView
@@ -370,7 +394,7 @@ FocusScope
         youtubePlayer.stop();
         vlcPlayer.stop();
         qtAVPlayer.stop();
-        webPlayer.url = "";
+        webPlayer.url = mythUtils.findThemeFile("HTML/blank.html");;
 
         // we always need to restart the StreamLink process even if it is already running
         if (newPlayer === "StreamLink")
