@@ -37,8 +37,7 @@ Depends: python,
          qml-module-qtwebengine,
          qml-module-qtwebsockets,
          python3-streamlink,
-         streamlink,
-         xdotool
+         streamlink
 Description: Personal video recorder application (QML client)
  MythTV provides a unified graphical interface for recording and viewing
  television programs. Refer to the mythtv package for more information.
