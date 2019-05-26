@@ -322,7 +322,7 @@ BaseScreen
 
     Action
     {
-        shortcut: "<" // skip back 30 seconds
+        shortcut: "," // skip back 30 seconds
         enabled: _actionsEnabled
         onTriggered:
         {
@@ -333,7 +333,7 @@ BaseScreen
 
     Action
     {
-        shortcut: "<" // skip forward 30 seconds
+        shortcut: "." // skip forward 30 seconds
         enabled: _actionsEnabled
         onTriggered:
         {
@@ -344,7 +344,29 @@ BaseScreen
 
     Action
     {
-        shortcut: "PageUp" // skip back 10 minutes
+        shortcut: "<" // skip back 60 seconds
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            getActivePlayer().skipBack(60000);
+            showInfo(true);
+        }
+    }
+
+    Action
+    {
+        shortcut: ">" // skip forward 60 seconds
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            getActivePlayer().skipForward(60000);
+            showInfo(true);
+        }
+    }
+
+    Action
+    {
+        shortcut: "PgUp" // skip back 10 minutes
         enabled: _actionsEnabled
         onTriggered:
         {
@@ -355,7 +377,7 @@ BaseScreen
 
     Action
     {
-        shortcut: "PageDown" // skip forward 10 minutess
+        shortcut: "PgDown" // skip forward 10 minutess
         enabled: _actionsEnabled
         onTriggered:
         {
