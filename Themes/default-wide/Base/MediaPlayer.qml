@@ -103,13 +103,7 @@ FocusScope
                 // hack to defeat Chrome's Web Audio autoplay policy
                 if (root.feedList.get(root.currentFeed).url.includes("railcam.co.uk"))
                 {
-                    // unmute the audio
-                    var point1 = playerRect.mapToGlobal(xscale(1168), yscale(699));
-                    var point2 = playerRect.mapToGlobal(width / 2, height / 2);
-
-                    mouseProcess.start("xdotool", ["mousemove", point2.x, point1.y, "sleep", "2", "mousemove", point1.x, point1.y,
-                                                   "click", "1", "click", "1", "sleep", "2", "click", "1", "sleep", "0.5",
-                                                   "mousemove", point2.x, point2.y, "click", "2"]);
+                     runJavaScript("document.getElementsByClassName(\"drawer-icon media-control-icon\")[0].click();");
                 }
             }
         }
