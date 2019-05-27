@@ -15,3 +15,5 @@ VboxChannelsModel 1.0 VboxChannelsModel.qml
 VideosModel 1.0 VideosModel.qml
 WebCamModel 1.0 WebCamModel.qml
 WebVideoModel 1.0 WebVideoModel.qml
+ZMLoginModel 1.0 ZMLoginModel.qml
+ZMMonitorsModel 1.0 ZMMonitorsModel.qml
