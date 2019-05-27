@@ -34,7 +34,12 @@ class Settings : public QObject
     Q_PROPERTY(int osdTimeoutMedium READ osdTimeoutMedium WRITE setOsdTimeoutMedium NOTIFY osdTimeoutMediumChanged)
     Q_PROPERTY(int osdTimeoutLong READ osdTimeoutLong WRITE setOsdTimeoutLong NOTIFY osdTimeoutLongChanged)
 
-  signals:
+    // zoneminder
+    Q_PROPERTY(QString zmIP READ zmIP WRITE setZMIP NOTIFY zmIPChanged)
+    Q_PROPERTY(QString zmUserName READ zmUserName WRITE setZMUserName NOTIFY zmUserNameChanged)
+    Q_PROPERTY(QString zmPassword READ zmPassword WRITE setZMPassword NOTIFY zmPasswordChanged)
+
+   signals:
      void themeNameChanged(void);
      void hostNameChanged(void);
      void configPathChanged(void);
@@ -56,6 +61,9 @@ class Settings : public QObject
      void osdTimeoutShortChanged(void);
      void osdTimeoutMediumChanged(void);
      void osdTimeoutLongChanged(void);
+     void zmIPChanged(void);
+     void zmUserNameChanged(void);
+     void zmPasswordChanged(void);
 
   public:
     QString themeName(void) {return m_themeName;}
@@ -121,6 +129,15 @@ class Settings : public QObject
     int     osdTimeoutLong(void) {return m_osdTimeoutLong;}
     void    setOsdTimeoutLong(const int &osdTimeoutLong) {m_osdTimeoutLong = osdTimeoutLong; emit osdTimeoutLongChanged();}
 
+    QString zmIP(void) {return m_zmIP;}
+    void    setZMIP(const QString &zmIP) {m_zmIP = zmIP; emit zmIPChanged();}
+
+    QString zmUserName(void) {return m_zmUserName;}
+    void    setZMUserName(const QString &zmUserName) {m_zmUserName = zmUserName; emit zmUserNameChanged();}
+
+    QString zmPassword(void) {return m_zmPassword;}
+    void    setZMPassword(const QString &zmPassword) {m_zmPassword = zmPassword; emit zmPasswordChanged();}
+
   private:
     QString m_themeName;
     QString m_hostName;
@@ -148,6 +165,10 @@ class Settings : public QObject
     int     m_osdTimeoutShort;
     int     m_osdTimeoutMedium;
     int     m_osdTimeoutLong;
+
+    QString m_zmIP;
+    QString m_zmUserName;
+    QString m_zmPassword;
 };
 
 extern Settings *gSettings;

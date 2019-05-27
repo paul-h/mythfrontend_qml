@@ -18,4 +18,10 @@ ListModel
         loaderSource: "SettingEditor.qml"
         waterMark: "watermark/keys.png"
     }
+    ListElement
+    {
+        menutext: "ZoneMinder Settings"
+        loaderSource: "ZMSettingsEditor.qml"
+        waterMark: "watermark/keys.png"
+    }
 }

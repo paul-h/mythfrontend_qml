@@ -38,7 +38,7 @@ static QString dbName;
 
 //#undef QT_NO_DEBUG_OUTPUT
 
-Settings *gSettings = NULL;
+Settings *gSettings = nullptr;
 
 static bool loadDBSettings(void)
 {
@@ -181,6 +181,11 @@ int main(int argc, char *argv[])
     gSettings->setOsdTimeoutShort(4000);
     gSettings->setOsdTimeoutMedium(8000);
     gSettings->setOsdTimeoutLong(30000);
+
+    // zoneminder settings
+    gSettings->setZMIP(databaseUtils.getSetting("Qml_zmIP", hostName));
+    gSettings->setZMUserName(databaseUtils.getSetting("Qml_zmUserName", hostName));
+    gSettings->setZMPassword(databaseUtils.getSetting("Qml_zmPassword", hostName));
 
     engine.rootContext()->setContextProperty("settings", gSettings);
 
