@@ -168,6 +168,7 @@ FocusScope
     {
         id: selectorList
 
+        property string lastSelectedItem: ""
         anchors.fill: background
         orientation: ListView.Horizontal
         clip: true
@@ -206,7 +207,14 @@ FocusScope
             itemClicked(currentIndex);
         }
 
-        onCurrentItemChanged: itemSelected(currentIndex)
+        onCurrentItemChanged:
+        {
+            if (lastSelectedItem !== model.get(currentIndex).itemText)
+            {
+                itemSelected(currentIndex);
+                lastSelectedItem = model.get(currentIndex).itemText;
+            }
+        }
     }
 
     function selectNext()
