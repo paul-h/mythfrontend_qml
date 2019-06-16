@@ -83,6 +83,7 @@ QString MythUtils::replaceHtmlChar(const QString &orig)
     s.replace("&#8216;", QChar(8216));
     s.replace("&#8217;", QChar(8217));
     s.replace("&#039;", "\'");
+    s.replace("&#39;", "\'");
     s.replace("&#173;", "-");
     s.replace("&ndash;", QChar(8211));
 
