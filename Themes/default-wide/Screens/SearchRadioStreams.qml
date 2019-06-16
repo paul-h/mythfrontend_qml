@@ -12,6 +12,7 @@ BaseScreen
     property string filterBroadcaster
     property string filterChannel
     property string filterGenre
+    property string sorter: "broadcaster"
 
     property VlcPlayer player
 
@@ -24,15 +25,29 @@ BaseScreen
         showTicker(false);
     }
 
-//    property bool dateSorterActive: true;
-
-//    property list<QtObject> dateSorter:
-//    [
-//        RoleSorter { roleName: "StartTime"; ascendingOrder: false}
-//    ]
-
-    property list<QtObject> titleSorter:
+    property list<QtObject> broadcasterSorter:
     [
+        RoleSorter { roleName: "broadcaster" },
+        RoleSorter { roleName: "channel" }
+    ]
+
+    property list<QtObject> genreSorter:
+    [
+        RoleSorter { roleName: "genre" },
+        RoleSorter { roleName: "broadcaster" },
+        RoleSorter { roleName: "channel" }
+    ]
+
+    property list<QtObject> countrySorter:
+    [
+        RoleSorter { roleName: "country" },
+        RoleSorter { roleName: "broadcaster" },
+        RoleSorter { roleName: "channel" }
+    ]
+
+    property list<QtObject> languageSorter:
+    [
+        RoleSorter { roleName: "language" },
         RoleSorter { roleName: "broadcaster" },
         RoleSorter { roleName: "channel" }
     ]
@@ -67,9 +82,66 @@ BaseScreen
                 }
             }
         ]
-        //sorters: titleSorter
+        sorters: broadcasterSorter
     }
 
+    Keys.onPressed:
+    {
+        if (event.key === Qt.Key_M)
+        {
+        }
+        else if (event.key === Qt.Key_F1)
+        {
+            // RED
+            if (sorter === "broadcaster")
+            {
+                sorter = "genre";
+                streamsProxyModel.sorters = genreSorter;
+                footer.redText = "Sort (Genre)";
+            }
+            else if (sorter === "genre")
+            {
+                sorter = "country"
+                streamsProxyModel.sorters = countrySorter;
+                footer.redText = "Sort (Country)";
+            }
+            else if (sorter === "country")
+            {
+                sorter = "language"
+                streamsProxyModel.sorters = languageSorter;
+                footer.redText = "Sort (Language)";
+            }
+            else
+            {
+                sorter = "broadcaster"
+                streamsProxyModel.sorters = broadcasterSorter;
+                footer.redText = "Sort (Broadcaster)";
+            }
+        }
+        else if (event.key === Qt.Key_F2)
+        {
+            // GREEN
+            filterDialog.filterBroadcaster = root.filterBroadcaster;
+            filterDialog.filterChannel = root.filterChannel;
+            filterDialog.filterGenre = root.filterGenre;
+            filterDialog.show();
+        }
+        else if (event.key === Qt.Key_F3)
+        {
+            // YELLOW
+
+            event.accepted = true;
+            returnSound.play();
+        }
+        else if (event.key === Qt.Key_F4)
+        {
+            //BLUE
+
+            player.toggleMute();
+            event.accepted = true;
+            returnSound.play();
+        }
+    }
 //    Image
 //    {
 //        id: fanartImage
@@ -78,8 +150,8 @@ BaseScreen
 //        {
 //            if (videoList.model.get(videoList.currentIndex).Fanart)
 //                settings.masterBackend + videoList.model.get(videoList.currentIndex).Fanart
-//                else
-//                    ""
+//            else
+//                ""
 //        }
 //    }
 
@@ -95,10 +167,7 @@ BaseScreen
         x: xscale(15); y: yscale(50); width: xscale(1250); height: yscale(400)
     }
 
-    BaseBackground
-    {
-        x: xscale(15); y: yscale(465); width: xscale(1250); height: yscale(240)
-    }
+    BaseBackground { x: xscale(10); y: yscale(465); width: parent.width - xscale(20); height: yscale(210) }
 
     Component
     {
@@ -150,24 +219,7 @@ BaseScreen
 
         Keys.onPressed:
         {
-            if (event.key === Qt.Key_PageDown)
-            {
-                currentIndex = currentIndex + 6 >= model.count ? model.count - 1 : currentIndex + 6;
-                event.accepted = true;
-            }
-            else if (event.key === Qt.Key_PageUp)
-            {
-                currentIndex = currentIndex - 6 < 0 ? 0 : currentIndex - 6;
-                event.accepted = true;
-            }
-            else if (event.key === Qt.Key_M)
-            {
-                filterDialog.filterBroadcaster = root.filterBroadcaster;
-                filterDialog.filterChannel = root.filterChannel;
-                filterDialog.filterGenre = root.filterGenre;
-                filterDialog.show();
-            }
-            else if (event.key === Qt.Key_S)
+            if (event.key === Qt.Key_S)
             {
                 //if (dateSorterActive)
                 //    recordingsProxyModel.sorters = episodeSorter;
@@ -184,7 +236,7 @@ BaseScreen
         }
     }
 
-    InfoText
+    TitleText
     {
         x: xscale(30); y: yscale(480)
         width: xscale(900); height: yscale(50)
@@ -225,6 +277,16 @@ BaseScreen
         text: streamList.model.get(streamList.currentIndex).description
         multiline: true
     }
+
+    Footer
+    {
+        id: footer
+        redText: "Sort (Broadcaster)"
+        greenText: "Filter"
+        yellowText: "Add"
+        blueText: "Mute"
+    }
+
 
     StreamFilterDialog
     {
