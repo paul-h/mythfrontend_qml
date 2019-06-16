@@ -43,8 +43,9 @@ XmlListModel
     XmlRole { name: "Screenshot"; query: "Screenshot/string()" }
     XmlRole { name: "Trailer"; query: "Trailer/string()" }
 
-    XmlRole { name: "url"; query: "FileName/string()" }
-    XmlRole { name: "player"; query: "xs:string('Internal')" }
+    XmlRole { name: "title"; query: "Title/string()" }
+    XmlRole { name: "url"; query: "concat(xs:string('myth://type=video:server='), HostName/string(), xs:string(':port=6543:sgroup=video:filename='), FileName/string())" }
+    XmlRole { name: "player"; query: "xs:string('VLC')" }
 
     signal loaded();
 
