@@ -228,7 +228,7 @@ static int myth_WriteCommand(stream_t *p_access, int fd, char* psz_cmd)
     memset(lenstr+strlen(lenstr), ' ', 8-strlen(lenstr));
     lenstr[8] = '\0';
 
-    //msg_Info( p_access, "myth_WriteCommand:\"%s%s\"", lenstr, psz_cmd);
+    //msg_Info( p_access, "myth_WriteCommand to %d:\"%s%s\"", fd, lenstr, psz_cmd);
 
     int res = net_Printf(VLC_OBJECT(p_access), fd, "%s%s", lenstr, psz_cmd );
     if (res < 0)
@@ -432,6 +432,8 @@ static int myth_Connect(stream_t *p_access, bool b_fd_data)
             net_Close(fd);
             return 0;
         }
+
+        setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, &(int){ 1 }, sizeof (int));
 
         if (myth_Send(p_access, fd, &i_len, &psz_params, "MYTH_PROTO_VERSION %d %s", version->i_version, version->psz_token))
         {
@@ -880,7 +882,13 @@ static int SpawnLiveTV(stream_t *p_access)
 
     free(psz_params);
 
-    msg_Info(p_access, "LiveTV started for encoder (%d) encoder (%d)", i_encoder, i_channum);
+    if (tries == 0)
+    {
+        msg_Info(p_access, "Failed to start LiveTV for encoder (%d) channum (%d)", i_encoder, i_channum);
+        return VLC_EGENERIC;
+    }
+
+    msg_Info(p_access, "LiveTV started for encoder (%d) channum (%d)", i_encoder, i_channum);
 
     return VLC_SUCCESS;
 }
@@ -1053,7 +1061,7 @@ static int ParseMRL(stream_t *p_access)
     if (!psz_sgroup)
     {
         val.psz_string = "default";
-        var_Set(p_access, "myth-server", val);
+        var_Set(p_access, "myth-sgroup", val);
     }
 
     free(psz_dup);
@@ -1076,6 +1084,7 @@ static int InOpen(vlc_object_t *p_obj)
     p_sys->fd_cmd = -1;
     p_sys->fd_data = -1;
     p_sys->i_filesize_last_updated = 0;
+    p_sys->psz_basename = NULL;
     p_sys->b_eofing = false;
 
     p_sys->b_eof = false;
@@ -1310,7 +1319,7 @@ static ssize_t Read(stream_t *p_access, uint8_t *p_buffer, size_t i_len)
         return 0;
     }
 
-    if (p_sys->psz_basename && mdate() - p_sys->i_filesize_last_updated > 1000000)
+    if (p_sys->psz_basename && mdate() - p_sys->i_filesize_last_updated > 2000000)
     {
         // update the file size every 2 seconds
         p_sys->i_filesize_last_updated = mdate();
