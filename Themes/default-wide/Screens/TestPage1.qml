@@ -187,7 +187,7 @@ BaseScreen
             delegate: listRow
 
             KeyNavigation.left: button1;
-            KeyNavigation.right: accordianList;
+            KeyNavigation.right: dropDown;
 
         }
     }
