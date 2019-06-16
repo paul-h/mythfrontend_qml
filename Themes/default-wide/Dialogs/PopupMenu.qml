@@ -5,7 +5,7 @@ BaseDialog
 {
     id: popupMenu
 
-    width: xscale(400)
+    width: xscale(500)
     height: yscale(600)
 
     property alias model: menuList.model
