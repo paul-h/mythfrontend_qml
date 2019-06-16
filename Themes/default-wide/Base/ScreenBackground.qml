@@ -56,23 +56,7 @@ Item
         }
     }
 
-    onShowMouseChanged: setShowMouse(showMouse);
-
-    function setShowMouse(show)
-    {
-         if (show)
-         {
-             mouseArea.cursorShape = Qt.Arrow;
-             //mouseArea.enabled = true;
-         }
-         else
-         {
-             mouseArea.cursorShape = Qt.BlankCursor;
-             //mouseArea.enabled = false;
-         }
-
-         showMouse = show;
-    }
+    onShowMouseChanged: mouseArea.showMouse = showMouse
 
     x: 0; y : 0; width: window.width; height: window.height
 
