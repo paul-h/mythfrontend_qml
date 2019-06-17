@@ -55,7 +55,7 @@ void DownloadManager::downloadFinished()
         }
         else
         {
-            qDebug() << "DownloadManager: download finished OK.";
+            qDebug() << "DownloadManager: download finished OK: " << m_currentDownload->getUrl().toEncoded();
         }
     }
 
