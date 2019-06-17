@@ -4,7 +4,10 @@ Item
 {
     id: root
     property alias source: image1.source
-    property bool image1Active: true
+    property bool doFade: true
+    property bool doScale: true
+
+    property bool _image1Active: true
 
     Image
     {
@@ -12,6 +15,8 @@ Item
         source: ""
         anchors.fill: parent
         opacity: 1
+
+        onStatusChanged: if (status == Image.Ready) doSwapImage();
 
         Behavior on opacity
         {
@@ -40,8 +45,9 @@ Item
         id: image2
         source: ""
         anchors.fill: parent
-        opacity: 0
-        //visible: false
+        opacity: if (doFade) 0; else 1;
+
+        onStatusChanged: if (status == Image.Ready) doSwapImage();
 
         Behavior on opacity
         {
@@ -67,23 +73,61 @@ Item
 
     function swapImage(newImage)
     {
-        image1Active = !image1Active;
+        _image1Active = !_image1Active;
 
-        if (image1Active)
+        if (_image1Active)
         {
             image1.source = newImage;
-            image1.opacity = 1;
-            image2.opacity = 0;
-            image1.scale = 1;
-            image2.scale = 0;
         }
         else
         {
             image2.source = newImage;
-            image1.opacity = 0;
-            image2.opacity = 1;
-            image1.scale = 0;
-            image2.scale = 1;
+        }
+    }
+
+    function doSwapImage(newImage)
+    {
+        if (_image1Active)
+        {
+            if (doFade)
+            {
+                image1.opacity = 1;
+                image2.opacity = 0;
+            }
+            else
+            {
+                image1.visible = true
+                image2.visible = false
+            }
+
+            if (doScale)
+            {
+                image1.scale = 1;
+                image2.scale = 0;
+            }
+
+            image2.source = "";
+        }
+        else
+        {
+            if (doFade)
+            {
+                image1.opacity = 0;
+                image2.opacity = 1;
+            }
+            else
+            {
+                image2.visible = true
+                image1.visible = false
+            }
+
+            if (doScale)
+            {
+                image1.scale = 0;
+                image2.scale = 1;
+            }
+
+            image1.source = "";
         }
     }
 }
