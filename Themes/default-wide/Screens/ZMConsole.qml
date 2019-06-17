@@ -38,7 +38,6 @@ BaseScreen
         onLoaded:
         {
             var auth = get(0).credentials;
-            console.log("ZMLoginModel loaded: " + auth);
             zmMonitorsModel.auth = auth;
             statusList.model = zmMonitorsModel;
         }
