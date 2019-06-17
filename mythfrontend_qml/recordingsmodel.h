@@ -12,7 +12,7 @@ class RecordingsModel : public MythIncrementalModel
     Q_OBJECT
 public:
     RecordingsModel(void);
-    ~RecordingsModel(void) {};
+    ~RecordingsModel(void) {}
 
     Q_PROPERTY(QString titleRegExp READ titleRegExp WRITE setTitleRegExp NOTIFY titleRegExpChanged)
     Q_PROPERTY(QString recGroup READ recGroup WRITE setRecGroup NOTIFY recGroupChanged)

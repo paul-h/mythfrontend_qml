@@ -17,6 +17,7 @@
 
 // mythfrontend_qml
 #include "recordingsmodel.h"
+#include "zmeventsmodel.h"
 #include "sqlquerymodel.h"
 #include "databaseutils.h"
 #include "mythutils.h"
@@ -93,6 +94,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<Process>("Process", 1, 0, "Process");
     qmlRegisterType<RecordingsModel>("RecordingsModel", 1, 0, "RecordingsModel");
+    qmlRegisterType<ZMEventsModel>("ZMEventsModel", 1, 0, "ZMEventsModel");
 
     RegisterQmlVlc();
     QmlVlcConfig& config = QmlVlcConfig::instance();

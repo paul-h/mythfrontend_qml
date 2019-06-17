@@ -1,3 +1,5 @@
+#include <unistd.h>
+
 #include <QDomDocument>
 #include <QDomNode>
 
@@ -8,12 +10,13 @@ MythIncrementalModel::MythIncrementalModel(void)
 {
     m_count = 10;
     m_totalAvailable = 0;
+    m_loadAll = false;
     m_lastRole = Qt::UserRole + 1;
     m_downloadManager = new DownloadManager;
     connect(m_downloadManager, SIGNAL(finished(QByteArray)), this, SLOT(processDownload(QByteArray)));
 
     // get the first item which will also give use the total available
-    m_pendingDownloads.append(0);
+    //m_pendingDownloads.append(0);
 }
 
 MythIncrementalModel::~MythIncrementalModel()
@@ -62,8 +65,11 @@ QVariant MythIncrementalModel::getData(int row, int role) const
             return QVariant();
         }
 
-        for (int x = 0; x < m_count; x++)
+        int count = qMin(m_count, m_totalAvailable - row);
+        for (int x = 0; x < count; x++)
+        {
             m_pendingDownloads.append(row + x);
+        }
 
         QTimer::singleShot(0, this, SLOT(startDownload()));
         return QVariant();
@@ -84,7 +90,6 @@ QVariant MythIncrementalModel::data(const QModelIndex &index, int role) const
 
 void MythIncrementalModel::addRole(const QByteArray &roleName)
 {
-    qDebug() << "add role: " << roleName << ", at: " << m_lastRole;
     m_roleNames[m_lastRole] = roleName;
     m_roleMap[roleName] = m_lastRole - 1 - Qt::UserRole;
     m_lastRole++;
@@ -128,6 +133,31 @@ void MythIncrementalModel::clearData()
     m_totalAvailable = 0;
 
     endRemoveRows();
+}
+
+bool MythIncrementalModel::remove(int row)
+{
+    return removeRows(row, 1, QModelIndex());
+}
+
+bool MythIncrementalModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+    // sanity check
+    if (row < 0 || row > m_data.count() - 1 || count < 0 || row + count > m_data.count() - 1)
+        return false;
+
+    beginRemoveRows(parent, row, row + count);
+
+    for (int x = row; x < row + count; x++)
+    {
+        delete m_data.at(x);
+        m_data.removeAt(x);
+    }
+    endRemoveRows();
+
+    setTotalAvailable(m_totalAvailable - count);
+
+    return true;
 }
 
 void MythIncrementalModel::addStringData(RowData* row, const QDomNode &node, const QByteArray &roleName)
@@ -178,7 +208,7 @@ void MythIncrementalModel::addDoubleData(RowData* row, const QDomNode &node, con
     (*row)[m_roleMap[roleName]].setValue(data);
 }
 
-void MythIncrementalModel::addDateTimeData(RowData* row, const QDomNode &node, const QByteArray &roleName)
+void MythIncrementalModel::addDateTimeData(RowData* row, const QDomNode &node, const QByteArray &roleName, const QString &format)
 {
     if (!m_roleMap.contains(roleName))
     {
@@ -186,11 +216,11 @@ void MythIncrementalModel::addDateTimeData(RowData* row, const QDomNode &node, c
         return;
     }
 
-    QDateTime data = QDateTime::fromString(node.toElement().namedItem(roleName).toElement().text(),  Qt::ISODate);
+    QDateTime data = QDateTime::fromString(node.toElement().namedItem(roleName).toElement().text(),  format);
     (*row)[m_roleMap[roleName]].setValue(data);
 }
 
-void MythIncrementalModel::addDateData(RowData* row, const QDomNode &node, const QByteArray &roleName)
+void MythIncrementalModel::addDateData(RowData* row, const QDomNode &node, const QByteArray &roleName, const QString &format)
 {
     if (!m_roleMap.contains(roleName))
     {
@@ -198,7 +228,7 @@ void MythIncrementalModel::addDateData(RowData* row, const QDomNode &node, const
         return;
     }
 
-    QDate data = QDate::fromString(node.toElement().namedItem(roleName).toElement().text(), Qt::ISODate);
+    QDate data = QDate::fromString(node.toElement().namedItem(roleName).toElement().text(), format);
     (*row)[m_roleMap[roleName]].setValue(data);
 }
 
@@ -211,5 +241,89 @@ void MythIncrementalModel::addBoolData(RowData* row, const QDomNode &node, const
     }
 
     bool data = (node.toElement().namedItem(roleName).toElement().text() == "true");
+    (*row)[m_roleMap[roleName]].setValue(data);
+}
+
+void MythIncrementalModel::addStringData(RowData* row, const QJsonValue &node, const QByteArray &roleName)
+{
+    if (!m_roleMap.contains(roleName))
+    {
+        qWarning() << "MythIncrementalModel::addStringData roleName not found: " << roleName;
+        return;
+    }
+
+    QString data = node.toObject()[roleName].toString();
+    (*row)[m_roleMap[roleName]].setValue(data);
+}
+
+void MythIncrementalModel::addIntData(RowData* row, const QJsonValue &node, const QByteArray &roleName)
+{
+    if (!m_roleMap.contains(roleName))
+    {
+        qWarning() << "MythIncrementalModel::addIntData roleName not found: " << roleName;
+        return;
+    }
+
+    int data = node.toObject()[roleName].toString().toInt();
+    (*row)[m_roleMap[roleName]].setValue(data);
+}
+
+void MythIncrementalModel::addLongData(RowData* row, const QJsonValue &node, const QByteArray &roleName)
+{
+    if (!m_roleMap.contains(roleName))
+    {
+        qWarning() << "MythIncrementalModel::addLongData roleName not found: " << roleName;
+        return;
+    }
+
+    long data = node.toObject()[roleName].toInt();
+    (*row)[m_roleMap[roleName]].setValue(data);
+}
+
+void MythIncrementalModel::addDoubleData(RowData* row, const QJsonValue &node, const QByteArray &roleName)
+{
+    if (!m_roleMap.contains(roleName))
+    {
+        qWarning() << "MythIncrementalModel::addDoubleData roleName not found: " << roleName;
+        return;
+    }
+
+    double data = node.toObject()[roleName].toDouble();
+    (*row)[m_roleMap[roleName]].setValue(data);
+}
+
+void MythIncrementalModel::addDateTimeData(RowData* row, const QJsonValue &node, const QByteArray &roleName, const QString &format)
+{
+    if (!m_roleMap.contains(roleName))
+    {
+        qWarning() << "MythIncrementalModel::addDatTimeData roleName not found: " << roleName;
+        return;
+    }
+
+    QDateTime data = QDateTime::fromString(node.toObject()[roleName].toString(),  format);
+    (*row)[m_roleMap[roleName]].setValue(data);
+}
+
+void MythIncrementalModel::addDateData(RowData* row, const QJsonValue&node, const QByteArray &roleName, const QString &format)
+{
+    if (!m_roleMap.contains(roleName))
+    {
+        qWarning() << "MythIncrementalModel::addDateData roleName not found: " << roleName;
+        return;
+    }
+
+    QDate data = QDate::fromString(node.toObject()[roleName].toString(), format);
+    (*row)[m_roleMap[roleName]].setValue(data);
+}
+
+void MythIncrementalModel::addBoolData(RowData* row, const QJsonValue &node, const QByteArray &roleName)
+{
+    if (!m_roleMap.contains(roleName))
+    {
+        qWarning() << "MythIncrementalModel::addBoolData roleName not found: " << roleName;
+        return;
+    }
+
+    bool data = (node.toObject()[roleName].toString() == "true");
     (*row)[m_roleMap[roleName]].setValue(data);
 }
