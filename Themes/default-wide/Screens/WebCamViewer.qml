@@ -8,29 +8,16 @@ BaseScreen
 {
     defaultFocusItem: webcamGrid
 
-    property var webcamPaths
-    property int webcamPathIndex: 0
-
     property string filterCategory
     property bool titleSorterActive: true
 
     Component.onCompleted:
     {
-        var path;
         showTitle(true, "WebCam Viewer");
         showTime(false);
         showTicker(false);
 
         while (stack.busy) {};
-
-        // get list of webcam paths
-        webcamPaths =  settings.webcamPath.split(",")
-
-        path = dbUtils.getSetting("Qml_lastWebcamPath", settings.hostName, webcamPaths[0])
-        path = path.replace("/WebCam.xml", "")
-        webcamPathIndex = webcamPaths.indexOf(path)
-        webcamModel.source = path + "/WebCam.xml"
-
 
         filterCategory = dbUtils.getSetting("Qml_lastWebcamCategory", settings.hostName)
 
@@ -38,13 +25,11 @@ BaseScreen
             footer.greenText = "Show (All Webcams)"
         else
             footer.greenText = "Show (" + filterCategory + ")"
-
-        webcamProxyModel.sourceModel = webcamModel
     }
 
     Component.onDestruction:
     {
-        dbUtils.setSetting("Qml_lastWebcamPath", settings.hostName, webcamPaths[webcamPathIndex])
+        dbUtils.setSetting("Qml_lastWebcamPath", settings.hostName, playerSources.webcamPaths[playerSources.webcamPathIndex])
         dbUtils.setSetting("Qml_lastWebcamCategory", settings.hostName, filterCategory)
     }
 
@@ -58,11 +43,10 @@ BaseScreen
         RoleSorter { roleName: "id" }
     ]
 
-    WebCamModel{ id: webcamModel }
-
     SortFilterProxyModel
     {
         id: webcamProxyModel
+        sourceModel: playerSources.webcamList
         filters:
         [
             AllOf
@@ -102,7 +86,7 @@ BaseScreen
         else if (event.key === Qt.Key_F2)
         {
             // GREEN
-            searchDialog.model = webcamModel.categoryList
+            searchDialog.model = playerSources.webcamList.categoryList
             searchDialog.show();
         }
         else if (event.key === Qt.Key_F3)
@@ -124,10 +108,10 @@ BaseScreen
         }
         else if (event.key === Qt.Key_F5)
         {
-            webcamPathIndex++;
+            playerSources.webcamPathIndex++;
 
-            if (webcamPathIndex >= webcamPaths.length)
-                webcamPathIndex = 0;
+            if (playerSources.webcamPathIndex >= playerSources.webcamPaths.length)
+               playerSources.webcamPathIndex = 0;
 
             filterCategory = "";
             footer.redText = "Show (All Webcams)"
@@ -136,7 +120,11 @@ BaseScreen
             webcamProxyModel.sorters = titleSorter;
             footer.redText = "Sort (Name)";
 
-            webcamModel.source = webcamPaths[webcamPathIndex] + "/WebCam.xml"
+            playerSources.webcamList.source = playerSources.webcamPaths[playerSources.webcamPathIndex] + "/WebCam.xml"
+        }
+        else if (event.key === Qt.Key_F6)
+        {
+            playerSources.webcamList.reload();
         }
     }
 
@@ -195,7 +183,7 @@ BaseScreen
             var url = webcamGrid.model.get(webcamGrid.currentIndex).url;
             var website = webcamGrid.model.get(webcamGrid.currentIndex).website;
             var zoomFactor = xscale(1.0)
-            var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{feedList:  webcamGrid.model, currentFeed: webcamGrid.currentIndex}});
+            var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Webcams", defaultFeedList:  webcamGrid.model, defaultCurrentFeed: webcamGrid.currentIndex}});
             item.feedChanged.connect(feedChanged);
             event.accepted = true;
         }
@@ -204,7 +192,7 @@ BaseScreen
         {
             if (event.key === Qt.Key_M)
             {
-                searchDialog.model = webcamModel.categoryList
+                searchDialog.model = playerSources.webcamList.categoryList
                 searchDialog.show();
             }
             else
@@ -301,8 +289,11 @@ BaseScreen
         }
     }
 
-    function feedChanged(index)
+    function feedChanged(filter, index)
     {
+        if (filter !== undefined && filter !== filterCategory)
+            filterCategory = filter;
+
         webcamGrid.currentIndex = index;
     }
 
@@ -313,7 +304,7 @@ BaseScreen
             if (iconURL.startsWith("file://") || iconURL.startsWith("http://") || iconURL.startsWith("https://"))
                 return iconURL;
             else
-                return webcamPaths[webcamPathIndex] + "/" + iconURL;
+                return playerSources.webcamPaths[playerSources.webcamPathIndex] + "/" + iconURL;
         }
 
         return ""
