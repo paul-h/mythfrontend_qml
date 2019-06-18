@@ -47,6 +47,9 @@ XmlListModel
     XmlRole { name: "ChannelName"; query: "ChannelName/string()" }
     XmlRole { name: "SourceId"; query: "SourceId/string()" }
 
+    XmlRole { name: "player"; query: "xs:string('VLC')" }
+    XmlRole { name: "url"; query: "concat(xs:string('myth://type=livetv:server=" + settings.masterBackend + "'), xs:string(':encoder=1:channum='), ChanNum/string())" }
+
     onStatusChanged:
     {
         if (status == XmlListModel.Ready)

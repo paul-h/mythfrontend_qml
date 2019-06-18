@@ -19,6 +19,7 @@ ApplicationWindow
     property double wmult: width / 1280
     property double hmult: height / 720
     property alias theme: themeLoader.item
+    property alias playerSources: playerSourcesLoader.item;
 
     Component.onCompleted: keyPressListener.listenTo(window)
 
@@ -103,6 +104,18 @@ ApplicationWindow
                 screenBackground.showVideo = false;
                 screenBackground.showImage = true;
             }
+        }
+    }
+
+    // feeds loader
+    Loader
+    {
+        id: playerSourcesLoader
+        source: settings.sharePath + "qml/Models/PlayerSourcesModel.qml"
+
+        onLoaded:
+        {
+            console.log("Loaded Sources Model");
         }
     }
 

@@ -2,8 +2,10 @@ module Models
 CaptureCardModel 1.0 CaptureCardModel.qml
 ChannelGroupsModel 1.0 ChannelGroupsModel.qml
 ChannelsModel 1.0 ChannelsModel.qml
+EncodersModel 1.0 EncodersModel.qml
 MusicTracksModel 1.0 MusicTracksModel.qml
 MythMetadataXMLModel 1.0 MythMetadataXMLModel.qml
+PlayerSourcesModel 1.0 PlayerSourcesModel.qml
 ProgCategoryModel 1.0 ProgCategoryModel.qml
 ProgramListModel 1.0 ProgramListModel.qml
 RadioStreamModel 1.0 RadioStreamModel.qml
