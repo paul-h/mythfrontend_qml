@@ -13,14 +13,14 @@ FocusScope
 {
     id: root
 
-    // channel list
-    property var feedList;
+    property string feedSource: "Live TV"
+    property var feedList: ListModel{}
     property int currentFeed: 0
 
     property string streamlinkPort: "4545"
-    property string log
+    property string streamlinkLog
 
-    // one of VLC, FFMPEG, Browser, YouTube, RailCam, StreamLink, Internal
+    // one of VLC, FFMPEG, WebBrowser, YouTube, YouTubeTV, RailCam, StreamLink, Internal
     property string player: ""
 
     property bool showBorder: true
@@ -35,9 +35,10 @@ FocusScope
          showMouse(false)
     }
 
-    Process
+    onFeedSourceChanged:
     {
-        id: mouseProcess
+        feedList = playerSources.getFeedList(feedSource);
+        currentFeed = 0;
     }
 
     Process
@@ -58,14 +59,14 @@ FocusScope
         interval: 1000; running: false; repeat: true
         onTriggered:
         {
-            log = streamLinkProcess.readAll();
+            streamlinkLog = streamLinkProcess.readAll();
 
-            if (log.includes("No playable streams found on this URL"))
+            if (streamlinkLog.includes("No playable streams found on this URL"))
             {
                 showMessage("No playable streams found!", settings.osdTimeoutMedium);
                 checkProcessTimer.stop();
             }
-            else if (log.includes("Starting server, access with one of:"))
+            else if (streamlinkLog.includes("Starting server, access with one of:"))
             {
                 checkProcessTimer.stop();
                 qtAVPlayer.visible = true;
@@ -94,6 +95,7 @@ FocusScope
         url: ""
         settings.pluginsEnabled: true
         settings.javascriptEnabled: true
+        //settings.playbackRequiresUserGesture: false
         audioMuted: false;
 
         onLoadingChanged:
@@ -215,10 +217,17 @@ FocusScope
             x: xscale(10); y: yscale(5); width: parent.width - xscale(20)
             text:
             {
-                if (root.feedList.get(root.currentFeed).title !== "")
-                    return root.feedList.get(root.currentFeed).title
+                if (root.feedList.get(root.currentFeed))
+                {
+                    if (root.feedList.get(root.currentFeed).title !== "")
+                        return root.feedList.get(root.currentFeed).title
+                    else
+                        return root.feedList.get(root.currentFeed).url
+                }
                 else
-                    return root.feedList.get(root.currentFeed).url
+                {
+                    return "ERROR: feed not found!"
+                }
             }
 
             verticalAlignment: Text.AlignTop

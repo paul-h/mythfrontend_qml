@@ -14,13 +14,17 @@ BaseScreen
 
     defaultFocusItem: mediaPlayer1
 
-    property var feedList;
-    property int currentFeed: 0
+    property var activePlayer: mediaPlayer1
+
     property int layout: -1
+
+    property string defaultFeedSource: ""
+    property var    defaultFeedList: undefined
+    property int    defaultCurrentFeed: -1
 
     property bool _actionsEnabled: true
 
-    signal feedChanged(int index)
+    signal feedChanged(string filter, int index)
 
     Component.onCompleted:
     {
@@ -29,17 +33,21 @@ BaseScreen
         showTicker(false);
         screenBackground.muteAudio(true);
 
-        mediaPlayer1.feedList = feedList;
-        mediaPlayer1.currentFeed = currentFeed;
+        mediaPlayer1.feedSource = defaultFeedSource === "" ? "Live TV" : defaultFeedSource
+        mediaPlayer1.feedList = defaultFeedList === undefined ? playerSources.channelsList : defaultFeedList;
+        mediaPlayer1.currentFeed = defaultCurrentFeed === -1 ? 0 : defaultCurrentFeed;
 
-        mediaPlayer2.feedList = feedList;
-        mediaPlayer2.currentFeed = currentFeed + 1;
+        mediaPlayer2.feedSource = defaultFeedSource === "" ? "Live TV" : defaultFeedSource
+        mediaPlayer2.feedList = defaultFeedList === undefined ? playerSources.channelsList : defaultFeedList;
+        mediaPlayer2.currentFeed = defaultCurrentFeed === -1 ? 1 : defaultCurrentFeed + 1;
 
-        mediaPlayer3.feedList = feedList;
-        mediaPlayer3.currentFeed = currentFeed + 2;
+        mediaPlayer3.feedSource = defaultFeedSource === "" ? "Live TV" : defaultFeedSource
+        mediaPlayer3.feedList = defaultFeedList === undefined ? playerSources.channelsList : defaultFeedList;
+        mediaPlayer3.currentFeed = defaultCurrentFeed === -1 ? 2 : defaultCurrentFeed + 2;
 
-        mediaPlayer4.feedList = feedList;
-        mediaPlayer4.currentFeed = currentFeed + 3;
+        mediaPlayer4.feedSource = defaultFeedSource === "" ? "Live TV" : defaultFeedSource
+        mediaPlayer4.feedList = defaultFeedList === undefined ? playerSources.channelsList : defaultFeedList;
+        mediaPlayer4.currentFeed = defaultCurrentFeed === -1 ? 3 : defaultCurrentFeed + 3;
 
         setLayout(0);
 
@@ -99,7 +107,7 @@ BaseScreen
             getActivePlayer().previousFeed();
             showInfo(true);
 
-            feedChanged(getActivePlayer().currentFeed);
+            feedChanged(undefined, getActivePlayer().currentFeed);
         }
     }
 
@@ -112,7 +120,7 @@ BaseScreen
             getActivePlayer().nextFeed();
             showInfo(true);
 
-            feedChanged(getActivePlayer().currentFeed);
+            feedChanged(undefined, getActivePlayer().currentFeed);
         }
     }
 
@@ -162,15 +170,10 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            var x;
-            var path;
-            var title;
-            var data;
-
+            popupMenu.message = "Media " + getActivePlayer().objectName + " Options";
             popupMenu.clearMenuItems();
 
             popupMenu.addMenuItem("", "Switch Layout");
-            popupMenu.addMenuItem("", "Player 1");
 
             popupMenu.addMenuItem("0", "Full Screen");
             popupMenu.addMenuItem("0", "Full screen with PIP");
@@ -179,49 +182,18 @@ BaseScreen
             popupMenu.addMenuItem("0", "PBP 1 + 2");
             popupMenu.addMenuItem("0", "Quad Screen");
 
-            for (x = 0; x < mediaPlayer1.feedList.count; x++)
-            {
-                path = "1"
-                title = mediaPlayer1.feedList.get(x).title;
-                data = "source=1\n" + x;
-                popupMenu.addMenuItem(path, title, data);
-            }
+            popupMenu.addMenuItem("", "Switch Source");
+            popupMenu.addMenuItem("1", "Live TV");
+            popupMenu.addMenuItem("1", "Recordings");
+            popupMenu.addMenuItem("1", "Videos");
+            popupMenu.addMenuItem("1", "Webcams");
+            popupMenu.addMenuItem("1", "Web Videos");
+            popupMenu.addMenuItem("1", "ZoneMinder Cameras");
 
-            if (root.layout > 0)
-            {
-                popupMenu.addMenuItem("", "Player 2");
-                for (x = 0; x < mediaPlayer2.feedList.count; x++)
-                {
-                    path = "2"
-                    title = mediaPlayer2.feedList.get(x).title;
-                    data = "source=2\n" + x;
-                    popupMenu.addMenuItem(path, title, data);
-                }
-            }
+            popupMenu.addMenuItem("", getActivePlayer().feedSource);
+            playerSources.addFeedMenu(popupMenu, getActivePlayer().feedSource, "2", 1);
 
-            if (root.layout > 3)
-            {
-                popupMenu.addMenuItem("", "Player 3");
-                for (x = 0; x < mediaPlayer3.feedList.count; x++)
-                {
-                    path = "3"
-                    title = mediaPlayer3.feedList.get(x).title;
-                    data = "source=3\n" + x;
-                    popupMenu.addMenuItem(path, title, data);
-                }
-            }
-
-            if (root.layout > 4)
-            {
-                popupMenu.addMenuItem("", "Player 4");
-                for (x = 0; x < mediaPlayer4.feedList.count; x++)
-                {
-                    path = "4"
-                    title = mediaPlayer4.feedList.get(x).title;
-                    data = "source=4\n" + x;
-                    popupMenu.addMenuItem(path, title, data);
-                }
-            }
+            popupMenu.addMenuItem("", "Toggle Mute");
 
             _actionsEnabled = false;
             popupMenu.show();
@@ -389,31 +361,42 @@ BaseScreen
     MediaPlayer
     {
         id: mediaPlayer1
+        objectName: "Player 1"
         visible: false
         enabled: visible
 
+        onFocusChanged: if (focus) activePlayer = mediaPlayer1
         onPlaybackEnded: if (layout === 0) { stop(); stack.pop(); }
     }
 
     MediaPlayer
     {
         id: mediaPlayer2
+        objectName: "Player 2"
         visible: false
         enabled: visible
+
+        onFocusChanged: if (focus) activePlayer = mediaPlayer2
     }
 
     MediaPlayer
     {
         id: mediaPlayer3
+        objectName: "Player 3"
         visible: false
         enabled: visible
+
+        onFocusChanged: if (focus) activePlayer = mediaPlayer3
     }
 
     MediaPlayer
     {
         id: mediaPlayer4
+        objectName: "Player 4"
         visible: false
         enabled: visible
+
+        onFocusChanged: if (focus) activePlayer = mediaPlayer4
     }
 
     BaseBackground
@@ -482,7 +465,7 @@ BaseScreen
 
         onItemSelected:
         {
-            mediaPlayer1.focus = true;
+            getActivePlayer().focus = true;
             _actionsEnabled = true;
 
             if (itemText == "Full Screen")
@@ -509,47 +492,65 @@ BaseScreen
             {
                 setLayout(5);
             }
-            else if (itemText == "Source 1 Toggle Mute")
-                mediaPlayer1.toggleMute();
-            else if (itemText == "Source 2 Toggle Mute")
-                mediaPlayer2.toggleMute();
-            else if (itemText == "Source 3 Toggle Mute")
-                mediaPlayer3.toggleMute();
-            else if (itemText == "Source 4 Toggle Mute")
-                mediaPlayer4.toggleMute();
+            else if (itemText == "Live TV")
+            {
+                getActivePlayer().feedSource = itemText;
+                getActivePlayer().feedList = playerSources.channelList;
+                getActivePlayer().currentFeed = 0;
+                getActivePlayer().startPlayback();
+            }
+            else if (itemText == "Recordings")
+            {
+                getActivePlayer().feedSource = itemText;
+                getActivePlayer().feedList = playerSources.recordingList;
+                getActivePlayer().currentFeed = 0;
+                getActivePlayer().startPlayback();
+            }
+            else if (itemText == "Videos")
+            {
+                getActivePlayer().feedSource = itemText;
+                getActivePlayer().feedList = playerSources.videoList;
+                getActivePlayer().currentFeed = 0;
+                getActivePlayer().startPlayback();
+            }
+            else if (itemText == "ZoneMinder Cameras")
+            {
+                getActivePlayer().feedSource = itemText;
+                getActivePlayer().feedList = playerSources.zmCameraList;
+                getActivePlayer().currentFeed = 0;
+                getActivePlayer().startPlayback();
+            }
+            else if (itemText == "Webcams")
+            {
+                getActivePlayer().feedSource = itemText;
+                getActivePlayer().feedList = playerSources.webcamList;
+                 getActivePlayer().currentFeed = 0;
+                getActivePlayer().startPlayback();
+            }
+            else if (itemText == "Web Videos")
+            {
+                getActivePlayer().feedSource = itemText;
+                getActivePlayer().feedList = playerSources.webvideoList;
+                getActivePlayer().currentFeed = 0;
+                getActivePlayer().startPlayback();
+            }
+            else if (itemText == "Toggle Mute")
+                getActivePlayer().toggleMute();
             else if (itemData.startsWith("source="))
             {
-               var list = itemData.split("\n");
-               var feedIndex
-               console.info("found source=, list size: " + list.length);
+                var list = itemData.split("\n");
+                var feedSource;
+                var feedCategory;
+                var feedNo;
 
-               if (list.length == 2)
+                if (list.length === 3)
                 {
-                    if (list[0] === "source=1")
-                    {
-                        feedIndex = list[1]
-                        dbUtils.setSetting("Qml_player1Source", settings.hostName, feedIndex)
-                        mediaPlayer1.currentFeed = feedIndex;
-                        mediaPlayer1.startPlayback();
-                    }
-                    else if (list[0] === "source=2")
-                    {
-                        feedIndex = list[1]
-                        dbUtils.setSetting("Qml_player2Source", settings.hostName, feedIndex)
-                        mediaPlayer2.currentFeed = feedIndex;
-                        mediaPlayer2.startPlayback();                    }
-                    else if (list[0] === "source=3")
-                    {
-                        feedIndex = list[1]
-                        dbUtils.setSetting("Qml_player3Source", settings.hostName, feedIndex)
-                        mediaPlayer3.currentFeed = feedIndex;
-                        mediaPlayer3.startPlayback();                    }
-                    else if (list[0] === "source=4")
-                    {
-                        feedIndex = list[1]
-                        dbUtils.setSetting("Qml_player4Source", settings.hostName, feedIndex)
-                        mediaPlayer4.currentFeed = feedIndex;
-                        mediaPlayer4.startPlayback();                    }
+                    feedSource = list[0];
+                    feedCategory = list[1];
+                    feedNo = list[2];
+                    feedChanged(feedCategory, feedNo);
+                    getActivePlayer().currentFeed = feedNo;
+                    getActivePlayer().startPlayback();
                 }
             }
         }
@@ -557,7 +558,7 @@ BaseScreen
         onCancelled:
         {
             _actionsEnabled = true;
-            mediaPlayer1.focus = true;
+            getActivePlayer().focus = true;
         }
     }
 
@@ -788,14 +789,8 @@ BaseScreen
 
     function getActivePlayer()
     {
-        if (mediaPlayer1.focus)
-            return mediaPlayer1;
-        else if (mediaPlayer2.focus)
-            return mediaPlayer2;
-        else if (mediaPlayer3.focus)
-            return mediaPlayer3;
-        else if (mediaPlayer4.focus)
-            return mediaPlayer4;
+        if (activePlayer)
+            return activePlayer;
 
         return mediaPlayer1;
     }
