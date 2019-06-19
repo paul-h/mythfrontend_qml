@@ -9,19 +9,19 @@ ListModel
     ListElement
     {
         menutext: "Show Console"
-        loaderSource:"ComingSoon.qml"
+        loaderSource:"ZMConsole.qml"
         waterMark: "watermark/zoneminder.png"
     }
     ListElement
     {
         menutext: "Show Live View"
-        loaderSource: "ComingSoon.qml"
+        loaderSource: "ZMLiveView.qml"
         waterMark: "watermark/zoneminder.png"
     }
     ListElement
     {
         menutext:"Show Events"
-        loaderSource: "ComingSoon.qml"
+        loaderSource: "ZMEventsView.qml"
         waterMark: "watermark/zoneminder.png"
     }
 }
