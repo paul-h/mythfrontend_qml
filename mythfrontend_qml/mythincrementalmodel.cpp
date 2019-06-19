@@ -146,7 +146,7 @@ bool MythIncrementalModel::removeRows(int row, int count, const QModelIndex &par
     if (row < 0 || row > m_data.count() - 1 || count < 0 || row + count > m_data.count() - 1)
         return false;
 
-    beginRemoveRows(parent, row, row + count);
+    beginRemoveRows(parent, row, row + count - 1);
 
     for (int x = row; x < row + count; x++)
     {
