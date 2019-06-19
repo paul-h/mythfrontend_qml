@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unistd.h>
 
 #include <QFile>
 #include <QString>
@@ -58,6 +59,32 @@ bool MythUtils::fileExists(const QString& fileName)
 QDateTime MythUtils::addMinutes(const QDateTime& dateTime, int minutes)
 {
     return dateTime.addSecs(minutes * 60);
+}
+
+Q_INVOKABLE QString MythUtils::formatDateTime(const QDateTime &dateTime)
+{
+    QDate now = QDate::currentDate();
+    if (now == dateTime.date())
+        return "Today, " + dateTime.toString("hh:mm:ss");
+    else if (now.addDays(-1) == dateTime.date())
+        return "Yesterday, " + dateTime.toString("hh:mm:ss");
+    else if (now.addDays(1) == dateTime.date())
+        return "Tomorrow, " + dateTime.toString("hh:mm:ss");
+
+    return dateTime.toString("ddd dd MMM yyyy hh:mm:ss");
+}
+
+Q_INVOKABLE QString MythUtils::formatDate(const QDateTime &dateTime)
+{
+    QDate now = QDate::currentDate();
+    if (now == dateTime.date())
+        return "Today";
+    else if (now.addDays(-1) == dateTime.date())
+        return "Yesterday";
+    else if (now.addDays(1) == dateTime.date())
+        return "Tomorrow";
+
+    return dateTime.toString("ddd dd MMM yyyy");
 }
 
 // from MythNews newssite.cpp
