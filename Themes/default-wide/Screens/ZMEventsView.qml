@@ -129,7 +129,7 @@ BaseScreen
     BaseSelector
     {
         id: cameraSelector
-        x: 55; y: 110; width: 350
+        x: xscale(55); y: yscale(110); width: xscale(350)
         showBackground: false
         pageCount: 5
         model: cameraModel
@@ -157,7 +157,7 @@ BaseScreen
 
         property bool updatingModel: false
 
-        x: 700; y: 110; width: 350
+        x: xscale(700); y: yscale(110); width: xscale(350)
         showBackground: false
         pageCount: 5
         model: dateModel
@@ -186,8 +186,8 @@ BaseScreen
             Image
             {
                 source: if (Id !== undefined) "http://" + settings.zmIP + "/zm/index.php?view=image&fid=10&eid=" + Id + "&" + playerSources.zmAuth; else ""; //+ "&show=analyse&";
-                x: 3
-                y: 3
+                x: xscale(3)
+                y: yscale(3)
                 width: xscale(44)
                 height: yscale(44)
                 asynchronous: true
@@ -195,7 +195,7 @@ BaseScreen
 
             ListText
             {
-                x: 55
+                x: xscale(55)
                 width: xscale(250); height: yscale(50)
                 text: if (Name !== undefined) Name ; else "";
             }
