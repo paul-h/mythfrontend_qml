@@ -8,9 +8,6 @@ BaseScreen
 {
     defaultFocusItem: webvideoGrid
 
-    property var webVideoPaths
-    property int webVideoPathIndex: 0
-
     property string filterCategory
     property bool titleSorterActive: true
 
@@ -24,27 +21,17 @@ BaseScreen
 
         while (stack.busy) {};
 
-        // get list of webcam paths
-        webVideoPaths =  settings.webcamPath.split(",")
-
-        path = dbUtils.getSetting("Qml_lastWebvideoPath", settings.hostName, webVideoPaths[0])
-        path = path.replace("/WebVideo.xml", "")
-        webVideoPathIndex = webVideoPaths.indexOf(path)
-        webVideoModel.source = path + "/WebVideo.xml"
-
         filterCategory = dbUtils.getSetting("Qml_lastWebvideoCategory", settings.hostName)
 
         if (filterCategory == "<All Web Videos>" || filterCategory == "")
             footer.greenText = "Show (All Web Videos)"
         else
             footer.greenText = "Show (" + filterCategory + ")"
-
-        webvideoProxyModel.sourceModel = webVideoModel
     }
 
     Component.onDestruction:
     {
-        dbUtils.setSetting("Qml_lastWebvideoPath", settings.hostName, webVideoPaths[webVideoPathIndex])
+        dbUtils.setSetting("Qml_lastWebvideoPath", settings.hostName, playerSources.webVideoPaths[playerSources.webVideoPathIndex])
         dbUtils.setSetting("Qml_lastWebvideoCategory", settings.hostName, filterCategory)
     }
 
@@ -58,11 +45,10 @@ BaseScreen
         RoleSorter { roleName: "id" }
     ]
 
-    WebVideoModel{ id: webVideoModel }
-
     SortFilterProxyModel
     {
         id: webvideoProxyModel
+        sourceModel: playerSources.webvideoList
         filters:
         [
             AllOf
@@ -102,7 +88,7 @@ BaseScreen
         else if (event.key === Qt.Key_F2)
         {
             // GREEN
-            searchDialog.model = webVideoModel.categoryList
+            searchDialog.model = playerSources.webvideoList.categoryList
             searchDialog.show();
         }
         else if (event.key === Qt.Key_F3)
@@ -124,10 +110,10 @@ BaseScreen
         }
         else if (event.key === Qt.Key_F5)
         {
-            webVideoPathIndex++;
+            playerSources.webVideoPathIndex++;
 
-            if (webVideoPathIndex >= webVideoPaths.length)
-                webVideoPathIndex = 0;
+            if (playerSources.webVideoPathIndex >= playerSources.webVideoPaths.length)
+                playerSources.webVideoPathIndex = 0;
 
             filterCategory = "";
             footer.greenText = "Show (All Web Videos)"
@@ -136,7 +122,11 @@ BaseScreen
             webvideoProxyModel.sorters = titleSorter;
             footer.redText = "Sort (Name)";
 
-            webVideoModel.source = webVideoPaths[webVideoPathIndex] + "/WebVideo.xml"
+            playerSources.webvideoList.source = playerSources.webVideoPaths[playerSources.webVideoPathIndex] + "/WebVideo.xml"
+        }
+        else if (event.key === Qt.Key_F6)
+        {
+            playerSources.webvideoList.reload();
         }
     }
 
@@ -193,7 +183,7 @@ BaseScreen
         Keys.onReturnPressed:
         {
             returnSound.play();
-            stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{feedList:  webvideoGrid.model, currentFeed: webvideoGrid.currentIndex}});
+            stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Web Videos", defaultFeedList:  webvideoGrid.model, defaultCurrentFeed: webvideoGrid.currentIndex}});
 
             event.accepted = true;
         }
@@ -202,7 +192,7 @@ BaseScreen
         {
             if (event.key === Qt.Key_M)
             {
-                searchDialog.model = webVideoModel.categoryList
+                searchDialog.model = playerSources.webvideoList.categoryList
                 searchDialog.show();
             }
             else
@@ -306,7 +296,7 @@ BaseScreen
             if (iconURL.startsWith("file://") || iconURL.startsWith("http://") || iconURL.startsWith("https://"))
                 return iconURL;
             else
-                return webVideoPaths[webVideoPathIndex] + "/" + iconURL;
+                return playerSources.webVideoPaths[playerSources.webVideoPathIndex] + "/" + iconURL;
         }
 
         return ""
