@@ -81,6 +81,8 @@ BaseScreen
             settings.zmUserName = zmUserNameEdit.text;
             settings.zmPassword = zmPasswordEdit.text;
 
+            playerSources.zmSettingsChanged();
+
             returnSound.play();
             stack.pop();
         }

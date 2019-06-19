@@ -327,4 +327,10 @@ Item
             popupMenu.addMenuItem(path, title, data);
         }
     }
+
+    function zmSettingsChanged()
+    {
+        zmLogin.reload();
+        zmMonitorsModel.reload();
+    }
 }
