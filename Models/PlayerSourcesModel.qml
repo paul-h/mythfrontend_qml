@@ -214,6 +214,8 @@ Item
             addRecordingMenu(popupMenu, path, player);
         else if (feedSource === "ZoneMinder Cameras")
             addZMCameraMenu(popupMenu, path, player);
+        else if (feedSource === "Advent Calendar")
+            addAdventCalendarMenu(popupMenu, path, player);
     }
 
     function addChannelMenu(popupMenu, path, player)
@@ -326,6 +328,11 @@ Item
             var data = "source=" + player + "\n"  +  "\n" + x;
             popupMenu.addMenuItem(path, title, data);
         }
+    }
+
+    function addAdventCalendarMenu(popupMenu, path, player)
+    {
+        popupMenu.addMenuItem(path, "<NONE>", "");
     }
 
     function zmSettingsChanged()

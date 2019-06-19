@@ -711,6 +711,9 @@ FocusScope
 
     function nextFeed()
     {
+        if (feedSource === "Advent Calendar")
+            return;
+
         if (currentFeed == feedList.count - 1)
         {
             currentFeed = 0;
@@ -725,6 +728,9 @@ FocusScope
 
     function previousFeed()
     {
+        if (feedSource === "Advent Calendar")
+            return;
+
         if (currentFeed == 0)
         {
             currentFeed = feedList.count - 1;

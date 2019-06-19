@@ -418,7 +418,7 @@ BaseScreen
         {
             calendarGrid.model.get(calendarGrid.currentIndex).opened = true
             calendarGrid.focus = true;
-            stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{feedList:  calendarGrid.model, currentFeed: calendarGrid.currentIndex}});
+            stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Advent Calendar", defaultFeedList:  calendarGrid.model, defaultCurrentFeed: calendarGrid.currentIndex}});
         }
         onCancelled:
         {

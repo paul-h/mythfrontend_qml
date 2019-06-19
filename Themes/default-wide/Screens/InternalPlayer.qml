@@ -37,17 +37,34 @@ BaseScreen
         mediaPlayer1.feedList = defaultFeedList === undefined ? playerSources.channelsList : defaultFeedList;
         mediaPlayer1.currentFeed = defaultCurrentFeed === -1 ? 0 : defaultCurrentFeed;
 
-        mediaPlayer2.feedSource = defaultFeedSource === "" ? "Live TV" : defaultFeedSource
-        mediaPlayer2.feedList = defaultFeedList === undefined ? playerSources.channelsList : defaultFeedList;
-        mediaPlayer2.currentFeed = defaultCurrentFeed === -1 ? 1 : defaultCurrentFeed + 1;
+        if (defaultFeedSource === "" || defaultFeedSource === "Advent Calendar")
+        {
+            mediaPlayer2.feedSource = "Live TV"
+            mediaPlayer2.feedList = playerSources.channelsList;
+            mediaPlayer2.currentFeed = 1;
 
-        mediaPlayer3.feedSource = defaultFeedSource === "" ? "Live TV" : defaultFeedSource
-        mediaPlayer3.feedList = defaultFeedList === undefined ? playerSources.channelsList : defaultFeedList;
-        mediaPlayer3.currentFeed = defaultCurrentFeed === -1 ? 2 : defaultCurrentFeed + 2;
+            mediaPlayer3.feedSource = "Live TV"
+            mediaPlayer3.feedList = playerSources.channelsList;
+            mediaPlayer3.currentFeed = 2;
 
-        mediaPlayer4.feedSource = defaultFeedSource === "" ? "Live TV" : defaultFeedSource
-        mediaPlayer4.feedList = defaultFeedList === undefined ? playerSources.channelsList : defaultFeedList;
-        mediaPlayer4.currentFeed = defaultCurrentFeed === -1 ? 3 : defaultCurrentFeed + 3;
+            mediaPlayer4.feedSource = "Live TV"
+            mediaPlayer4.feedList = playerSources.channelsList;
+            mediaPlayer4.currentFeed = 3;
+        }
+        else
+        {
+            mediaPlayer2.feedSource = defaultFeedSource
+            mediaPlayer2.feedList = defaultFeedList;
+            mediaPlayer2.currentFeed = defaultCurrentFeed === -1 ? 1 : defaultCurrentFeed + 1;
+
+            mediaPlayer3.feedSource = defaultFeedSource
+            mediaPlayer3.feedList = defaultFeedList;
+            mediaPlayer3.currentFeed = defaultCurrentFeed === -1 ? 2 : defaultCurrentFeed + 2;
+
+            mediaPlayer4.feedSource = defaultFeedSource
+            mediaPlayer4.feedList = defaultFeedList;
+            mediaPlayer4.currentFeed = defaultCurrentFeed === -1 ? 3 : defaultCurrentFeed + 3;
+        }
 
         setLayout(0);
 
@@ -105,7 +122,6 @@ BaseScreen
         onTriggered:
         {
             getActivePlayer().previousFeed();
-            showInfo(true);
 
             feedChanged(undefined, getActivePlayer().currentFeed);
         }
@@ -118,7 +134,6 @@ BaseScreen
         onTriggered:
         {
             getActivePlayer().nextFeed();
-            showInfo(true);
 
             feedChanged(undefined, getActivePlayer().currentFeed);
         }
