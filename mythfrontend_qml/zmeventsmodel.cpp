@@ -153,7 +153,7 @@ void ZMEventsModel::processDownload(QByteArray buffer)
         QJsonValue pageinationNode = jsonDoc.object()["pagination"];
 
         // get the total available recordings
-        QJsonValue countNode =  pageinationNode["count"];
+        QJsonValue countNode =  pageinationNode.toObject()["count"];
         if (!countNode.isNull())
         {
             int totalAvailable = countNode.toInt();
@@ -190,9 +190,9 @@ void ZMEventsModel::processDownload(QByteArray buffer)
 
         // get the StartIndex
         int startIndex = 0;
-        QJsonValue pageNode = pageinationNode["page"];
-        QJsonValue currentNode = pageinationNode["current"];
-        QJsonValue limitNode = pageinationNode["limit"];
+        QJsonValue pageNode = pageinationNode.toObject()["page"];
+        QJsonValue currentNode = pageinationNode.toObject()["current"];
+        QJsonValue limitNode = pageinationNode.toObject()["limit"];
 
         if (!pageNode.isNull() && !currentNode.isNull() && !limitNode.isNull())
             startIndex = (pageNode.toInt() - 1) * limitNode.toInt();
@@ -201,7 +201,7 @@ void ZMEventsModel::processDownload(QByteArray buffer)
 
         for (int x = 0; x < events.count(); x++)
         {
-            QJsonValue eventNode = events.at(x)["Event"];
+            QJsonValue eventNode = events.at(x).toObject()["Event"];
             RowData *data = m_data.at(startIndex + x);
             if (m_pendingDownloads.contains(startIndex + x))
                 m_pendingDownloads.removeAll(startIndex + x);
