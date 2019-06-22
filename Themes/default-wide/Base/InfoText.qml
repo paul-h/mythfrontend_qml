@@ -44,6 +44,7 @@ Item
         clip: true
         elide: Text.ElideRight
         wrapMode: root.multiline ? Text.WordWrap : Text.NoWrap
+        textFormat: Text.StyledText
     }
 
     Text
@@ -61,6 +62,7 @@ Item
         clip: true
         elide: Text.ElideRight
         wrapMode: root.multiline ? Text.WordWrap : Text.NoWrap
+        textFormat: Text.StyledText
     }
 }
 
