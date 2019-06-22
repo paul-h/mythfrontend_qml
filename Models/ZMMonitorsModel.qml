@@ -14,13 +14,13 @@ XmlListModel
     query: "/response/monitors"
     XmlRole { name: "id"; query: "Monitor/Id/number()"; isKey: true }
     XmlRole { name: "name"; query: "Monitor/Name/string()" }
-    XmlRole { name: "monfunction"; query: "Monitor/Function/string()" }
-    XmlRole { name: "enabled"; query: "Monitor/Enabled/string()" }
+    XmlRole { name: "monfunction"; query: "Monitor/Function/string()"; isKey: true }
+    XmlRole { name: "monenabled"; query: "xs:boolean(Monitor/Enabled)"; isKey: true }
     XmlRole { name: "device"; query: "Monitor/Device/string()" }
     XmlRole { name: "channel"; query: "Monitor/Channel/string()" }
     XmlRole { name: "host"; query: "Monitor/Host/string()" }
-    XmlRole { name: "totalevents"; query: "Monitor/TotalEvents/string()" }
-    XmlRole { name: "totaleventsdiskspace"; query: "Monitor/TotalEventDiskSpace/string()" }
+    XmlRole { name: "totalevents"; query: "Monitor/TotalEvents/number()"; isKey: true }
+    XmlRole { name: "totaleventsdiskspace"; query: "Monitor/TotalEventDiskSpace/number()"; isKey: true }
 
 
     XmlRole { name: "title"; query: "Monitor/Name/string()" }
