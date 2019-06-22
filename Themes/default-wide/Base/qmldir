@@ -30,6 +30,7 @@ MenuButton 1.0 MenuButton.qml
 OkCancelDialog 1.0 OkCancelDialog.qml
 PopupMenu 1.0 PopupMenu.qml
 ReflectionImage 1.0 ReflectionImage.qml
+RichText 1.0 RichText.qml
 ScreenBackground 1.0 ScreenBackground.qml
 Scroller 1.0 Scroller.qml
 TitleText 1.0 TitleText.qml
