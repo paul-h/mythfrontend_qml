@@ -82,6 +82,9 @@ BaseScreen
                     if (http.status == 200)
                     {
                         console.log("Event Deleted OK: " + eventID)
+
+                        // update the monitorsModel so the event counts are updated
+                        playerSources.zmCameraList.reload();
                     }
                     else
                     {
