@@ -197,7 +197,7 @@ BaseScreen
                     playDVD(model.get(currentIndex, "filePath"))
                 }
                 else
-                    stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{feedList:  mediaModel, currentFeed: 0}});
+                    stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedList:  mediaModel, defaultFeedSource: "Videos Folder", defaultCurrentFeed: 0}});
             }
 
             event.accepted = true;
