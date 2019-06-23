@@ -169,7 +169,7 @@ BaseScreen
     {
         id: frameImage
         x: xscale(300)
-        y: xscale(160)
+        y: yscale(160)
         width: xscale(666)
         height: yscale(500)
         doFade: false
