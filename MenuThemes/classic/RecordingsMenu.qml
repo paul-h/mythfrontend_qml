@@ -11,6 +11,8 @@ ListModel
         menutext: "Watch TV"
         loaderSource:"InternalPlayer.qml"
         waterMark: "watermark/tv.png"
+        layout: 0
+        feedSource: "Live TV"
     }
     ListElement
     {
