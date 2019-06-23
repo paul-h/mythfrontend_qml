@@ -15,8 +15,10 @@ ListModel
     ListElement
     {
         menutext: "Show Live View"
-        loaderSource: "ZMLiveView.qml"
+        loaderSource: "InternalPlayer.qml"
         waterMark: "watermark/zoneminder.png"
+        layout: 5
+        feedSource: "Zoneminder Cameras"
     }
     ListElement
     {

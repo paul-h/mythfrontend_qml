@@ -16,7 +16,7 @@ BaseScreen
 
     property var activePlayer: mediaPlayer1
 
-    property int layout: -1
+    property int layout: 0
 
     property string defaultFeedSource: ""
     property var    defaultFeedList: undefined
@@ -66,7 +66,7 @@ BaseScreen
             mediaPlayer4.currentFeed = defaultCurrentFeed === -1 ? 3 : defaultCurrentFeed + 3;
         }
 
-        setLayout(0);
+        setLayout(layout);
 
         showInfo(true);
     }
@@ -620,9 +620,6 @@ BaseScreen
 
     function setLayout(newLayout)
     {
-        if (root.layout === newLayout)
-            return;
-
         root.layout = newLayout;
 
         if (root.layout === 0)
