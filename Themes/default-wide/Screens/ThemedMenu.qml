@@ -137,6 +137,13 @@ BaseScreen
                     var zoom = xscale(model.get(currentIndex).zoom)
                     stack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: url, fullscreen: true, zoomFactor: zoom}});
                 }
+                else if (model.get(currentIndex).loaderSource === "InternalPlayer.qml")
+                {
+                    var layout = model.get(currentIndex).layout
+                    var feedSource = model.get(currentIndex).feedSource
+                    var feedList = playerSources.getFeedList(feedSource)
+                    stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{layout: layout, defaultFeedSource: feedSource, defaultFeedList: feedList}});
+                }
                 else
                 {
                     stack.push({item: Qt.resolvedUrl(model.get(currentIndex).loaderSource)})
