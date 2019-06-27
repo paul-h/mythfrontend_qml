@@ -34,6 +34,7 @@ RecordingsModel::RecordingsModel(void) : MythIncrementalModel()
     addRole("HostName");
 
     // recording
+    addRole("StorageGroup");
     addRole("RecordingId");
     addRole("RecGroup");
     addRole("Status");
@@ -223,6 +224,7 @@ void RecordingsModel::processDownload(QByteArray buffer)
                 addStringData(data, programNode, "HostName");
 
                 // recording
+                addStringData(data, recordingNode, "StorageGroup");
                 addStringData(data, recordingNode, "RecordingId");
                 addStringData(data, recordingNode, "RecGroup");
                 addStringData(data, recordingNode, "Status");
