@@ -104,13 +104,13 @@ BaseScreen
     InfoText { id: status; x: xscale(440); y: yscale(120); width: xscale(400); height: yscale(40); horizontalAlignment: Text.AlignHCenter; text: "?"}
 
     // load
-    RichText { id: load;  x: xscale(60); y: yscale(155); width: xscale(400); height: yscale(40); label: "<p style=\"font-size: 20px; color: #ff00ff\"><b>Load: </b></font>"; info: "<font color=\"white\" >?, ?, ?</font></p>" }
+    RichText { id: load;  x: xscale(60); y: yscale(155); width: xscale(400); height: yscale(40); label: "<p style=\"font-size: " + xscale(20) + "px; color: #ff00ff\"><b>Load: </b></font>"; info: "<font color=\"white\" >?, ?, ?</font></p>" }
 
     // total no. of events
-    RichText { id: totalEvents;  x: xscale(440); y: yscale(155); width: xscale(400); height: yscale(40); horizontalAlignment: Text.AlignHCenter; label: "<p style=\"font-size: 20px; color: #ff00ff\"><b>Events: </b></font>"; info: "<font color=\"white\" >?</font></p>" }
+    RichText { id: totalEvents;  x: xscale(440); y: yscale(155); width: xscale(400); height: yscale(40); horizontalAlignment: Text.AlignHCenter; label: "<p style=\"font-size: " + xscale(20) + "px; color: #ff00ff\"><b>Events: </b></font>"; info: "<font color=\"white\" >?</font></p>" }
 
     // disk usage
-    RichText { id: diskused; x: xscale(920); y: yscale(155); width: xscale(300); height: yscale(40); horizontalAlignment: Text.AlignRight ;label: "<p style=\"font-size: 20px; color: #ff00ff\"><b>Disk Used: </b></font>"; info: "<font color=\"white\" >" + "?" + "</font></p>" }
+    RichText { id: diskused; x: xscale(920); y: yscale(155); width: xscale(300); height: yscale(40); horizontalAlignment: Text.AlignRight ;label: "<p style=\"font-size: " + xscale(20) + "px; color: #ff00ff\"><b>Disk Used: </b></font>"; info: "<font color=\"white\" >" + "?" + "</font></p>" }
 
     BaseBackground
     {
