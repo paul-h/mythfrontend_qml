@@ -8,6 +8,7 @@ Standards-Version: 3.9.4
 Vcs-Git: https://github.com/paul-h/packaging.git
 Build-Conflicts: libqt3-mt-dev
 Build-Depends:  debhelper (>= 9),
+                pkg-config,
                 qtdeclarative5-dev,
                 libqt5opengl5-dev,
                 qtscript5-dev,
