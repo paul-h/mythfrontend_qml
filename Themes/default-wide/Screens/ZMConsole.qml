@@ -73,7 +73,7 @@ BaseScreen
     ZMLoadModel
     {
         id: zmLoadModel
-        onLoaded: load.info = "<font color=\"white\" >" + zmLoadModel.load1 + ", " + zmLoadModel.load5 + ", " + zmLoadModel.load15 + "</font></p>"
+        onLoaded: load.info = zmLoadModel.load1 + ", " + zmLoadModel.load5 + ", " + zmLoadModel.load15
     }
 
     ZMDaemonCheckModel
@@ -104,13 +104,13 @@ BaseScreen
     InfoText { id: status; x: xscale(440); y: yscale(120); width: xscale(400); height: yscale(40); horizontalAlignment: Text.AlignHCenter; text: "?"}
 
     // load
-    RichText { id: load;  x: xscale(60); y: yscale(155); width: xscale(400); height: yscale(40); label: "<p style=\"font-size: " + xscale(20) + "px; color: #ff00ff\"><b>Load: </b></font>"; info: "<font color=\"white\" >?, ?, ?</font></p>" }
+    RichText { id: load;  x: xscale(60); y: yscale(155); width: xscale(400); height: yscale(40); label: "Load: "; info: "?, ?, ?" }
 
     // total no. of events
-    RichText { id: totalEvents;  x: xscale(440); y: yscale(155); width: xscale(400); height: yscale(40); horizontalAlignment: Text.AlignHCenter; label: "<p style=\"font-size: " + xscale(20) + "px; color: #ff00ff\"><b>Events: </b></font>"; info: "<font color=\"white\" >?</font></p>" }
+    RichText { id: totalEvents;  x: xscale(440); y: yscale(155); width: xscale(400); height: yscale(40); horizontalAlignment: Text.AlignHCenter; label: "Events: "; info: "?" }
 
     // disk usage
-    RichText { id: diskused; x: xscale(920); y: yscale(155); width: xscale(300); height: yscale(40); horizontalAlignment: Text.AlignRight ;label: "<p style=\"font-size: " + xscale(20) + "px; color: #ff00ff\"><b>Disk Used: </b></font>"; info: "<font color=\"white\" >" + "?" + "</font></p>" }
+    RichText { id: diskused; x: xscale(920); y: yscale(155); width: xscale(300); height: yscale(40); horizontalAlignment: Text.AlignRight ;label: "Disk Used: "; info: "?" }
 
     BaseBackground
     {
@@ -207,8 +207,8 @@ BaseScreen
             }
         }
 
-        diskused.info = "<font color=\"white\" >" + Util.formatFileSize(used, false) + "</font></p>"
-        totalEvents.info = "<font color=\"white\" >" + events + "</font></p>"
+        diskused.info = Util.formatFileSize(used, false)
+        totalEvents.info = events
     }
 
     function zmStop()
