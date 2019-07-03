@@ -33,22 +33,22 @@ BaseScreen
         showTicker(false);
         screenBackground.muteAudio(true);
 
-        mediaPlayer1.feedSource = defaultFeedSource === "" ? "Live TV" : defaultFeedSource
-        mediaPlayer1.feedList = defaultFeedList === undefined ? playerSources.channelsList : defaultFeedList;
+        mediaPlayer1.feedList = defaultFeedList === undefined ? playerSources.channelList : defaultFeedList;
         mediaPlayer1.currentFeed = defaultCurrentFeed === -1 ? 0 : defaultCurrentFeed;
+        mediaPlayer1.feedSource = defaultFeedSource === "" ? "Live TV" : defaultFeedSource
 
         if (defaultFeedSource === "" || defaultFeedSource === "Advent Calendar")
         {
             mediaPlayer2.feedSource = "Live TV"
-            mediaPlayer2.feedList = playerSources.channelsList;
+            mediaPlayer2.feedList = playerSources.channelList;
             mediaPlayer2.currentFeed = 1;
 
             mediaPlayer3.feedSource = "Live TV"
-            mediaPlayer3.feedList = playerSources.channelsList;
+            mediaPlayer3.feedList = playerSources.channelList;
             mediaPlayer3.currentFeed = 2;
 
             mediaPlayer4.feedSource = "Live TV"
-            mediaPlayer4.feedList = playerSources.channelsList;
+            mediaPlayer4.feedList = playerSources.channelList;
             mediaPlayer4.currentFeed = 3;
         }
         else
@@ -123,7 +123,7 @@ BaseScreen
         {
             getActivePlayer().previousFeed();
 
-            feedChanged(undefined, getActivePlayer().currentFeed);
+            feedChanged("", getActivePlayer().currentFeed);
         }
     }
 
@@ -135,7 +135,7 @@ BaseScreen
         {
             getActivePlayer().nextFeed();
 
-            feedChanged(undefined, getActivePlayer().currentFeed);
+            feedChanged("", getActivePlayer().currentFeed);
         }
     }
 
