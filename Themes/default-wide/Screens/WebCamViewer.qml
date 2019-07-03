@@ -25,6 +25,8 @@ BaseScreen
             footer.greenText = "Show (All Webcams)"
         else
             footer.greenText = "Show (" + filterCategory + ")"
+
+        updateWebcamDetails();
     }
 
     Component.onDestruction:
@@ -291,7 +293,7 @@ BaseScreen
 
     function feedChanged(filter, index)
     {
-        if (filter !== undefined && filter !== filterCategory)
+        if (filter !== "" && filter !== filterCategory)
             filterCategory = filter;
 
         webcamGrid.currentIndex = index;
