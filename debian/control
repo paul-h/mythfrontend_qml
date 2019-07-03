@@ -26,7 +26,7 @@ Build-Depends:  debhelper (>= 9),
                 qtpositioning5-dev,
                 libvlccore-dev,
                 libvlc-dev
-
+                zlib1g-dev
 
 Package: mythfrontend-qml
 Architecture: any
@@ -37,7 +37,8 @@ Depends: python,
          qml-module-qtwebengine,
          qml-module-qtwebsockets,
          python3-streamlink,
-         streamlink
+         streamlink,
+         zlib1g
 Description: Personal video recorder application (QML client)
  MythTV provides a unified graphical interface for recording and viewing
  television programs. Refer to the mythtv package for more information.
