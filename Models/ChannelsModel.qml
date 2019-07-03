@@ -13,6 +13,8 @@ XmlListModel
     property bool orderByName: false
     property bool groupByCallsign: true
 
+    property string _ip:  extractIP(settings.masterBackend);
+
     source:
     {
         var url = settings.masterBackend + "Channel/GetChannelInfoList?Details=" + (details ? "true" : "false")
@@ -46,9 +48,11 @@ XmlListModel
     XmlRole { name: "IconURL"; query: "IconURL/string()" }
     XmlRole { name: "ChannelName"; query: "ChannelName/string()" }
     XmlRole { name: "SourceId"; query: "SourceId/string()" }
+    XmlRole { name: "XMLTVID"; query: "XMLTVID/string()" }
 
+    XmlRole { name: "title"; query: "concat(ChanNum/string(), xs:string(' - '), ChannelName/string())" }
     XmlRole { name: "player"; query: "xs:string('VLC')" }
-    XmlRole { name: "url"; query: "concat(xs:string('myth://type=livetv:server=" + settings.masterBackend + "'), xs:string(':encoder=1:channum='), ChanNum/string())" }
+    XmlRole { name: "url"; query: "concat(xs:string('myth://type=livetv:server=" + _ip + "'), xs:string(':encoder=1:channum='), ChanNum/string())" }
 
     onStatusChanged:
     {
@@ -66,5 +70,13 @@ XmlListModel
         {
             console.log("Status: " + "Channels - ERROR: " + errorString + "\n" + source.toString());
         }
+    }
+
+    function extractIP(host)
+    {
+        var r = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/;
+
+        var t = host.match(r);
+        return t[0];
     }
 }
