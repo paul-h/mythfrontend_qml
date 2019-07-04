@@ -4,7 +4,7 @@ CONFIG += plugin thread
 
 TARGET = access_myth_plugin
 
-INCLUDEPATH += /usr/include/mythtv/libmythcpp
+INCLUDEPATH +=  ../mythcpp
 
 QMAKE_CXXFLAGS += $$system(pkg-config --cflags vlc-plugin) -Wall -Wextra -Wno-old-style-cast -fno-permissive
 LIBS += $$system(pkg-config --libs vlc-plugin)  -L../mythcpp -lmythcpp #-lz -lm -lrt
