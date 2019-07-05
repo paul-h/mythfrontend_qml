@@ -1,10 +1,29 @@
 #include "qqmlsortfilterproxymodel.h"
 #include <QtQml>
 #include <algorithm>
-#include "filter.h"
-#include "sorter.h"
+#include "filters/filter.h"
+#include "sorters/sorter.h"
+#include "proxyroles/proxyrole.h"
 
 namespace qqsfpm {
+
+/*!
+    \page index.html overview
+
+    \title SortFilterProxyModel QML Module
+
+    SortFilterProxyModel is an implementation of QSortFilterProxyModel conveniently exposed for QML.
+
+    \generatelist qmltypesbymodule SortFilterProxyModel
+*/
+
+/*!
+    \qmltype SortFilterProxyModel
+    \inqmlmodule SortFilterProxyModel
+    \brief Filters and sorts data coming from a source \l {http://doc.qt.io/qt-5/qabstractitemmodel.html} {QAbstractItemModel}
+
+    The SortFilterProxyModel type provides support for filtering and sorting data coming from a source model.
+*/
 
 QQmlSortFilterProxyModel::QQmlSortFilterProxyModel(QObject *parent) :
     QSortFilterProxyModel(parent)
@@ -15,8 +34,21 @@ QQmlSortFilterProxyModel::QQmlSortFilterProxyModel(QObject *parent) :
     connect(this, &QAbstractItemModel::rowsRemoved, this, &QQmlSortFilterProxyModel::countChanged);
     connect(this, &QAbstractItemModel::modelReset, this, &QQmlSortFilterProxyModel::countChanged);
     connect(this, &QAbstractItemModel::layoutChanged, this, &QQmlSortFilterProxyModel::countChanged);
+    connect(this, &QAbstractItemModel::dataChanged, this, &QQmlSortFilterProxyModel::onDataChanged);
     setDynamicSortFilter(true);
 }
+
+/*!
+    \qmlproperty QAbstractItemModel* SortFilterProxyModel::sourceModel
+
+    The source model of this proxy model
+*/
+
+/*!
+    \qmlproperty int SortFilterProxyModel::count
+
+    The number of rows in the proxy model (not filtered out the source model)
+*/
 
 int QQmlSortFilterProxyModel::count() const
 {
@@ -86,6 +118,14 @@ void QQmlSortFilterProxyModel::setFilterValue(const QVariant& filterValue)
     Q_EMIT filterValueChanged();
 }
 
+/*!
+    \qmlproperty string SortFilterProxyModel::sortRoleName
+
+    The role name of the source model's data used for the sorting.
+
+    \sa {http://doc.qt.io/qt-5/qsortfilterproxymodel.html#sortRole-prop} {sortRole}, roleForName
+*/
+
 const QString& QQmlSortFilterProxyModel::sortRoleName() const
 {
     return m_sortRoleName;
@@ -116,23 +156,29 @@ void QQmlSortFilterProxyModel::setAscendingSortOrder(bool ascendingSortOrder)
     invalidate();
 }
 
-QQmlListProperty<Filter> QQmlSortFilterProxyModel::filters()
-{
-    return QQmlListProperty<Filter>(this, &m_filters,
-                                    &QQmlSortFilterProxyModel::append_filter,
-                                    &QQmlSortFilterProxyModel::count_filter,
-                                    &QQmlSortFilterProxyModel::at_filter,
-                                    &QQmlSortFilterProxyModel::clear_filters);
-}
+/*!
+    \qmlproperty list<Filter> SortFilterProxyModel::filters
 
-QQmlListProperty<Sorter> QQmlSortFilterProxyModel::sorters()
-{
-    return QQmlListProperty<Sorter>(this, &m_sorters,
-                                    &QQmlSortFilterProxyModel::append_sorter,
-                                    &QQmlSortFilterProxyModel::count_sorter,
-                                    &QQmlSortFilterProxyModel::at_sorter,
-                                    &QQmlSortFilterProxyModel::clear_sorters);
-}
+    This property holds the list of filters for this proxy model. To be included in the model, a row of the source model has to be accepted by all the top level filters of this list.
+
+    \sa Filter
+*/
+
+/*!
+    \qmlproperty list<Sorter> SortFilterProxyModel::sorters
+
+    This property holds the list of sorters for this proxy model. The rows of the source model are sorted by the sorters of this list, in their order of insertion.
+
+    \sa Sorter
+*/
+
+/*!
+    \qmlproperty list<ProxyRole> SortFilterProxyModel::proxyRoles
+
+    This property holds the list of proxy roles for this proxy model. Each proxy role adds a new custom role to the model.
+
+    \sa ProxyRole
+*/
 
 void QQmlSortFilterProxyModel::classBegin()
 {
@@ -142,27 +188,60 @@ void QQmlSortFilterProxyModel::classBegin()
 void QQmlSortFilterProxyModel::componentComplete()
 {
     m_completed = true;
+
     for (const auto& filter : m_filters)
-        filter->proxyModelCompleted();
+        filter->proxyModelCompleted(*this);
+    for (const auto& sorter : m_sorters)
+        sorter->proxyModelCompleted(*this);
+    for (const auto& proxyRole : m_proxyRoles)
+        proxyRole->proxyModelCompleted(*this);
+
     invalidate();
     sort(0);
 }
+
 QVariant QQmlSortFilterProxyModel::sourceData(const QModelIndex& sourceIndex, const QString& roleName) const
 {
-    int role = sourceModel()->roleNames().key(roleName.toUtf8());
+    int role = roleNames().key(roleName.toUtf8());
     return sourceData(sourceIndex, role);
 }
 
 QVariant QQmlSortFilterProxyModel::sourceData(const QModelIndex &sourceIndex, int role) const
 {
-    return sourceModel()->data(sourceIndex, role);
+    QPair<ProxyRole*, QString> proxyRolePair = m_proxyRoleMap[role];
+    if (ProxyRole* proxyRole = proxyRolePair.first)
+        return proxyRole->roleData(sourceIndex, *this, proxyRolePair.second);
+    else
+        return sourceModel()->data(sourceIndex, role);
 }
+
+QVariant QQmlSortFilterProxyModel::data(const QModelIndex &index, int role) const
+{
+    return sourceData(mapToSource(index), role);
+}
+
+QHash<int, QByteArray> QQmlSortFilterProxyModel::roleNames() const
+{
+    return m_roleNames.isEmpty() && sourceModel() ? sourceModel()->roleNames() : m_roleNames;
+}
+
+/*!
+    \qmlmethod int SortFilterProxyModel::roleForName(string roleName)
+
+    Returns the role number for the given \a roleName.
+    If no role is found for this \a roleName, \c -1 is returned.
+*/
 
 int QQmlSortFilterProxyModel::roleForName(const QString& roleName) const
 {
-    return roleNames().key(roleName.toUtf8(), -1);
+    return m_roleNames.key(roleName.toUtf8(), -1);
 }
 
+/*!
+    \qmlmethod object SortFilterProxyModel::get(int row)
+
+    Return the item at \a row in the proxy model as a map of all its roles. This allows the item data to be read (not modified) from JavaScript.
+*/
 QVariantMap QQmlSortFilterProxyModel::get(int row) const
 {
     QVariantMap map;
@@ -173,16 +252,33 @@ QVariantMap QQmlSortFilterProxyModel::get(int row) const
     return map;
 }
 
+/*!
+    \qmlmethod variant SortFilterProxyModel::get(int row, string roleName)
+
+    Return the data for the given \a roleNamte of the item at \a row in the proxy model. This allows the role data to be read (not modified) from JavaScript.
+    This equivalent to calling \c {data(index(row, 0), roleForName(roleName))}.
+*/
 QVariant QQmlSortFilterProxyModel::get(int row, const QString& roleName) const
 {
     return data(index(row, 0), roleForName(roleName));
 }
 
+/*!
+    \qmlmethod index SortFilterProxyModel::mapToSource(index proxyIndex)
+
+    Returns the source model index corresponding to the given \a proxyIndex from the SortFilterProxyModel.
+*/
 QModelIndex QQmlSortFilterProxyModel::mapToSource(const QModelIndex& proxyIndex) const
 {
     return QSortFilterProxyModel::mapToSource(proxyIndex);
 }
 
+/*!
+    \qmlmethod int SortFilterProxyModel::mapToSource(int proxyRow)
+
+    Returns the source model row corresponding to the given \a proxyRow from the SortFilterProxyModel.
+    Returns -1 if there is no corresponding row.
+*/
 int QQmlSortFilterProxyModel::mapToSource(int proxyRow) const
 {
     QModelIndex proxyIndex = index(proxyRow, 0);
@@ -190,11 +286,22 @@ int QQmlSortFilterProxyModel::mapToSource(int proxyRow) const
     return sourceIndex.isValid() ? sourceIndex.row() : -1;
 }
 
+/*!
+    \qmlmethod QModelIndex SortFilterProxyModel::mapFromSource(QModelIndex sourceIndex)
+
+    Returns the model index in the SortFilterProxyModel given the sourceIndex from the source model.
+*/
 QModelIndex QQmlSortFilterProxyModel::mapFromSource(const QModelIndex& sourceIndex) const
 {
     return QSortFilterProxyModel::mapFromSource(sourceIndex);
 }
 
+/*!
+    \qmlmethod int SortFilterProxyModel::mapFromSource(int sourceRow)
+
+    Returns the row in the SortFilterProxyModel given the \a sourceRow from the source model.
+    Returns -1 if there is no corresponding row.
+*/
 int QQmlSortFilterProxyModel::mapFromSource(int sourceRow) const
 {
     QModelIndex proxyIndex;
@@ -214,7 +321,7 @@ bool QQmlSortFilterProxyModel::filterAcceptsRow(int source_row, const QModelInde
     bool baseAcceptsRow = valueAccepted && QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
     baseAcceptsRow = baseAcceptsRow && std::all_of(m_filters.begin(), m_filters.end(),
         [=, &source_parent] (Filter* filter) {
-            return filter->filterAcceptsRow(sourceIndex);
+            return filter->filterAcceptsRow(sourceIndex, *this);
         }
     );
     return baseAcceptsRow;
@@ -231,7 +338,7 @@ bool QQmlSortFilterProxyModel::lessThan(const QModelIndex& source_left, const QM
         }
         for(auto sorter : m_sorters) {
             if (sorter->enabled()) {
-                int comparison = sorter->compareRows(source_left, source_right);
+                int comparison = sorter->compareRows(source_left, source_right, *this);
                 if (comparison != 0)
                     return comparison < 0;
             }
@@ -243,11 +350,16 @@ bool QQmlSortFilterProxyModel::lessThan(const QModelIndex& source_left, const QM
 void QQmlSortFilterProxyModel::resetInternalData()
 {
     QSortFilterProxyModel::resetInternalData();
-    if (sourceModel() && QSortFilterProxyModel::roleNames().isEmpty()) { // workaround for when a model has no roles and roles are added when the model is populated (ListModel)
+    updateRoleNames();
+}
+
+void QQmlSortFilterProxyModel::setSourceModel(QAbstractItemModel *sourceModel)
+{
+    if (sourceModel && sourceModel->roleNames().isEmpty()) { // workaround for when a model has no roles and roles are added when the model is populated (ListModel)
         // QTBUG-57971
-        connect(sourceModel(), &QAbstractItemModel::rowsInserted, this, &QQmlSortFilterProxyModel::initRoles);
-        connect(this, &QAbstractItemModel::rowsAboutToBeInserted, this, &QQmlSortFilterProxyModel::initRoles);
+        connect(sourceModel, &QAbstractItemModel::rowsInserted, this, &QQmlSortFilterProxyModel::initRoles);
     }
+    QSortFilterProxyModel::setSourceModel(sourceModel);
 }
 
 void QQmlSortFilterProxyModel::invalidateFilter()
@@ -260,6 +372,27 @@ void QQmlSortFilterProxyModel::invalidate()
 {
     if (m_completed)
         QSortFilterProxyModel::invalidate();
+}
+
+void QQmlSortFilterProxyModel::updateRoleNames()
+{
+    if (!sourceModel())
+        return;
+    m_roleNames = sourceModel()->roleNames();
+    m_proxyRoleMap.clear();
+    m_proxyRoleNumbers.clear();
+
+    auto roles = m_roleNames.keys();
+    auto maxIt = std::max_element(roles.cbegin(), roles.cend());
+    int maxRole = maxIt != roles.cend() ? *maxIt : -1;
+    for (auto proxyRole : m_proxyRoles) {
+        for (auto roleName : proxyRole->names()) {
+            ++maxRole;
+            m_roleNames[maxRole] = roleName.toUtf8();
+            m_proxyRoleMap[maxRole] = {proxyRole, roleName};
+            m_proxyRoleNumbers.append(maxRole);
+        }
+    }
 }
 
 void QQmlSortFilterProxyModel::updateFilterRole()
@@ -290,9 +423,21 @@ void QQmlSortFilterProxyModel::updateRoles()
 void QQmlSortFilterProxyModel::initRoles()
 {
     disconnect(sourceModel(), &QAbstractItemModel::rowsInserted, this, &QQmlSortFilterProxyModel::initRoles);
-    disconnect(this, &QAbstractItemModel::rowsAboutToBeInserted, this , &QQmlSortFilterProxyModel::initRoles);
     resetInternalData();
     updateRoles();
+}
+
+void QQmlSortFilterProxyModel::onDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles)
+{
+    Q_UNUSED(roles);
+    if (!roles.isEmpty() && !m_proxyRoleNumbers.empty() && roles != m_proxyRoleNumbers)
+        Q_EMIT dataChanged(topLeft, bottomRight, m_proxyRoleNumbers);
+}
+
+void QQmlSortFilterProxyModel::emitProxyRolesChanged()
+{
+    invalidate();
+    Q_EMIT dataChanged(index(0,0), index(rowCount() - 1, columnCount() - 1), m_proxyRoleNumbers);
 }
 
 QVariantMap QQmlSortFilterProxyModel::modelDataMap(const QModelIndex& modelIndex) const
@@ -304,70 +449,63 @@ QVariantMap QQmlSortFilterProxyModel::modelDataMap(const QModelIndex& modelIndex
     return map;
 }
 
-void QQmlSortFilterProxyModel::append_filter(QQmlListProperty<Filter>* list, Filter* filter)
+void QQmlSortFilterProxyModel::onFilterAppended(Filter* filter)
 {
-    if (!filter)
-        return;
-
-    QQmlSortFilterProxyModel* that = static_cast<QQmlSortFilterProxyModel*>(list->object);
-    that->m_filters.append(filter);
-    connect(filter, &Filter::invalidate, that, &QQmlSortFilterProxyModel::invalidateFilter);
-    filter->m_proxyModel = that;
-    that->invalidateFilter();
+    connect(filter, &Filter::invalidated, this, &QQmlSortFilterProxyModel::invalidateFilter);
+    this->invalidateFilter();
 }
 
-int QQmlSortFilterProxyModel::count_filter(QQmlListProperty<Filter>* list)
+void QQmlSortFilterProxyModel::onFilterRemoved(Filter* filter)
 {
-    QList<Filter*>* filters = static_cast<QList<Filter*>*>(list->data);
-    return filters->count();
+    Q_UNUSED(filter)
+    invalidateFilter();
 }
 
-Filter* QQmlSortFilterProxyModel::at_filter(QQmlListProperty<Filter>* list, int index)
+void QQmlSortFilterProxyModel::onFiltersCleared()
 {
-    QList<Filter*>* filters = static_cast<QList<Filter*>*>(list->data);
-    return filters->at(index);
+    invalidateFilter();
 }
 
-void QQmlSortFilterProxyModel::clear_filters(QQmlListProperty<Filter> *list)
+void QQmlSortFilterProxyModel::onSorterAppended(Sorter* sorter)
 {
-    QQmlSortFilterProxyModel* that = static_cast<QQmlSortFilterProxyModel*>(list->object);
-    that->m_filters.clear();
-    that->invalidateFilter();
+    connect(sorter, &Sorter::invalidated, this, &QQmlSortFilterProxyModel::invalidate);
+    invalidate();
 }
 
-void QQmlSortFilterProxyModel::append_sorter(QQmlListProperty<Sorter>* list, Sorter* sorter)
+void QQmlSortFilterProxyModel::onSorterRemoved(Sorter* sorter)
 {
-    if (!sorter)
-        return;
-
-    auto that = static_cast<QQmlSortFilterProxyModel*>(list->object);
-    that->m_sorters.append(sorter);
-    connect(sorter, &Sorter::invalidate, that, &QQmlSortFilterProxyModel::invalidate);
-    sorter->m_proxyModel = that;
-    that->invalidate();
+    Q_UNUSED(sorter)
+    invalidate();
 }
 
-int QQmlSortFilterProxyModel::count_sorter(QQmlListProperty<Sorter>* list)
+void QQmlSortFilterProxyModel::onSortersCleared()
 {
-    auto sorters = static_cast<QList<Sorter*>*>(list->data);
-    return sorters->count();
+    invalidate();
 }
 
-Sorter* QQmlSortFilterProxyModel::at_sorter(QQmlListProperty<Sorter>* list, int index)
+void QQmlSortFilterProxyModel::onProxyRoleAppended(ProxyRole *proxyRole)
 {
-    auto sorters = static_cast<QList<Sorter*>*>(list->data);
-    return sorters->at(index);
+    beginResetModel();
+    connect(proxyRole, &ProxyRole::invalidated, this, &QQmlSortFilterProxyModel::emitProxyRolesChanged);
+    connect(proxyRole, &ProxyRole::namesAboutToBeChanged, this, &QQmlSortFilterProxyModel::beginResetModel);
+    connect(proxyRole, &ProxyRole::namesChanged, this, &QQmlSortFilterProxyModel::endResetModel);
+    endResetModel();
 }
 
-void QQmlSortFilterProxyModel::clear_sorters(QQmlListProperty<Sorter>* list)
+void QQmlSortFilterProxyModel::onProxyRoleRemoved(ProxyRole *proxyRole)
 {
-    auto that = static_cast<QQmlSortFilterProxyModel*>(list->object);
-    that->m_sorters.clear();
-    that->invalidate();
+    Q_UNUSED(proxyRole)
+    beginResetModel();
+    endResetModel();
 }
 
-void registerQQmlSortFilterProxyModelTypes()
+void QQmlSortFilterProxyModel::onProxyRolesCleared()
 {
+    beginResetModel();
+    endResetModel();
+}
+
+void registerQQmlSortFilterProxyModelTypes() {
     qmlRegisterType<QQmlSortFilterProxyModel>("SortFilterProxyModel", 0, 2, "SortFilterProxyModel");
 }
 
