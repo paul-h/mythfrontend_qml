@@ -31,7 +31,7 @@ BaseScreen
 
     Component.onDestruction:
     {
-        dbUtils.setSetting("Qml_lastWebvideoPath", settings.hostName, playerSources.webVideoPaths[playerSources.webVideoPathIndex])
+        dbUtils.setSetting("Qml_lastWebvideoPath", settings.hostName, playerSources.webvideoPaths[playerSources.webvideoPathIndex])
         dbUtils.setSetting("Qml_lastWebvideoCategory", settings.hostName, filterCategory)
     }
 
