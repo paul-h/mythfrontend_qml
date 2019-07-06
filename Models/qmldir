@@ -15,6 +15,8 @@ SDChannelsModel 1.0 SDChannelsModel.qml
 TickerModel 1.0 TickerModel.qml
 VboxChannelsModel 1.0 VboxChannelsModel.qml
 VideosModel 1.0 VideosModel.qml
+VideoSourceModel 1.0 VideoSourceModel.qml
+VideoMultiplexModel 1.0 VideoMultiplexModel.qml
 WebCamModel 1.0 WebCamModel.qml
 WebVideoModel 1.0 WebVideoModel.qml
 ZMDaemonCheckModel 1.0 ZMDaemonCheckModel.qml
