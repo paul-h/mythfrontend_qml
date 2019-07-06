@@ -42,13 +42,14 @@ XmlListModel
 
     query: "/ChannelInfoList/ChannelInfos/ChannelInfo"
 
-    XmlRole { name: "ChanId"; query: "ChanId/string()" }
-    XmlRole { name: "ChanNum"; query: "ChanNum/string()" }
+    XmlRole { name: "ChanId"; query: "ChanId/number()" }
+    XmlRole { name: "ChanNum"; query: "ChanNum/number()" }
     XmlRole { name: "CallSign"; query: "CallSign/string()" }
     XmlRole { name: "IconURL"; query: "IconURL/string()" }
     XmlRole { name: "ChannelName"; query: "ChannelName/string()" }
-    XmlRole { name: "SourceId"; query: "SourceId/string()" }
+    XmlRole { name: "SourceId"; query: "SourceId/number()" }
     XmlRole { name: "XMLTVID"; query: "XMLTVID/string()" }
+    XmlRole { name: "MplexId"; query: "MplexId/number()" }
 
     XmlRole { name: "title"; query: "concat(ChanNum/string(), xs:string(' - '), ChannelName/string())" }
     XmlRole { name: "player"; query: "xs:string('VLC')" }
