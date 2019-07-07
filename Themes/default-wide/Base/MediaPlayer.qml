@@ -35,12 +35,6 @@ FocusScope
          showMouse(false)
     }
 
-    onFeedSourceChanged:
-    {
-        feedList = playerSources.getFeedList(feedSource);
-        currentFeed = 0;
-    }
-
     Process
     {
         id: streamLinkProcess
@@ -714,7 +708,7 @@ FocusScope
         if (feedSource === "Advent Calendar")
             return;
 
-        if (currentFeed == feedList.count - 1)
+        if (currentFeed === feedList.count - 1)
         {
             currentFeed = 0;
         }
@@ -731,7 +725,7 @@ FocusScope
         if (feedSource === "Advent Calendar")
             return;
 
-        if (currentFeed == 0)
+        if (currentFeed === 0)
         {
             currentFeed = feedList.count - 1;
         }
