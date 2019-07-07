@@ -17,7 +17,7 @@ FocusScope
     property var feedList: ListModel{}
     property int currentFeed: 0
 
-    property string streamlinkPort: "4545"
+    property int streamlinkPort: Math.floor(Math.random()*(65536-4000+1) + 4000);
     property string streamlinkLog
 
     // one of VLC, FFMPEG, WebBrowser, YouTube, YouTubeTV, RailCam, StreamLink, Internal
