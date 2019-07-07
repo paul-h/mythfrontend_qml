@@ -26,6 +26,14 @@ BaseScreen
         else if (event.key === Qt.Key_F2)
         {
             // GREEN
+            zmEventsModel.descending = ! zmEventsModel.descending;
+
+            if (zmEventsModel.descending)
+                footer.greenText = "Sort (Newest First)"
+            else
+                footer.greenText = "Sort (Oldest First)"
+
+            zmEventsModel.reload();
         }
         else if (event.key === Qt.Key_F3 || event.key === Qt.Key_P)
         {
@@ -265,7 +273,7 @@ BaseScreen
     {
         id: footer
         redText: "Delete Event"
-        greenText: ""
+        greenText: "Sort (Oldest First)"
         yellowText: "Play Event"
         blueText: "Refresh"
     }

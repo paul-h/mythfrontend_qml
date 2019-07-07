@@ -5,7 +5,8 @@
 
 ZMEventsModel::ZMEventsModel(void) : MythIncrementalModel()
 {
-    m_descending = true;
+    // show oldest first by default
+    m_descending = false;
 
     // event
     addRole("Id");
@@ -107,7 +108,7 @@ void ZMEventsModel::startDownload(void)
         dateRange = QString("/StartTime >=:%1/EndTime <=:%2").arg(startTime).arg(endTime);
     }
 
-    QString descending = (m_descending ? "asc" : "desc");
+    QString descending = (m_descending ? "desc" : "asc");
 
     QString sUrl = QString("http://" + gSettings->zmIP() + "/zm/api/events");
 
