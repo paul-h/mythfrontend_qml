@@ -75,7 +75,7 @@ FocusScope
         anchors.fill: parent
         focus: true
         color: "black"
-        border.width: root.showBorder ? 5 : 0
+        border.width: root.showBorder ? xscale(5) : 0
         border.color: root.focus ? "green" : "white"
     }
 
@@ -137,7 +137,7 @@ FocusScope
         visible: false
         enabled: visible
         anchors.fill: parent
-        anchors.margins: 5
+        anchors.margins: xscale(5)
 
         onPlaybackEnded:
         {
@@ -157,7 +157,7 @@ FocusScope
         visible: false
         enabled: visible
         anchors.fill: parent
-        anchors.margins: 5
+        anchors.margins: xscale(5)
 
         onPlaybackEnded:
         {
@@ -177,7 +177,7 @@ FocusScope
         visible: false
         enabled: visible
         anchors.fill: parent
-        anchors.margins: 5
+        anchors.margins: xscale(5)
 
         fillMode: VideoOutput.Stretch
 
@@ -255,6 +255,16 @@ FocusScope
                 else
                     "Remaining :" + "N/A"
             }
+
+            horizontalAlignment: Text.AlignRight
+        }
+
+        InfoText
+        {
+            id: currFeed
+            x: parent.width - width - xscale(15); y: yscale(5)
+            width: xscale(380)
+            text: root.currentFeed + 1 + " of " + root.feedList.count + " (" + root.feedSource + ")"
 
             horizontalAlignment: Text.AlignRight
         }
