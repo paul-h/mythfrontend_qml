@@ -18,7 +18,7 @@ ListModel
         loaderSource: "InternalPlayer.qml"
         waterMark: "watermark/zoneminder.png"
         layout: 5
-        feedSource: "Zoneminder Cameras"
+        feedSource: "ZoneMinder Cameras"
     }
     ListElement
     {
