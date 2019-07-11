@@ -220,7 +220,7 @@ BaseScreen
             {
                 x: xscale(460)
                 width: xscale(600); height: yscale(50)
-                text: Frames + " (" + Length + ")"
+                text: Frames + " frames (" + Length + " seconds)"
             }
             ListText
             {
