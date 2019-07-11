@@ -11,6 +11,10 @@ Item
     property var webcamList: webcamModel
     property var webvideoList: webvideoModel
     property var zmCameraList: zmMonitorsModel
+    property var adhocList: undefined
+
+    // live tv
+    property var videoSourceList: videoSourceModel
 
     // webcam
     property string webcamFilterCategory
@@ -61,6 +65,11 @@ Item
         ]
     }
 
+    property list<QtObject> chanNumSorter:
+    [
+        RoleSorter { roleName: "ChanNum"; ascendingOrder: true}
+    ]
+
     CaptureCardModel
     {
         id: captureCardModel
@@ -77,9 +86,9 @@ Item
         groupByCallsign: false
     }
 
-    VideosModel
+    VideoSourceModel
     {
-        id: videosModel
+        id: videoSourceModel
     }
 
     /* --------------------------------------------------- WebCams --------------------------------------------------- */
@@ -100,14 +109,11 @@ Item
         sourceModel: webcamModel
         filters:
         [
-            AllOf
+            RegExpFilter
             {
-                RegExpFilter
-                {
-                    roleName: "categories"
-                    pattern: webcamFilterCategory
-                    caseSensitivity: Qt.CaseInsensitive
-                }
+                roleName: "categories"
+                pattern: webcamFilterCategory
+                caseSensitivity: Qt.CaseInsensitive
             }
         ]
         sorters: titleSorter
@@ -172,11 +178,18 @@ Item
             return videoList;
         else if (feedSource === "Recordings")
             return recordingList;
-        else if (feedSource === "Zoneminder Cameras")
+        else if (feedSource === "ZoneMinder Cameras")
             return zmCameraList;
 
         return channelList;
     }
+
+    /* ------------------------------------------------ Videos -----------------------------------------------------------*/
+    VideosModel
+    {
+        id: videosModel
+    }
+
 
     function findEncoder(sourceId)
     {
@@ -231,7 +244,7 @@ Item
             for (var y = 0; y < channelsProxyModel.count; y++)
             {
                 var title = channelsProxyModel.get(y).ChanNum + " - " + channelsProxyModel.get(y).ChannelName;
-                var data = "source=" + player + "\n" + y; //myth://type=livetv:server=" + captureCardModel.get(x).HostName + ":encoder=" + captureCardModel.get(x).CardId + ":channum=" + channelsProxyModel.get(y).ChanNum;
+                var data = "player=" + player + "\nLive TV\n" + captureCardModel.get(x).SourceId + "\n" + y;
                 popupMenu.addMenuItem(path + "," + x , title, data);
             }
         }
@@ -263,7 +276,7 @@ Item
             for (var y = 0; y < webcamProxyModel.count; y++)
             {
                 var title = webcamProxyModel.get(y).title;
-                var data = "source=" + player + "\n" + webcamFilterCategory  + "\n" + y;//webcamProxyModel.get(y).id;
+                var data = "player=" + player + "\nWebcams\n" + webcamFilterCategory  + "\n" + y;//webcamProxyModel.get(y).id;
                 popupMenu.addMenuItem(path + "," + x , title, data);
             }
         }
@@ -297,7 +310,7 @@ Item
             for (var y = 0; y < webvideoProxyModel.count; y++)
             {
                 var title = webvideoProxyModel.get(y).title;
-                var data = "source=" + player + "\n" + webvideoFilterCategory + "\n" + y; //webvideoProxyModel.get(y).id;
+                var data = "player=" + player + "\nWeb Videos\n" + webvideoFilterCategory + "\n" + y;
                 popupMenu.addMenuItem(path + "," + x , title, data);
             }
         }
@@ -310,7 +323,7 @@ Item
         for (var x = 0; x < videosModel.count; x++)
         {
             var title = videosModel.get(x).Title + " ~ " + videosModel.get(x).SubTitle;
-            var data = "source=" + player + "\n" + x;
+            var data = "player=" + player + "\nVideos\n\n" + x;
             popupMenu.addMenuItem(path, title, data);
         }
     }
@@ -325,7 +338,7 @@ Item
         for (var x = 0; x < zmMonitorsModel.count; x++)
         {
             var title = zmMonitorsModel.get(x).name;
-            var data = "source=" + player + "\n"  +  "\n" + x;
+            var data = "player=" + player + "\nZoneMinder Cameras\n\n" + x;
             popupMenu.addMenuItem(path, title, data);
         }
     }

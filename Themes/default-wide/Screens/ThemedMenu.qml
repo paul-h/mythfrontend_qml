@@ -141,8 +141,7 @@ BaseScreen
                 {
                     var layout = model.get(currentIndex).layout
                     var feedSource = model.get(currentIndex).feedSource
-                    var feedList = playerSources.getFeedList(feedSource)
-                    stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{layout: layout, defaultFeedSource: feedSource, defaultFeedList: feedList, defaultCurrentFeed: 0}});
+                    stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{layout: layout, defaultFeedSource: feedSource, defaultCurrentFeed: 0}});
                 }
                 else
                 {

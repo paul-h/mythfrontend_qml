@@ -136,7 +136,9 @@ BaseScreen
 
         Keys.onReturnPressed:
         {
-            stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedList:  model, defaultFeedSource: "Videos", defaultCurrentFeed: currentIndex}});
+            var filterList = filterTitle + "," + filterType + "," + filterGenres;
+            var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Videos", defaultFilter:  filterList, defaultCurrentFeed: currentIndex}});
+            item.feedChanged.connect(feedChanged);
             event.accepted = true;
             returnSound.play();
         }
@@ -165,6 +167,22 @@ BaseScreen
         {
             videoList.focus = true;
         }
+    }
+
+    function feedChanged(filter, index)
+    {
+        console.log("VideoGrid feedChange - filter: " + filter + ", index: " + index);
+
+        var list = filter.split(",");
+
+        if (list.length === 3)
+        {
+            filterTitle = list[0];
+            filterType = list[1];
+            filterGenres = list[2];
+        }
+
+        videoList.currentIndex = index;
     }
 }
 

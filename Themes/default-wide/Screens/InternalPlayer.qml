@@ -19,7 +19,7 @@ BaseScreen
     property int layout: 0
 
     property string defaultFeedSource: ""
-    property var    defaultFeedList: undefined
+    property string defaultFilter: "-1"
     property int    defaultCurrentFeed: -1
 
     property bool _actionsEnabled: true
@@ -33,37 +33,19 @@ BaseScreen
         showTicker(false);
         screenBackground.muteAudio(true);
 
-        mediaPlayer1.feedList = defaultFeedList === undefined ? playerSources.channelList : defaultFeedList;
-        mediaPlayer1.currentFeed = defaultCurrentFeed === -1 ? 0 : defaultCurrentFeed;
-        mediaPlayer1.feedSource = defaultFeedSource === "" ? "Live TV" : defaultFeedSource
+        mediaPlayer1.feed.switchToFeed(defaultFeedSource === "" ? "Live TV" : defaultFeedSource, defaultFilter, defaultCurrentFeed === -1 ? 0 : defaultCurrentFeed);
 
         if (defaultFeedSource === "" || defaultFeedSource === "Advent Calendar")
         {
-            mediaPlayer2.feedSource = "Live TV"
-            mediaPlayer2.feedList = playerSources.channelList;
-            mediaPlayer2.currentFeed = 1;
-
-            mediaPlayer3.feedSource = "Live TV"
-            mediaPlayer3.feedList = playerSources.channelList;
-            mediaPlayer3.currentFeed = 2;
-
-            mediaPlayer4.feedSource = "Live TV"
-            mediaPlayer4.feedList = playerSources.channelList;
-            mediaPlayer4.currentFeed = 3;
+            mediaPlayer2.feed.switchToFeed("Live TV" , -1, 1);
+            mediaPlayer3.feed.switchToFeed("Live TV" , -1, 2);
+            mediaPlayer4.feed.switchToFeed("Live TV" , -1, 3);
         }
         else
         {
-            mediaPlayer2.feedSource = defaultFeedSource
-            mediaPlayer2.feedList = defaultFeedList;
-            mediaPlayer2.currentFeed = defaultCurrentFeed === -1 ? 1 : defaultCurrentFeed + 1;
-
-            mediaPlayer3.feedSource = defaultFeedSource
-            mediaPlayer3.feedList = defaultFeedList;
-            mediaPlayer3.currentFeed = defaultCurrentFeed === -1 ? 2 : defaultCurrentFeed + 2;
-
-            mediaPlayer4.feedSource = defaultFeedSource
-            mediaPlayer4.feedList = defaultFeedList;
-            mediaPlayer4.currentFeed = defaultCurrentFeed === -1 ? 3 : defaultCurrentFeed + 3;
+            mediaPlayer2.feed.switchToFeed(defaultFeedSource, defaultFilter, defaultCurrentFeed === -1 ? 1 : defaultCurrentFeed + 1);
+            mediaPlayer3.feed.switchToFeed(defaultFeedSource, defaultFilter, defaultCurrentFeed === -1 ? 2 : defaultCurrentFeed + 2);
+            mediaPlayer4.feed.switchToFeed(defaultFeedSource, defaultFilter, defaultCurrentFeed === -1 ? 3 : defaultCurrentFeed + 3);
         }
 
         setLayout(layout);
@@ -123,7 +105,7 @@ BaseScreen
         {
             getActivePlayer().previousFeed();
 
-            feedChanged("", getActivePlayer().currentFeed);
+            feedChanged(getActivePlayer().feed.currentFilter, getActivePlayer().feed.currentFeed);
         }
     }
 
@@ -135,7 +117,7 @@ BaseScreen
         {
             getActivePlayer().nextFeed();
 
-            feedChanged("", getActivePlayer().currentFeed);
+            feedChanged(getActivePlayer().feed.currentFilter, getActivePlayer().feed.currentFeed);
         }
     }
 
@@ -205,8 +187,8 @@ BaseScreen
             popupMenu.addMenuItem("1", "Web Videos");
             popupMenu.addMenuItem("1", "ZoneMinder Cameras");
 
-            popupMenu.addMenuItem("", getActivePlayer().feedSource);
-            playerSources.addFeedMenu(popupMenu, getActivePlayer().feedSource, "2", 1);
+            popupMenu.addMenuItem("", getActivePlayer().feed.feedName);
+            playerSources.addFeedMenu(popupMenu, getActivePlayer().feed.feedName, "2", 1);
 
             popupMenu.addMenuItem("", "Toggle Mute");
 
@@ -509,62 +491,50 @@ BaseScreen
             }
             else if (itemText == "Live TV")
             {
-                getActivePlayer().feedSource = itemText;
-                getActivePlayer().feedList = playerSources.channelList;
-                getActivePlayer().currentFeed = 0;
+                getActivePlayer().feed.switchToFeed("Live TV", "-1", 0);
                 getActivePlayer().startPlayback();
             }
             else if (itemText == "Recordings")
             {
-                getActivePlayer().feedSource = itemText;
-                getActivePlayer().feedList = playerSources.recordingList;
-                getActivePlayer().currentFeed = 0;
+                getActivePlayer().feed.switchToFeed("Recordings", "", 0);
                 getActivePlayer().startPlayback();
             }
             else if (itemText == "Videos")
             {
-                getActivePlayer().feedSource = itemText;
-                getActivePlayer().feedList = playerSources.videoList;
-                getActivePlayer().currentFeed = 0;
+                getActivePlayer().feed.switchToFeed("Videos", "", 0);
                 getActivePlayer().startPlayback();
             }
             else if (itemText == "ZoneMinder Cameras")
             {
-                getActivePlayer().feedSource = itemText;
-                getActivePlayer().feedList = playerSources.zmCameraList;
-                getActivePlayer().currentFeed = 0;
+               getActivePlayer().feed.switchToFeed("ZoneMinder Cameras", "", 0);
                 getActivePlayer().startPlayback();
             }
             else if (itemText == "Webcams")
             {
-                getActivePlayer().feedSource = itemText;
-                getActivePlayer().feedList = playerSources.webcamList;
-                 getActivePlayer().currentFeed = 0;
+                getActivePlayer().feed.switchToFeed("Webcams", "", 0);
                 getActivePlayer().startPlayback();
             }
             else if (itemText == "Web Videos")
             {
-                getActivePlayer().feedSource = itemText;
-                getActivePlayer().feedList = playerSources.webvideoList;
-                getActivePlayer().currentFeed = 0;
+                getActivePlayer().feed.switchToFeed("Web Videos", "", 0);
                 getActivePlayer().startPlayback();
             }
             else if (itemText == "Toggle Mute")
                 getActivePlayer().toggleMute();
-            else if (itemData.startsWith("source="))
+            else if (itemData.startsWith("player="))
             {
                 var list = itemData.split("\n");
                 var feedSource;
-                var feedCategory;
+                var filter;
                 var feedNo;
 
-                if (list.length === 3)
+                if (list.length === 4)
                 {
-                    feedSource = list[0];
-                    feedCategory = list[1];
-                    feedNo = list[2];
-                    feedChanged(feedCategory, feedNo);
-                    getActivePlayer().currentFeed = feedNo;
+                    feedSource = list[1];
+                    filter = list[2];
+                    feedNo = list[3];
+                    feedChanged(filter, feedNo);
+                    getActivePlayer().feed.switchToFeed(feedSource, filter, feedNo);
                     getActivePlayer().startPlayback();
                 }
             }

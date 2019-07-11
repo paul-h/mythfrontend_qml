@@ -182,10 +182,7 @@ BaseScreen
         Keys.onReturnPressed:
         {
             returnSound.play();
-            var url = webcamGrid.model.get(webcamGrid.currentIndex).url;
-            var website = webcamGrid.model.get(webcamGrid.currentIndex).website;
-            var zoomFactor = xscale(1.0)
-            var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Webcams", defaultFeedList:  webcamGrid.model, defaultCurrentFeed: webcamGrid.currentIndex}});
+            var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Webcams", defaultFilter:  filterCategory, defaultCurrentFeed: webcamGrid.currentIndex}});
             item.feedChanged.connect(feedChanged);
             event.accepted = true;
         }
@@ -293,8 +290,20 @@ BaseScreen
 
     function feedChanged(filter, index)
     {
-        if (filter !== "" && filter !== filterCategory)
-            filterCategory = filter;
+        console.log("WebCamViewer feedChange - filter: " + filter + ", index: " + index);
+        if (filter !== filterCategory)
+        {
+            if (filter === "")
+            {
+                filterCategory = filter;
+                footer.greenText = "Show (All Webcams)"
+            }
+            else
+            {
+                filterCategory = filter;
+                footer.greenText = "Show (" + filter + ")"
+            }
+        }
 
         webcamGrid.currentIndex = index;
     }

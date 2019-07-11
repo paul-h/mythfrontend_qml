@@ -5,7 +5,7 @@ import QtWebEngine 1.3
 import Base 1.0
 import Process 1.0
 import QtAV 1.5
-import QtQuick.XmlListModel 2.0
+import SortFilterProxyModel 0.2
 
 import "../../../Util.js" as Util
 
@@ -13,11 +13,9 @@ FocusScope
 {
     id: root
 
-    property string feedSource: "Live TV"
-    property var feedList: ListModel{}
-    property int currentFeed: 0
+    property alias feed: feedSource
 
-    property int streamlinkPort: Math.floor(Math.random()*(65536-4000+1) + 4000);
+    property int streamlinkPort: Util.randomIntFromRange(4000, 65536)
     property string streamlinkLog
 
     // one of VLC, FFMPEG, WebBrowser, YouTube, YouTubeTV, RailCam, StreamLink, Internal
@@ -33,6 +31,11 @@ FocusScope
     Component.onDestruction:
     {
          showMouse(false)
+    }
+
+    FeedSource
+    {
+        id: feedSource
     }
 
     Process
@@ -89,7 +92,7 @@ FocusScope
         url: ""
         settings.pluginsEnabled: true
         settings.javascriptEnabled: true
-        //settings.playbackRequiresUserGesture: false
+//        settings.playbackRequiresUserGesture: false
         audioMuted: false;
 
         onLoadingChanged:
@@ -97,7 +100,7 @@ FocusScope
             if (loadRequest.status === WebEngineLoadRequest.LoadSucceededStatus)
             {
                 // hack to defeat Chrome's Web Audio autoplay policy
-                if (root.feedList.get(root.currentFeed).url.includes("railcam.co.uk"))
+                if (feedSource.feedList.get(feedSource.currentFeed).url.includes("railcam.co.uk"))
                 {
                      runJavaScript("document.getElementsByClassName(\"drawer-icon media-control-icon\")[0].click();");
                 }
@@ -211,17 +214,10 @@ FocusScope
             x: xscale(10); y: yscale(5); width: parent.width - xscale(20)
             text:
             {
-                if (root.feedList.get(root.currentFeed))
-                {
-                    if (root.feedList.get(root.currentFeed).title !== "")
-                        return root.feedList.get(root.currentFeed).title
-                    else
-                        return root.feedList.get(root.currentFeed).url
-                }
+                if (feedSource.feedList.get(feedSource.currentFeed).title !== "")
+                    return feedSource.feedList.get(feedSource.currentFeed).title
                 else
-                {
-                    return "ERROR: feed not found!"
-                }
+                    return feedSource.feedList.get(feedSource.currentFeed).url
             }
 
             verticalAlignment: Text.AlignTop
@@ -262,12 +258,23 @@ FocusScope
         InfoText
         {
             id: currFeed
-            x: parent.width - width - xscale(15); y: yscale(5)
+            x: parent.width - width - xscale(15); y: yscale(0)
             width: xscale(380)
-            text: root.currentFeed + 1 + " of " + root.feedList.count + " (" + root.feedSource + ")"
+            text: feedSource.currentFeed + 1 + " of " + feedSource.feedCount + " (" + feedSource.feedName + ")"
 
             horizontalAlignment: Text.AlignRight
         }
+
+        InfoText
+        {
+            id: currPlayer
+            x: parent.width - width - xscale(15); y: yscale(25)
+            width: xscale(380)
+            text: getActivePlayer();
+
+            horizontalAlignment: Text.AlignRight
+        }
+
 
         RowLayout
         {
@@ -382,13 +389,13 @@ FocusScope
 
     function startPlayback()
     {
-        if (root.feedList === undefined)
+        if (feedSource.feedList === undefined)
             return;
 
-        var newPlayer = root.feedList.get(root.currentFeed).player;
+        var newPlayer = feedSource.feedList.get(feedSource.currentFeed).player;
         switchPlayer(newPlayer);
 
-        var newURL = root.feedList.get(root.currentFeed).url;
+        var newURL = feedSource.feedList.get(feedSource.currentFeed).url;
         switchURL(newURL);
     }
 
@@ -412,7 +419,7 @@ FocusScope
             qtAVPlayer.visible = false;
             showMouse(false);
 
-            var url = root.feedList.get(root.currentFeed).url;
+            var url = feedSource.feedList.get(feedSource.currentFeed).url;
             var command = "streamlink"
             var parameters = ["--player-external-http", "--player-external-http-port", streamlinkPort, url, "best"]
 
@@ -482,6 +489,9 @@ FocusScope
 
     function switchURL(newURL)
     {
+        if (feedSource.feedName == "ZoneMinder Cameras")
+            newURL += "&connkey=" + Util.randomIntFromRange(0, 999999);
+
         railcamBrowser.visible = false;
         railcamBrowser.url = "";
 
@@ -640,8 +650,8 @@ FocusScope
         var index = 0;
         var padding = "";
 
-        if (root.feedList.get(root.currentFeed).url.indexOf("file://") === 0)
-            filename = root.feedList.get(root.currentFeed).url.substring(7, root.feedList.get(root.currentFeed).url.length);
+        if (feedSource.feedList.get(feedSource.currentFeed).url.indexOf("file://") === 0)
+            filename = feedSource.feedList.get(feedSource.currentFeed).url.substring(7, feedSource.feedList.get(feedSource.currentFeed).url.length);
         else
             filename = settings.configPath + "snapshot";
 
@@ -697,7 +707,7 @@ FocusScope
 
     function showRailCamDiagram()
     {
-        if (root.feedList.get(root.currentFeed).player === "RailCam")
+        if (feedSource.feedList.get(feedSource.currentFeed).player === "RailCam")
         {
             if (railcamBrowser.visible)
             {
@@ -706,8 +716,8 @@ FocusScope
             }
             else
             {
-                railcamBrowser.zoomFactor = xscale(root.feedList.get(root.currentFeed).zoom)
-                railcamBrowser.url = root.feedList.get(root.currentFeed).website;
+                railcamBrowser.zoomFactor = xscale(feedSource.feedList.get(feedSource.currentFeed).zoom)
+                railcamBrowser.url = feedSource.feedList.get(feedSource.currentFeed).website;
                 railcamBrowser.visible = true;
             }
         }
@@ -715,15 +725,15 @@ FocusScope
 
     function nextFeed()
     {
-        if (feedSource === "Advent Calendar")
+        if (feedSource.feedName === "Advent Calendar")
             return;
 
-        if (currentFeed === feedList.count - 1)
+        if (feedSource.currentFeed === feedSource.feedCount - 1)
         {
-            currentFeed = 0;
+            feedSource.currentFeed = 0;
         }
         else
-            currentFeed++;
+            feedSource.currentFeed++;
 
         startPlayback();
 
@@ -732,15 +742,15 @@ FocusScope
 
     function previousFeed()
     {
-        if (feedSource === "Advent Calendar")
+        if (feedSource.feedName === "Advent Calendar")
             return;
 
-        if (currentFeed === 0)
+        if (feedSource.currentFeed === 0)
         {
-            currentFeed = feedList.count - 1;
+            feedSource.currentFeed = feedSource.feedList.count - 1;
         }
         else
-            currentFeed--;
+            feedSource.currentFeed--;
 
         startPlayback();
 

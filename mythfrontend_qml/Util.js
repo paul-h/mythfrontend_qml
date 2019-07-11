@@ -192,3 +192,8 @@ function updateChannel(chanID, chanName, callsign, chanNo, XMLTVID)
     }
     http.send(params);
 }
+
+function randomIntFromRange(min, max) // min and max included
+{
+    return Math.floor(Math.random()*(max-min+1)+min);
+}

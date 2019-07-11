@@ -288,14 +288,12 @@ BaseScreen
             Image
             {
                 id: wrapper
-                //visible: opened
                 x: xscale(5)
                 y: yscale(5)
                 opacity: 1.0
                 width: calendarGrid.cellWidth - 10; height: calendarGrid.cellHeight - 10
                 source: opened ? icon : mythUtils.findThemeFile("images/advent_calendar/day" + day + ".png")
-                //source: icon
-            }
+             }
         }
 
         highlight: Rectangle { z: 99; color: "red"; opacity: 0.4; radius: 5 }
@@ -418,7 +416,8 @@ BaseScreen
         {
             calendarGrid.model.get(calendarGrid.currentIndex).opened = true
             calendarGrid.focus = true;
-            stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Advent Calendar", defaultFeedList:  calendarGrid.model, defaultCurrentFeed: calendarGrid.currentIndex}});
+            playerSources.adhocList = calendarGrid.model;
+            stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: calendarGrid.currentIndex}});
         }
         onCancelled:
         {

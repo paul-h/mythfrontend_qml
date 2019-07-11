@@ -197,12 +197,21 @@ BaseScreen
                     playDVD(model.get(currentIndex, "filePath"))
                 }
                 else
-                    stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedList:  mediaModel, defaultFeedSource: "Videos Folder", defaultCurrentFeed: 0}});
+                {
+                    playerSources.adhocList = mediaModel;
+                    var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0}});
+                    returnSound.play();
+                }
             }
 
             event.accepted = true;
             returnSound.play();
         }
+    }
+
+    function feedChanged(filter, index)
+    {
+        videoList.currentIndex = index;
     }
 
     function playDVD(filename)

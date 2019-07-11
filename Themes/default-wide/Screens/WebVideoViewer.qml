@@ -1,4 +1,4 @@
-import QtQuick 2.0
+﻿import QtQuick 2.0
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
@@ -27,6 +27,8 @@ BaseScreen
             footer.greenText = "Show (All Web Videos)"
         else
             footer.greenText = "Show (" + filterCategory + ")"
+
+        updateWebvideoDetails();
     }
 
     Component.onDestruction:
@@ -183,8 +185,8 @@ BaseScreen
         Keys.onReturnPressed:
         {
             returnSound.play();
-            stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Web Videos", defaultFeedList:  webvideoGrid.model, defaultCurrentFeed: webvideoGrid.currentIndex}});
-
+            var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Web Videos", defaultFilter:  filterCategory, defaultCurrentFeed: webvideoGrid.currentIndex}});
+            item.feedChanged.connect(feedChanged);
             event.accepted = true;
         }
 
@@ -287,6 +289,26 @@ BaseScreen
 
             updateWebvideoDetails()
         }
+    }
+
+    function feedChanged(filter, index)
+    {
+        console.log("WebVideoViewer feedChange - filter: " + filter + ", index: " + index);
+        if (filter !== filterCategory)
+        {
+            if (filter === "")
+            {
+                filterCategory = filter;
+                footer.greenText = "Show (All Web Videos)"
+            }
+            else
+            {
+                filterCategory = filter;
+                footer.greenText = "Show (" + filter + ")"
+            }
+        }
+
+        webvideoGrid.currentIndex = index;
     }
 
     function getIconURL(iconURL)

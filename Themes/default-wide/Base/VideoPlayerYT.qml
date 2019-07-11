@@ -19,6 +19,15 @@ Item
 
     property bool _playerLoaded: false
 
+    onPlayerStateChanged:
+    {
+        if (playerState === 0) // ended
+            playbackEnded();
+
+        if (playerState === 1) // playing
+            playbackStarted = true;
+    }
+
     onSourceChanged:
     {
          if (_playerLoaded)
@@ -31,10 +40,12 @@ Item
 
         anchors.fill: parent
         visible: parent.visible
+        focus: visible
         enabled: visible
         backgroundColor: "black"
         url: if (visible) mythUtils.findThemeFile("HTML/YouTube.html"); else "";
-        settings.pluginsEnabled : true
+        settings.pluginsEnabled: true
+//        settings.playbackRequiresUserGesture: false
 
         onLoadingChanged:
         {
