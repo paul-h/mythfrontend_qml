@@ -66,12 +66,12 @@ BaseScreen
             if (_paused)
             {
                 _paused = false;
-                footer.redText = "Pause";
+                footer.yellowText = "Pause";
             }
             else
             {
                 _paused = true;
-                footer.redText = "Play";
+                footer.yellowText = "Play";
             }
         }
         else if (event.key === Qt.Key_F4 || event.key === Qt.Key_D)
