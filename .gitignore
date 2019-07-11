@@ -1,3 +1,4 @@
 Makefile
 .qmake.stash
 Mythfrontend_QML*
+mythfrontend_qml.pro.user
