@@ -1,5 +1,7 @@
 import QtQuick 2.0
 import Base 1.0
+import Dialogs 1.0
+import Process 1.0
 
 BaseScreen
 {
@@ -78,7 +80,8 @@ BaseScreen
                 MouseArea
                 {
                     anchors.fill: parent
-                    onClicked: {
+                    onClicked:
+                    {
                         listView.currentIndex = index
                     }
                 }
@@ -118,6 +121,25 @@ BaseScreen
                 {
                     event.accepted = false;
                     downSound.play()
+                }
+                else if (event.key === Qt.Key_M)
+                {
+                    event.accepted = true;
+                    downSound.play();
+
+                    popupMenu.clearMenuItems();
+                    popupMenu.addMenuItem("", "Show Version...", "version");
+                    popupMenu.addMenuItem("", "Exit", "exit");
+
+                    if (settings.rebootCommand !== "")
+                        popupMenu.addMenuItem("", "Reboot", "reboot");
+
+                    if (settings.shutdownCommand !== "")
+                        popupMenu.addMenuItem("", "Shutdown", "shutdown");
+
+                    popupMenu.addMenuItem("", "Background Volume...", "volume");
+
+                    popupMenu.show();
                 }
             }
 
@@ -162,17 +184,80 @@ BaseScreen
         source: mythUtils.findThemeFile("watermark/tv.png")
     }
 
+    Process
+    {
+        id: shutdownProcess
+    }
 
-    //    ReflectionImage {
-    //        id: reflectionImage
-    //        // main image
-    //        x:832
-    //        y:196
-    //        width:  200; height: 200
-    //    }
+    PopupMenu
+    {
+        id: popupMenu
 
-    //    Scroller {
-    //        text: "<b>NEWS</b> This is some very loooooog ticker text that gets displayed whenever you're seeing this ticker here, bla bla bla..."
-    //    }
+        title: "Menu"
+        message: "Menu Options"
+
+        onItemSelected:
+        {
+            if (itemData === "version")
+            {
+                versionDialog.show();
+                return;
+            }
+            else if (itemData === "reboot")
+            {
+                if (settings.rebootCommand != "")
+                {
+                    console.log("Rebooting!!!!")
+                    shutdownProcess.start(settings.rebootCommand);
+                }
+            }
+            else if (itemData === "shutdown")
+            {
+                if (settings.shutdownCommand != "")
+                {
+                    console.log("Shutting Down!!!!")
+                    shutdownProcess.start(settings.shutdownCommand);
+                }
+            }
+            else if (itemData === "exit")
+            {
+                Qt.quit();
+                return;
+            }
+            else if (itemData === "volume")
+            {
+
+            }
+
+            listView.focus = true;
+        }
+
+        onCancelled:
+        {
+            listView.focus = true;
+        }
+    }
+
+    OkCancelDialog
+    {
+        id: versionDialog
+
+        title: "MythfrontendQML"
+        message: '<font  color="yellow"><b>Version: </font></b>v0.0.1 alpha<br><font  color="yellow"><b>Date:</font></b> 14th July 2019<br><br>(c) Paul Harrison 2019'
+
+        rejectButtonText: ""
+        acceptButtonText: "OK"
+
+        width: xscale(600); height: yscale(300)
+
+        onAccepted:
+        {
+            listView.focus = true;
+        }
+        onCancelled:
+        {
+            listView.focus = true;
+        }
+    }
 }
 
