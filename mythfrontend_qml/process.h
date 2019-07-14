@@ -20,6 +20,11 @@ public:
         QProcess::start(program, args);
     }
 
+    Q_INVOKABLE void start(const QString &program)
+    {
+        QProcess::start(program);
+    }
+
     Q_INVOKABLE void stop()
     {
         QProcess::terminate();
