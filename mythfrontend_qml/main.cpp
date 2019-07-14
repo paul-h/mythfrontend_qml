@@ -189,6 +189,11 @@ int main(int argc, char *argv[])
     gSettings->setZMUserName(databaseUtils.getSetting("Qml_zmUserName", hostName));
     gSettings->setZMPassword(databaseUtils.getSetting("Qml_zmPassword", hostName));
 
+    // shutdown settings
+    gSettings->setIdleTime(databaseUtils.getSetting("Qml_idleTime", hostName).toInt());
+    gSettings->setRebootCommand(databaseUtils.getSetting("Qml_rebootCommand", hostName));
+    gSettings->setShutdownCommand(databaseUtils.getSetting("Qml_shutdownCommand", hostName));
+
     engine.rootContext()->setContextProperty("settings", gSettings);
 
     // create the myth utils

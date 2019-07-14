@@ -39,6 +39,11 @@ class Settings : public QObject
     Q_PROPERTY(QString zmUserName READ zmUserName WRITE setZMUserName NOTIFY zmUserNameChanged)
     Q_PROPERTY(QString zmPassword READ zmPassword WRITE setZMPassword NOTIFY zmPasswordChanged)
 
+    // shutdown
+    Q_PROPERTY(int     idleTime READ idleTime WRITE setIdleTime NOTIFY idleTimeChanged)
+    Q_PROPERTY(QString rebootCommand READ rebootCommand WRITE setRebootCommand NOTIFY rebootCommandChanged)
+    Q_PROPERTY(QString shutdownCommand READ shutdownCommand WRITE setShutdownCommand NOTIFY shutdownCommandChanged)
+
    signals:
      void themeNameChanged(void);
      void hostNameChanged(void);
@@ -64,6 +69,9 @@ class Settings : public QObject
      void zmIPChanged(void);
      void zmUserNameChanged(void);
      void zmPasswordChanged(void);
+     void idleTimeChanged(void);
+     void rebootCommandChanged(void);
+     void shutdownCommandChanged(void);
 
   public:
     QString themeName(void) {return m_themeName;}
@@ -138,6 +146,15 @@ class Settings : public QObject
     QString zmPassword(void) {return m_zmPassword;}
     void    setZMPassword(const QString &zmPassword) {m_zmPassword = zmPassword; emit zmPasswordChanged();}
 
+    int     idleTime(void) {return m_idleTime;}
+    void    setIdleTime(const int &idleTime) {m_idleTime = idleTime; emit idleTimeChanged();}
+
+    QString rebootCommand(void) {return m_rebootCommand;}
+    void    setRebootCommand(const QString &rebootCommand) {m_rebootCommand = rebootCommand; emit rebootCommandChanged();}
+
+    QString shutdownCommand(void) {return m_shutdownCommand;}
+    void    setShutdownCommand(const QString &shutdownCommand) {m_shutdownCommand = shutdownCommand; emit shutdownCommandChanged();}
+
   private:
     QString m_themeName;
     QString m_hostName;
@@ -169,6 +186,11 @@ class Settings : public QObject
     QString m_zmIP;
     QString m_zmUserName;
     QString m_zmPassword;
+
+    int     m_idleTime;
+    QString m_rebootCommand;
+    QString m_shutdownCommand;
+
 };
 
 extern Settings *gSettings;
