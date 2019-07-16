@@ -16,6 +16,7 @@ XmlListModel
     XmlRole { name: "description"; query: "description/string()" }
     XmlRole { name: "encodedContent"; query: "content:encoded/string()"}
     XmlRole { name: "mediaContentUrl"; query: "media:group/media:content[1]/@url/string()" }
+    XmlRole { name: "mediaContentUrl2"; query: "media:content/@url/string()" }
     XmlRole { name: "image"; query: "media:thumbnail/@url/string()" }
     XmlRole { name: "enclosureUrl"; query: "enclosure/@url/string()" }
     XmlRole { name: "enclosureType"; query: "enclosure/@type/string()" }

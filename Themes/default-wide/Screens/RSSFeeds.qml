@@ -172,9 +172,12 @@ BaseScreen
             //console.log("Current articleList index is:" + currentIndex)
             //console.log("image: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).image : ""))
             //console.log("mediaContentUrl: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).mediaContentUrl : ""))
+            //console.log("mediaContentUrl2: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).mediaContentUrl2 : ""))
             //console.log("enclosureURL: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).enclosureUrl : ""))
             //console.log("enclosureType: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).enclosureType : ""))
             //console.log("link: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).link : ""))
+
+            articleImage.source = findArticleImage(articleList.currentIndex);
         }
     }
 
@@ -188,19 +191,24 @@ BaseScreen
         id: articleImage
         x: xscale(30); y: yscale(505); width: xscale(185); height: yscale(185)
         source: findArticleImage(articleList.currentIndex)
+        onStatusChanged:  if (status == Image.Error) source = mythUtils.findThemeFile("images/grid_noimage.png")
     }
 
     TitleText
     {
         id: titleText
-        x: xscale(230); y: yscale(510); width: xscale(900); height: yscale(50)
+        x: xscale(230); y: yscale(505); width: xscale(1020); height: yscale(70)
+        verticalAlignment: Text.AlignTop
+        multiline: true
         text: feedModel.get(articleList.currentIndex) ? mythUtils.replaceHtmlChar(feedModel.get(articleList.currentIndex).title) : ""
     }
 
     InfoText
     {
         id: descText
-        x: xscale(230); y: yscale(550); width: xscale(900); height: yscale(100)
+        x: xscale(230); y: yscale(575); width: xscale(1020); height: yscale(115)
+        verticalAlignment: Text.AlignTop
+        //textFormat: Text.RichText
         multiline: true
         text: feedModel.get(articleList.currentIndex) ? mythUtils.replaceHtmlChar(feedModel.get(articleList.currentIndex).description) : ""
     }
@@ -211,11 +219,13 @@ BaseScreen
             return feedModel.get(index).image;
         else if (feedModel.get(index) && feedModel.get(index).mediaContentUrl !== "")
             return feedModel.get(index).mediaContentUrl;
+        else if (feedModel.get(index) && feedModel.get(index).mediaContentUrl2 !== "")
+            return feedModel.get(index).mediaContentUrl2;
         else if (feedModel.get(index) && feedModel.get(index).enclosureType === "image" && feedModel.get(index).enclosureUrl !== "")
             return feedModel.get(index).enclosureUrl;
         else if (rssFeedsModel.data(rssFeedsModel.index(feedList.currentIndex, 2)) !== "")
             return rssFeedsModel.data(rssFeedsModel.index(feedList.currentIndex, 2))
-            else
-                return mythUtils.findThemeFile("images/grid_noimage.png");
+        else
+            return mythUtils.findThemeFile("images/grid_noimage.png");
     }
 }
