@@ -17,6 +17,7 @@
 #include <vlc_url.h>
 
 // mythcpp
+#include <mythtypes.h>
 #include <mythlivetvplayback.h>
 #include <mythfileplayback.h>
 #include <mythwsapi.h>
@@ -134,6 +135,7 @@ struct myth_sys_t
 
     uint   m_encoder;
     string m_chanNum;
+    int    m_chanId;
 
     Myth::WSAPI *m_wsapi;
 
@@ -195,7 +197,7 @@ bool filePlayback(stream_t *p_stream, const string &filename, const string &sgro
 }
 
 // live TV playback
-bool liveTVSpawn(stream_t *p_stream, const string &server, const string &chanNum)
+bool liveTVSpawn(stream_t *p_stream, const string &server, int chanId, const string &chanNum)
 {
     myth_sys_t *p_sys = static_cast<myth_sys_t*>(p_stream->p_sys);
 
@@ -208,10 +210,29 @@ bool liveTVSpawn(stream_t *p_stream, const string &server, const string &chanNum
         return false;
     }
 
-    msg_Info(p_stream, "INFO: spawning live TV");
+    // if we have a chanId try that channel only
+    if (chanId != -1)
+    {
+        msg_Info(p_stream, "INFO: spawning live TV for chanId: %u", chanId);
 
-    // Spawn will find the channels match this chanNum. Also we can prepare our
-    // predefined set of channels.
+        // get the channel from the chanID
+        Myth::ChannelPtr chan = p_sys->m_wsapi->GetChannel(chanId);
+
+        // try to play this channel
+        if (p_sys->m_lp->SpawnLiveTV(chan))
+        {
+            const Myth::ProgramPtr prog = p_sys->m_lp->GetPlayedProgram();
+            msg_Info(p_stream,  "INFO: live TV is playing channel id %u from source id %u",
+                     prog->channel.chanId, prog->channel.sourceId);
+            msg_Info(p_stream, "INFO: program title is: %s", prog->title.c_str());
+
+            return true;
+        }
+    }
+
+    msg_Info(p_stream, "INFO: spawning live TV for chanNum: %s", chanNum.c_str());
+
+    // find all channels with this chanNum
     Myth::ChannelList chanList;
 
     channelMap_t::const_iterator it = p_sys->m_channelMap.find(chanNum);
@@ -222,9 +243,7 @@ bool liveTVSpawn(stream_t *p_stream, const string &server, const string &chanNum
         ++it;
     }
 
-    //msg_Info(p_stream, "INFO: starting LiveTV on channel: %s - we have %u channels in chanList", chanNum, chanList.size());
-
-    // Spawn Live TV
+    // try to play one of these channels
     if (p_sys->m_lp->SpawnLiveTV(chanNum, chanList))
     {
         const Myth::ProgramPtr prog = p_sys->m_lp->GetPlayedProgram();
@@ -263,6 +282,18 @@ static bool getOptionUInt(const string &token, const string &key, uint &value)
     return false;
 }
 
+static bool getOptionInt(const string &token, const string &key, int &value)
+{
+    if (token.rfind(key, 0) == 0)
+    {
+        string svalue = token.substr(key.length());
+        value = static_cast<int>(stoul(token.substr(key.length()).c_str()));
+        return true;
+    }
+
+    return false;
+}
+
 /*****************************************************************************
  * VarInit/ParseMRL:
  *****************************************************************************/
@@ -294,6 +325,7 @@ static bool ParseMRL(stream_t *p_stream)
         found |= getOptionString(token, "sgroup=",   p_sys->m_sgroup);
         found |= getOptionUInt(token,   "encoder=",  p_sys->m_encoder);
         found |= getOptionString(token, "channum=",  p_sys->m_chanNum);
+        found |= getOptionInt(token, "chanid=",   p_sys->m_chanId);
 
         if (!found)
         {
@@ -349,6 +381,8 @@ static int InOpen(vlc_object_t *p_obj)
     p_sys->m_portProto = 0;
     p_sys->m_portAPI = 0;
     p_sys->m_encoder = 0;
+    p_sys->m_chanId = -1;
+
     p_sys->m_lp = nullptr;
     p_sys->m_fp = nullptr;
     p_sys->m_wsapi = nullptr;
@@ -404,10 +438,10 @@ static int InOpen(vlc_object_t *p_obj)
     else if (p_sys->m_type == "livetv")
     {
         msg_Info(p_stream, "playing LiveTV");
-        msg_Info(p_stream, "encoder: %d, channum: %s", p_sys->m_encoder,  p_sys->m_chanNum.c_str());
+        msg_Info(p_stream, "encoder: %d, channum: %s, chanid: %d", p_sys->m_encoder,  p_sys->m_chanNum.c_str(), p_sys->m_chanId);
 
         // start LiveTV
-        if (!liveTVSpawn(p_stream, p_sys->m_server, p_sys->m_chanNum))
+        if (!liveTVSpawn(p_stream, p_sys->m_server, p_sys->m_chanId, p_sys->m_chanNum))
              goto exit_error;
     }
     else
