@@ -290,7 +290,6 @@ BaseScreen
 
     function feedChanged(filter, index)
     {
-        console.log("WebCamViewer feedChange - filter: " + filter + ", index: " + index);
         if (filter !== filterCategory)
         {
             if (filter === "")

@@ -208,22 +208,23 @@ BaseScreen
 
             if (mediaPlayer2.focus)
             {
-                mediaPlayer1.feedList = mediaPlayer2.feedList;
-                mediaPlayer1.currentFeed = mediaPlayer2.currentFeed;
+                mediaPlayer1.feed.switchToFeed(mediaPlayer2.feed.feedName, mediaPlayer2.feed.currentFilter, mediaPlayer2.feed.currentFeed);
             }
             else if (mediaPlayer3.focus)
             {
-                mediaPlayer1.feedList = mediaPlayer3.feedList;
-                mediaPlayer1.currentFeed = mediaPlayer3.currentFeed;
+                mediaPlayer1.feed.switchToFeed(mediaPlayer3.feed.feedName, mediaPlayer3.feed.currentFilter, mediaPlayer3.feed.currentFeed);;
             }
             else if (mediaPlayer4.focus)
             {
-                mediaPlayer1.feedList = mediaPlayer4.feedList;
-                mediaPlayer1.currentFeed = mediaPlayer4.currentFeed;
+                mediaPlayer1.feed.switchToFeed(mediaPlayer4.feed.feedName, mediaPlayer4.feed.currentFilter, mediaPlayer4.feed.currentFeed);;
             }
 
             mediaPlayer1.focus = true;
             mediaPlayer1.startPlayback();
+            mediaPlayer2.stop();
+            mediaPlayer3.stop();
+            mediaPlayer4.stop();
+
             setLayout(0);
         }
     }
