@@ -15,6 +15,7 @@ Item
     property int    shadowXOffset: theme.infoShadowXOffset
     property int    shadowYOffset: theme.infoShadowYOffset
     property bool   multiline: false
+    property int    textFormat: Text.StyledText
 
     x: xscale(50); y: 0; width: xscale(300); height: yscale(50)
 
@@ -44,7 +45,7 @@ Item
         clip: true
         elide: Text.ElideRight
         wrapMode: root.multiline ? Text.WordWrap : Text.NoWrap
-        textFormat: Text.StyledText
+        textFormat: root.textFormat
     }
 
     Text
@@ -62,7 +63,7 @@ Item
         clip: true
         elide: Text.ElideRight
         wrapMode: root.multiline ? Text.WordWrap : Text.NoWrap
-        textFormat: Text.StyledText
+        textFormat: root.textFormat
     }
 }
 
