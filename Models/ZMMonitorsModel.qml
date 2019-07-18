@@ -27,7 +27,7 @@ XmlListModel
     XmlRole { name: "title"; query: "Monitor/Name/string()" }
     XmlRole { name: "player"; query: "xs:string('WebBrowser')" }
     XmlRole { name: "url"; query: "concat(xs:string('http://" + settings.zmIP + "'),
-                                          xs:string('/zm/cgi-bin/nph-zms?scale=100&amp;width=640px&amp;height=480px&amp;mode=jpeg&amp;maxfps=5&amp;buffer=1000&amp;monitor='),
+                                          xs:string('/zm/cgi-bin/nph-zms?scale=300&amp;mode=jpeg&amp;maxfps=5&amp;buffer=1000&amp;monitor='),
                                           Monitor/Id/string(),
                                           xs:string('&amp;user=" + settings.zmUserName + "&amp;pass=" + settings.zmPassword + "'))" }
 
