@@ -19,9 +19,18 @@ ApplicationWindow
     property double wmult: width / 1280
     property double hmult: height / 720
     property alias theme: themeLoader.item
+    property double soundEffectsVolume: 1.0
+    property double backgroundVideoVolume: 1.0
+
     property alias playerSources: playerSourcesLoader.item;
 
-    Component.onCompleted: keyPressListener.listenTo(window)
+    Component.onCompleted:
+    {
+        keyPressListener.listenTo(window)
+
+        soundEffectsVolume = dbUtils.getSetting("Qml_soundEffectsVolume", settings.hostName, "1.0");
+        backgroundVideoVolume = dbUtils.getSetting("Qml_backgroundVideoVolume", settings.hostName, "1.0");
+    }
 
     Connections
     {
@@ -112,11 +121,6 @@ ApplicationWindow
     {
         id: playerSourcesLoader
         source: settings.sharePath + "qml/Models/PlayerSourcesModel.qml"
-
-        onLoaded:
-        {
-            console.log("Loaded Sources Model");
-        }
     }
 
     function xscale(x)
@@ -134,31 +138,37 @@ ApplicationWindow
     {
          id: upSound
          source: mythUtils.findThemeFile("sounds/pock.wav");
+         volume: soundEffectsVolume
     }
     SoundEffect
     {
          id: downSound
-         source: mythUtils.findThemeFile("sounds/pock.wav");
+         source: mythUtils.findThemeFile("sounds/pock.wav")
+         volume: soundEffectsVolume
     }
     SoundEffect
     {
          id: leftSound
          source: mythUtils.findThemeFile("sounds/pock.wav")
+         volume: soundEffectsVolume
     }
     SoundEffect
     {
          id: rightSound
          source: mythUtils.findThemeFile("sounds/pock.wav")
+         volume: soundEffectsVolume
     }
     SoundEffect
     {
          id: returnSound
          source: mythUtils.findThemeFile("sounds/poguck.wav")
+         volume: soundEffectsVolume
     }
     SoundEffect
     {
          id: escapeSound
          source: mythUtils.findThemeFile("sounds/pock.wav")
+         volume: soundEffectsVolume
     }
 
     // ticker items grabber process
@@ -255,7 +265,6 @@ ApplicationWindow
             else if (event.key === Qt.Key_F12)
             {
                 settings.showTextBorder = ! settings.showTextBorder;
-                console.log("showTextBorder: " + settings.showTextBorder);
             }
             else if (event.key === Qt.Key_F10)
             {
@@ -324,6 +333,47 @@ ApplicationWindow
             }
 
             mouse.accepted = false;
+        }
+    }
+
+    Timer
+    {
+        id: notificationTimer
+        interval: 6000; running: false; repeat: false
+        onTriggered: notificationPanel.visible = false;
+    }
+
+    BaseBackground
+    {
+        id: notificationPanel
+        x: xscale(800); y: yscale(100); width: xscale(400); height: yscale(110)
+        visible: false
+
+        InfoText
+        {
+            id: notificationText
+            anchors.fill: parent
+            horizontalAlignment: Text.AlignHCenter
+        }
+    }
+
+    function showNotification(message, timeOut)
+    {
+        if (!timeOut)
+            timeOut = settings.osdTimeoutMedium;
+
+        if (message !== "")
+        {
+            notificationText.text = message;
+            notificationPanel.visible = true;
+            notificationTimer.interval = timeOut
+            notificationTimer.restart();
+        }
+        else
+        {
+            notificationText.text = message;
+            notificationPanel.visible = false;
+            notificationTimer.stop();
         }
     }
 }

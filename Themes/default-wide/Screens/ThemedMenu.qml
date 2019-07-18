@@ -137,9 +137,29 @@ BaseScreen
                     if (settings.shutdownCommand !== "")
                         popupMenu.addMenuItem("", "Shutdown", "shutdown");
 
-                    popupMenu.addMenuItem("", "Background Volume...", "volume");
+                    popupMenu.addMenuItem("", "Volume...", "volume");
 
                     popupMenu.show();
+                }
+                else if (event.key === Qt.Key_BracketLeft)
+                {
+                    // background video volume down
+                    if (window.backgroundVideoVolume * 100 >= 1.00)
+                        window.backgroundVideoVolume -= 0.01;
+
+                    dbUtils.setSetting("Qml_backgroundVideoVolume", settings.hostName, window.backgroundVideoVolume);
+
+                    showNotification("Background Volume: " + Math.round(backgroundVideoVolume * 100) + "%");
+                }
+                else if (event.key === Qt.Key_BracketRight)
+                {
+                    // background video volume up
+                    if (window.backgroundVideoVolume * 100 <= 99)
+                        window.backgroundVideoVolume += 0.01;
+
+                    dbUtils.setSetting("Qml_backgroundVideoVolume", settings.hostName, window.backgroundVideoVolume);
+
+                    showNotification("Background Volume: " + Math.round(backgroundVideoVolume * 100) + "%");
                 }
             }
 
@@ -226,7 +246,17 @@ BaseScreen
             }
             else if (itemData === "volume")
             {
+                volumeDialog.oldEffectsVolume = window.soundEffectsVolume;
+                volumeDialog.oldBackgroundVideoVolume = window.backgroundVideoVolume;
 
+                var index = window.soundEffectsVolume * 100.0;
+                effectsSelector.selectItem(volumeModel.get(index).itemText);
+
+                index = window.backgroundVideoVolume * 100.0;
+                backgroundSelector.selectItem(volumeModel.get(index).itemText);
+
+                volumeDialog.show();
+                return;
             }
 
             listView.focus = true;
@@ -250,14 +280,144 @@ BaseScreen
 
         width: xscale(600); height: yscale(300)
 
+        onAccepted: listView.focus = true;
+        onCancelled: listView.focus = true;
+    }
+
+    ListModel
+    {
+        id: volumeModel
+
+        Component.onCompleted:
+        {
+            append({ "volume": 0, "itemText": "Muted"});
+
+            for (var x = 1; x <= 100; x++)
+            {
+                append({ "volume": x, "itemText": x + "%"});
+            }
+        }
+    }
+
+    BaseDialog
+    {
+        id: volumeDialog
+        title: "Volume"
+        message: "Set sound effects and background video volume"
+        width: xscale(500)
+        height: yscale(400)
+
+        property double oldEffectsVolume: -1
+        property double oldBackgroundVideoVolume: -1
+
         onAccepted:
         {
             listView.focus = true;
+            window.soundEffectsVolume = volumeModel.get(effectsSelector.currentIndex).volume / 100;
+            window.backgroundVideoVolume = volumeModel.get(backgroundSelector.currentIndex).volume / 100;
+
+            dbUtils.setSetting("Qml_soundEffectsVolume", settings.hostName, window.soundEffectsVolume);
+            dbUtils.setSetting("Qml_backgroundVideoVolume", settings.hostName, window.backgroundVideoVolume);
         }
+
         onCancelled:
         {
             listView.focus = true;
+
+            window.soundEffectsVolume = oldEffectsVolume;
+            window.backgroundVideoVolume = oldBackgroundVideoVolume;
         }
+
+        content: Item
+        {
+            anchors.fill: parent
+
+            LabelText
+            {
+                text: "Sound Effects"
+                x: xscale(10); y: 0; width: xscale(250);
+            }
+
+            BaseSelector
+            {
+                id: effectsSelector
+                x: xscale(260); y: yscale(0);
+                model: volumeModel
+                focus: true;
+                KeyNavigation.up: rejectButton;
+                KeyNavigation.down: backgroundSelector;
+
+                onItemSelected:
+                {
+                    if (volumeDialog.oldEffectsVolume !== -1)
+                    {
+                        window.soundEffectsVolume = volumeModel.get(effectsSelector.currentIndex).volume / 100;
+                        returnSound.play();
+                    }
+                }
+            }
+            LabelText
+            {
+                text: "Background Video"
+                x: xscale(10); y: yscale(60); width: xscale(250);
+            }
+
+            BaseSelector
+            {
+                id: backgroundSelector
+                x: xscale(260); y: yscale(60);
+                model: volumeModel
+                KeyNavigation.up: effectsSelector;
+                KeyNavigation.down: acceptButton;
+
+                onItemSelected:
+                {
+                    if (volumeDialog.oldBackgroundVideoVolume !== -1)
+                    {
+                         window.backgroundVideoVolume = volumeModel.get(backgroundSelector.currentIndex).volume / 100;
+                    }
+
+                }
+            }
+        }
+
+        buttons:
+        [
+            BaseButton
+            {
+                id: acceptButton
+                text: "OK"
+                visible: text != ""
+
+                KeyNavigation.left: rejectButton;
+                KeyNavigation.right: rejectButton;
+                KeyNavigation.up: backgroundSelector;
+                KeyNavigation.down: effectsSelector;
+                onClicked:
+                {
+                    volumeDialog.state = "";
+                    volumeDialog.accepted();
+                }
+            },
+
+            BaseButton
+            {
+                id: rejectButton
+                text: "Cancel"
+                visible: text != ""
+
+                KeyNavigation.left: acceptButton;
+                KeyNavigation.right: acceptButton;
+                KeyNavigation.up: backgroundSelector;
+                KeyNavigation.down: effectsSelector;
+
+                onClicked:
+                {
+                    volumeDialog.state = "";
+                    volumeDialog.cancelled();
+                }
+            }
+        ]
     }
 }
 

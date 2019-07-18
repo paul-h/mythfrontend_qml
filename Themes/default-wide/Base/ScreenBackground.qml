@@ -67,6 +67,7 @@ Item
         anchors.fill: parent
         visible: false
         loop: true;
+        volume: window.backgroundVideoVolume * 100
 
         Component.onCompleted:
         {
@@ -99,7 +100,7 @@ Item
     {
         id: screenTitle
         text: title
-        width: 900
+        width: xscale(900)
         visible : true
     }
 
