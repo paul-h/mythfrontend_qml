@@ -21,6 +21,10 @@ class MythUtils : public QObject
     Q_INVOKABLE QString formatDateTime(const QDateTime &dateTime);
     Q_INVOKABLE QString formatDate(const QDateTime &dateTime);
     Q_INVOKABLE QString replaceHtmlChar(const QString &orig);
+    Q_INVOKABLE bool sendKeyEvent(QObject *obj, int keyCode);
+    Q_INVOKABLE void moveMouse(int x, int y);
+    Q_INVOKABLE bool clickMouse(QObject *obj, int x, int y);
+    Q_INVOKABLE bool doubleClickMouse(QObject *obj, int x, int y);
 
   private:
     QQmlApplicationEngine *m_engine;

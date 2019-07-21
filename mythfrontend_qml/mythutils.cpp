@@ -131,3 +131,60 @@ QString MythUtils::replaceHtmlChar(const QString &orig)
 
     return s;
 }
+
+bool MythUtils::sendKeyEvent(QObject *obj, int keyCode)
+{
+    if (!obj)
+        return false;
+
+    Qt::Key key = Qt::Key(keyCode);
+    QKeyEvent* event = new QKeyEvent(QKeyEvent::KeyPress, key, Qt::NoModifier, QKeySequence(key).toString());
+    QCoreApplication::postEvent(obj, event);
+
+    return true;
+}
+
+void MythUtils::moveMouse(int x, int y)
+{
+    QPoint globalPoint = QPoint(x, y);
+    QCursor::setPos(globalPoint);
+}
+
+bool MythUtils::clickMouse(QObject *obj, int x, int y)
+{
+    if (!obj)
+        return false;
+
+    QMouseEvent * event1 = new QMouseEvent ((QEvent::MouseButtonPress), QPoint(x, y),
+        Qt::LeftButton,
+        Qt::NoButton,
+        Qt::NoModifier   );
+
+    QCoreApplication::postEvent(obj, event1);
+
+    usleep(1000);
+
+    QMouseEvent * event2 = new QMouseEvent ((QEvent::MouseButtonRelease), QPoint(x, y),
+        Qt::LeftButton,
+        Qt::NoButton,
+        Qt::NoModifier   );
+
+    QCoreApplication::postEvent(obj, event2);
+
+    return true;
+}
+
+bool MythUtils::doubleClickMouse(QObject *obj, int x, int y)
+{
+    if (!obj)
+        return false;
+
+    QMouseEvent * event1 = new QMouseEvent ((QEvent::MouseButtonDblClick), QPoint(x, y),
+        Qt::LeftButton,
+        Qt::LeftButton,
+        Qt::NoModifier   );
+
+    QCoreApplication::postEvent(obj, event1);
+
+    return true;
+}
