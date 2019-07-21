@@ -197,3 +197,12 @@ function randomIntFromRange(min, max) // min and max included
 {
     return Math.floor(Math.random()*(max-min+1)+min);
 }
+
+function delay(delayTime, cb)
+{
+    timer = new Timer();
+    timer.interval = delayTime;
+    timer.repeat = false;
+    timer.triggered.connect(cb);
+    timer.start();
+}
