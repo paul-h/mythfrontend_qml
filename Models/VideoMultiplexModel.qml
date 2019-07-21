@@ -8,7 +8,7 @@ XmlListModel
     property int sourceId: -1
 
     source: settings.masterBackend + "Channel/GetVideoMultiplexList?SourceID=" + sourceId
-    query: "/VideoMultiplexList/VideoMultiplexs/VideoMultiplex"
+    query: "/VideoMultiplexList/VideoMultiplexes/VideoMultiplex"
 
     XmlRole { name: "MplexId"; query: "MplexId/number()" }
     XmlRole { name: "SourceId"; query: "SourceId/number()" }
@@ -35,11 +35,18 @@ XmlListModel
     XmlRole { name: "UpdateTimeStamp"; query: "UpdateTimeStamp/string()" }
     XmlRole { name: "DefaultAuthority"; query: "DefaultAuthority/string()" }
 
+    signal loaded();
+
     onStatusChanged:
     {
+        if (status == XmlListModel.Ready)
+        {
+             loaded();
+        }
+
         if (status === XmlListModel.Error)
         {
-            console.info("ERROR loading VideoMultiplexModel: " + errorString + "\n" + source.toString());
+            console.info("VideoMultiplexModel - ERROR: " + errorString() + "\n" + source.toString());
         }
     }
 
@@ -47,7 +54,7 @@ XmlListModel
     {
         for (var x = 0; x < count; x++)
         {
-            if (get(x).Id === Id)
+            if (get(x).MplexId === Id)
                 return x;
         }
 
