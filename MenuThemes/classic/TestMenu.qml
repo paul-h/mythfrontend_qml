@@ -26,6 +26,12 @@ ListModel
     }
     ListElement
     {
+        menutext: "Rich Text Test"
+        loaderSource: "TestPage4.qml"
+        waterMark: "watermark/setup.png"
+    }
+    ListElement
+    {
         menutext:"QtAV Player Test"
         loaderSource: "TestQtAv.qml"
         waterMark: "watermark/setup.png"
