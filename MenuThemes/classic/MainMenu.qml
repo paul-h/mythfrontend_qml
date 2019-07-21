@@ -25,21 +25,21 @@ ListModel
     {
         menutext:"Music"
         loaderSource: "ThemedMenu.qml"
-        waterMark: "watermark/info.png"
+        waterMark: "watermark/music.png"
         menuSource: "MusicMenu.qml"
     }
     ListElement
     {
         menutext: "Videos"
         loaderSource: "ThemedMenu.qml"
-        waterMark: "watermark/dvd.png"
+        waterMark: "watermark/video.png"
         menuSource: "VideoMenu.qml"
     }
     ListElement
     {
         menutext:"Images"
         loaderSource: "IconView.qml"
-        waterMark: "watermark/tv.png"
+        waterMark: "watermark/gallery.png"
     }
     ListElement
     {
@@ -64,12 +64,6 @@ ListModel
     }
     ListElement
     {
-        menutext:"Archive Files"
-        loaderSource: "ComingSoon.qml"
-        waterMark: "watermark/weather.png"
-    }
-    ListElement
-    {
         menutext:"ZoneMinder"
         loaderSource: "ThemedMenu.qml"
         waterMark: "watermark/zoneminder.png"
@@ -83,10 +77,9 @@ ListModel
     }
     ListElement
     {
-        menutext: "Test Pages"
-        loaderSource: "ThemedMenu.qml"
-        waterMark: "watermark/setup.png"
-        menuSource: "TestMenu.qml"
+        menutext: "What's New"
+        loaderSource: "WhatsNew.qml"
+        waterMark: "watermark/whatsnew.png"
     }
     ListElement
     {
@@ -94,5 +87,12 @@ ListModel
         loaderSource: "ThemedMenu.qml"
         waterMark: "watermark/setup.png"
         menuSource: "SettingsMenu.qml"
+    }
+    ListElement
+    {
+        menutext: "Test Pages"
+        loaderSource: "ThemedMenu.qml"
+        waterMark: "watermark/setup.png"
+        menuSource: "TestMenu.qml"
     }
 }
