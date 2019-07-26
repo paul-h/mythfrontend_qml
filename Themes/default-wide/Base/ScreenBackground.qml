@@ -11,7 +11,6 @@ Item
     property alias showVideo: videoPlayer.visible
     property alias showTicker: ticker.visible
     property alias showBusyIndicator: busyIndicator.running
-    property bool  showMouse: false
 
     function setTitle (show, newTitle)
     {
@@ -55,8 +54,6 @@ Item
                 videoPlayer.play();
         }
     }
-
-    onShowMouseChanged: mouseArea.showMouse = showMouse
 
     x: 0; y : 0; width: window.width; height: window.height
 

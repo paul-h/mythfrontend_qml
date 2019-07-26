@@ -238,6 +238,50 @@ ApplicationWindow
         source: settings.menuPath + "MainMenu.qml"
     }
 
+    MouseArea
+    {
+        id: mouseArea
+
+        property bool showMouse: true;
+        property bool autoHide: true;
+
+        property int oldX: 0
+        property int oldY: 0
+
+        anchors.fill: parent
+        enabled: true;
+        hoverEnabled: true;
+
+        preventStealing: true
+        propagateComposedEvents: true
+
+        onShowMouseChanged: if (showMouse) cursorShape = Qt.ArrowCursor; else cursorShape = Qt.BlankCursor;
+        onAutoHideChanged: mouseTimer.stop();
+
+        onClicked: mouse.accepted = false;
+        onPressed: mouse.accepted = false;
+        onReleased: mouse.accepted = false;
+        onDoubleClicked: mouse.accepted = false;
+        onPressAndHold: mouse.accepted = false
+
+        onPositionChanged:
+        {
+            if (showMouse)
+            {
+                if (autoHide)
+                    mouseTimer.restart();
+
+                if (cursorShape === Qt.BlankCursor)
+                    cursorShape = Qt.ArrowCursor;
+
+                oldX = mouse.x;
+                oldY = mouse.y;
+            }
+
+            mouse.accepted = false;
+        }
+    }
+
     StackView
     {
         id: stack
@@ -292,49 +336,7 @@ ApplicationWindow
         mouseArea.showMouse = show;
     }
 
-    MouseArea
-    {
-        id: mouseArea
 
-        property bool showMouse: true;
-        property bool autoHide: true;
-
-        property int oldX: 0
-        property int oldY: 0
-
-        anchors.fill: parent
-        enabled: true
-
-        hoverEnabled: true;
-
-        propagateComposedEvents: true
-
-        onShowMouseChanged: if (showMouse) cursorShape = Qt.ArrowCursor; else cursorShape = Qt.BlankCursor;
-        onAutoHideChanged: mouseTimer.stop();
-
-        onClicked: mouse.accepted = false;
-        onPressed: mouse.accepted = false;
-        onReleased: mouse.accepted = false;
-        onDoubleClicked: mouse.accepted = false;
-        onPressAndHold: mouse.accepted = false
-
-        onPositionChanged:
-        {
-            if (showMouse)
-            {
-                if (autoHide)
-                    mouseTimer.restart();
-
-                if (cursorShape != Qt.ArrowCursor)
-                    cursorShape = Qt.ArrowCursor;
-
-                oldX = mouse.x;
-                oldY = mouse.y;
-            }
-
-            mouse.accepted = false;
-        }
-    }
 
     Timer
     {

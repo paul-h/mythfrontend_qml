@@ -17,16 +17,17 @@ BaseScreen
         showTitle(!fullscreen, "Web Browser");
         showTime(false);
         showTicker(false);
-        showMouse(true);
-        pauseVideo(true);
-        showVideo(false);
+        pauseVideo(false);
+        showVideo(true);
     }
 
     Component.onDestruction:
     {
-        showMouse(false)
+        showVideo(true);
         pauseVideo(false);
     }
+
+    onFullscreenChanged: { showVideo(!fullscreen);  pauseVideo(fullscreen); }
 
     Action
     {
@@ -96,11 +97,9 @@ BaseScreen
         }
         onFullScreenRequested: request.accept();
         onNavigationRequested: request.action = WebEngineNavigationRequest.AcceptRequest;
-
-        //onFocusChanged: { console.log("Browser focus: " + focus); showMouse(focus); }
     }
 
-    PopupMenu
+     PopupMenu
     {
         id: popupMenu
 

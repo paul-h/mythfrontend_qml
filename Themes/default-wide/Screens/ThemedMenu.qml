@@ -76,15 +76,6 @@ BaseScreen
                     x: xscale(10); width: parent.width - xscale(20);
                     anchors.verticalCenter: parent.verticalCenter
                 }
-
-                MouseArea
-                {
-                    anchors.fill: parent
-                    onClicked:
-                    {
-                        listView.currentIndex = index
-                    }
-                }
             }
         }
 
@@ -177,7 +168,7 @@ BaseScreen
                 {
                     var url = model.get(currentIndex).url
                     var zoom = xscale(model.get(currentIndex).zoom)
-                    stack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: url, fullscreen: true, zoomFactor: zoom}});
+                    stack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: url, fullscreen: false, zoomFactor: zoom}});
                 }
                 else if (model.get(currentIndex).loaderSource === "InternalPlayer.qml")
                 {
@@ -273,7 +264,7 @@ BaseScreen
         id: versionDialog
 
         title: "MythfrontendQML"
-        message: '<font  color="yellow"><b>Version: </font></b>v0.0.1 alpha<br><font  color="yellow"><b>Date:</font></b> 14th July 2019<br><br>(c) Paul Harrison 2019'
+        message: '<font  color="yellow"><b>Version: </font></b>' + version + '<br><font  color="yellow"><b>Date: </font></b>' + buildtime + '<br><br>(c) Paul Harrison 2019'
 
         rejectButtonText: ""
         acceptButtonText: "OK"

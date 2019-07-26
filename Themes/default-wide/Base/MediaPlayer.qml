@@ -28,11 +28,6 @@ FocusScope
 
     signal playbackEnded()
 
-    Component.onDestruction:
-    {
-         showMouse(false)
-    }
-
     FeedSource
     {
         id: feedSource
@@ -268,7 +263,7 @@ FocusScope
         InfoText
         {
             id: currPlayer
-            x: parent.width - width - xscale(15); y: yscale(25)
+            x: parent.width - width - xscale(15); y: yscale(24)
             width: xscale(380)
             text: getActivePlayer();
 
@@ -417,7 +412,6 @@ FocusScope
             webPlayer.visible = false;
             vlcPlayer.visible = false;
             qtAVPlayer.visible = false;
-            showMouse(false);
 
             var url = feedSource.feedList.get(feedSource.currentFeed).url;
             var command = "streamlink"
@@ -442,7 +436,6 @@ FocusScope
             webPlayer.visible = false;
             vlcPlayer.visible = true;
             qtAVPlayer.visible = false;
-            showMouse(false);
         }
         else if (newPlayer === "FFMPEG")
         {
@@ -450,7 +443,6 @@ FocusScope
             webPlayer.visible = false;
             vlcPlayer.visible = false;
             qtAVPlayer.visible = true;
-            showMouse(false);
         }
         else if (newPlayer === "WebBrowser" || newPlayer === "RailCam")
         {
@@ -458,7 +450,6 @@ FocusScope
             webPlayer.visible = true;
             vlcPlayer.visible = false;
             qtAVPlayer.visible = false;
-            showMouse(true);
         }
         else if (newPlayer === "YouTube")
         {
@@ -467,7 +458,6 @@ FocusScope
             webPlayer.visible = false;
             vlcPlayer.visible = false;
             qtAVPlayer.visible = false;
-            showMouse(false);
         }
         else if (newPlayer === "YouTubeTV")
         {
@@ -476,7 +466,6 @@ FocusScope
             webPlayer.visible = true;
             vlcPlayer.visible = false;
             qtAVPlayer.visible = false;
-            showMouse(false);
         }
         else
         {

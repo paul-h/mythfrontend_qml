@@ -15,14 +15,12 @@ BaseScreen
         showTitle(false, "");
         showTime(false);
         showTicker(false);
-        showMouse(true);
         pauseVideo(true);
         showVideo(false);
     }
 
     Component.onDestruction:
     {
-        showMouse(false)
         pauseVideo(false);
     }
 
@@ -43,4 +41,3 @@ BaseScreen
         settings.pluginsEnabled : true
     }
 }
-
