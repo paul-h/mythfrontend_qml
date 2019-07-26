@@ -1,7 +1,12 @@
+VERSION = 0.1.0.alpha
+
 PREFIX = /usr
 
 include(../QmlVlc/QmlVlc.pri)
 include(../SortFilterProxyModel/SortFilterProxyModel.pri)
+
+
+DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
 INCLUDEPATH += .. ../QmlVlc
 

@@ -92,6 +92,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("MythFrontendQML");
     QCoreApplication::setAttribute(Qt::AA_X11InitThreads);
 
+    qDebug() << "Starting MythFrontendQML: version " << APP_VERSION;
     qmlRegisterType<Process>("Process", 1, 0, "Process");
     qmlRegisterType<RecordingsModel>("RecordingsModel", 1, 0, "RecordingsModel");
     qmlRegisterType<ZMEventsModel>("ZMEventsModel", 1, 0, "ZMEventsModel");
@@ -128,6 +129,12 @@ int main(int argc, char *argv[])
         qDebug() << "Failed to open the database";
         return 1;
     }
+
+    // create version property
+    engine.rootContext()->setContextProperty("version", QString(APP_VERSION));
+
+    // create the build time property
+    engine.rootContext()->setContextProperty("buildtime", QString("%1 - %2").arg(__DATE__).arg(__TIME__));
 
     // create the database utils
     DatabaseUtils databaseUtils(db);
