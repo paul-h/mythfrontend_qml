@@ -36,7 +36,7 @@ BaseScreen
     Image
     {
         id: logo
-        x: xscale(30); y: yscale(594)
+        x: xscale(30); y: yscale(574)
         width: xscale(sourceSize.width)
         height: yscale(sourceSize.height)
         source: mythUtils.findThemeFile("ui/mythtv_logo.png")
