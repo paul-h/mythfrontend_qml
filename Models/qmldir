@@ -19,6 +19,7 @@ VideoSourceModel 1.0 VideoSourceModel.qml
 VideoMultiplexModel 1.0 VideoMultiplexModel.qml
 WebCamModel 1.0 WebCamModel.qml
 WebVideoModel 1.0 WebVideoModel.qml
+WhatsNewModel 1.0 WhatsNewModel.qml
 ZMDaemonCheckModel 1.0 ZMDaemonCheckModel.qml
 ZMLoginModel 1.0 ZMLoginModel.qml
 ZMLoadModel 1.0 ZMLoadModel.qml
