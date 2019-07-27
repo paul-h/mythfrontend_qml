@@ -170,14 +170,4 @@ FocusScope
 
         showMessage("Deinterlacer: " + videoSurface.deinterlacers[videoSurface.currentDeinterlacer], settings.osdTimeoutMedium);
     }
-
-    function takeSnapshot(filename)
-    {
-        console.info("saving snapshot to: " + filename);
-        videoSurface.grabToImage(function(result)
-                                 {
-                                     result.saveToFile(filename);
-                                 });
-        showMessage("Snapshot Saved", settings.osdTimeoutMedium);
-    }
 }

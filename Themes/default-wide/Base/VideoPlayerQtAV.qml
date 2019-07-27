@@ -177,15 +177,5 @@ FocusScope
 
         showMessage("Deinterlacer: N/A", settings.osdTimeoutMedium);
     }
-
-    function takeSnapshot(filename)
-    {
-        console.info("saving snapshot to: " + filename);
-        mediaplayer.grabToImage(function(result)
-                                {
-                                    result.saveToFile(filename);
-                                });
-        showMessage("Snapshot Saved", settings.osdTimeoutMedium);
-    }
 }
 

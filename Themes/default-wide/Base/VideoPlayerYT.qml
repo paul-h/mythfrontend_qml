@@ -186,14 +186,4 @@ Item
     {
         showMessage("Deinterlacers are not supported by this player", settings.osdTimeoutMedium);
     }
-
-    function takeSnapshot(filename)
-    {
-        console.info("saving snapshot to: " + filename);
-        browser.grabToImage(function(result)
-                                 {
-                                     result.saveToFile(filename);
-                                 });
-        showMessage("Snapshot Saved", settings.osdTimeoutMedium);
-    }
 }

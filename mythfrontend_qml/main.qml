@@ -219,100 +219,126 @@ ApplicationWindow
         }
     }
 
-    ScreenBackground
-    {
-        id: screenBackground
-        showImage: true
-        showVideo: false
-        showTicker: true
-        Component.onCompleted:
-        {
-            setTitle(true, "Main Menu");
-            tickerProcess.start(settings.sharePath.replace("file://", "") + "/qml/Scripts/ticker-grabber.py", [settings.configPath + "/MythNews/ticker.xml"]);
-        }
-    }
-
     Loader
     {
         id: mainMenuLoader
         source: settings.menuPath + "MainMenu.qml"
     }
 
-    MouseArea
+    Item
     {
-        id: mouseArea
-
-        property bool showMouse: true;
-        property bool autoHide: true;
-
-        property int oldX: 0
-        property int oldY: 0
-
+        id: root
         anchors.fill: parent
-        enabled: true;
-        hoverEnabled: true;
 
-        preventStealing: true
-        propagateComposedEvents: true
 
-        onShowMouseChanged: if (showMouse) cursorShape = Qt.ArrowCursor; else cursorShape = Qt.BlankCursor;
-        onAutoHideChanged: mouseTimer.stop();
-
-        onClicked: mouse.accepted = false;
-        onPressed: mouse.accepted = false;
-        onReleased: mouse.accepted = false;
-        onDoubleClicked: mouse.accepted = false;
-        onPressAndHold: mouse.accepted = false
-
-        onPositionChanged:
+        ScreenBackground
         {
-            if (showMouse)
+            id: screenBackground
+            showImage: true
+            showVideo: false
+            showTicker: true
+            Component.onCompleted:
             {
-                if (autoHide)
-                    mouseTimer.restart();
-
-                if (cursorShape === Qt.BlankCursor)
-                    cursorShape = Qt.ArrowCursor;
-
-                oldX = mouse.x;
-                oldY = mouse.y;
-            }
-
-            mouse.accepted = false;
-        }
-    }
-
-    StackView
-    {
-        id: stack
-        width: parent.width; height: parent.height
-        initialItem: ThemedMenu {model: mainMenuLoader.item}
-        focus: true
-
-        onCurrentItemChanged:
-        {
-            if (currentItem)
-            {
-                currentItem.defaultFocusItem.focus = true
+                setTitle(true, "Main Menu");
+                tickerProcess.start(settings.sharePath.replace("file://", "") + "/qml/Scripts/ticker-grabber.py", [settings.configPath + "/MythNews/ticker.xml"]);
             }
         }
 
-        Keys.onPressed:
+        MouseArea
         {
-            if (event.key === Qt.Key_F)
+            id: mouseArea
+
+            property bool showMouse: true;
+            property bool autoHide: true;
+
+            property int oldX: 0
+            property int oldY: 0
+
+            anchors.fill: parent
+            enabled: true;
+            hoverEnabled: true;
+
+            preventStealing: true
+            propagateComposedEvents: true
+
+            onShowMouseChanged: if (showMouse) cursorShape = Qt.ArrowCursor; else cursorShape = Qt.BlankCursor;
+            onAutoHideChanged: mouseTimer.stop();
+
+            onClicked: mouse.accepted = false;
+            onPressed: mouse.accepted = false;
+            onReleased: mouse.accepted = false;
+            onDoubleClicked: mouse.accepted = false;
+            onPressAndHold: mouse.accepted = false
+
+            onPositionChanged:
             {
-                if (visibility == 5)
-                    visibility = 2
-                else
-                    visibility = 5
+                if (showMouse)
+                {
+                    if (autoHide)
+                        mouseTimer.restart();
+
+                    if (cursorShape === Qt.BlankCursor)
+                        cursorShape = Qt.ArrowCursor;
+
+                    oldX = mouse.x;
+                    oldY = mouse.y;
+                }
+
+                mouse.accepted = false;
             }
-            else if (event.key === Qt.Key_F12)
+        }
+
+        StackView
+        {
+            id: stack
+            width: parent.width; height: parent.height
+            initialItem: ThemedMenu {model: mainMenuLoader.item}
+            focus: true
+
+            onCurrentItemChanged:
             {
-                settings.showTextBorder = ! settings.showTextBorder;
+                if (currentItem)
+                {
+                    currentItem.defaultFocusItem.focus = true
+                }
             }
-            else if (event.key === Qt.Key_F10)
+
+            Keys.onPressed:
             {
-                if (stack.depth > 1) {stack.pop(); escapeSound.play();} else Qt.quit();
+                if (event.key === Qt.Key_F)
+                {
+                    if (visibility == 5)
+                        visibility = 2
+                    else
+                        visibility = 5
+                }
+                else if (event.key === Qt.Key_F12)
+                {
+                    settings.showTextBorder = ! settings.showTextBorder;
+                }
+                else if (event.key === Qt.Key_S)
+                {
+                    takeSnapshot();
+                }
+
+                else if (event.key === Qt.Key_F10)
+                {
+                    if (stack.depth > 1) {stack.pop(); escapeSound.play();} else Qt.quit();
+                }
+            }
+        }
+
+        BaseBackground
+        {
+            id: notificationPanel
+            x: xscale(800); y: yscale(100); width: xscale(400); height: yscale(110)
+            visible: false
+
+            InfoText
+            {
+                id: notificationText
+                anchors.fill: parent
+                horizontalAlignment: Text.AlignHCenter
             }
         }
     }
@@ -345,20 +371,6 @@ ApplicationWindow
         onTriggered: notificationPanel.visible = false;
     }
 
-    BaseBackground
-    {
-        id: notificationPanel
-        x: xscale(800); y: yscale(100); width: xscale(400); height: yscale(110)
-        visible: false
-
-        InfoText
-        {
-            id: notificationText
-            anchors.fill: parent
-            horizontalAlignment: Text.AlignHCenter
-        }
-    }
-
     function showNotification(message, timeOut)
     {
         if (!timeOut)
@@ -377,5 +389,44 @@ ApplicationWindow
             notificationPanel.visible = false;
             notificationTimer.stop();
         }
+    }
+
+    function takeSnapshot(item, filename)
+    {
+        if (item === undefined)
+            item = root;
+
+        if (filename === undefined)
+        {
+            filename = settings.configPath + "snapshots/snapshot";
+
+            var index = 0;
+            var padding = "";
+
+            if (mythUtils.fileExists(filename + ".png"))
+            {
+                do
+                {
+                    index += 1;
+
+                    if (index < 10)
+                        padding = "00";
+                    else if (index < 100)
+                        padding = "0";
+
+                }  while (mythUtils.fileExists(filename + padding + index + ".png"));
+
+                filename = filename + padding + index + ".png";
+            }
+            else
+                filename = filename + ".png";
+        }
+
+        console.info("saving snapshot to: " + filename);
+        item.grabToImage(function(result)
+                         {
+                              result.saveToFile(filename);
+                              showNotification("Snapshot Saved", settings.osdTimeoutMedium);
+                         });
     }
 }

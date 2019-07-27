@@ -203,6 +203,11 @@ int main(int argc, char *argv[])
 
     engine.rootContext()->setContextProperty("settings", gSettings);
 
+    // create the snapshots dir
+    QDir d;
+    if (!d.exists(gSettings->configPath() + "snapshots"))
+        d.mkdir(gSettings->configPath() + "snapshots");
+
     // create the myth utils
     MythUtils mythUtils(&engine);
     engine.rootContext()->setContextProperty("mythUtils", &mythUtils);

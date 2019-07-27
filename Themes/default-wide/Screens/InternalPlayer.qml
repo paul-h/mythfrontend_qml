@@ -282,11 +282,34 @@ BaseScreen
 
     Action
     {
-        shortcut: "S" // take snapshot
+        shortcut: "F11" // take snapshot of the active video player (possibly for a video thumbnail image)
         enabled: _actionsEnabled
         onTriggered:
         {
-            getActivePlayer().takeSnapshot();
+            var item = getActivePlayer().getActivePlayerItem();
+            var url = getActivePlayer().feed.feedList.get(getActivePlayer().feed.currentFeed).url
+
+            if (url.indexOf("file://") === 0)
+            {
+                // if we are playing a local file assume we want to create a video snapshot
+                var filename = url.substring(7, url.length) + ".png";
+
+                window.takeSnapshot(item, filename);
+
+            }
+            else
+                window.takeSnapshot(item);
+
+        }
+    }
+
+    Action
+    {
+        shortcut: "S" // take snapshot of the screen
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            window.takeSnapshot();
         }
     }
 

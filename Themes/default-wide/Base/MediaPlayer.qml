@@ -127,6 +127,8 @@ FocusScope
                 height = contentsSize.height;
             }
         }
+
+
     }
 
     VideoPlayerYT
@@ -382,6 +384,20 @@ FocusScope
             return "NONE";
     }
 
+    function getActivePlayerItem()
+    {
+        if (webPlayer.visible === true)
+            return webPlayer;
+        else if (youtubePlayer.visible === true)
+            return youtubePlayer;
+        else if (vlcPlayer.visible === true)
+            return vlcPlayer;
+        else if (qtAVPlayer.visible === true)
+            return qtAVPlayer;
+        else
+            return undefined;
+    }
+
     function startPlayback()
     {
         if (feedSource.feedList === undefined)
@@ -631,47 +647,6 @@ FocusScope
             vlcPlayer.toggleInterlacer();
         else if (getActivePlayer() === "QTAV")
             qtAVPlayer.toggleInterlacer();
-    }
-
-    function takeSnapshot()
-    {
-        var filename;
-        var index = 0;
-        var padding = "";
-
-        if (feedSource.feedList.get(feedSource.currentFeed).url.indexOf("file://") === 0)
-            filename = feedSource.feedList.get(feedSource.currentFeed).url.substring(7, feedSource.feedList.get(feedSource.currentFeed).url.length);
-        else
-            filename = settings.configPath + "snapshot";
-
-        if (mythUtils.fileExists(filename + ".png"))
-        {
-            do
-            {
-                index += 1;
-
-                if (index < 10)
-                    padding = "00";
-                else if (index < 100)
-                    padding = "0";
-
-            }  while (mythUtils.fileExists(filename + padding + index + ".png"));
-
-            filename = filename + padding + index + ".png";
-        }
-        else
-           filename = filename + ".png";
-
-
-
-        if (getActivePlayer() === "VLC")
-            vlcPlayer.takeSnapshot(filename)
-        else if (getActivePlayer() === "YOUTUBE")
-            youtubePlayer.takeSnapshot(filename)
-        else if (getActivePlayer() === "QTAV")
-            qtAVPlayer.takeSnapshot(filename)
-        else
-            console.log("Media Player '" + root.player + "' does not support taking snapshots");
     }
 
     function showInfo(restart)
