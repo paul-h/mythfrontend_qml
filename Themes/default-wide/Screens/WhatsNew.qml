@@ -88,6 +88,13 @@ BaseScreen
         enabled: browser.focus
     }
 
+    Action
+    {
+        shortcut: "S" // take snapshot of the screen
+        enabled: browser.focus
+        onTriggered: window.takeSnapshot();
+    }
+
     WhatsNewModel
     {
         id: whatsNewModel

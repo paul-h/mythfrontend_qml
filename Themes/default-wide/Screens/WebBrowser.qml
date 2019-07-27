@@ -45,13 +45,6 @@ BaseScreen
 
     Action
     {
-        shortcut: "F1"
-        onTriggered: mythUtils.fakeKeyPress(browser, "F");
-        enabled: browser.focus
-    }
-
-    Action
-    {
         shortcut: "F8"
         onTriggered: toggleFullscreen()
         enabled: browser.focus
@@ -75,6 +68,13 @@ BaseScreen
     {
         shortcut: "M"
         onTriggered: popupMenu.show();
+        enabled: browser.focus
+    }
+
+    Action
+    {
+        shortcut: "S" // take snapshot of the screen
+        onTriggered: window.takeSnapshot();
         enabled: browser.focus
     }
 
