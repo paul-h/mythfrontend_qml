@@ -127,6 +127,7 @@ BaseScreen
         y: yscale(50)
         width: parent.width - xscale(20)
         height: parent.height - yscale(100)
+        zoomFactor: xscale(1.0)
         settings.pluginsEnabled: true
         settings.javascriptCanOpenWindows: true;
         url: mythUtils.findThemeFile("HTML/blank.html");
