@@ -494,6 +494,11 @@ FocusScope
 
     function switchURL(newURL)
     {
+        if (feedSource.feedList.get(feedSource.currentFeed).title !== "")
+            title.text = feedSource.feedList.get(feedSource.currentFeed).title;
+        else
+            title.text = feedSource.feedList.get(feedSource.currentFeed).url;
+
         if (feedSource.feedName == "ZoneMinder Cameras")
             newURL += "&connkey=" + Util.randomIntFromRange(0, 999999);
 
