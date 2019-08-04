@@ -8,13 +8,16 @@ XmlListModel
     property var categoryList: ListModel{}
 
     source: ""
-    query: "/webcam/item"
+    query: "/webcams/webcam"
     XmlRole { name: "id"; query: "id/number()" }
     XmlRole { name: "title"; query: "title/string()" }
     XmlRole { name: "description"; query: "description/string()" }
     XmlRole { name: "icon"; query: "icon/string()" }
     XmlRole { name: "website"; query: "website/string()" }
     XmlRole { name: "zoom"; query: "zoom/number()" }
+    XmlRole { name: "dateadded"; query: "xs:dateTime(dateadded)" }
+    XmlRole { name: "datemodified"; query: "xs:dateTime(datemodified)" }
+    XmlRole { name: "status"; query: "status/string()" }
     XmlRole { name: "categories"; query: "string-join(categories/category/@name, ', ')" }
 
     XmlRole { name: "player"; query: "player/string()" }
