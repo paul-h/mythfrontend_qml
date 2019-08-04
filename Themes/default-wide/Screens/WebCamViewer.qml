@@ -122,7 +122,7 @@ BaseScreen
             webcamProxyModel.sorters = titleSorter;
             footer.redText = "Sort (Name)";
 
-            playerSources.webcamList.source = playerSources.webcamPaths[playerSources.webcamPathIndex] + "/WebCam.xml"
+            playerSources.webcamList.source = playerSources.webcamPaths[playerSources.webcamPathIndex] + "/webcams.xml"
         }
         else if (event.key === Qt.Key_F6)
         {
