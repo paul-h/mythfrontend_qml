@@ -38,7 +38,7 @@ Item
         path = dbUtils.getSetting("Qml_lastWebcamPath", settings.hostName, webcamPaths[0])
         path = path.replace("/webcams.xml", "")
         webcamPathIndex = webcamPaths.indexOf(path)
-        webcamModel.source = path + "/webcam.xml"
+        webcamModel.source = path + "/webcams.xml"
 
         webvideoPaths =  settings.webcamPath.split(",")
         path = dbUtils.getSetting("Qml_lastWebvideoPath", settings.hostName, webvideoPaths[0])
