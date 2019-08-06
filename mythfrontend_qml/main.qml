@@ -170,6 +170,12 @@ ApplicationWindow
          source: mythUtils.findThemeFile("sounds/pock.wav")
          volume: soundEffectsVolume
     }
+    SoundEffect
+    {
+         id: messageSound
+         source: mythUtils.findThemeFile("sounds/message.wav")
+         volume: 1.0 //soundEffectsVolume
+    }
 
     // ticker items grabber process
     Process
@@ -428,5 +434,32 @@ ApplicationWindow
                               result.saveToFile(filename);
                               showNotification("Snapshot Saved", settings.osdTimeoutMedium);
                          });
+    }
+
+    Timer
+    {
+        id: whatsNewTimer
+        interval: 1000; running: true; repeat: no
+        onTriggered:
+        {
+            whatsNewTimer.stop();
+            checkWhatsNew();
+        }
+    }
+
+    WhatsNewModel
+    {
+        id: whatsNewModel
+    }
+
+    function checkWhatsNew()
+    {
+        var lastShownIndex = parseInt(dbUtils.getSetting("Qml_lastWhatsNewShown", settings.hostName, -1)) + 1;
+
+        if (lastShownIndex < whatsNewModel.count)
+        {
+            messageSound.play();
+            stack.push({item: mythUtils.findThemeFile("Screens/WhatsNew.qml"), properties:{currentPage:  lastShownIndex}});
+        }
     }
 }
