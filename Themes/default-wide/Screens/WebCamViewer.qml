@@ -3,6 +3,7 @@ import Base 1.0
 import Dialogs 1.0
 import Models 1.0
 import SortFilterProxyModel 0.2
+import "../../../Util.js" as Util
 
 BaseScreen
 {
@@ -27,6 +28,8 @@ BaseScreen
             footer.greenText = "Show (" + filterCategory + ")"
 
         updateWebcamDetails();
+
+        delay(1500, checkForUpdates);
     }
 
     Component.onDestruction:
@@ -127,6 +130,11 @@ BaseScreen
         else if (event.key === Qt.Key_F6)
         {
             playerSources.webcamList.reload();
+        }
+        else if (event.key === Qt.Key_R)
+        {
+            // for testing reset the last checked to now -4 weeks
+            dbUtils.setSetting("Qml_lastWebcamCheck", settings.hostName, Util.addDays(Date(Date.now()), -28));
         }
     }
 
@@ -337,5 +345,177 @@ BaseScreen
         webcamIcon.source = getIconURL(webcamGrid.model.get(webcamGrid.currentIndex).icon);
 
         websiteIcon.visible = ((webcamGrid.model.get(webcamGrid.currentIndex).website !== undefined && webcamGrid.model.get(webcamGrid.currentIndex).website !== "" ) ? true : false)
+    }
+
+
+    function checkForUpdates()
+    {
+        var defaultDate = Date(Date.now());
+        var lastChecked = Date.parse(dbUtils.getSetting("Qml_lastWebcamCheck", settings.hostName, defaultDate));
+        var x;
+        var firstAdded = true;
+        var firstModified = true;
+
+        dbUtils.setSetting("Qml_lastWebcamCheck", settings.hostName, Date(Date.now()));
+
+        updatesModel.clear();
+
+        for (x = 0; x < playerSources.webcamList.count; x++)
+        {
+            var webcamAdded = Date.parse(playerSources.webcamList.get(x).dateadded);
+
+            if (lastChecked < webcamAdded)
+            {
+                if (firstAdded)
+                {
+                    updatesModel.append({"heading": "yes", "title": "New WebCams"});
+                    firstAdded = false;
+                }
+
+                updatesModel.append({"heading": "no", "title": playerSources.webcamList.get(x).title, "icon": playerSources.webcamList.get(x).icon});
+            }
+        }
+
+        for (x = 0; x < playerSources.webcamList.count; x++)
+        {
+            var webcamModified = Date.parse(playerSources.webcamList.get(x).datemodified);
+            webcamAdded = Date.parse(playerSources.webcamList.get(x).dateadded);
+
+            if (lastChecked < webcamModified && !(lastChecked < webcamAdded))
+            {
+                if (firstModified)
+                {
+                    updatesModel.append({"heading": "yes", "title": "Updated/Fixed WebCams"});
+                    firstModified = false;
+                }
+
+                updatesModel.append({"heading": "no", "title": playerSources.webcamList.get(x).title, "icon": playerSources.webcamList.get(x).icon});
+            }
+        }
+
+        // do we need to show any new or updated webcams
+        if (updatesModel.count > 0)
+        {
+            messageSound.play();
+            updatesDialog.show();
+        }
+    }
+
+    Timer
+    {
+        id: delayTimer
+    }
+
+    function delay(delayTime, cb)
+    {
+        delayTimer.interval = delayTime;
+        delayTimer.repeat = false;
+        delayTimer.triggered.connect(cb);
+        delayTimer.start();
+    }
+
+    ListModel
+    {
+        id: updatesModel
+    }
+
+    BaseDialog
+    {
+        id: updatesDialog
+
+        width: xscale(700)
+        height: yscale(600)
+
+        onAccepted:
+        {
+            webcamGrid.focus = true;
+
+        }
+        onCancelled:
+        {
+            webcamGrid.focus = true;
+        }
+
+        Component
+        {
+            id: listRow
+            ListItem
+            {
+                width: parent.width; height: (heading === "yes") ? yscale(50) : yscale(150)
+                LabelText
+                {
+                    x: xscale(5); y: 0
+                    width: parent.width - xscale(10)
+                    visible: (heading === "yes")
+                    horizontalAlignment: Text.AlignHCenter
+                    text: title
+                }
+                Image
+                {
+                    x: xscale(3); y: yscale(3); width: xscale(144); height: yscale(144)
+                    visible: (heading === "no")
+                    source: getIconURL(icon);
+                }
+                ListText
+                {
+                    x: xscale(150); y: 5
+                    width: parent.width - xscale(150)
+                    height: yscale(134)
+                    visible: (heading === "no")
+                    verticalAlignment: Text.AlignVCenter
+                    multiline: true
+                    text: title
+                }
+            }
+        }
+
+        content: Item
+        {
+            anchors.fill: parent
+
+            TitleText
+            {
+                x: xscale(10); y: 0
+                width: parent.width - xscale(20)
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignTop
+                text: "WebCams Update"
+            }
+
+            ButtonList
+            {
+                id: itemList
+                delegate: listRow
+                model: updatesModel
+                x: xscale(20); y: yscale(40)
+                width: parent.width - xscale(40);
+                height: parent.height - yscale(50);
+                spacing: 5
+                focus: true
+                KeyNavigation.up: acceptButton
+                KeyNavigation.down: acceptButton
+                KeyNavigation.left: acceptButton
+                KeyNavigation.right: acceptButton
+             }
+        }
+
+        buttons:
+        [
+            BaseButton
+            {
+                id: acceptButton
+                text: "OK"
+                visible: text != ""
+                KeyNavigation.up: itemList
+                KeyNavigation.down: itemList
+                KeyNavigation.left: itemList
+                KeyNavigation.right: itemList
+                onClicked:
+                {
+                    updatesDialog.state = "";
+                    updatesDialog.accepted()
+                }
+            }
+        ]
     }
 }

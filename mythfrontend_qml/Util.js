@@ -74,6 +74,13 @@ function timeOff(timeto)
     return e
 }
 
+function addDays(date, days)
+{
+  var result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
 function format_time(time_in_milliseconds, formatting)
 {
     /* We are using Qt.formatTime to format the time_in_milliseconds because
@@ -198,11 +205,35 @@ function randomIntFromRange(min, max) // min and max included
     return Math.floor(Math.random()*(max-min+1)+min);
 }
 
-function delay(delayTime, cb)
+// compare v1 version string to v2 version string like 1.2.3.alpha and 1.2.4.alpha
+// return 0 for equal, -1 for less than, 1 for greater than or false for error
+function compareVersion(v1, v2)
 {
-    timer = new Timer();
-    timer.interval = delayTime;
-    timer.repeat = false;
-    timer.triggered.connect(cb);
-    timer.start();
+    if (typeof v1 !== 'string') return false;
+    if (typeof v2 !== 'string') return false;
+
+    v1 = v1.split('.');
+    v2 = v2.split('.');
+
+    if (v1.length < 3)
+    {
+        console.log("compareVersion got bad version: " + v1);
+        return false
+    }
+
+    if (v2.length < 3)
+    {
+        console.log("compareVersion got bad version: " + v2);
+        return false
+    }
+
+    for (var i = 0; i < 3; i++)
+    {
+        v1[i] = parseInt(v1[i], 10);
+        v2[i] = parseInt(v2[i], 10);
+        if (v1[i] > v2[i]) return 1;
+        if (v1[i] < v2[i]) return -1;
+    }
+
+    return 0;
 }
