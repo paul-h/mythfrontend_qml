@@ -71,7 +71,7 @@ BaseDialog
 
             x: xscale(20); y: yscale(60)
             width: parent.width - xscale(40);
-            height: parent.height - yscale(90);
+            height: parent.height - yscale(60);
 
             KeyNavigation.up: searchEdit;
             KeyNavigation.down: acceptButton;

@@ -84,8 +84,17 @@ FocusScope
             x: xscale(10)
             y: column.height + yscale(10)
             width: parent.width - xscale(20)
-            height: parent.height - column.height - buttonsRow.height - yscale(20)
+            height: parent.height - column.height - buttonsRow.height - yscale(30)
             clip: true
+
+            Rectangle
+            {
+                anchors.fill: parent
+                color: "transparent"
+                border.color: Qt.rgba(Math.random(), Math.random(), Math.random(), 1)
+                border.width: 1
+                visible: settings.showTextBorder
+            }
         }
 
         Row
@@ -107,13 +116,25 @@ FocusScope
             onChildrenChanged: __update()
             Component.onCompleted: __update()
 
-            x: 0; y: parent.height - yscale(60)
+            x: 0; y: contentItem.y + contentItem.height + yscale(5)
             spacing: xscale(10)
             anchors
             {
                 horizontalCenter: parent.horizontalCenter
-                bottomMargin: yscale(25)
+                bottomMargin: yscale(10)
             }
+        }
+
+        Rectangle
+        {
+            x: buttonsRow.x
+            y: buttonsRow.y
+            width: buttonsRow.width
+            height: buttonsRow.height
+            color: "red"
+            border.color: Qt.rgba(Math.random(), Math.random(), Math.random(), 1)
+            border.width: 1
+            visible: settings.showTextBorder
         }
     }
 

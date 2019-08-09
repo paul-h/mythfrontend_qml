@@ -422,7 +422,7 @@ BaseScreen
     BaseDialog
     {
         id: updatesDialog
-
+        title: "WebCams Update"
         width: xscale(700)
         height: yscale(600)
 
@@ -441,7 +441,7 @@ BaseScreen
             id: listRow
             ListItem
             {
-                width: parent.width; height: (heading === "yes") ? yscale(50) : yscale(150)
+                width: parent.width; height: (heading === "yes") ? yscale(50) : yscale(86)
                 LabelText
                 {
                     x: xscale(5); y: 0
@@ -452,7 +452,7 @@ BaseScreen
                 }
                 Image
                 {
-                    x: xscale(3); y: yscale(3); width: xscale(144); height: yscale(144)
+                    x: xscale(3); y: yscale(3); width: xscale(144); height: yscale(80)
                     visible: (heading === "no")
                     source: getIconURL(icon);
                 }
@@ -460,7 +460,7 @@ BaseScreen
                 {
                     x: xscale(150); y: 5
                     width: parent.width - xscale(150)
-                    height: yscale(134)
+                    height: yscale(76)
                     visible: (heading === "no")
                     verticalAlignment: Text.AlignVCenter
                     multiline: true
@@ -473,24 +473,15 @@ BaseScreen
         {
             anchors.fill: parent
 
-            TitleText
-            {
-                x: xscale(10); y: 0
-                width: parent.width - xscale(20)
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignTop
-                text: "WebCams Update"
-            }
-
             ButtonList
             {
                 id: itemList
                 delegate: listRow
                 model: updatesModel
-                x: xscale(20); y: yscale(40)
+                x: xscale(20); y: yscale(5)
                 width: parent.width - xscale(40);
-                height: parent.height - yscale(50);
-                spacing: 5
+                height: parent.height - yscale(10);
+                spacing: yscale(4)
                 focus: true
                 KeyNavigation.up: acceptButton
                 KeyNavigation.down: acceptButton
