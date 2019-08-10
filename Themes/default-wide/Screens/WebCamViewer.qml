@@ -206,6 +206,16 @@ BaseScreen
                     horizontalAlignment: Text.AlignHCenter;
                     fontPixelSize: xscale(14)
                 }
+                Image
+                {
+                    x: webcamGrid.cellWidth - xscale(45)
+                    y: yscale(5)
+                    width: xscale(40)
+                    height: yscale(40)
+                    visible: categories.startsWith("New,");
+                    opacity: 1.0
+                    source: mythUtils.findThemeFile("images/new.png");
+                }
             }
         }
 
