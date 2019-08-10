@@ -109,11 +109,29 @@ Item
         sourceModel: webcamModel
         filters:
         [
-            RegExpFilter
+            AllOf
             {
-                roleName: "categories"
-                pattern: webcamFilterCategory
-                caseSensitivity: Qt.CaseInsensitive
+                RegExpFilter
+                {
+                    roleName: "categories"
+                    pattern: webcamFilterCategory
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+
+                AnyOf
+                {
+                    ValueFilter
+                    {
+                        roleName: "status"
+                        value: "Working"
+                    }
+
+                    ValueFilter
+                    {
+                        roleName: "status"
+                        value: "Temporarily Offline"
+                    }
+                }
             }
         ]
         sorters: titleSorter

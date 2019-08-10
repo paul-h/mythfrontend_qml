@@ -62,6 +62,21 @@ BaseScreen
                     pattern: filterCategory
                     caseSensitivity: Qt.CaseInsensitive
                 }
+
+                AnyOf
+                {
+                    ValueFilter
+                    {
+                        roleName: "status"
+                        value: "Working"
+                    }
+
+                    ValueFilter
+                    {
+                        roleName: "status"
+                        value: "Temporarily Offline"
+                    }
+                }
             }
         ]
         sorters: titleSorter
@@ -179,6 +194,17 @@ BaseScreen
                     anchors.fill: parent
                     anchors.margins: xscale(5)
                     source: getIconURL(icon);
+                    onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/webcam_noimage.png");
+                }
+                LabelText
+                {
+                    x: 5;
+                    y: webcamGrid.cellHeight - yscale(40)
+                    width: webcamGrid.cellWidth - xscale(10)
+                    visible: (status === "Temporarily Offline" || status === "Not Working")
+                    text: status
+                    horizontalAlignment: Text.AlignHCenter;
+                    fontPixelSize: xscale(14)
                 }
             }
         }
@@ -225,6 +251,7 @@ BaseScreen
         id: webcamIcon
         x: xscale(950); y: yscale(480); width: xscale(300); height: yscale(178)
         asynchronous: true
+        onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/webcam_noimage.png")
     }
 
     InfoText
@@ -355,11 +382,14 @@ BaseScreen
         var x;
         var firstAdded = true;
         var firstModified = true;
+        var firstOffline = true;
+        var firstNotWorking = true;
 
         dbUtils.setSetting("Qml_lastWebcamCheck", settings.hostName, Date(Date.now()));
 
         updatesModel.clear();
 
+        // add new webcams
         for (x = 0; x < playerSources.webcamList.count; x++)
         {
             var webcamAdded = Date.parse(playerSources.webcamList.get(x).dateadded);
@@ -376,17 +406,57 @@ BaseScreen
             }
         }
 
+        // add modified webcams
         for (x = 0; x < playerSources.webcamList.count; x++)
         {
             var webcamModified = Date.parse(playerSources.webcamList.get(x).datemodified);
-            webcamAdded = Date.parse(playerSources.webcamList.get(x).dateadded);
+            var webcamAdded = Date.parse(playerSources.webcamList.get(x).dateadded);
+            var status = playerSources.webcamList.get(x).status
 
-            if (lastChecked < webcamModified && !(lastChecked < webcamAdded))
+            if (lastChecked < webcamModified && !(lastChecked < webcamAdded) && status !== "Temporarily Offline" && status !== "Not Working")
             {
                 if (firstModified)
                 {
                     updatesModel.append({"heading": "yes", "title": "Updated/Fixed WebCams"});
                     firstModified = false;
+                }
+
+                updatesModel.append({"heading": "no", "title": playerSources.webcamList.get(x).title, "icon": playerSources.webcamList.get(x).icon});
+            }
+        }
+
+        // add temporarily offline webcams
+        for (x = 0; x < playerSources.webcamList.count; x++)
+        {
+            var webcamModified = Date.parse(playerSources.webcamList.get(x).datemodified);
+            var webcamAdded = Date.parse(playerSources.webcamList.get(x).dateadded);
+            var status = playerSources.webcamList.get(x).status
+
+            if (lastChecked < webcamModified && !(lastChecked < webcamAdded) && status === "Temporarily Offline")
+            {
+                if (firstOffline)
+                {
+                    updatesModel.append({"heading": "yes", "title": "Temporarily Offline WebCams"});
+                    firstOffline = false;
+                }
+
+                updatesModel.append({"heading": "no", "title": playerSources.webcamList.get(x).title, "icon": playerSources.webcamList.get(x).icon});
+            }
+        }
+
+        // add not working webcams
+        for (x = 0; x < playerSources.webcamList.count; x++)
+        {
+            var webcamModified = Date.parse(playerSources.webcamList.get(x).datemodified);
+            var webcamAdded = Date.parse(playerSources.webcamList.get(x).dateadded);
+            var status = playerSources.webcamList.get(x).status
+
+            if (lastChecked < webcamModified && !(lastChecked < webcamAdded) && status === "Not Working")
+            {
+                if (firstNotWorking)
+                {
+                    updatesModel.append({"heading": "yes", "title": "Removed WebCams"});
+                    firstNotWorking = false;
                 }
 
                 updatesModel.append({"heading": "no", "title": playerSources.webcamList.get(x).title, "icon": playerSources.webcamList.get(x).icon});
@@ -455,6 +525,7 @@ BaseScreen
                     x: xscale(3); y: yscale(3); width: xscale(144); height: yscale(80)
                     visible: (heading === "no")
                     source: getIconURL(icon);
+                    onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/webcam_noimage.png")
                 }
                 ListText
                 {
