@@ -19,6 +19,7 @@ XmlListModel
     XmlRole { name: "datemodified"; query: "xs:dateTime(datemodified)" }
     XmlRole { name: "status"; query: "status/string()" }
     XmlRole { name: "categories"; query: "string-join(categories/category/@name, ', ')" }
+    XmlRole { name: "links"; query: "string-join(links/link/(concat(@type, '=', @name)), '\n')" }
 
     XmlRole { name: "player"; query: "player/string()" }
     XmlRole { name: "url"; query: "url/string()" }
