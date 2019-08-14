@@ -439,7 +439,7 @@ ApplicationWindow
     Timer
     {
         id: whatsNewTimer
-        interval: 1000; running: true; repeat: no
+        interval: 1000; running: true; repeat: false
         onTriggered:
         {
             whatsNewTimer.stop();
