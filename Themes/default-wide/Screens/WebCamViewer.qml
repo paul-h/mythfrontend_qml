@@ -395,8 +395,6 @@ BaseScreen
         var firstOffline = true;
         var firstNotWorking = true;
 
-        dbUtils.setSetting("Qml_lastWebcamCheck", settings.hostName, Date(Date.now()));
-
         updatesModel.clear();
 
         // add new webcams
@@ -476,6 +474,7 @@ BaseScreen
         // do we need to show any new or updated webcams
         if (updatesModel.count > 0)
         {
+            dbUtils.setSetting("Qml_lastWebcamCheck", settings.hostName, Date(Date.now()));
             messageSound.play();
             updatesDialog.show();
         }
