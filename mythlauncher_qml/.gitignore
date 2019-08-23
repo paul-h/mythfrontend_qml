@@ -1,0 +1,4 @@
+*.o
+moc_*
+mythlauncher_qml
+Makefile

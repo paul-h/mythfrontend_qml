@@ -538,4 +538,33 @@ Window
         idleTimer.start();
         tickerUpdateTimer.start();
     }
+
+    function quit()
+    {
+        Qt.quit();
+    }
+
+    function shutdown()
+    {
+        if (settings.shutdownCommand != "")
+        {
+            console.log("Shutting Down!!!!")
+            busyDialog.message = "Shutting Down...";
+            busyDialog.timeOut = 10000;
+            busyDialog.show();
+            shutdownProcess.start(settings.shutdownCommand);
+        }
+    }
+
+    function reboot()
+    {
+        if (settings.rebootCommand != "")
+        {
+            console.log("Rebooting!!!!")
+            busyDialog.message = "Rebooting. Please Wait...";
+            busyDialog.timeOut = 10000;
+            busyDialog.show();
+            shutdownProcess.start(settings.rebootCommand);
+        }
+    }
 }

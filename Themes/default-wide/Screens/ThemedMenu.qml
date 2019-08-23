@@ -15,7 +15,7 @@ BaseScreen
         showTime(true);
         showTicker(true);
         showVideo(true);
-
+        showImage(true);
         title.source = settings.themePath + model.logo
     }
 
@@ -176,6 +176,26 @@ BaseScreen
                     var feedSource = model.get(currentIndex).feedSource
                     stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{layout: layout, defaultFeedSource: feedSource, defaultCurrentFeed: 0}});
                 }
+                else if (model.get(currentIndex).loaderSource === "External Program")
+                {
+                    var message = model.get(currentIndex).menutext + " will start shortly.\nPlease Wait.....";
+                    var timeOut = 10000;
+                    showBusyDialog(message, timeOut);
+                    var command = model.get(currentIndex).exec
+                    externalProcess.start(command, []);
+                }
+                else if (model.get(currentIndex).loaderSource === "reboot")
+                {
+                    reboot();
+                }
+                else if (model.get(currentIndex).loaderSource === "shutdown")
+                {
+                    shutdown();
+                }
+                else if (model.get(currentIndex).loaderSource === "quit")
+                {
+                    quit();
+                }
                 else
                 {
                     stack.push({item: Qt.resolvedUrl(model.get(currentIndex).loaderSource)})
@@ -216,24 +236,15 @@ BaseScreen
             }
             else if (itemData === "reboot")
             {
-                if (settings.rebootCommand != "")
-                {
-                    console.log("Rebooting!!!!")
-                    shutdownProcess.start(settings.rebootCommand);
-                }
+                reboot();
             }
             else if (itemData === "shutdown")
             {
-                if (settings.shutdownCommand != "")
-                {
-                    console.log("Shutting Down!!!!")
-                    shutdownProcess.start(settings.shutdownCommand);
-                }
+                shutdown();
             }
             else if (itemData === "exit")
             {
-                Qt.quit();
-                return;
+                quit();
             }
             else if (itemData === "volume")
             {

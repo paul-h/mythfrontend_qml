@@ -11,4 +11,4 @@ QML_IMPORT_PATH = Themes/default-wide Models MenuThemes mythfrontend_qml
 
 TEMPLATE = subdirs
 
-SUBDIRS += mythfrontend_qml mythcpp VLCPlugin
+SUBDIRS += mythcpp VLCPlugin mythfrontend_qml mythlauncher_qml
