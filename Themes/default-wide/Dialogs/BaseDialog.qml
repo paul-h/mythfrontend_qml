@@ -19,20 +19,36 @@ FocusScope
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.verticalCenter: parent.verticalCenter
 
-    function show()
+    property var _activeFocusItem: null
+
+    function show(focusItem)
     {
+        // set the item to focus when the dialog closes
+        if (focusItem)
+            _activeFocusItem = focusItem;
+        else if (stack)
+            _activeFocusItem = stack;
+        else
+            _activeFocusItem = null;
+
         modalDialog.state = "show";
     }
 
     function hide()
     {
         modalDialog.state = "";
+
+        if (_activeFocusItem)
+            _activeFocusItem.focus = true;
     }
 
     Keys.onEscapePressed:
     {
         modalDialog.state = "";
         modalDialog.cancelled();
+
+        if (_activeFocusItem)
+            _activeFocusItem.focus = true;
     }
 
     Item
