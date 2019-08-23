@@ -27,6 +27,9 @@
 
 #include <QVector>
 #include <QStringList>
+#include <QDebug>
+
+static void loggingCB(void *data, int level, const libvlc_log_t *ctx, const char *fmt, va_list args);
 
 QmlVlcConfig& QmlVlcConfig::instance()
 {
@@ -190,6 +193,9 @@ libvlc_instance_t* QmlVlcConfig::createLibvlcInstance()
     _libvlc = libvlc_new( opts.size(), opts.data() );
     _libvlcCounter = 1;
 
+    // capture all log messages from libvlc
+    libvlc_log_set( _libvlc, loggingCB, nullptr );
+
     return _libvlc;
 }
 
@@ -204,4 +210,16 @@ void QmlVlcConfig::releaseLibvlcInstance( libvlc_instance_t* libvlc )
         libvlc_release( _libvlc );
         _libvlc = nullptr;
     }
+}
+
+void loggingCB(void *data, int level, const libvlc_log_t *ctx,
+                             const char *fmt, va_list args)
+{
+    (void) data;
+    (void) level;
+    (void) ctx;
+    (void) fmt;
+    (void) args;
+
+    //TODO: handle LibVLC log messages
 }
