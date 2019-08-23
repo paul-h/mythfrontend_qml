@@ -49,13 +49,22 @@ Item
         if (videoPlayer.visible)
         {
             if (pause)
-                videoPlayer.pause();
+                videoPlayer.stop();
             else
                 videoPlayer.play();
         }
     }
 
     x: 0; y : 0; width: window.width; height: window.height
+
+    // background image
+    Image
+    {
+        id: background
+        visible: true
+        anchors.fill: parent
+        source: mythUtils.findThemeFile(theme.backgroundImage)
+    }
 
     // background video
     VideoPlayerQmlVLC
@@ -81,15 +90,6 @@ Item
                 stop();
             }
         }
-    }
-
-    // background image
-    Image
-    {
-        id: background
-        visible: true
-        anchors.fill: parent
-        source: mythUtils.findThemeFile(theme.backgroundImage)
     }
 
     // screen title
