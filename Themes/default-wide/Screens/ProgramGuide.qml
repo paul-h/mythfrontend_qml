@@ -250,7 +250,6 @@ BaseScreen
         model: channelsModel
         delegate: channelRow
 
-        Keys.onEscapePressed: if (stack.depth > 1) {stack.pop()} else Qt.quit();
         Keys.onReturnPressed:
         {
             if (videoPlayer.visible)
@@ -335,7 +334,6 @@ BaseScreen
         model: guideModel
         delegate: programRow
 
-        Keys.onEscapePressed: if (stack.depth > 1) {stack.pop()} else Qt.quit();
         Keys.onReturnPressed:
         {
         }

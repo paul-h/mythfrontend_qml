@@ -39,7 +39,7 @@ BaseScreen
             if (browser.canGoBack)
                 browser.goBack();
             else
-                if (stack.depth > 1) {stack.pop(); escapeSound.play();} else Qt.quit();
+                if (stack.depth > 1) {stack.pop(); escapeSound.play();}
         }
     }
 

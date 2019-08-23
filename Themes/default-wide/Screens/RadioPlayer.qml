@@ -150,7 +150,6 @@ BaseScreen
         model: radioStreamsModel
         delegate: streamRow
 
-        Keys.onEscapePressed: if (stack.depth > 1) {streamPlayer.stop(); stack.pop()} else Qt.quit();
         Keys.onReturnPressed:
         {
             returnSound.play();
@@ -329,8 +328,6 @@ BaseScreen
         interval: 1000; running: true; repeat: true
         onTriggered: if (trackArtistTitle != streamPlayer.mediaDescription.nowPlaying) trackArtistTitle = streamPlayer.mediaDescription.nowPlaying;
     }
-
-    Keys.onEscapePressed: if (stack.depth > 1) {streamPlayer.stop(); stack.pop()} else Qt.quit();
 
     function stop()
     {

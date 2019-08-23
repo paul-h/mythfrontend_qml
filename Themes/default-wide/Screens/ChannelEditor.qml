@@ -117,7 +117,6 @@ BaseScreen
         model: dbChannelsModel
         delegate: streamRow
 
-        Keys.onEscapePressed: if (stack.depth > 1) {stack.pop()} else Qt.quit();
         Keys.onReturnPressed:
         {
             returnSound.play();

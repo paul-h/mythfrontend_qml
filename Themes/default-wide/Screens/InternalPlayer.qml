@@ -66,7 +66,7 @@ BaseScreen
     {
         shortcut: "Escape"
         enabled: _actionsEnabled
-        onTriggered: if (stack.depth > 1) {stack.pop(); escapeSound.play();} else Qt.quit();
+        onTriggered: if (stack.depth > 1) {stack.pop(); escapeSound.play();}
     }
 
     Action
