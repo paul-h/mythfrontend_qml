@@ -1,6 +1,10 @@
+// qt
 #include <QJsonDocument>
 
-#include "settings.h"
+// common
+#include "context.h"
+
+// mythfrontendqml
 #include "zmeventsmodel.h"
 
 ZMEventsModel::ZMEventsModel(void) : MythIncrementalModel()
@@ -110,7 +114,7 @@ void ZMEventsModel::startDownload(void)
 
     QString descending = (m_descending ? "desc" : "asc");
 
-    QString sUrl = QString("http://" + gSettings->zmIP() + "/zm/api/events");
+    QString sUrl = QString("http://" + gContext->m_settings->zmIP() + "/zm/api/events");
 
     if (!monitor.isEmpty() || !dateRange.isEmpty())
         sUrl += "/index";

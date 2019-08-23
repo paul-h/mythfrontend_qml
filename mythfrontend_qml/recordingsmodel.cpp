@@ -1,6 +1,6 @@
 #include <QDomDocument>
 
-#include "settings.h"
+#include "context.h"
 #include "recordingsmodel.h"
 
 RecordingsModel::RecordingsModel(void) : MythIncrementalModel()
@@ -93,7 +93,7 @@ void RecordingsModel::startDownload(void)
     // use the first and last pending items
     if (!m_pendingDownloads.isEmpty())
     {
-         std::sort(m_pendingDownloads.begin(), m_pendingDownloads.end());
+        std::sort(m_pendingDownloads.begin(), m_pendingDownloads.end());
         startIndex =  m_pendingDownloads.first();
         count = qMax(m_count, m_pendingDownloads.last() - startIndex + 1);
     }
@@ -102,7 +102,7 @@ void RecordingsModel::startDownload(void)
 
     // start download of xml from server
     QString sUrl = QString("%1Dvr/GetRecordedList?startindex=%2&count=%3&Descending=%4")
-            .arg(gSettings->masterBackend()).arg(startIndex).arg(count).arg(descending);
+            .arg(gContext->m_settings->masterBackend()).arg(startIndex).arg(count).arg(descending);
 
     if (!m_title.isEmpty())
         sUrl.append(QString("&TitleRegEx=%1").arg(m_title));

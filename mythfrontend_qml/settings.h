@@ -1,6 +1,9 @@
 #pragma once
 #include <QObject>
 
+// this is where we find all our qml files etc.
+#define SHAREPATH "file:///usr/share/mythtv/"
+
 class Settings : public QObject
 {
     Q_OBJECT
@@ -44,6 +47,9 @@ class Settings : public QObject
     Q_PROPERTY(QString rebootCommand READ rebootCommand WRITE setRebootCommand NOTIFY rebootCommandChanged)
     Q_PROPERTY(QString shutdownCommand READ shutdownCommand WRITE setShutdownCommand NOTIFY shutdownCommandChanged)
 
+    // auto start
+    Q_PROPERTY(QString autoStartFrontend READ autoStartFrontend WRITE setAutoStartFrontend NOTIFY autoStartFrontendChanged)
+
    signals:
      void themeNameChanged(void);
      void hostNameChanged(void);
@@ -72,88 +78,95 @@ class Settings : public QObject
      void idleTimeChanged(void);
      void rebootCommandChanged(void);
      void shutdownCommandChanged(void);
+     void autoStartFrontendChanged(void);
 
   public:
-    QString themeName(void) {return m_themeName;}
-    void    setThemeName(const QString &themeName) {m_themeName = themeName; emit themeNameChanged();}
+    Settings(const QString &hostName, const QString &theme);
+    void initSettings(const QString &hostName, const QString &theme);
 
-    QString hostName(void) {return m_hostName;}
-    void    setHostName(const QString &hostName) {m_hostName = hostName; emit hostNameChanged();}
+    QString themeName(void);
+    void    setThemeName(const QString &themeName);
 
-    QString configPath(void) {return m_configPath;}
-    void    setConfigPath(const QString &configPath) {m_configPath = configPath; emit configPathChanged();}
+    QString hostName(void);
+    void    setHostName(const QString &hostName);
 
-    QString sharePath(void) {return m_sharePath;}
-    void    setSharePath(const QString &sharePath) {m_sharePath = sharePath; emit sharePathChanged();}
+    QString configPath(void);
+    void    setConfigPath(const QString &configPath);
 
-    QString qmlPath(void) {return m_qmlPath;}
-    void    setQmlPath(const QString &qmlPath) {m_qmlPath = qmlPath; emit qmlPathChanged();}
+    QString sharePath(void);
+    void    setSharePath(const QString &sharePath);
 
-    QString themePath(void) {return m_themePath;}
-    void    setThemePath(const QString &themePath) {m_themePath = themePath; emit themePathChanged();}
+    QString qmlPath(void);
+    void    setQmlPath(const QString &qmlPath);
 
-    QString menuPath(void) {return m_menuPath;}
-    void    setMenuPath(const QString &menuPath) {m_menuPath = menuPath; emit menuPathChanged();}
+    QString themePath(void);
+    void    setThemePath(const QString &themePath);
 
-    QString masterBackend(void) {return m_masterBackend;}
-    void    setMasterBackend(const QString &masterBackend) {m_masterBackend = masterBackend; emit masterBackendChanged(); }
+    QString menuPath(void);
+    void    setMenuPath(const QString &menuPath);
 
-    QString webSocketUrl(void) {return m_webSocketUrl;}
-    void    setWebSocketUrl(const QString &webSocketUrl) {m_webSocketUrl = webSocketUrl; emit webSocketUrlChanged(); }
+    QString masterBackend(void);
+    void    setMasterBackend(const QString &masterBackend);
 
-    QString videoPath(void) {return m_videoPath;}
-    void    setVideoPath(const QString &videoPath) {m_videoPath = videoPath; emit videoPathChanged();}
+    QString webSocketUrl(void);
+    void    setWebSocketUrl(const QString &webSocketUrl);
 
-    QString picturePath(void) {return m_picturePath;}
-    void    setPicturePath(const QString &picturePath) {m_picturePath = picturePath; emit picturePathChanged();}
+    QString videoPath(void);
+    void    setVideoPath(const QString &videoPath);
 
-    QString sdChannels(void) {return m_sdChannels;}
-    void    setSdChannels(const QString &sdChannels) {m_sdChannels = sdChannels; emit sdChannelsChanged();}
+    QString picturePath(void);
+    void    setPicturePath(const QString &picturePath);
 
-    QString vboxFreeviewIP(void) {return m_vboxFreeviewIP;}
-    void    setVboxFreeviewIP(const QString &vboxFreeviewIP) {m_vboxFreeviewIP = vboxFreeviewIP; emit vboxFreeviewIPChanged();}
+    QString sdChannels(void);
+    void    setSdChannels(const QString &sdChannels);
 
-    QString vboxFreesatIP(void) {return m_vboxFreesatIP;}
-    void    setVboxFreesatIP(const QString &vboxFreesatIP) {m_vboxFreesatIP = vboxFreesatIP; emit vboxFreesatIPChanged();}
+    QString vboxFreeviewIP(void);
+    void    setVboxFreeviewIP(const QString &vboxFreeviewIP);
 
-    QString hdmiEncoder(void) {return m_hdmiEncoder;}
-    void    setHdmiEncoder(const QString &hdmiEncoder) {m_hdmiEncoder = hdmiEncoder; emit hdmiEncoderChanged();}
+    QString vboxFreesatIP(void);
+    void    setVboxFreesatIP(const QString &vboxFreesatIP);
 
-    bool    showTextBorder(void) {return m_showTextBorder;}
-    void    setShowTextBorder(const bool showTextBorder) {m_showTextBorder = showTextBorder; emit showTextBorderChanged();}
+    QString hdmiEncoder(void);
+    void    setHdmiEncoder(const QString &hdmiEncoder);
 
-    bool    startFullscreen(void) {return m_startFullscreen;}
-    void    setStartFullscreen(const bool startFullscreen) {m_startFullscreen = startFullscreen; emit startFullscreenChanged();}
+    bool    showTextBorder(void);
+    void    setShowTextBorder(const bool showTextBorder);
 
-    QString webcamPath(void) {return m_webcamPath;}
-    void    setWebcamPath(const QString &webcamPath) {m_webcamPath = webcamPath; emit webcamPathChanged();}
+    bool    startFullscreen(void);
+    void    setStartFullscreen(const bool startFullscreen);
 
-    int     osdTimeoutShort(void) {return m_osdTimeoutShort;}
-    void    setOsdTimeoutShort(const int &osdTimeoutShort) {m_osdTimeoutShort = osdTimeoutShort; emit osdTimeoutShortChanged();}
+    QString webcamPath(void);
+    void    setWebcamPath(const QString &webcamPath);
 
-    int     osdTimeoutMedium(void) {return m_osdTimeoutMedium;}
-    void    setOsdTimeoutMedium(const int &osdTimeoutMedium) {m_osdTimeoutMedium = osdTimeoutMedium; emit osdTimeoutMediumChanged();}
+    int     osdTimeoutShort(void);
+    void    setOsdTimeoutShort(const int &osdTimeoutShort);
 
-    int     osdTimeoutLong(void) {return m_osdTimeoutLong;}
-    void    setOsdTimeoutLong(const int &osdTimeoutLong) {m_osdTimeoutLong = osdTimeoutLong; emit osdTimeoutLongChanged();}
+    int     osdTimeoutMedium(void);
+    void    setOsdTimeoutMedium(const int &osdTimeoutMedium);
 
-    QString zmIP(void) {return m_zmIP;}
-    void    setZMIP(const QString &zmIP) {m_zmIP = zmIP; emit zmIPChanged();}
+    int     osdTimeoutLong(void);
+    void    setOsdTimeoutLong(const int &osdTimeoutLong);
 
-    QString zmUserName(void) {return m_zmUserName;}
-    void    setZMUserName(const QString &zmUserName) {m_zmUserName = zmUserName; emit zmUserNameChanged();}
+    QString zmIP(void);
+    void    setZMIP(const QString &zmIP);
 
-    QString zmPassword(void) {return m_zmPassword;}
-    void    setZMPassword(const QString &zmPassword) {m_zmPassword = zmPassword; emit zmPasswordChanged();}
+    QString zmUserName(void);
+    void    setZMUserName(const QString &zmUserName);
 
-    int     idleTime(void) {return m_idleTime;}
-    void    setIdleTime(const int &idleTime) {m_idleTime = idleTime; emit idleTimeChanged();}
+    QString zmPassword(void);
+    void    setZMPassword(const QString &zmPassword);
 
-    QString rebootCommand(void) {return m_rebootCommand;}
-    void    setRebootCommand(const QString &rebootCommand) {m_rebootCommand = rebootCommand; emit rebootCommandChanged();}
+    int     idleTime(void);
+    void    setIdleTime(const int &idleTime);
 
-    QString shutdownCommand(void) {return m_shutdownCommand;}
-    void    setShutdownCommand(const QString &shutdownCommand) {m_shutdownCommand = shutdownCommand; emit shutdownCommandChanged();}
+    QString rebootCommand(void);
+    void    setRebootCommand(const QString &rebootCommand);
+
+    QString shutdownCommand(void);
+    void    setShutdownCommand(const QString &shutdownCommand);
+
+    QString autoStartFrontend(void);
+    void    setAutoStartFrontend(const QString &autoStartFrontend);
 
   private:
     QString m_themeName;
@@ -191,6 +204,5 @@ class Settings : public QObject
     QString m_rebootCommand;
     QString m_shutdownCommand;
 
+    QString m_autoStartFrontend;
 };
-
-extern Settings *gSettings;

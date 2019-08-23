@@ -12,7 +12,7 @@ class MythUtils : public QObject
 {
     Q_OBJECT
   public:
-      MythUtils(QQmlApplicationEngine* engine) {m_engine = engine;}
+    MythUtils(QQmlApplicationEngine* engine) {m_engine = engine;}
 
     Q_INVOKABLE QString findThemeFile(const QString &fileName);
     Q_INVOKABLE bool grabScreen(const QString &fileName);

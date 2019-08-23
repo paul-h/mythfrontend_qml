@@ -5,7 +5,8 @@
 #include <QDebug>
 #include <QFile>
 
-// mythfrontend_qml
+// common
+#include "context.h"
 #include "urlinterceptor.h"
 
 QUrl MythQmlAbstractUrlInterceptor::intercept(const QUrl &url, DataType type)
@@ -15,7 +16,7 @@ QUrl MythQmlAbstractUrlInterceptor::intercept(const QUrl &url, DataType type)
     QString sUrl = url.toString();
 
     // we are only interested in our theme urls
-    if (!sUrl.startsWith(gSettings->sharePath()) || sUrl.endsWith("qmldir"))
+    if (!sUrl.startsWith(gContext->m_settings->sharePath()) || sUrl.endsWith("qmldir"))
         return url;
 
     // look in the map first
@@ -63,8 +64,8 @@ void MythQmlAbstractUrlInterceptor::setTheme(const QString& theme)
 {
    m_theme = theme;
 
-   m_defaultThemePath = gSettings->sharePath() + "qml/Themes/default-wide";
-   m_activeThemePath = gSettings->sharePath() + "qml/Themes/" + m_theme;
+   m_defaultThemePath = gContext->m_settings->sharePath() + "qml/Themes/default-wide";
+   m_activeThemePath = gContext->m_settings->sharePath() + "qml/Themes/" + m_theme;
 
    m_fileMap.clear();
 }

@@ -3,6 +3,7 @@
 #include <QVariant>
 
 #include "databaseutils.h"
+#include "context.h"
 
 void DatabaseUtils::updateChannel(int chanid, QString chanName, QString chanNo, QString xmltvid, QString callsign)
 {
@@ -12,7 +13,7 @@ void DatabaseUtils::updateChannel(int chanid, QString chanName, QString chanNo, 
     << ", xmltv is: " << qPrintable(xmltvid)
     << ", callsign is: " << qPrintable(callsign) << std::endl;
 
-    QSqlQuery query(m_db);
+    QSqlQuery query(gContext->m_db);
     query.prepare("UPDATE channel SET channum = :CHANNUM, name = :NAME, xmltvid = :XMLTVID, callsign = :CALLSIGN "
                   "WHERE chanid = :CHANID;"
     "VALUES (:id, :forename, :surname)");
@@ -27,7 +28,7 @@ void DatabaseUtils::updateChannel(int chanid, QString chanName, QString chanNo, 
 QString DatabaseUtils::getSetting(const QString &settingName, const QString &hostName, const QString &defaultValue)
 {
     QString value;
-    QSqlQuery query(m_db);
+    QSqlQuery query(gContext->m_db);
 
     query.prepare(
         "SELECT data "
@@ -48,7 +49,7 @@ QString DatabaseUtils::getSetting(const QString &settingName, const QString &hos
 
 bool DatabaseUtils::setSetting(QString settingName, QString hostName, QString value)
 {
-    QSqlQuery query(m_db);
+    QSqlQuery query(gContext->m_db);
     bool success = false;
 
     if (!hostName.isEmpty())

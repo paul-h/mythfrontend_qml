@@ -1,6 +1,8 @@
+// c++
 #include <iostream>
 #include <unistd.h>
 
+// qt
 #include <QFile>
 #include <QString>
 #include <QGuiApplication>
@@ -9,7 +11,9 @@
 #include <QPixmap>
 #include <QImage>
 
+// common
 #include "mythutils.h"
+#include "context.h"
 
 QString MythUtils::findThemeFile(const QString &fileName)
 {
@@ -23,12 +27,12 @@ QString MythUtils::findThemeFile(const QString &fileName)
         return fileName;
 
     // look in the active theme
-    if (QFile::exists(gSettings->qmlPath().remove("file://") + fileName))
-        return gSettings->qmlPath() + fileName;
+    if (QFile::exists(gContext->m_settings->qmlPath().remove("file://") + fileName))
+        return gContext->m_settings->qmlPath() + fileName;
 
     // look in the default theme
-    if (QFile::exists(gSettings->sharePath().remove("file://") + "qml/Themes/default-wide/" + fileName))
-        return gSettings->sharePath() + "qml/Themes/default-wide/" + fileName;
+    if (QFile::exists(gContext->m_settings->sharePath().remove("file://") + "qml/Themes/default-wide/" + fileName))
+        return gContext->m_settings->sharePath() + "qml/Themes/default-wide/" + fileName;
 
     // not found
     return QString();
