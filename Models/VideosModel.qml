@@ -9,6 +9,8 @@ XmlListModel
     property var genreList: ListModel{}
     property var typeList: ListModel{}
 
+    property string _pin: settings.securityPin;
+
     source: settings.masterBackend + "Video/GetVideoList"
     query: "/VideoMetadataInfoList/VideoMetadataInfos/VideoMetadataInfo"
     XmlRole { name: "Id"; query: "Id/string()" }
@@ -44,7 +46,7 @@ XmlListModel
     XmlRole { name: "Trailer"; query: "Trailer/string()" }
 
     XmlRole { name: "title"; query: "Title/string()" }
-    XmlRole { name: "url"; query: "concat(xs:string('myth://type=video:server='), HostName/string(), xs:string(':port=6543:sgroup=video:filename='), FileName/string())" }
+    XmlRole { name: "url"; query: "concat(xs:string('myth://type=video:server='), HostName/string(), xs:string(':pin=" + _pin + "'), xs:string(':port=6543:sgroup=video:filename='), FileName/string())" }
     XmlRole { name: "player"; query: "xs:string('VLC')" }
 
     signal loaded();

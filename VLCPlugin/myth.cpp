@@ -350,7 +350,7 @@ static bool ParseMRL(stream_t *p_stream)
 
     // sanity check pin
     if (!p_sys->m_pin.length())
-        p_sys->m_pin = "1812";  //FIXME
+        p_sys->m_pin = "0000";
 
     // sanity check port for the MythTV Protocol
     if (p_sys->m_portProto == 0)

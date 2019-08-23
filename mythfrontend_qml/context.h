@@ -43,6 +43,8 @@ public:
     QString m_dbUser;
     QString m_dbPassword;
     QString m_dbName;
+
+    QString m_securityPin;
 };
 
 extern Context *gContext;

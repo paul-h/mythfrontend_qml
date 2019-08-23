@@ -16,6 +16,7 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
 {
     setThemeName(theme);
     setHostName(hostName);
+    setSecurityPin(gContext->m_securityPin);
     setConfigPath(QDir::homePath() + "/.mythtv/");
     setSharePath(QString(SHAREPATH));
     setQmlPath(QString(SHAREPATH) + "qml/Themes/" + theme + "/");
@@ -92,6 +93,17 @@ void Settings:: setHostName(const QString &hostName)
 {
     m_hostName = hostName;
     emit hostNameChanged();
+}
+
+QString Settings::securityPin(void)
+{
+    return m_securityPin;
+}
+
+void Settings:: setSecurityPin(const QString &securityPin)
+{
+    m_securityPin = securityPin;
+    emit securityPinChanged();
 }
 
 QString Settings::configPath(void)

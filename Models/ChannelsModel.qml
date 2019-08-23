@@ -14,6 +14,7 @@ XmlListModel
     property bool groupByCallsign: true
 
     property string _ip:  extractIP(settings.masterBackend);
+    property string _pin: settings.securityPin;
 
     source:
     {
@@ -53,7 +54,7 @@ XmlListModel
 
     XmlRole { name: "title"; query: "concat(ChanNum/string(), xs:string(' - '), ChannelName/string())" }
     XmlRole { name: "player"; query: "xs:string('VLC')" }
-    XmlRole { name: "url"; query: "concat(xs:string('myth://type=livetv:server=" + _ip + "'), xs:string(':encoder=1:channum='), ChanNum/string())" }
+    XmlRole { name: "url"; query: "concat(xs:string('myth://type=livetv:server=" + _ip + "'), xs:string(':encoder=1:channum='), ChanNum/string(), xs:string(':pin=" + _pin + "'))" }
 
     onStatusChanged:
     {

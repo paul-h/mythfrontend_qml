@@ -129,24 +129,37 @@ bool Context::loadDBSettings(void)
     file.close();
 
     QString docType = doc.doctype().name();
-    QDomNodeList dbNodeList;
+    QDomNodeList nodeList;
     QDomNode node;
     QDomElement elem;
 
-    dbNodeList = doc.elementsByTagName("Database");
+    // find database credentials
+    nodeList = doc.elementsByTagName("Database");
 
-    if (dbNodeList.count() != 1)
+    if (nodeList.count() != 1)
     {
-        qDebug() << "Expected 1 'Database' node but got " << dbNodeList.count();
+        qDebug() << "Expected 1 'Database' node but got " << nodeList.count();
         return false;
     }
 
-    node = dbNodeList.at(0);
+    node = nodeList.at(0);
     m_dbHost = node.namedItem(QString("Host")).toElement().text();
     m_dbUser = node.namedItem(QString("UserName")).toElement().text();
     m_dbPassword = node.namedItem(QString("Password")).toElement().text();
     m_dbName = node.namedItem(QString("DatabaseName")).toElement().text();
     m_dbPort = node.namedItem(QString("Port")).toElement().text();
+
+    // get security pin
+    nodeList = doc.elementsByTagName("DefaultBackend");
+
+    if (nodeList.count() != 1)
+    {
+        qDebug() << "Expected 1 'DefaultBackend' node but got " << nodeList.count();
+        return false;
+    }
+
+    node = nodeList.at(0);
+    m_securityPin = node.namedItem(QString("SecurityPin")).toElement().text();
 
     m_db = QSqlDatabase::addDatabase("QMYSQL");
     m_db.setHostName(m_dbHost);
