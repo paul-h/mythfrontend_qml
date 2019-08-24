@@ -9,7 +9,7 @@ ListModel
     ListElement
     {
         menutext: "Show Console"
-        loaderSource:"ZMConsole.qml"
+        loaderSource: "ZMConsole.qml"
         waterMark: "watermark/zoneminder.png"
     }
     ListElement

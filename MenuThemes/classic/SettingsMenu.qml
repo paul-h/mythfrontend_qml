@@ -8,8 +8,20 @@ ListModel
 
     ListElement
     {
-        menutext: "General Settings"
-        loaderSource: "SettingEditor.qml"
+        menutext: "Myth Backend"
+        loaderSource: "BackendSettingsEditor.qml"
+        waterMark: "watermark/keys.png"
+    }
+    ListElement
+    {
+        menutext: "Theme Settings"
+        loaderSource: "ThemeSettingsEditor.qml"
+        waterMark: "watermark/keys.png"
+    }
+    ListElement
+    {
+        menutext: "Feed Sources Settings"
+        loaderSource: "FeedSettingsEditor.qml"
         waterMark: "watermark/keys.png"
     }
     ListElement

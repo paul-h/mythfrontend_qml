@@ -43,8 +43,8 @@ BaseScreen
         width: xscale(700)
         height: yscale(50)
         text: settings.rebootCommand
-        KeyNavigation.up: idleTimeEdit;
-        KeyNavigation.down: shutdownCmdEdit;
+        KeyNavigation.up: idleTimeEdit
+        KeyNavigation.down: shutdownCmdEdit
     }
 
     LabelText
@@ -60,8 +60,8 @@ BaseScreen
         width: xscale(700)
         height: yscale(50)
         text: settings.shutdownCommand
-        KeyNavigation.up: rebootCmdEdit;
-        KeyNavigation.down: saveButton;
+        KeyNavigation.up: rebootCmdEdit
+        KeyNavigation.down: saveButton
     }
 
     BaseButton

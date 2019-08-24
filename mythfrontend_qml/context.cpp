@@ -149,18 +149,6 @@ bool Context::loadDBSettings(void)
     m_dbName = node.namedItem(QString("DatabaseName")).toElement().text();
     m_dbPort = node.namedItem(QString("Port")).toElement().text();
 
-    // get security pin
-    nodeList = doc.elementsByTagName("DefaultBackend");
-
-    if (nodeList.count() != 1)
-    {
-        qDebug() << "Expected 1 'DefaultBackend' node but got " << nodeList.count();
-        return false;
-    }
-
-    node = nodeList.at(0);
-    m_securityPin = node.namedItem(QString("SecurityPin")).toElement().text();
-
     m_db = QSqlDatabase::addDatabase("QMYSQL");
     m_db.setHostName(m_dbHost);
     m_db.setDatabaseName(m_dbName);

@@ -9,13 +9,16 @@ class Settings : public QObject
     Q_OBJECT
     Q_PROPERTY(QString themeName READ themeName WRITE setThemeName NOTIFY themeNameChanged)
     Q_PROPERTY(QString hostName READ hostName WRITE setHostName NOTIFY hostNameChanged)
+    Q_PROPERTY(QString masterIP READ masterIP WRITE setMasterIP NOTIFY masterIPChanged)
+    Q_PROPERTY(int     masterPort READ masterPort WRITE setMasterPort NOTIFY masterPortChanged)
+    Q_PROPERTY(QString masterBackend READ masterBackend NOTIFY masterBackendChanged)
     Q_PROPERTY(QString securityPin READ securityPin  WRITE setSecurityPin  NOTIFY securityPinChanged)
     Q_PROPERTY(QString configPath READ configPath WRITE setConfigPath NOTIFY configPathChanged)
     Q_PROPERTY(QString sharePath READ sharePath WRITE setSharePath NOTIFY sharePathChanged)
     Q_PROPERTY(QString qmlPath READ qmlPath WRITE setQmlPath NOTIFY qmlPathChanged)
     Q_PROPERTY(QString themePath READ themePath WRITE setThemePath NOTIFY themePathChanged)
     Q_PROPERTY(QString menuPath READ menuPath WRITE setMenuPath NOTIFY menuPathChanged)
-    Q_PROPERTY(QString masterBackend READ masterBackend WRITE setMasterBackend NOTIFY masterBackendChanged)
+
     Q_PROPERTY(QString webSocketUrl READ webSocketUrl WRITE setWebSocketUrl NOTIFY webSocketUrlChanged)
     Q_PROPERTY(QString videoPath READ videoPath WRITE setVideoPath NOTIFY videoPathChanged)
     Q_PROPERTY(QString picturePath READ picturePath WRITE setPicturePath NOTIFY picturePathChanged)
@@ -54,13 +57,15 @@ class Settings : public QObject
    signals:
      void themeNameChanged(void);
      void hostNameChanged(void);
+     void masterIPChanged(void);
+     void masterPortChanged(void);
+     void masterBackendChanged(void);
      void securityPinChanged(void);
      void configPathChanged(void);
      void sharePathChanged(void);
      void qmlPathChanged(void);
      void themePathChanged(void);
      void menuPathChanged(void);
-     void masterBackendChanged(void);
      void webSocketUrlChanged(void);
      void videoPathChanged(void);
      void picturePathChanged(void);
@@ -92,6 +97,14 @@ class Settings : public QObject
     QString hostName(void);
     void    setHostName(const QString &hostName);
 
+    QString masterIP(void);
+    void    setMasterIP(const QString &masterIP);
+
+    int     masterPort(void);
+    void    setMasterPort(int masterPort);
+
+    QString masterBackend(void);
+
     QString securityPin(void);
     void    setSecurityPin(const QString &securityPin);
 
@@ -109,9 +122,6 @@ class Settings : public QObject
 
     QString menuPath(void);
     void    setMenuPath(const QString &menuPath);
-
-    QString masterBackend(void);
-    void    setMasterBackend(const QString &masterBackend);
 
     QString webSocketUrl(void);
     void    setWebSocketUrl(const QString &webSocketUrl);
@@ -176,6 +186,8 @@ class Settings : public QObject
   private:
     QString m_themeName;
     QString m_hostName;
+    QString m_masterIP;
+    int     m_masterPort;
     QString m_securityPin;
     QString m_configPath;
     QString m_sharePath;
@@ -184,7 +196,6 @@ class Settings : public QObject
     QString m_menuPath;
     QString m_webcamPath;
 
-    QString m_masterBackend;
     QString m_webSocketUrl;
     QString m_videoPath;
     QString m_picturePath;

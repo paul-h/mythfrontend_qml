@@ -13,7 +13,7 @@ XmlListModel
     property bool orderByName: false
     property bool groupByCallsign: true
 
-    property string _ip:  extractIP(settings.masterBackend);
+    property string _ip: settings.masterIP;
     property string _pin: settings.securityPin;
 
     source:

@@ -338,36 +338,52 @@ Window
         console.log("loading theme from: " + settings.qmlPath + "Theme.qml");
 
         var component = Qt.createComponent(settings.qmlPath + "Theme.qml");
-        var theme = component.createObject(window);
 
-        if (theme == null)
+        while (component.status != Component.Ready && component.status != Component.Error)
         {
-            // Error Handling
-            console.log("Error creating theme");
-            return null
+            console.log("waiting for component to load! Status: " + component.status);
         }
 
-        if (theme.backgroundVideo !== "")
+        if (component.status == Component.Ready)
         {
-            if (theme.needsDownload && !mythUtils.fileExists(theme.backgroundVideo))
+            var theme = component.createObject(window);
+
+            if (theme == null)
             {
-                screenBackground.showVideo = false;
-                screenBackground.showImage = true;
-                themeDLProcess.start(theme.downloadCommand, theme.downloadOptions);
+                // Error Handling
+                console.log("Error creating theme");
+                return null
+            }
+
+            if (theme.backgroundVideo !== "")
+            {
+                if (theme.needsDownload && !mythUtils.fileExists(theme.backgroundVideo))
+                {
+                    screenBackground.showVideo = false;
+                    screenBackground.showImage = true;
+                    themeDLProcess.start(theme.downloadCommand, theme.downloadOptions);
+                }
+                else
+                {
+                    screenBackground.showVideo = true;
+                    screenBackground.showImage = false;
+                }
             }
             else
             {
-                screenBackground.showVideo = true;
-                screenBackground.showImage = false;
+                screenBackground.showVideo = false;
+                screenBackground.showImage = true;
             }
+
+            return theme
         }
-        else
+        else if (component.status == Component.Error)
         {
-            screenBackground.showVideo = false;
-            screenBackground.showImage = true;
+            // Error Handling
+            console.log("Error loading component:", component.errorString());
         }
 
-        return theme
+        return null;
     }
 
     function showBusyDialog(message, timeoutTime)

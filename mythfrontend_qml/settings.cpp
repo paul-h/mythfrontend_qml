@@ -16,20 +16,25 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
 {
     setThemeName(theme);
     setHostName(hostName);
-    setSecurityPin(gContext->m_securityPin);
+
+    // master backend
+    setMasterIP(gContext->m_databaseUtils->getSetting("Qml_masterIP", hostName, "127.0.0.1"));
+    setMasterPort(gContext->m_databaseUtils->getSetting("Qml_masterPort", hostName, "6544").toInt());
+    setSecurityPin(gContext->m_databaseUtils->getSetting("Qml_securityPin", hostName, "0000"));
+
+    // system paths
     setConfigPath(QDir::homePath() + "/.mythtv/");
     setSharePath(QString(SHAREPATH));
     setQmlPath(QString(SHAREPATH) + "qml/Themes/" + theme + "/");
-    setMasterBackend(gContext->m_databaseUtils->getSetting("Qml_masterBackend", hostName));
+
+    // feed source paths
     setVideoPath(gContext->m_databaseUtils->getSetting("Qml_videoPath", hostName));
     setPicturePath(gContext->m_databaseUtils->getSetting("Qml_picturePath", hostName));
     setSdChannels(gContext->m_databaseUtils->getSetting("Qml_sdChannels", hostName));
     setWebcamPath(gContext->m_databaseUtils->getSetting("Qml_webcamPath", hostName));
 
     // set the websocket url using the master backend as a starting point
-    QUrl url(masterBackend());
-    url.setScheme("ws");
-    url.setPort(url.port() + 5);
+    QUrl url(QString("ws://%1:%2").arg(masterIP()).arg(masterPort() + 5));
     setWebSocketUrl(url.toString());
 
     // start fullscreen
@@ -81,7 +86,12 @@ QString Settings::themeName(void)
 
 void Settings::setThemeName(const QString &themeName)
 {
-    m_themeName = themeName; emit themeNameChanged();
+    m_themeName = themeName;
+
+    if (gContext->m_urlInterceptor)
+        gContext->m_urlInterceptor->setTheme(themeName);
+
+    emit themeNameChanged();
 }
 
 QString Settings::hostName(void)
@@ -89,18 +99,48 @@ QString Settings::hostName(void)
     return m_hostName;
 }
 
-void Settings:: setHostName(const QString &hostName)
+void Settings::setHostName(const QString &hostName)
 {
     m_hostName = hostName;
     emit hostNameChanged();
 }
+
+QString Settings::masterIP(void)
+{
+    return m_masterIP;
+}
+
+void Settings::setMasterIP(const QString &masterIP)
+{
+    m_masterIP = masterIP;
+    emit masterIPChanged();
+    emit masterBackendChanged();
+}
+
+int Settings::masterPort(void)
+{
+    return m_masterPort;
+}
+
+void Settings::setMasterPort(int masterPort)
+{
+    m_masterPort = masterPort;
+    emit masterPortChanged();
+    emit masterBackendChanged();
+}
+
+QString Settings::masterBackend()
+{
+    return QString("http://%1:%2/").arg(m_masterIP).arg(m_masterPort);
+}
+
 
 QString Settings::securityPin(void)
 {
     return m_securityPin;
 }
 
-void Settings:: setSecurityPin(const QString &securityPin)
+void Settings::setSecurityPin(const QString &securityPin)
 {
     m_securityPin = securityPin;
     emit securityPinChanged();
@@ -159,17 +199,6 @@ void Settings::setMenuPath(const QString &menuPath)
 {
     m_menuPath = menuPath;
     emit menuPathChanged();
-}
-
-QString Settings::masterBackend(void)
-{
-    return m_masterBackend;
-}
-
-void Settings:: setMasterBackend(const QString &masterBackend)
-{
-    m_masterBackend = masterBackend;
-    emit masterBackendChanged();
 }
 
 QString Settings::webSocketUrl(void)
