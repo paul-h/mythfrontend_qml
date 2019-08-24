@@ -12,7 +12,7 @@ BaseScreen
         showTitle(true, model.title);
         showTime(true);
         showTicker(true);
-        title.source = settings.themePath + model.logo
+        title.source = mythUtils.findThemeFile(model.logo)
     }
 
     Loader
@@ -26,7 +26,7 @@ BaseScreen
         x: xscale(24); y: yscale(28)
         width: xscale(sourceSize.width)
         height: yscale(sourceSize.height)
-        source: settings.themePath + "title/title_tv.png"
+        source: mythUtils.findThemeFile("title/title_tv.png")
     }
 
     Image
@@ -35,7 +35,7 @@ BaseScreen
         x: xscale(30); y: yscale(594)
         width: xscale(sourceSize.width)
         height: yscale(sourceSize.height)
-        source: settings.themePath + "ui/mythtv_logo.png"
+        source: mythUtils.findThemeFile("ui/mythtv_logo.png")
     }
 
     Rectangle
@@ -79,7 +79,7 @@ BaseScreen
             id: listView
             width: parent.width; height: parent.height
             delegate: menuDelegate
-            highlight: Image {source: settings.themePath + "ui/button_on.png"}
+            highlight: Image {cache: false; source: mythUtils.findThemeFile("ui/button_on.png")}
             focus: true
             clip: true
             keyNavigationWraps: true

@@ -16,7 +16,6 @@ class Settings : public QObject
     Q_PROPERTY(QString configPath READ configPath WRITE setConfigPath NOTIFY configPathChanged)
     Q_PROPERTY(QString sharePath READ sharePath WRITE setSharePath NOTIFY sharePathChanged)
     Q_PROPERTY(QString qmlPath READ qmlPath WRITE setQmlPath NOTIFY qmlPathChanged)
-    Q_PROPERTY(QString themePath READ themePath WRITE setThemePath NOTIFY themePathChanged)
     Q_PROPERTY(QString menuPath READ menuPath WRITE setMenuPath NOTIFY menuPathChanged)
 
     Q_PROPERTY(QString webSocketUrl READ webSocketUrl WRITE setWebSocketUrl NOTIFY webSocketUrlChanged)
@@ -64,7 +63,6 @@ class Settings : public QObject
      void configPathChanged(void);
      void sharePathChanged(void);
      void qmlPathChanged(void);
-     void themePathChanged(void);
      void menuPathChanged(void);
      void webSocketUrlChanged(void);
      void videoPathChanged(void);
@@ -116,9 +114,6 @@ class Settings : public QObject
 
     QString qmlPath(void);
     void    setQmlPath(const QString &qmlPath);
-
-    QString themePath(void);
-    void    setThemePath(const QString &themePath);
 
     QString menuPath(void);
     void    setMenuPath(const QString &menuPath);
@@ -192,7 +187,6 @@ class Settings : public QObject
     QString m_configPath;
     QString m_sharePath;
     QString m_qmlPath;
-    QString m_themePath;
     QString m_menuPath;
     QString m_webcamPath;
 

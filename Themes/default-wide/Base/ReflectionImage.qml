@@ -11,7 +11,7 @@ Rectangle
     Image
     {
         id: originalImage
-        source: themePath + "watermark/music.png"
+        source: mythUtils.findThemeFile("watermark/music.png")
         anchors.horizontalCenter: parent.horizontalCenter
     }
 

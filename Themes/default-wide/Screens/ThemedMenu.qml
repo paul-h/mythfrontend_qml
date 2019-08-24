@@ -16,7 +16,7 @@ BaseScreen
         showTicker(true);
         showVideo(true);
         showImage(true);
-        title.source = settings.themePath + model.logo
+        title.source = mythUtils.findThemeFile(model.logo)
     }
 
     Loader
@@ -84,7 +84,7 @@ BaseScreen
             id: listView
             width: parent.width; height: parent.height
             delegate: menuDelegate
-            highlight: Image {source: mythUtils.findThemeFile("ui/button_on.png")}
+            highlight: Image {cache: false; source: mythUtils.findThemeFile("ui/button_on.png")}
             focus: true
             clip: true
             keyNavigationWraps: true

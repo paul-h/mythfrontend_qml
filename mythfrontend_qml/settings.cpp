@@ -47,12 +47,6 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     // hdmiEncoder
     setHdmiEncoder(gContext->m_databaseUtils->getSetting("Qml_hdmiEncoder", hostName));
 
-    // look for the theme in ~/.mythtv/themes
-    if (QFile::exists(QString(QDir::homePath() + "/.mythtv/themes/") + theme + "/themeinfo.xml"))
-        setThemePath(QString(QDir::homePath() + "/.mythtv/themes/") + theme + "/");
-    else
-        setThemePath(QString(SHAREPATH) + "themes/" + theme + "/");
-
     // menu theme
     QString menuTheme = "classic"; // just use this for now
     setMenuPath(QString(SHAREPATH) + "qml/MenuThemes/" + menuTheme + "/");
@@ -177,17 +171,6 @@ void Settings::setQmlPath(const QString &qmlPath)
 {
     m_qmlPath = qmlPath;
     emit qmlPathChanged();
-}
-
-QString Settings::themePath(void)
-{
-    return m_themePath;
-}
-
-void Settings::setThemePath(const QString &themePath)
-{
-    m_themePath = themePath;
-    emit themePathChanged();
 }
 
 QString Settings::menuPath(void)

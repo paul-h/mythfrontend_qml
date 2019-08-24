@@ -97,9 +97,14 @@ BaseScreen
 
             // update the theme path and reload the theme
             settings.qmlPath = settings.sharePath + "qml/Themes/" + settings.themeName + "/";
+
             window.theme = loadTheme();
-            //themeLoader.source = settings.qmlPath + "Theme.qml";
             screenBackground.setVideo("file://" + theme.backgroundVideo);
+
+            // force the stack to reload the main menu
+            stack.clear();
+            stack.initialItem = null
+            stack.push({item: Qt.resolvedUrl("ThemedMenu.qml"), properties:{model: mainMenuLoader.item}});
 
             returnSound.play();
             stack.pop();

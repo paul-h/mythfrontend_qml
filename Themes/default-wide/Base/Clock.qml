@@ -47,13 +47,13 @@ Item
         anchors.centerIn: parent
         width: 200; height: 240
 
-        Image { id: background; source: settings.themePath + "clock/background.png"; visible: clock.night == false }
-        Image { source: settings.themePath + "clock/clock-night.png"; visible: clock.night == true }
+        Image { id: background; source: mythUtils.findThemeFile("clock/background.png"); visible: clock.night == false }
+        Image { source: mythUtils.findThemeFile("clock/clock-night.png"); visible: clock.night == true }
 
         Image
         {
             x: 92.5; y: 27
-            source: settings.themePath + "clock/hour.png"
+            source: mythUtils.findThemeFile("clock/hour.png")
             transform: Rotation
             {
                 id: hourRotation
@@ -69,7 +69,7 @@ Item
         Image
         {
             x: 93.5; y: 17
-            source: settings.themePath + "clock/minute.png"
+            source: mythUtils.findThemeFile("clock/minute.png")
             transform: Rotation
             {
                 id: minuteRotation
@@ -84,7 +84,7 @@ Item
 
         Image {
             x: 97.5; y: 20
-            source: settings.themePath + "clock/second.png"
+            source: mythUtils.findThemeFile("clock/second.png")
             transform: Rotation
             {
                 id: secondRotation
@@ -99,7 +99,7 @@ Item
 
         Image
         {
-            anchors.centerIn: background; source: settings.themePath + "clock/center.png"
+            anchors.centerIn: background; source: mythUtils.findThemeFile("clock/center.png")
         }
 
         Text
