@@ -9,6 +9,7 @@ BaseCheckBox 1.0 BaseCheckBox.qml
 BaseDialogBackground 1.0 BaseDialogBackground.qml
 BaseEdit 1.0 BaseEdit.qml
 BaseMultilineEdit 1.0 BaseMultilineEdit.qml
+BaseThemedMenu 1.0 BaseThemedMenu.qml
 BaseScreen 1.0 BaseScreen.qml
 BaseSelector 1.0 BaseSelector.qml
 ButtonList 1.0 ButtonList.qml

@@ -15,6 +15,7 @@ Item
         source: ""
         anchors.fill: parent
         opacity: 1
+        visible: root.visible
 
         onStatusChanged: if (status == Image.Ready) doSwapImage();
 
@@ -46,6 +47,7 @@ Item
         source: ""
         anchors.fill: parent
         opacity: if (doFade) 0; else 1;
+        visible: root.visible
 
         onStatusChanged: if (status == Image.Ready) doSwapImage();
 
@@ -73,6 +75,9 @@ Item
 
     function swapImage(newImage)
     {
+        if (!root.visible)
+            return;
+
         _image1Active = !_image1Active;
 
         if (_image1Active)
@@ -87,6 +92,9 @@ Item
 
     function doSwapImage(newImage)
     {
+        if (!root.visible)
+            return;
+
         if (_image1Active)
         {
             if (doFade)
