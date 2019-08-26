@@ -12,7 +12,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, model.title);
-        showTime(false);
+        showTime(true);
         showTicker(true);
         showVideo(true);
         showImage(true);
