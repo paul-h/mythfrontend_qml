@@ -15,12 +15,6 @@ Item
         id: menuLoader
     }
 
-    Clock
-    {
-        x: xscale(1280) - width - xscale(5)
-        y: yscale(5)
-    }
-
     Image
     {
         id: title
