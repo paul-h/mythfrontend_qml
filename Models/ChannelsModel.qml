@@ -70,7 +70,7 @@ XmlListModel
 
         if (status === XmlListModel.Error)
         {
-            console.log("Status: " + "Channels - ERROR: " + errorString + "\n" + source.toString());
+            console.log("Status: " + "Channels - ERROR: " + errorString() + "\n" + source.toString());
         }
     }
 
