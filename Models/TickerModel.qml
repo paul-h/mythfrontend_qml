@@ -5,7 +5,7 @@ XmlListModel
 {
     id: tickerModel
 
-    source: settings.configPath + "/MythNews/ticker.xml"
+    source: settings.configPath + "ticker.xml"
 
     query: "/items/item"
     XmlRole { name: "id"; query: "id/number()" }

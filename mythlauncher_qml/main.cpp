@@ -13,6 +13,11 @@ int main(int argc, char *argv[])
 
     // create the context
     gContext = new Context("MythLauncherQML");
+
+    // attempt to connect to the database
+    if (!gContext->loadDBSettings())
+        return 1;
+
     gContext->init();
 
     gContext->m_engine->load(QUrl(QString(SHAREPATH) + "qml/launcher.qml"));

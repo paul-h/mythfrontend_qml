@@ -29,6 +29,11 @@ int main(int argc, char *argv[])
 
     // create the context
     gContext = new Context("MythFrontendQML");
+
+    // attempt to connect to the database
+    if (!gContext->loadDBSettings())
+        return 1;
+
     gContext->init();
 
     // these are frontend only

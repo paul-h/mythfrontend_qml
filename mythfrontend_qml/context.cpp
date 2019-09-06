@@ -33,8 +33,6 @@ Context::Context(const QString &appName, QObject *parent) : QObject(parent)
     m_mythUtils = nullptr;
     m_kpl = nullptr;
     m_urlInterceptor = nullptr;
-
-    loadDBSettings();
 }
 
 Context::~Context(void)
@@ -90,8 +88,12 @@ void Context::init()
 
     // create the snapshots dir
     QDir d;
-    if (!d.exists(m_settings->configPath() + "snapshots"))
-        d.mkdir(m_settings->configPath() + "snapshots");
+    if (!d.exists(m_settings->configPath() + "Snapshots"))
+        d.mkpath(m_settings->configPath() + "Snapshots");
+
+    // create the background video dir
+    if (!d.exists(m_settings->configPath() + "Themes/Videos"))
+        d.mkpath(m_settings->configPath() + "Themes/Videos");
 
     // create the myth utils
     m_mythUtils = new MythUtils(m_engine);
@@ -113,7 +115,28 @@ void Context::init()
 bool Context::loadDBSettings(void)
 {
     QDomDocument doc("mydocument");
-    QFile file(QDir::homePath() + "/.mythtv/config.xml");
+
+    // find the config.xml
+    QString configFile;
+
+    if (QFile::exists(QDir::homePath() + "/.mythqml/config.xml"))
+        configFile = QDir::homePath() + "/.mythqml/config.xml";
+    else if (QFile::exists(QDir::homePath() + "/.mythtv/config.xml"))
+            configFile = QDir::homePath() + "/.mythtv/config.xml";
+    else if (QFile::exists("/etc/mythtv/config.xml"))
+        configFile = "/etc/mythtv/config.xml";
+
+
+    if (configFile.isEmpty())
+    {
+        qDebug() << "ERROR: Unable to find config file\nYou need to put a valid config.xml file at: ~/.mythqml/config.xml";
+        return false;
+    }
+
+    qDebug() << "Loading database config from: " << configFile;
+
+    QFile file(configFile);
+
     if (!file.open(QIODevice::ReadOnly))
     {
         qDebug() << "Failed to open config file";

@@ -172,7 +172,7 @@ Window
     {
         id: tickerUpdateTimer
         interval: 600000; running: true; repeat: true
-        onTriggered: tickerProcess.start(settings.sharePath.replace("file://", "") + "/qml/Scripts/ticker-grabber.py", [settings.configPath + "/MythNews/ticker.xml"]);
+        onTriggered: tickerProcess.start(settings.sharePath.replace("file://", "") + "/qml/Scripts/ticker-grabber.py", [settings.configPath + "ticker.xml"]);
     }
 
     Timer
@@ -225,7 +225,7 @@ Window
             showTicker: true
             Component.onCompleted:
             {
-                tickerProcess.start(settings.sharePath.replace("file://", "") + "/qml/Scripts/ticker-grabber.py", [settings.configPath + "/MythNews/ticker.xml"]);
+                tickerProcess.start(settings.sharePath.replace("file://", "") + "/qml/Scripts/ticker-grabber.py", [settings.configPath + "ticker.xml"]);
             }
         }
 

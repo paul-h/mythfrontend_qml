@@ -23,7 +23,7 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     setSecurityPin(gContext->m_databaseUtils->getSetting("Qml_securityPin", hostName, "0000"));
 
     // system paths
-    setConfigPath(QDir::homePath() + "/.mythtv/");
+    setConfigPath(QDir::homePath() + "/.mythqml/");
     setSharePath(QString(SHAREPATH));
     setQmlPath(QString(SHAREPATH) + "qml/Themes/" + theme + "/");
 
