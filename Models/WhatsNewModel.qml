@@ -7,7 +7,7 @@ XmlListModel
 
     signal loaded();
 
-    source: "http://pdh.hopto.org:4549/downloads/whatsnew.xml"
+    source: "https://mythqml.net/downloads/whatsnew.xml"
 
     query: "/items/item"
     XmlRole { name: "id"; query: "id/number()" }
