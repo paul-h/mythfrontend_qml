@@ -31,7 +31,7 @@ XmlListModel
 
         if (status === XmlListModel.Error)
         {
-            console.info("Status: " + "Encoders - ERROR: " + errorString + "\n" + source.toString());
+            console.info("Status: " + "Encoders - ERROR: " + errorString() + "\n" + source.toString());
         }
     }
 }

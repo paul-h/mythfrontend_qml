@@ -35,7 +35,7 @@ XmlListModel
 
         if (status === XmlListModel.Error)
         {
-            console.log("Error: " + errorString + "\n \n \n " + webvideoModel.source.toString());
+            console.log("Error: " + errorString() + "\n \n \n " + webvideoModel.source.toString());
         }
     }
 

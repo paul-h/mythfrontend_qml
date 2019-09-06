@@ -15,6 +15,6 @@ XmlListModel
     onStatusChanged:
     {
         if (status === XmlListModel.Error)
-            console.info("Status: " + "TickerModel - ERROR: " + errorString + "\n" + tickerModel.source.toString());
+            console.info("Status: " + "TickerModel - ERROR: " + errorString() + "\n" + tickerModel.source.toString());
     }
 }

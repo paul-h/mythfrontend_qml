@@ -22,7 +22,7 @@ XmlListModel
     {
         if (status === XmlListModel.Error)
         {
-            console.info("ERROR loading VideoSources: " + errorString + "\n" + source.toString());
+            console.info("ERROR loading VideoSources: " + errorString() + "\n" + source.toString());
         }
     }
 

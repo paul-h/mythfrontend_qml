@@ -26,7 +26,7 @@ XmlListModel
         if (status === XmlListModel.Error)
         {
 
-            console.log("Status: " + "SD Channels - ERROR: " + errorString + "\n \n \n " + sdChannelsModel.source.toString());
+            console.log("Status: " + "SD Channels - ERROR: " + errorString() + "\n \n \n " + sdChannelsModel.source.toString());
         }
     }
 }

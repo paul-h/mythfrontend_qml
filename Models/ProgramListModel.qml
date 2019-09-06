@@ -45,7 +45,7 @@ XmlListModel
 
         if (status === XmlListModel.Error)
         {
-            console.log("Status: " + "Guide - ERROR: " + errorString + "\n" + source.toString());
+            console.log("Status: " + "Guide - ERROR: " + errorString() + "\n" + source.toString());
         }
     }
 

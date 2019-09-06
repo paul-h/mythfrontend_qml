@@ -51,7 +51,7 @@ XmlListModel
         if (status === XmlListModel.Error)
         {
             screenBackground.showBusyIndicator = false
-            console.log("Error: " + errorString + "\n" + streamModel.source.toString());
+            console.log("Error: " + errorString() + "\n" + streamModel.source.toString());
         }
     }
 

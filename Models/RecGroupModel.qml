@@ -22,7 +22,7 @@ XmlListModel
 
         if (status === XmlListModel.Error)
         {
-            console.info("Status: " + "GetRecGroupList - ERROR: " + errorString + "\n" + source.toString());
+            console.info("Status: " + "GetRecGroupList - ERROR: " + errorString() + "\n" + source.toString());
         }
     }
 }

@@ -30,7 +30,7 @@ XmlListModel
 
         if (status === XmlListModel.Error)
         {
-            console.log("Error: " + errorString + "\n \n \n " + mxmlModel.source.toString());
+            console.log("Error: " + errorString() + "\n \n \n " + mxmlModel.source.toString());
         }
     }
 }

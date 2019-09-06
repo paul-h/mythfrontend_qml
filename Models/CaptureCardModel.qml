@@ -28,7 +28,7 @@ XmlListModel
 
         if (status === XmlListModel.Error)
         {
-            console.info("Status: " + "CaptureCards - ERROR: " + errorString + "\n" + captureCardModel.source.toString());
+            console.info("Status: " + "CaptureCards - ERROR: " + errorString() + "\n" + captureCardModel.source.toString());
         }
     }
 }

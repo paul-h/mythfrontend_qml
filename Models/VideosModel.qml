@@ -70,7 +70,7 @@ XmlListModel
         if (status === XmlListModel.Error)
         {
             screenBackground.showBusyIndicator = false;
-            console.log("Error: " + errorString + "\n \n \n " + videoModel.source.toString());
+            console.log("Error: " + errorString() + "\n \n \n " + videoModel.source.toString());
         }
     }
 

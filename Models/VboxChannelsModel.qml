@@ -35,7 +35,7 @@ XmlListModel
         if (status === XmlListModel.Error)
         {
 
-            console.log("Status: " + "VBox Channels - ERROR: " + errorString + "\n \n \n " + vboxChannelsModel.source.toString());
+            console.log("Status: " + "VBox Channels - ERROR: " + errorString() + "\n \n \n " + vboxChannelsModel.source.toString());
         }
     }
 }

@@ -9,7 +9,7 @@ XmlListModel
 
     source: ""
     query: "/webcams/webcam"
-    XmlRole { name: "id"; query: "id/number()" }
+    XmlRole { name: "id"; query: "id/number()"; isKey: true }
     XmlRole { name: "title"; query: "title/string()" }
     XmlRole { name: "description"; query: "description/string()" }
     XmlRole { name: "icon"; query: "icon/string()" }
@@ -39,7 +39,7 @@ XmlListModel
 
         if (status === XmlListModel.Error)
         {
-            console.log("Error: " + errorString + "\n \n \n " + webcamModel.source.toString());
+            console.log("Error: " + errorString() + "\n \n \n " + webcamModel.source.toString());
         }
     }
 

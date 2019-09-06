@@ -27,7 +27,7 @@ XmlListModel
     {
         if (status == XmlListModel.Error)
         {
-            console.info("FeedModel Error: " + errorString + "\n" + source.toString())
+            console.info("FeedModel Error: " + errorString() + "\n" + source.toString())
         }
     }
 }
