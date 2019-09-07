@@ -9,9 +9,8 @@ ListModel
     ListElement
     {
         menutext: "Watch TV"
-        loaderSource:"InternalPlayer.qml"
+        loaderSource: "MythTVChannelViewer.qml"
         waterMark: "watermark/tv.png"
-        layout: 0
         feedSource: "Live TV"
     }
     ListElement
