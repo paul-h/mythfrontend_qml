@@ -10,6 +10,8 @@ BaseDialog
     height: yscale(600)
 
     property alias model: listProxyModel.sourceModel
+    property string displayField: "item"
+    property string dataField: "item"
 
     signal itemSelected(string itemText)
 
@@ -26,10 +28,10 @@ BaseDialog
     SortFilterProxyModel
     {
         id: listProxyModel
-        filterRoleName: "item"
+        filterRoleName: displayField
         filterPattern: searchEdit.text
         filterCaseSensitivity: Qt.CaseInsensitive
-        sortRoleName: "item"
+        sortRoleName: displayField
     }
 
     Component
@@ -42,7 +44,16 @@ BaseDialog
             {
                 x: xscale(20); y: 0
                 width: parent.width - xscale(20)
-                text: item
+                text:
+                {
+                    if (index >= 0 && index < listProxyModel.count && displayField != "")
+                    {
+                        if (listProxyModel.get(index, displayField) != undefined)
+                            return listProxyModel.get(index, displayField);
+                    }
+
+                    return "";
+                }
             }
         }
     }
@@ -81,7 +92,7 @@ BaseDialog
             onItemClicked:
             {
                 searchDialog.state = "";
-                searchDialog.itemSelected(listProxyModel.get(itemList.currentIndex).item);
+                searchDialog.itemSelected(listProxyModel.get(itemList.currentIndex, dataField));
             }
         }
     }
@@ -102,7 +113,7 @@ BaseDialog
             onClicked:
             {
                 searchDialog.state = "";
-                searchDialog.itemSelected(listProxyModel.get(itemList.currentIndex).item);
+                searchDialog.itemSelected(listProxyModel.get(itemList.currentIndex, dataField));
             }
         },
 
