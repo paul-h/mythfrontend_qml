@@ -19,6 +19,7 @@ Window
     height: 720
 
     property string mainMenu: "MainMenu.qml"
+    property bool showWhatsNew: true
 
     property double wmult: width / 1280
     property double hmult: height / 720
@@ -505,7 +506,7 @@ Window
     Timer
     {
         id: whatsNewTimer
-        interval: 1000; running: true; repeat: false
+        interval: 1000; running: window.showWhatsNew; repeat: false
         onTriggered:
         {
             whatsNewTimer.stop();

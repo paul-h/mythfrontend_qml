@@ -6,6 +6,7 @@ MainWindow
     id: window
 
     mainMenu: "LauncherMenu.qml"
+    showWhatsNew: false
 
     Component.onCompleted:
     {
