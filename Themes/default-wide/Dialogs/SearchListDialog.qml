@@ -46,7 +46,10 @@ BaseDialog
                 width: parent.width - xscale(20)
                 text:
                 {
-                    if (index >= 0 && index < listProxyModel.count && displayField != "")
+                    if (displayField === "item")
+                        return item;
+
+                    if (index >= 0 && index < listProxyModel. count && displayField != "")
                     {
                         if (listProxyModel.get(index, displayField) != undefined)
                             return listProxyModel.get(index, displayField);
