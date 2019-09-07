@@ -30,7 +30,7 @@ XmlListModel
     {
         for (var x = 0; x < count; x++)
         {
-            if (get(x).Id === Id)
+            if (get(x).Id == Id)
                 return x;
         }
 
