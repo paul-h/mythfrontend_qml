@@ -39,7 +39,7 @@ XmlListModel
 
         if (status === XmlListModel.Error)
         {
-            console.log("Error: " + errorString() + "\n \n \n " + webcamModel.source.toString());
+            console.log("Error: " + errorString() + "\nSource: " + webcamModel.source.toString());
         }
     }
 
