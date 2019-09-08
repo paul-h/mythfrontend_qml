@@ -9,6 +9,7 @@
 
 Settings::Settings(const QString &hostName, const QString &theme)
 {
+    setDefaultSettings(hostName);
     initSettings(hostName, theme);
 }
 
@@ -18,9 +19,9 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     setHostName(hostName);
 
     // master backend
-    setMasterIP(gContext->m_databaseUtils->getSetting("Qml_masterIP", hostName, "127.0.0.1"));
-    setMasterPort(gContext->m_databaseUtils->getSetting("Qml_masterPort", hostName, "6544").toInt());
-    setSecurityPin(gContext->m_databaseUtils->getSetting("Qml_securityPin", hostName, "0000"));
+    setMasterIP(gContext->m_databaseUtils->getSetting("Qml_masterIP", hostName));
+    setMasterPort(gContext->m_databaseUtils->getSetting("Qml_masterPort", hostName).toInt());
+    setSecurityPin(gContext->m_databaseUtils->getSetting("Qml_securityPin", hostName));
 
     // system paths
     setConfigPath(QDir::homePath() + "/.mythqml/");
@@ -70,7 +71,69 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     setShutdownCommand(gContext->m_databaseUtils->getSetting("Qml_shutdownCommand", hostName));
 
     // auto start
-    setAutoStartFrontend(gContext->m_databaseUtils->getSetting("Qml_autoStartFrontend", hostName, "QML_Frontend"));
+    setAutoStartFrontend(gContext->m_databaseUtils->getSetting("Qml_autoStartFrontend", hostName));
+}
+
+void Settings::setDefaultSettings(const QString &hostName)
+{
+    // master backend
+    if (gContext->m_databaseUtils->getSetting("Qml_masterIP", hostName) == "")
+    {
+        setMasterIP("127.0.0.1");
+        gContext->m_databaseUtils->setSetting("Qml_masterIP", hostName, "127.0.0.1");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("Qml_masterPort", hostName) == "")
+    {
+        setMasterPort(6544);
+        gContext->m_databaseUtils->setSetting("Qml_masterPort", hostName, "6544");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("Qml_securityPin", hostName) == "")
+    {
+        setSecurityPin("0000"); // TODO check this is the default
+        gContext->m_databaseUtils->setSetting("Qml_securityPin", hostName, "0000");
+    }
+
+    // feed source paths
+    if (gContext->m_databaseUtils->getSetting("Qml_webcamPath", hostName) == "")
+    {
+        setWebcamPath("https://mythqml.net/downloads/webcams/");
+        gContext->m_databaseUtils->setSetting("Qml_webcamPath", hostName, "https://mythqml.net/downloads/webcams/");
+    }
+
+    // start fullscreen
+    if (gContext->m_databaseUtils->getSetting("Qml_startFullScreen", hostName) == "")
+    {
+        setStartFullscreen(true);
+        gContext->m_databaseUtils->setSetting("Qml_startFullScreen", hostName, "true");
+    }
+
+    // shutdown settings
+    if (gContext->m_databaseUtils->getSetting("Qml_idleTime", hostName) == "")
+    {
+        setIdleTime(90);
+        gContext->m_databaseUtils->setSetting("Qml_idleTime", hostName, "90");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("Qml_rebootCommand", hostName) == "")
+    {
+        setRebootCommand("sudo /sbin/reboot");
+        gContext->m_databaseUtils->setSetting("Qml_rebootCommand", hostName, "sudo reboot");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("Qml_shutdownCommand", hostName) == "")
+    {
+        setShutdownCommand("sudo /sbin/shutdown");
+        gContext->m_databaseUtils->setSetting("Qml_shutdownCommand", hostName, "sudo shutdown");
+    }
+
+    // auto start
+    if (gContext->m_databaseUtils->getSetting("Qml_autoStartFrontend", hostName) == "")
+    {
+        setAutoStartFrontend("QML_Frontend");
+        gContext->m_databaseUtils->setSetting("Qml_autoStartFrontend", hostName, "QML_Frontend");
+    }
 }
 
 QString Settings::themeName(void)

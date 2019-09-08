@@ -87,6 +87,7 @@ class Settings : public QObject
 
   public:
     Settings(const QString &hostName, const QString &theme);
+    void setDefaultSettings(const QString &hostName);
     void initSettings(const QString &hostName, const QString &theme);
 
     QString themeName(void);

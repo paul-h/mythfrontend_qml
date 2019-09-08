@@ -79,7 +79,7 @@ BaseScreen
             dbUtils.setSetting("Qml_securityPin", settings.hostName, pinEdit.text);
 
             settings.masterIP    = ipEdit.text;
-            settings.masterPort  = portEdit.text;
+            settings.masterPort  = parseInt(portEdit.text);
             settings.securityPin = pinEdit.text;
 
             returnSound.play();
