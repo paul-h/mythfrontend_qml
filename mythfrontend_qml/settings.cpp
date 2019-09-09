@@ -119,13 +119,13 @@ void Settings::setDefaultSettings(const QString &hostName)
     if (gContext->m_databaseUtils->getSetting("Qml_rebootCommand", hostName) == "")
     {
         setRebootCommand("sudo /sbin/reboot");
-        gContext->m_databaseUtils->setSetting("Qml_rebootCommand", hostName, "sudo reboot");
+        gContext->m_databaseUtils->setSetting("Qml_rebootCommand", hostName, "sudo /sbin/reboot");
     }
 
     if (gContext->m_databaseUtils->getSetting("Qml_shutdownCommand", hostName) == "")
     {
-        setShutdownCommand("sudo /sbin/shutdown");
-        gContext->m_databaseUtils->setSetting("Qml_shutdownCommand", hostName, "sudo shutdown");
+        setShutdownCommand("sudo /sbin/poweroff");
+        gContext->m_databaseUtils->setSetting("Qml_shutdownCommand", hostName, "sudo /sbin/poweroff");
     }
 
     // auto start
