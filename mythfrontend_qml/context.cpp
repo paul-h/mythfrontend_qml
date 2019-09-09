@@ -71,6 +71,9 @@ void Context::init()
     // create version property
     m_engine->rootContext()->setContextProperty("version", QString(APP_VERSION));
 
+    // create the Qt version property
+    m_engine->rootContext()->setContextProperty("qtversion", QString(qVersion()));
+
     // create the build time property
     m_engine->rootContext()->setContextProperty("buildtime", QString("%1 - %2").arg(__DATE__).arg(__TIME__));
 
