@@ -261,7 +261,10 @@ Item
         id: versionDialog
 
         title: "MythQML"
-        message: '<font  color="yellow"><b>Version: </font></b>' + version  + '<br><font color="yellow"><b>Date: </font></b>' + buildtime + '<br><font  color="yellow"><b>Qt Version: </font></b>' + qtversion + '<br><br>(c) Paul Harrison 2019'
+        message: '<font  color="yellow"><b>Version: </font></b>' + version  +
+                 '<br><font color="yellow"><b>Date: </font></b>' + buildtime +
+                 '<br><font  color="yellow"><b>Qt Version: </font></b>' + qtversion +
+                 '<br><br>(c) Paul Harrison 2019'
 
         rejectButtonText: ""
         acceptButtonText: "OK"
