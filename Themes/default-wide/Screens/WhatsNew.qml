@@ -63,7 +63,7 @@ BaseScreen
         // yellow
         shortcut: "F3"
         enabled: browser.focus
-        onTriggered: zoom(false);
+        onTriggered: zoom(true);
     }
 
     Action
@@ -71,7 +71,7 @@ BaseScreen
         // blue
         shortcut: "F4"
         enabled: browser.focus
-        onTriggered: zoom(true);
+        onTriggered: zoom(false);
     }
 
     Action
@@ -137,7 +137,6 @@ BaseScreen
         zoomFactor: xscale(1.0)
         settings.pluginsEnabled: true
         settings.javascriptCanOpenWindows: true;
-        url: mythUtils.findThemeFile("HTML/blank.html");
     }
 
     Footer
@@ -164,11 +163,15 @@ BaseScreen
     {
         if (zoomIn)
         {
+            // a bug in Qt/Chromium means we have to set the zoomFactor twice for it to stick!
+            browser.zoomFactor = Math.min(5,  browser.zoomFactor + 0.25);
             browser.zoomFactor = Math.min(5,  browser.zoomFactor + 0.25);
             showNotification("Zoom Factor: " + Math.round(browser.zoomFactor * 100) / 100);
         }
         else
         {
+            // a bug in Qt/Chromium means we have to set the zoomFactor twice for it to stick!
+            browser.zoomFactor = Math.max(0.25,  browser.zoomFactor - 0.25);
             browser.zoomFactor = Math.max(0.25,  browser.zoomFactor - 0.25);
             showNotification("Zoom Factor: " + Math.round(browser.zoomFactor * 100) / 100);
         }
