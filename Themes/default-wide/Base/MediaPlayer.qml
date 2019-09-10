@@ -87,8 +87,9 @@ FocusScope
         url: ""
         settings.pluginsEnabled: true
         settings.javascriptEnabled: true
-//        settings.playbackRequiresUserGesture: false
         audioMuted: false;
+
+        Component.onCompleted: settings.playbackRequiresUserGesture = false;
 
         onLoadingChanged:
         {
