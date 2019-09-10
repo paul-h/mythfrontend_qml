@@ -343,7 +343,10 @@ BaseScreen
         Keys.onReturnPressed:
         {
             var hostname = model.get(currentIndex).HostName === settings.hostName ? "localhost" : model.get(currentIndex).HostName
-            var filename = "myth://" + "type=recording:server=" + hostname + ":port=6543:filename=" + model.get(currentIndex).FileName + ":sgroup=" + model.get(currentIndex).StorageGroup;
+            var filename = "myth://" + "type=recording:server=" + hostname +
+                           ":pin=" + settings.securityPin +
+                           ":port=6543:filename=" + model.get(currentIndex).FileName +
+                           ":sgroup=" + model.get(currentIndex).StorageGroup;
             var title = ""
 
             if (model.get(currentIndex).HostName !== "")
@@ -351,7 +354,8 @@ BaseScreen
 
             mediaModel.get(0).title = title;
             mediaModel.get(0).url = filename;
-            stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedList:  mediaModel, defaultFeedSource: "Recordings", defaultCurrentFeed: 0}});
+            playerSources.adhocList = mediaModel;
+            stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0}});
             event.accepted = true;
             returnSound.play();
         }
