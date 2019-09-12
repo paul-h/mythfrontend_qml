@@ -15,7 +15,24 @@ Item
 
     x: 0; y: 0; width: parent.width; height: parent.height
 
-    Keys.onEscapePressed: if (stack.depth > 1) {escapeSound.play(); stack.pop();} else errorSound.play();
+    Keys.onEscapePressed:
+    {
+        if (stack.depth > 1)
+        {
+            escapeSound.play();
+            stack.pop();
+        }
+        else
+        {
+            if (exitOnEscape)
+            {
+                escapeSound.play();
+                quit();
+            }
+            else
+                errorSound.play();
+        }
+    }
 
     function showTitle (show, newTitle)
     {

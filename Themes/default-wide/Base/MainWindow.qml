@@ -20,6 +20,7 @@ Window
 
     property string mainMenu: "MainMenu.qml"
     property bool showWhatsNew: true
+    property bool exitOnEscape: true
 
     property double wmult: width / 1280
     property double hmult: height / 720
