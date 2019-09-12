@@ -7,6 +7,7 @@ MainWindow
 
     mainMenu: "LauncherMenu.qml"
     showWhatsNew: false
+    exitOnEscape: false
 
     Component.onCompleted:
     {
