@@ -25,7 +25,7 @@ BaseScreen
         {
             startTime++;
             if (startTime >= 120)
-                Qt.quit();
+                quit();
             else
                 countdownText.text = "Shutting down in " + (120 - startTime) + " seconds"
         }
@@ -46,7 +46,7 @@ BaseScreen
         id: idleText
         x: 0; width: parent.width
         y: yscale(250); height: yscale(100)
-        text: "Been idle for 60 minutes"
+        text: "Been idle for " + settings.idleTime + " minutes"
         horizontalAlignment: Text.AlignHCenter
         fontPixelSize: xscale(40)
     }
