@@ -571,7 +571,7 @@ Window
             busyDialog.message = "Shutting Down...";
             busyDialog.timeOut = 10000;
             busyDialog.show();
-            shutdownProcess.start(settings.shutdownCommand);
+            externalProcess.start(settings.shutdownCommand);
         }
     }
 
@@ -583,7 +583,7 @@ Window
             busyDialog.message = "Rebooting. Please Wait...";
             busyDialog.timeOut = 10000;
             busyDialog.show();
-            shutdownProcess.start(settings.rebootCommand);
+            externalProcess.start(settings.rebootCommand);
         }
     }
 }
