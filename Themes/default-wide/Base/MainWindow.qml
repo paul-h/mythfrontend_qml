@@ -180,7 +180,7 @@ Window
     Timer
     {
         id: idleTimer
-        interval: 3600000; running: true; repeat: true
+        interval: (settings.idleTime * 60) * 1000; running: true; repeat: true
         onTriggered:
         {
             stop();
