@@ -25,9 +25,14 @@ BaseScreen
         {
             startTime++;
             if (startTime >= 120)
-                quit();
+            {
+                if (window.shutdownOnIdle)
+                    shutdown();
+                else
+                    quit();
+            }
             else
-                countdownText.text = "Shutting down in " + (120 - startTime) + " seconds"
+                countdownText.text = (window.shutdownOnIdle ? "Shutting down" : "Exiting") + " in " + (120 - startTime) + " seconds"
         }
     }
 
@@ -37,7 +42,7 @@ BaseScreen
         y: yscale(100)
         width: xscale(150)
         height: yscale(150)
-        source: mythUtils.findThemeFile("images/shutdown.png")
+        source: mythUtils.findThemeFile(window.shutdownOnIdle ? "images/shutdown.png" : "images/close.png")
         anchors.horizontalCenter: parent.horizontalCenter
     }
 
@@ -46,7 +51,7 @@ BaseScreen
         id: idleText
         x: 0; width: parent.width
         y: yscale(250); height: yscale(100)
-        text: "Been idle for " + settings.idleTime + " minutes"
+        text: "Been idle for " + window.idleTime + " minutes"
         horizontalAlignment: Text.AlignHCenter
         fontPixelSize: xscale(40)
     }

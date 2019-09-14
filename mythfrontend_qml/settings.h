@@ -46,7 +46,8 @@ class Settings : public QObject
     Q_PROPERTY(QString zmPassword READ zmPassword WRITE setZMPassword NOTIFY zmPasswordChanged)
 
     // shutdown
-    Q_PROPERTY(int     idleTime READ idleTime WRITE setIdleTime NOTIFY idleTimeChanged)
+    Q_PROPERTY(int     frontendIdleTime READ frontendIdleTime WRITE setFrontendIdleTime NOTIFY frontendIdleTimeChanged)
+    Q_PROPERTY(int     launcherIdleTime READ launcherIdleTime WRITE setLauncherIdleTime NOTIFY launcherIdleTimeChanged)
     Q_PROPERTY(QString rebootCommand READ rebootCommand WRITE setRebootCommand NOTIFY rebootCommandChanged)
     Q_PROPERTY(QString shutdownCommand READ shutdownCommand WRITE setShutdownCommand NOTIFY shutdownCommandChanged)
 
@@ -80,7 +81,8 @@ class Settings : public QObject
      void zmIPChanged(void);
      void zmUserNameChanged(void);
      void zmPasswordChanged(void);
-     void idleTimeChanged(void);
+     void frontendIdleTimeChanged(void);
+     void launcherIdleTimeChanged(void);
      void rebootCommandChanged(void);
      void shutdownCommandChanged(void);
      void autoStartFrontendChanged(void);
@@ -150,13 +152,13 @@ class Settings : public QObject
     void    setWebcamPath(const QString &webcamPath);
 
     int     osdTimeoutShort(void);
-    void    setOsdTimeoutShort(const int &osdTimeoutShort);
+    void    setOsdTimeoutShort(const int osdTimeoutShort);
 
     int     osdTimeoutMedium(void);
-    void    setOsdTimeoutMedium(const int &osdTimeoutMedium);
+    void    setOsdTimeoutMedium(const int osdTimeoutMedium);
 
     int     osdTimeoutLong(void);
-    void    setOsdTimeoutLong(const int &osdTimeoutLong);
+    void    setOsdTimeoutLong(const int osdTimeoutLong);
 
     QString zmIP(void);
     void    setZMIP(const QString &zmIP);
@@ -167,8 +169,11 @@ class Settings : public QObject
     QString zmPassword(void);
     void    setZMPassword(const QString &zmPassword);
 
-    int     idleTime(void);
-    void    setIdleTime(const int &idleTime);
+    int     frontendIdleTime(void);
+    void    setFrontendIdleTime(const int idleTime);
+
+    int     launcherIdleTime(void);
+    void    setLauncherIdleTime(const int idleTime);
 
     QString rebootCommand(void);
     void    setRebootCommand(const QString &rebootCommand);
@@ -212,7 +217,8 @@ class Settings : public QObject
     QString m_zmUserName;
     QString m_zmPassword;
 
-    int     m_idleTime;
+    int     m_frontendIdleTime;
+    int     m_launcherIdleTime;
     QString m_rebootCommand;
     QString m_shutdownCommand;
 

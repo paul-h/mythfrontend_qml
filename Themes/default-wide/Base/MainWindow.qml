@@ -21,6 +21,9 @@ Window
     property string mainMenu: "MainMenu.qml"
     property bool showWhatsNew: true
     property bool exitOnEscape: true
+    property bool shutdownOnIdle: false
+
+    property int idleTime: settings.frontendIdleTime
 
     property double wmult: width / 1280
     property double hmult: height / 720
@@ -180,7 +183,7 @@ Window
     Timer
     {
         id: idleTimer
-        interval: (settings.idleTime * 60) * 1000; running: true; repeat: true
+        interval: (idleTime * 60) * 1000; running: (idleTime > 0 ? true : false); repeat: true
         onTriggered:
         {
             stop();

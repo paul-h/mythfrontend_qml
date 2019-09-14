@@ -8,6 +8,9 @@ MainWindow
     mainMenu: "LauncherMenu.qml"
     showWhatsNew: false
     exitOnEscape: false
+    shutdownOnIdle: true
+
+    idleTime: settings.launcherIdleTime
 
     Component.onCompleted:
     {
