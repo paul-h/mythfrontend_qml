@@ -66,7 +66,8 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     setZMPassword(gContext->m_databaseUtils->getSetting("Qml_zmPassword", hostName));
 
     // shutdown settings
-    setIdleTime(gContext->m_databaseUtils->getSetting("Qml_idleTime", hostName).toInt());
+    setFrontendIdleTime(gContext->m_databaseUtils->getSetting("Qml_frontendIdleTime", hostName).toInt());
+    setLauncherIdleTime(gContext->m_databaseUtils->getSetting("Qml_launcherIdleTime", hostName).toInt());
     setRebootCommand(gContext->m_databaseUtils->getSetting("Qml_rebootCommand", hostName));
     setShutdownCommand(gContext->m_databaseUtils->getSetting("Qml_shutdownCommand", hostName));
 
@@ -110,10 +111,16 @@ void Settings::setDefaultSettings(const QString &hostName)
     }
 
     // shutdown settings
-    if (gContext->m_databaseUtils->getSetting("Qml_idleTime", hostName) == "")
+    if (gContext->m_databaseUtils->getSetting("Qml_frontendIdleTime", hostName) == "")
     {
-        setIdleTime(90);
-        gContext->m_databaseUtils->setSetting("Qml_idleTime", hostName, "90");
+        setFrontendIdleTime(90);
+        gContext->m_databaseUtils->setSetting("Qml_frontendIdleTime", hostName, "90");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("Qml_launcherIdleTime", hostName) == "")
+    {
+        setLauncherIdleTime(10);
+        gContext->m_databaseUtils->setSetting("Qml_launcherIdleTime", hostName, "10");
     }
 
     if (gContext->m_databaseUtils->getSetting("Qml_rebootCommand", hostName) == "")
@@ -362,7 +369,7 @@ int Settings::osdTimeoutShort(void)
     return m_osdTimeoutShort;
 }
 
-void Settings::setOsdTimeoutShort(const int &osdTimeoutShort)
+void Settings::setOsdTimeoutShort(const int osdTimeoutShort)
 {
     m_osdTimeoutShort = osdTimeoutShort;
     emit osdTimeoutShortChanged();
@@ -373,7 +380,7 @@ int Settings::osdTimeoutMedium(void)
     return m_osdTimeoutMedium;
 }
 
-void  Settings::setOsdTimeoutMedium(const int &osdTimeoutMedium)
+void  Settings::setOsdTimeoutMedium(const int osdTimeoutMedium)
 {
     m_osdTimeoutMedium = osdTimeoutMedium;
     emit osdTimeoutMediumChanged();
@@ -384,7 +391,7 @@ int Settings::osdTimeoutLong(void)
     return m_osdTimeoutLong;
 }
 
-void Settings::setOsdTimeoutLong(const int &osdTimeoutLong)
+void Settings::setOsdTimeoutLong(const int osdTimeoutLong)
 {
     m_osdTimeoutLong = osdTimeoutLong;
     emit osdTimeoutLongChanged();
@@ -422,15 +429,26 @@ void Settings::setZMPassword(const QString &zmPassword)
     emit zmPasswordChanged();
 }
 
-int Settings::idleTime(void)
+int Settings::frontendIdleTime(void)
 {
-    return m_idleTime;
+    return m_frontendIdleTime;
 }
 
-void Settings::setIdleTime(const int &idleTime)
+void Settings::setFrontendIdleTime(const int idleTime)
 {
-    m_idleTime = idleTime;
-    emit idleTimeChanged();
+    m_frontendIdleTime = idleTime;
+    emit frontendIdleTimeChanged();
+}
+
+int Settings::launcherIdleTime(void)
+{
+    return m_launcherIdleTime;
+}
+
+void Settings::setLauncherIdleTime(const int idleTime)
+{
+    m_launcherIdleTime = idleTime;
+    emit launcherIdleTimeChanged();
 }
 
 QString Settings::rebootCommand(void)
