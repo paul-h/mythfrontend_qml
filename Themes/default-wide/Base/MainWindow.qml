@@ -35,7 +35,7 @@ Window
 
     Component.onCompleted:
     {
-        keyPressListener.listenTo(window)
+        eventListener.listenTo(window)
 
         soundEffectsVolume = dbUtils.getSetting("Qml_soundEffectsVolume", settings.hostName, "1.0");
         backgroundVideoVolume = dbUtils.getSetting("Qml_backgroundVideoVolume", settings.hostName, "1.0");
@@ -43,8 +43,22 @@ Window
 
     Connections
     {
-        target: keyPressListener
+        target: eventListener
         onKeyPressed: idleTimer.restart();
+        onMouseMoved:
+        {
+            if (mouseArea.showMouse)
+            {
+                if (mouseArea.autoHide)
+                    mouseTimer.restart();
+
+                if (mouseArea.cursorShape === Qt.BlankCursor)
+                    mouseArea.cursorShape = Qt.ArrowCursor;
+
+                 mouseArea.oldX = mouseArea.mouseX;
+                 mouseArea.oldY =mouseArea.mouseY;
+            }
+        }
     }
 
     // theme background video downloader
@@ -246,8 +260,6 @@ Window
 
             anchors.fill: parent
             enabled: true;
-            hoverEnabled: true;
-
             preventStealing: true
             propagateComposedEvents: true
 
@@ -259,23 +271,6 @@ Window
             onReleased: mouse.accepted = false;
             onDoubleClicked: mouse.accepted = false;
             onPressAndHold: mouse.accepted = false
-
-            onPositionChanged:
-            {
-                if (showMouse)
-                {
-                    if (autoHide)
-                        mouseTimer.restart();
-
-                    if (cursorShape === Qt.BlankCursor)
-                        cursorShape = Qt.ArrowCursor;
-
-                    oldX = mouse.x;
-                    oldY = mouse.y;
-                }
-
-                mouse.accepted = false;
-            }
         }
 
         StackView
