@@ -4,12 +4,12 @@
 #include <QtGui>
 #include <QtQml>
 
-class KeyPressListener : public QObject
+class EventListener : public QObject
 {
     Q_OBJECT
 
 public:
-    KeyPressListener(QObject *parent = nullptr) :
+    EventListener(QObject *parent = nullptr) :
         QObject(parent)
     {
     }
@@ -31,9 +31,14 @@ public:
             emit keyPressed();
         }
 
+        if (event->type() == QEvent::MouseMove)
+        {
+            emit mouseMoved();
+        }
         return false;
     }
 
   signals:
     void keyPressed(void);
+    void mouseMoved(void);
 };

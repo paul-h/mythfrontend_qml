@@ -17,7 +17,7 @@
 #include "settings.h"
 #include "urlinterceptor.h"
 #include "process.h"
-#include "keypresslistener.h"
+#include "eventlistener.h"
 #include "context.h"
 
 // from QmlVlc
@@ -31,7 +31,7 @@ Context::Context(const QString &appName, QObject *parent) : QObject(parent)
     m_settings = nullptr;
     m_databaseUtils = nullptr;
     m_mythUtils = nullptr;
-    m_kpl = nullptr;
+    m_eventListener = nullptr;
     m_urlInterceptor = nullptr;
 }
 
@@ -41,7 +41,7 @@ Context::~Context(void)
     delete m_settings;
     delete m_databaseUtils;
     delete m_mythUtils;
-    delete m_kpl;
+    delete m_eventListener;
     delete m_urlInterceptor;
 }
 
@@ -102,9 +102,9 @@ void Context::init()
     m_mythUtils = new MythUtils(m_engine);
     m_engine->rootContext()->setContextProperty("mythUtils", m_mythUtils);
 
-    // create keypresslistener
-    m_kpl = new KeyPressListener;
-    m_engine->rootContext()->setContextProperty("keyPressListener", m_kpl);
+    // create eventlistener
+    m_eventListener = new EventListener;
+    m_engine->rootContext()->setContextProperty("eventListener", m_eventListener);
 
     // create URL interceptor
     m_urlInterceptor = new MythQmlAbstractUrlInterceptor(m_engine);

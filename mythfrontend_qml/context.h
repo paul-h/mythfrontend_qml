@@ -8,7 +8,7 @@
 #include "settings.h"
 #include "databaseutils.h"
 #include "mythutils.h"
-#include "keypresslistener.h"
+#include "eventlistener.h"
 #include "urlinterceptor.h"
 
 class Context : public QObject
@@ -35,7 +35,7 @@ public:
     Settings *m_settings;
     DatabaseUtils *m_databaseUtils;
     MythUtils *m_mythUtils;
-    KeyPressListener *m_kpl;
+    EventListener *m_eventListener;
     MythQmlAbstractUrlInterceptor *m_urlInterceptor;
 
     QString m_dbHost;
