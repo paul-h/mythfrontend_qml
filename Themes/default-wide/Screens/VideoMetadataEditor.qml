@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import Base 1.0
 import Models 1.0
+import mythqml.net 1.0
 
 BaseScreen
 {
@@ -511,7 +512,6 @@ BaseScreen
 
         onClicked:
         {
-            console.log("save button pressed");
             updateVideoMetadata();
             returnSound.play();
             stack.pop();
@@ -584,11 +584,11 @@ BaseScreen
             {
                 if (http.status == 200)
                 {
-                    console.log("ok")
+                    log.info(Verbose.SERVICESAPI, "VideoMetadataEditor: UpdateVideoMetadata completed OK")
                 }
                 else
                 {
-                    console.log("error: " + http.status)
+                    log.error(Verbose.SERVICESAPI, "VideoMetadataEditor: UpdateVideoMetadata  failed with status - " + http.status)
                 }
             }
         }

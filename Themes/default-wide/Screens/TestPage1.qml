@@ -2,6 +2,7 @@ import QtQuick 2.0
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
+import mythqml.net 1.0
 
 BaseScreen
 {
@@ -28,7 +29,7 @@ BaseScreen
     {
         if (event.key === Qt.Key_M)
         {
-            console.log("MENU pressed");
+            log.debug(Verbose.GENERAL, "TestPage1: MENU pressed");
             popupMenu.show();
         }
         else if (event.key === Qt.Key_V)
@@ -97,7 +98,7 @@ BaseScreen
 
             if (event.key === Qt.Key_M)
             {
-                console.log("MENU pressed");
+                log.debug(Verbose.GENERAL, "TestPage1: MENU pressed");
                 popupMenu.show();
             }
         }
@@ -205,7 +206,7 @@ BaseScreen
         labelText: "Category"
         editText: "Test"
         model: ProgCategoryModel {}
-        onItemChanged: console.log("New category is: " +  editText)
+        onItemChanged: log.debug(Verbose.GENERAL, "TestPage1: New category is: " +  editText)
     }
 /*
     Item
@@ -440,7 +441,7 @@ BaseScreen
         KeyNavigation.down: optionsEdit;
         onEditingFinished:
         {
-            console.log("text is now: " + text);
+            log.debug(Verbose.GENERAL, "TestPage1: text is now: " + text);
         }
     }
 
@@ -463,7 +464,7 @@ BaseScreen
         KeyNavigation.left: optionsEdit;
         KeyNavigation.right: videoplayer;
         KeyNavigation.down: selector;
-        onChanged: console.log("check is now: " + checked);
+        onChanged: log.debug(Verbose.GENERAL, "TestPage1: check is now: " + checked);
     }
 
     BaseSelector
@@ -477,8 +478,8 @@ BaseScreen
         KeyNavigation.up: checkbox1;
         KeyNavigation.down: list;
 
-        onItemClicked: console.info("selector item clicked: " + index + " (" + model.get(index).itemText + ")");
-        onItemSelected: console.info("selector item selected: " + index + " (" + model.get(index).itemText + ")");
+        onItemClicked: log.debug(Verbose.GENERAL, "TestPage1: selector item clicked: " + index + " (" + model.get(index).itemText + ")");
+        onItemSelected: log.debug(Verbose.GENERAL, "TestPage1:selector item selected: " + index + " (" + model.get(index).itemText + ")");
     }
 
     OkCancelDialog
@@ -494,12 +495,12 @@ BaseScreen
 
         onAccepted:
         {
-            console.log("Dialog accepted signal received!");
+            log.debug(Verbose.GENERAL, "TestPage1: Dialog accepted signal received!");
             button1.focus = true;
         }
         onCancelled:
         {
-            console.log("Dialog cancelled signal received.");
+            log.debug(Verbose.GENERAL, "TestPage1: Dialog cancelled signal received.");
             button1.focus = true;
         }
     }
@@ -515,7 +516,7 @@ BaseScreen
 
         onResultText:
         {
-            console.log("Text is: " + text);
+            log.debug(Verbose.GENERAL, "TestPage1: Text is: " + text);
             button2.focus = true
         }
         onCancelled:
@@ -570,12 +571,12 @@ BaseScreen
 
         onItemSelected:
         {
-            console.info("PopupMenu accepted signal received!: " + itemText + " - " + itemData);
+            log.debug(Verbose.GENERAL, "TestPage1: PopupMenu accepted signal received!: " + itemText + " - " + itemData);
             button1.focus = true;
         }
         onCancelled:
         {
-            console.info("PopupMenu cancelled signal received.");
+            log.debug(Verbose.GENERAL, "TestPage1: PopupMenu cancelled signal received.");
             button1.focus = true;
         }
 

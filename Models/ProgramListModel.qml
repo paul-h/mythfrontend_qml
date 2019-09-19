@@ -1,4 +1,5 @@
 import QtQuick.XmlListModel 2.0
+import mythqml.net 1.0
 
 XmlListModel
 {
@@ -35,17 +36,17 @@ XmlListModel
     {
         if (status == XmlListModel.Ready)
         {
-            console.log("Status: " + "Guide - Found " + count + " programs");
+            log.debug(Verbose.MODEL, "ProgramListModel: READY - Found " + count + " programs");
         }
 
         if (status === XmlListModel.Loading)
         {
-            console.log("Status: " + "Guide - LOADING - " + source.toString());
+            log.debug(Verbose.MODEL, "ProgramListModel: LOADING - " + source.toString());
         }
 
         if (status === XmlListModel.Error)
         {
-            console.log("Status: " + "Guide - ERROR: " + errorString() + "\n" + source.toString());
+            log.error(Verbose.MODEL,  "ProgramListModel: ERROR - " + errorString() + " - " + source.toString());
         }
     }
 
@@ -89,7 +90,7 @@ XmlListModel
         if (sort != "")
            res += "Sort=" + sort;
 
-        console.log("ProgramListModel url: " + res.toString());
+        log.debug(Verbose.MODEL, "ProgramListModel: url - " + res.toString());
 
         source = res;
     }

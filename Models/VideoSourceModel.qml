@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
+import mythqml.net 1.0
 
 XmlListModel
 {
@@ -20,9 +21,19 @@ XmlListModel
 
     onStatusChanged:
     {
+        if (status == XmlListModel.Ready)
+        {
+            log.debug(Verbose.MODEL, "VideoSourceModel: READY - Found " + count + " video sources");
+        }
+
+        if (status === XmlListModel.Loading)
+        {
+            log.debug(Verbose.MODEL, "VideoSourceModel: LOADING - " + source.toString());
+        }
+
         if (status === XmlListModel.Error)
         {
-            console.info("ERROR loading VideoSources: " + errorString() + "\n" + source.toString());
+            log.error(Verbose.MODEL, "VideoSourceModel: ERROR: " + errorString() + " - " + source.toString());
         }
     }
 

@@ -36,7 +36,6 @@ BaseScreen
         else if (event.key === Qt.Key_F5)
         {
             var chanid = dbChannelList.model.data(dbChannelList.model.index(dbChannelList.currentIndex, 0))
-            console.log("save button - chanid is: " + chanid);
             dbUtils.updateChannel(chanid,
                                   chanNameEdit.text,
                                   chanNoEdit.text,
@@ -257,7 +256,6 @@ BaseScreen
         onClicked:
         {
             var chanid = dbChannelList.model.data(dbChannelList.model.index(dbChannelList.currentIndex, 0))
-            console.log("save button - chanid is: " + chanid);
             dbUtils.updateChannel(chanid,
                           chanNameEdit.text,
                           chanNoEdit.text,

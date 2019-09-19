@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import mythqml.net 1.0
 
 // This rectangle acts as a dimming rect. It also captures key presses.
 Rectangle 
@@ -34,7 +35,7 @@ Rectangle
         //    width: faderRect.width
         //    height: faderRect.height
         //    z: 100 // Make sure that this is on top.
-        //    onClicked: console.log("Click captured by Fader!")
+        //    onClicked: log.debug(Verbose.GUI, "Fader: Click captured by Fader!")
         //}
     }
 

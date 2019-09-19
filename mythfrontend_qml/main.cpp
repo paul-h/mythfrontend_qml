@@ -3,7 +3,6 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQmlComponent>
-#include <QDebug>
 #include <QHostInfo>
 #include <QDomDocument>
 #include <QFile>

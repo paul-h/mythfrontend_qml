@@ -34,8 +34,9 @@ QMAKE_CLEAN += $(TARGET)
 # Input
 HEADERS += ../mythfrontend_qml/databaseutils.h ../mythfrontend_qml/urlinterceptor.h ../mythfrontend_qml/settings.h
 HEADERS += ../mythfrontend_qml/mythutils.h ../mythfrontend_qml/process.h ../mythfrontend_qml/downloadmanager.h
-HEADERS += ../mythfrontend_qml/eventlistener.h ../mythfrontend_qml/context.h
+HEADERS += ../mythfrontend_qml/eventlistener.h ../mythfrontend_qml/context.h ../mythfrontend_qml/logger.h
 
 SOURCES += main.cpp
 SOURCES += ../mythfrontend_qml/databaseutils.cpp ../mythfrontend_qml/urlinterceptor.cpp ../mythfrontend_qml/settings.cpp
 SOURCES += ../mythfrontend_qml/mythutils.cpp ../mythfrontend_qml/downloadmanager.cpp ../mythfrontend_qml/context.cpp
+SOURCES += ../mythfrontend_qml/logger.cpp

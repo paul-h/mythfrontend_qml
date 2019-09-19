@@ -1,5 +1,6 @@
 import QtQuick 2.4
 import Base 1.0
+import mythqml.net 1.0
 
 MainWindow
 {
@@ -19,7 +20,7 @@ MainWindow
 
     function checkAutoStart()
     {
-        console.log("Checking to see if we need to auto start a frontend");
+        log.info(Verbose.GENERAL, "MainWindow: Checking to see if we need to auto start a frontend");
 
         if (settings.autoStartFrontend === "QML_Frontend")
         {

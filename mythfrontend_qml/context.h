@@ -10,6 +10,7 @@
 #include "mythutils.h"
 #include "eventlistener.h"
 #include "urlinterceptor.h"
+#include "logger.h"
 
 class Context : public QObject
 {
@@ -31,6 +32,7 @@ public:
     QString m_appName;
 
     QQmlApplicationEngine *m_engine;
+    Logger *m_logger;
     QSqlDatabase m_db;
     Settings *m_settings;
     DatabaseUtils *m_databaseUtils;

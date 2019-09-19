@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
+import mythqml.net 1.0
 
 XmlListModel
 {
@@ -15,18 +16,17 @@ XmlListModel
     {
         if (status == XmlListModel.Ready)
         {
-            console.log("Status: " + "SD Channels - READY \n" + sdChannelsModel.source.toString());
+            log.debug(Verbose.MODEL, "SDChanelsModel: READY - Found " + count + " SD channels");
         }
 
         if (status === XmlListModel.Loading)
         {
-            console.log("Status: " + "SD Channels - LOADING \n" + sdChannelsModel.source.toString());
+            log.debug(Verbose.MODEL, "SDChanelsModel: LOADING - " + source.toString());
         }
 
         if (status === XmlListModel.Error)
         {
-
-            console.log("Status: " + "SD Channels - ERROR: " + errorString() + "\n \n \n " + sdChannelsModel.source.toString());
+            log.error(Verbose.MODEL, "SDChanelsModel: ERROR: " + errorString() + " - " + source.toString());
         }
     }
 }

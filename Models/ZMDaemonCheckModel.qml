@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
+import mythqml.net 1.0
 
 XmlListModel
 {
@@ -17,13 +18,18 @@ XmlListModel
     {
         if (status == XmlListModel.Ready)
         {
-            if (count) running = get(0).running; else running = false;
+            log.debug(Verbose.MODEL, "ZMDaemonCheckModel: READY - Found " + count + " daemon check items");
             loaded();
+        }
+
+        if (status === XmlListModel.Loading)
+        {
+            log.debug(Verbose.MODEL, "ZMDaemonCheckModel: LOADING - " + source.toString());
         }
 
         if (status === XmlListModel.Error)
         {
-            console.log("Status: " + "ZMDaemonCheckModel - ERROR: " + errorString() + "\n" + source.toString());
+            log.error(Verbose.MODEL, "ZMDaemonCheckModel: ERROR - " + errorString() + " - " + source.toString());
         }
     }
 }

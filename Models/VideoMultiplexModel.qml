@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
+import mythqml.net 1.0
 
 XmlListModel
 {
@@ -41,12 +42,18 @@ XmlListModel
     {
         if (status == XmlListModel.Ready)
         {
-             loaded();
+            log.debug(Verbose.MODEL, "VideoMultiplexModel: READY - Found " + count + " video multiplexes");
+            loaded();
+        }
+
+        if (status === XmlListModel.Loading)
+        {
+            log.debug(Verbose.MODEL, "VideoMultiplexModel: LOADING - " + source.toString());
         }
 
         if (status === XmlListModel.Error)
         {
-            console.info("VideoMultiplexModel - ERROR: " + errorString() + "\n" + source.toString());
+            log.error(Verbose.MODEL, "VideoMultiplexModel: ERROR: " + errorString() + " - " + source.toString());
         }
     }
 

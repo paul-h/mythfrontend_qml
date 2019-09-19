@@ -3,6 +3,7 @@ import Base 1.0
 import Models 1.0
 import ZMEventsModel 1.0
 import "../../../Util.js" as Util
+import mythqml.net 1.0
 
 BaseScreen
 {
@@ -89,14 +90,14 @@ BaseScreen
                 {
                     if (http.status == 200)
                     {
-                        console.log("Event Deleted OK: " + eventID)
+                        log.info(Verbose.GENERAL, "ZMEventsView: Event Deleted OK - " + eventID)
 
                         // update the monitorsModel so the event counts are updated
                         playerSources.zmCameraList.reload();
                     }
                     else
                     {
-                        console.log("Failed to delete event - error: " + http.status)
+                        log.error(Verbose.GENERAL, "ZMEventsView: Failed to delete event. Got status - " + http.status)
                     }
                 }
             }
@@ -111,7 +112,7 @@ BaseScreen
                     return x;
             }
 
-            console.log("ZMEventsModel: failed to find eventID: " + eventID);
+            log.error(Verbose.GENERAL, "ZMEventsView: ZMEventsModel - failed to find eventID: " + eventID);
             return -1;
         }
     }

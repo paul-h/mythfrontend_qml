@@ -9,6 +9,7 @@ import Base 1.0
 import Dialogs 1.0
 import Screens 1.0
 import Models 1.0
+import mythqml.net 1.0
 
 Window
 {
@@ -82,27 +83,27 @@ Window
         url: settings.webSocketUrl
         onTextMessageReceived:
         {
-            console.info("Received message: " + message)
+            log.debug(Verbose.WEBSOCKET, "WebSocket: Received message - " + message)
         }
         onStatusChanged:
         {
             if (webSocket.status == WebSocket.Error)
             {
-                console.info("Error: " + webSocket.errorString)
+                log.error(Verbose.WEBSOCKET, "WebSocket: Error - " + webSocket.errorString)
             }
             else if (webSocket.status == WebSocket.Connecting)
             {
-                console.info("WebSocket: connecting");
+                log.debug(Verbose.WEBSOCKET, "WebSocket: connecting");
             }
             else if (webSocket.status == WebSocket.Open)
             {
-                console.info("WebSocket: Open");
+                log.debug(Verbose.WEBSOCKET, "WebSocket: Open");
                 webSocket.sendTextMessage("WS_EVENT_ENABLE");
                 webSocket.sendTextMessage("WS_EVENT_SET_FILTER LIVETV_CHAIN RECORDING_LIST_CHANGE UPDATE_FILE_SIZE SCHEDULE_CHANGE");
             }
             else if (webSocket.status == WebSocket.Closed)
             {
-                console.info("Socket closed")
+                log.debug(Verbose.WEBSOCKET, "WebSocket: closed")
             }
         }
 
@@ -335,13 +336,13 @@ Window
 
     function loadTheme()
     {
-        console.log("loading theme from: " + settings.qmlPath + "Theme.qml");
+        log.info(Verbose.GUI, "loading theme from: " + settings.qmlPath + "Theme.qml");
 
         var component = Qt.createComponent(settings.qmlPath + "Theme.qml");
 
         while (component.status != Component.Ready && component.status != Component.Error)
         {
-            console.log("waiting for component to load! Status: " + component.status);
+            log.debug(Verbose.GUI, "waiting for component to load! Status: " + component.status);
         }
 
         if (component.status == Component.Ready)
@@ -351,7 +352,7 @@ Window
             if (theme == null)
             {
                 // Error Handling
-                console.log("Error creating theme");
+                log.error(Verbose.GUI, "Error creating theme");
                 return null
             }
 
@@ -380,7 +381,7 @@ Window
         else if (component.status == Component.Error)
         {
             // Error Handling
-            console.log("Error loading component:", component.errorString());
+            log.error(Verbose.GUI, "Error loading component:", component.errorString());
         }
 
         return null;
@@ -470,7 +471,7 @@ Window
                 filename = filename + ".png";
         }
 
-        console.info("saving snapshot to: " + filename);
+        log.info(Verbose.FILE, "saving snapshot to: " + filename);
         item.grabToImage(function(result)
                          {
                               result.saveToFile(filename);
@@ -488,7 +489,7 @@ Window
         id: externalProcess
         onFinished:
         {
-            console.log("External Process is finished");
+            log.debug(Verbose.PROCESS, "External Process is finished");
             wake();
         }
 
@@ -496,7 +497,7 @@ Window
         {
             if (state === Process.Running)
             {
-                console.log("External Process is running");
+                log.debug(Verbose.PROCESS, "External Process is running");
                 sleep();
             }
         }
@@ -531,7 +532,7 @@ Window
 
     function sleep()
     {
-        console.log("Going to sleep....zzzzz");
+        log.info(Verbose.GENERAL, "Going to sleep....zzzzz");
         screenBackground.showImage = true;
         screenBackground.showTime = false;
         screenBackground.showTicker =false;
@@ -544,7 +545,7 @@ Window
 
     function wake()
     {
-        console.log("Waking up.... \\0/");
+        log.info(Verbose.GENERAL, "Waking up.... \\0/");
         screenBackground.showImage =false;
         screenBackground.showTime = true;
         screenBackground.showTicker = true;
@@ -565,7 +566,7 @@ Window
     {
         if (settings.shutdownCommand != "")
         {
-            console.log("Shutting Down!!!!")
+            log.info(Verbose.GENERAL, "Shutting Down!!!!")
             busyDialog.message = "Shutting Down...";
             busyDialog.timeOut = 10000;
             busyDialog.show();
@@ -577,7 +578,7 @@ Window
     {
         if (settings.rebootCommand != "")
         {
-            console.log("Rebooting!!!!")
+            log.info(Verbose.GENERAL, "Rebooting!!!!")
             busyDialog.message = "Rebooting. Please Wait...";
             busyDialog.timeOut = 10000;
             busyDialog.show();

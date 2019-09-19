@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
+import mythqml.net 1.0
 
 XmlListModel
 {
@@ -16,17 +17,17 @@ XmlListModel
     {
         if (status == XmlListModel.Ready)
         {
-            console.log("Status: " + "ChannelGroups - Found " + count + " channelgroups");
+            log.debug(Verbose.MODEL, "ChannelGroupsModel: - Found " + count + " channelgroups");
         }
 
         if (status === XmlListModel.Loading)
         {
-            console.log("Status: " + "ChannelGroups - LOADING - " + source.toString());
+            log.debug(Verbose.MODEL, "ChannelGroupsModel: LOADING - " + source.toString());
         }
 
         if (status === XmlListModel.Error)
         {
-            console.log("Status: " + "ChannelGroups - ERROR: " + errorString() + "\n" + source.toString());
+            log.error(Verbose.MODEL, "ChannelGroups - ERROR: " + errorString() + " - " + source.toString());
         }
     }
 
@@ -51,17 +52,18 @@ XmlListModel
                 {
                     if (http.responseText.endsWith("<bool>true</bool>\n"))
                     {
-                        console.log("addChannelToGroup: channel: " + chanId + " added to channel group: " + groupId + " OK");
+                        log.debug(Verbose.SERVICESAPI, "ChannelGroupsModel: addChannelToGroup: channel: " + chanId + " added to channel group: " + groupId + " OK");
                         channelGroupsModel.reload();
                     }
                     else
                     {
-                        console.log("addChannelToGroup: failed to add channel: " + chanId + " to channel group: " + groupId + "\n" + http.responseText);
+                        log.error(Verbose.SERVICESAPI, "ChannelGroupsModel: addChannelToGroup: failed to add channel: " + chanId + " to channel group: " + groupId);
+                        log.error(Verbose.SERVICESAPI, "ChannelGroupsModel: addChannelToGroup: response was - " + http.responseText);
                     }
                 }
                 else
                 {
-                    console.error("addChannelToGroup error: " + http.status)
+                    log.error(Verbose.SERVICESAPI, "ChannelGroupsModel:addChannelToGroup error: " + http.status)
                 }
             }
         }
@@ -90,17 +92,18 @@ XmlListModel
                 {
                     if (http.responseText.endsWith("<bool>true</bool>\n"))
                     {
-                        console.log("removeChannelFromGroup: channel: " + chanId + " removed from channel group: " + groupId + " OK");
+                        log.debug(Verbose.SERVICESAPI, "ChannelGroupsModel:removeChannelFromGroup: channel: " + chanId + " removed from channel group: " + groupId + " OK");
                         channelGroupsModel.reload();
                     }
                     else
                     {
-                        console.log("removeChannelFromGroup: failed to remove channel: " + chanId + " from channel group: " + groupId + "\n" + http.responseText);
+                        log.error(Verbose.SERVICESAPI, "ChannelGroupsModel: removeChannelFromGroup: failed to remove channel: " + chanId + " from channel group: " + groupId);
+                        log.error(Verbose.SERVICESAPI, "ChannelGroupsModel: removeChannelFromGroup: response was - " + http.responseText);
                     }
                 }
                 else
                 {
-                    console.error("removeChannelFromGroup error: " + http.status)
+                    log.error(Verbose.SERVICESAPI, "ChannelGroupsModel:removeChannelFromGroup error: " + http.status)
                 }
             }
         }

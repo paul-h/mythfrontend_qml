@@ -3,6 +3,7 @@ import QtQuick.XmlListModel 2.0
 import QtQuick.Controls 1.4
 import Base 1.0
 import Models 1.0
+import mythqml.net 1.0
 
 BaseScreen
 {
@@ -169,13 +170,13 @@ BaseScreen
 
         onCurrentIndexChanged:
         {
-            //console.log("Current articleList index is:" + currentIndex)
-            //console.log("image: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).image : ""))
-            //console.log("mediaContentUrl: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).mediaContentUrl : ""))
-            //console.log("mediaContentUrl2: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).mediaContentUrl2 : ""))
-            //console.log("enclosureURL: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).enclosureUrl : ""))
-            //console.log("enclosureType: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).enclosureType : ""))
-            //console.log("link: " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).link : ""))
+            //log.debug(Verbose.GENERAL, "RSSFeeds: Current articleList index is -" + currentIndex)
+            //log.debug(Verbose.GENERAL, "RSSFeeds: image - " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).image : ""))
+            //log.debug(Verbose.GENERAL, "RSSFeeds: mediaContentUrl - " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).mediaContentUrl : ""))
+            //log.debug(Verbose.GENERAL, "RSSFeeds: mediaContentUrl2 - " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).mediaContentUrl2 : ""))
+            //log.debug(Verbose.GENERAL, "RSSFeeds: enclosureURL - " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).enclosureUrl : ""))
+            //log.debug(Verbose.GENERAL, "RSSFeeds: enclosureType - " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).enclosureType : ""))
+            //log.debug(Verbose.GENERAL, "RSSFeeds: link - " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).link : ""))
 
             articleImage.source = findArticleImage(articleList.currentIndex);
         }

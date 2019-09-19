@@ -6,6 +6,7 @@ import Base 1.0
 import Process 1.0
 import QtAV 1.5
 import SortFilterProxyModel 0.2
+import mythqml.net 1.0
 
 import "../../../Util.js" as Util
 
@@ -486,7 +487,7 @@ FocusScope
         }
         else
         {
-            console.log("Got unknown player '" + newPlayer + "' in MediaPlayer!");
+            log.debug(Verbose.PLAYBACK, "MediaPlayer: switchPlayer - Got unknown player '" + newPlayer + "'");
             return;
         }
 
@@ -495,6 +496,8 @@ FocusScope
 
     function switchURL(newURL)
     {
+        log.debug(Verbose.PLAYBACK "MediaPlayer: switchURL -  " + newURL);
+
         if (feedSource.feedList.get(feedSource.currentFeed).title !== "")
             title.text = feedSource.feedList.get(feedSource.currentFeed).title;
         else
@@ -533,7 +536,7 @@ FocusScope
         }
         else
         {
-            console.log("Unknown player '" + root.player + "' in MediaPlayer!");
+            log.error(Verbose.PLAYBACK, "MediaPlayer: switchURL - Unknown player '" + root.player + "'");
             return;
         }
     }

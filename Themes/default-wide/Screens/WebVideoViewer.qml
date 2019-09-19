@@ -3,6 +3,7 @@ import Base 1.0
 import Dialogs 1.0
 import Models 1.0
 import SortFilterProxyModel 0.2
+import mythqml.net 1.0
 
 BaseScreen
 {
@@ -293,7 +294,7 @@ BaseScreen
 
     function feedChanged(filter, index)
     {
-        console.log("WebVideoViewer feedChange - filter: " + filter + ", index: " + index);
+        log.debug(Verbose.GENERAL, "WebVideoViewer: feedChanged - filter: " + filter + ", index: " + index);
         if (filter !== filterCategory)
         {
             if (filter === "")

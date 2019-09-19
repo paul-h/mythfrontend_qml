@@ -89,12 +89,10 @@ BaseScreen
 
         onAccepted:
         {
-            console.log("Dialog accepted signal received!");
             videoList.focus = true;
         }
         onCancelled:
         {
-            console.log("Dialog cancelled signal received.");
             videoList.focus = true;
         }
     }

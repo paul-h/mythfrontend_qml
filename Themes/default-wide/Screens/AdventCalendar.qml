@@ -8,7 +8,6 @@ BaseScreen
 
     Component.onCompleted:
     {
-        console.log("init completed");
         showTitle(true, "Advent Calendar 2018");
 
         for (var i = 0; i < calendarModel.count; i++)

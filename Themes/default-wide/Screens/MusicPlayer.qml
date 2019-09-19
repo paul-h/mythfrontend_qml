@@ -4,6 +4,7 @@ import Base 1.0
 import Dialogs 1.0
 import SortFilterProxyModel 0.2
 import QmlVlc 0.1
+import mythqml.net 1.0
 
 BaseScreen
 {
@@ -194,7 +195,7 @@ BaseScreen
             var hostname = model.get(currentIndex).HostName === settings.hostName ? "localhost" : model.get(currentIndex).HostName
             //var filename = "myth://" + hostname + "/" + model.get(currentIndex).FileName;
             var filename = "myth://" + "localhost:6544" + "/" + model.get(currentIndex).FileName;
-            console.log("Playing: " + filename);
+            log.debug(Verbose.PLAYBACK, "MusicPlayer: Playing - " + filename);
             //stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{source1: filename }});
             musicPlayer.mrl = filename
             event.accepted = true;

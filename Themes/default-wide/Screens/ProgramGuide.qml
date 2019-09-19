@@ -3,6 +3,7 @@ import QtQuick.XmlListModel 2.0
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
+import mythqml.net 1.0
 
 BaseScreen
 {
@@ -22,7 +23,7 @@ BaseScreen
         {
             if (message === "SCHEDULE_CHANGE")
             {
-                console.info("Scheduled changed: reloading program model");
+                log.debug(Verbose.WEBSOCKET, "ProgramGuide: Scheduled changed - reloading program model");
                 guideModel.reload();
             }
         }
@@ -170,7 +171,7 @@ BaseScreen
         model: timeModel
         Component.onCompleted:
         {
-            var now = new Date();
+            var now = new Date(Date.now());
 
             // round to nearest 30mins
             if (now.getMinutes() < 30)
@@ -311,16 +312,14 @@ BaseScreen
         id: guideModel
         startTime:
         {
-            var now2 = new Date();
-            var res = Qt.formatDateTime(now2, "yyyy-MM-ddThh:mm:ss");
-            return res;
+            var now2 = Date.now();
+            return Qt.formatDateTime(now2, "yyyy-MM-ddThh:mm:ss");
         }
         endTime:
         {
-            var now2 = new Date();
+            var now2 = Date.now();
             now2.setDate(now2.getDate() + 1);
-            var res = Qt.formatDateTime(now2, "yyyy-MM-ddThh:mm:ss");
-            return Qt.formatDateTime(now2, "yyyy-MM-ddThh:mm:ss")
+            return Qt.formatDateTime(now2, "yyyy-MM-ddThh:mm:ss");
         }
 
         onStatusChanged: if (status == XmlListModel.Ready)  updateProgramDetails()

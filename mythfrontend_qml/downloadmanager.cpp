@@ -1,6 +1,7 @@
-#include "downloadmanager.h"
 
-#include <cstdio>
+#include "downloadmanager.h"
+#include "context.h"
+#include "logger.h"
 
 DownloadManager::DownloadManager(QObject *parent)
     : QObject(parent)
@@ -10,7 +11,7 @@ DownloadManager::DownloadManager(QObject *parent)
 
 void DownloadManager::append(const QUrl &url)
 {
-    qInfo() << "DownloadManager::append: " << url.toString();
+    gContext->m_logger->debug(Verbose::NETWORK, "DownloadManager: append - " + url.toString());
     DownloadInfo *dl = new DownloadInfo(url);
 
     m_downloadQueue.enqueue(dl);
@@ -34,7 +35,7 @@ void DownloadManager::startNextDownload()
     connect(m_currentDownload->getReply(), SIGNAL(finished()), SLOT(downloadFinished()));
     connect(m_currentDownload->getReply(), SIGNAL(readyRead()), SLOT(downloadReadyRead()));
 
-    qInfo() << "DownloadManager: Downloading: " << url.toEncoded();
+    gContext->m_logger->debug(Verbose::NETWORK, "DownloadManager: Downloading - " + url.toEncoded());
 }
 
 void DownloadManager::downloadFinished()
@@ -42,7 +43,7 @@ void DownloadManager::downloadFinished()
     if (m_currentDownload->getReply()->error())
     {
         // download failed
-        qWarning() << "DownloadManager: download failed: " << m_currentDownload->getReply()->errorString();
+        gContext->m_logger->warning(Verbose::NETWORK, "DownloadManager: download failed - " + m_currentDownload->getReply()->errorString());
         m_currentDownload->getBuffer()->clear();
     }
     else
@@ -55,7 +56,7 @@ void DownloadManager::downloadFinished()
         }
         else
         {
-            qDebug() << "DownloadManager: download finished OK: " << m_currentDownload->getUrl().toEncoded();
+            gContext->m_logger->debug(Verbose::NETWORK, "DownloadManager: download finished OK - " + m_currentDownload->getUrl().toEncoded());
         }
     }
 
@@ -83,7 +84,7 @@ void DownloadManager::reportRedirect()
     int statusCode = m_currentDownload->getReply()->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     QUrl requestUrl = m_currentDownload->getReply()->request().url();
 
-    qInfo() << "Request: " << requestUrl.toDisplayString() << " was redirected with code: " << statusCode;
+    gContext->m_logger->debug(Verbose::NETWORK, "Request: " + requestUrl.toDisplayString() + " was redirected with code: " + statusCode);
 
     QVariant target = m_currentDownload->getReply()->attribute(QNetworkRequest::RedirectionTargetAttribute);
 
@@ -94,5 +95,5 @@ void DownloadManager::reportRedirect()
     if (redirectUrl.isRelative())
         redirectUrl = requestUrl.resolved(redirectUrl);
 
-    qInfo() << "Redirected to: " << redirectUrl.toDisplayString();
+    gContext->m_logger->debug(Verbose::NETWORK, "Redirected to: " + redirectUrl.toDisplayString());
 }

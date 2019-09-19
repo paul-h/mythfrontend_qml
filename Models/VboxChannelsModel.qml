@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
+import mythqml.net 1.0
 
 XmlListModel
 {
@@ -24,18 +25,17 @@ XmlListModel
     {
         if (status == XmlListModel.Ready)
         {
-            console.log("Status: " + "VBox Channels - READY \n" + vboxChannelsModel.source.toString());
+            log.debug(Verbose.MODEL, "VboxChannelsModel: READY - Found " + count + " vbox channels");
         }
 
         if (status === XmlListModel.Loading)
         {
-            console.log("Status: " + "VBox Channels - LOADING \n" + vboxChannelsModel.source.toString());
+            log.debug(Verbose.MODEL, "VboxChannelsModel: LOADING - " + source.toString());
         }
 
         if (status === XmlListModel.Error)
         {
-
-            console.log("Status: " + "VBox Channels - ERROR: " + errorString() + "\n \n \n " + vboxChannelsModel.source.toString());
+            log.error(Verbose.MODEL, "VboxChannelsModel: ERROR: " + errorString() + " - " + source.toString());
         }
     }
 }

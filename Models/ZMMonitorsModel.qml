@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
 import "../Util.js" as Util
+import mythqml.net 1.0
 
 XmlListModel
 {
@@ -33,15 +34,21 @@ XmlListModel
 
     onStatusChanged:
     {
-        if (status == XmlListModel.Ready)
-        {
-            loaded();
-        }
+            if (status == XmlListModel.Ready)
+            {
+                log.debug(Verbose.MODEL, "ZMMonitorsModel: READY - Found " + count + " monitors");
+                loaded();
+            }
 
-        if (status === XmlListModel.Error)
-        {
-            console.log("Status: " + "Zoneminder Monitors - ERROR: " + errorString() + "\n" + source.toString());
-        }
+            if (status === XmlListModel.Loading)
+            {
+                log.debug(Verbose.MODEL, "ZMMonitorsModel: LOADING - " + source.toString());
+            }
+
+            if (status === XmlListModel.Error)
+            {
+                log.error(Verbose.MODEL, "ZMMonitorsModel: ERROR: " + errorString() + " - " + source.toString());
+            }
     }
 
     function lookupMonitorName(id)
