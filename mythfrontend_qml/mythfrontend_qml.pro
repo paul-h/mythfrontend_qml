@@ -1,5 +1,6 @@
 #app version
-VERSION = 0.0.4.alpha
+VERSION = 0.0.5.alpha
+
 PREFIX = /usr
 
 include(../QmlVlc/QmlVlc.pri)
