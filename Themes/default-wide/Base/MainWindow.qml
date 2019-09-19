@@ -447,7 +447,7 @@ Window
 
         if (filename === undefined)
         {
-            filename = settings.configPath + "snapshots/snapshot";
+            filename = settings.configPath + "Snapshots/snapshot";
 
             var index = 0;
             var padding = "";
