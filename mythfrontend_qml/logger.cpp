@@ -124,7 +124,7 @@ void Logger::log(Verbose verbosity, Level logLevel, const QString& data)
     {
         QDir dir(m_filename);
         if (dir.isAbsolute())
-            std::cout << qPrintable(linePrefix(Level::INFO) + "Logger::log(): Opening " + m_filename + " to log") << std::endl;
+            std::cout << qPrintable(linePrefix(Level::INFO) + "Logger: Opening " + m_filename + " to log") << std::endl;
         else
         {
             m_filename =
@@ -134,16 +134,16 @@ void Logger::log(Verbose verbosity, Level logLevel, const QString& data)
                     QStandardPaths::writableLocation(QStandardPaths::StandardLocation::DocumentsLocation)
                 #endif
                 + "/" + m_filename;
-            std::cout << qPrintable(linePrefix(Level::INFO) + "Logger::log(): Absolute path not given, opening " + m_filename + " to log.") << std::endl;
+            std::cout << qPrintable(linePrefix(Level::INFO) + "Logger: Absolute path not given, opening " + m_filename + " to log.") << std::endl;
             emit filenameChanged();
         }
         QDir::root().mkpath(QFileInfo(m_filename).absolutePath());
 
         m_file.setFileName(m_filename);
 
-        if (!m_file.open(QIODevice::WriteOnly | QIODevice::Append))
+        if (!m_file.open(QIODevice::WriteOnly))
         {
-            std::cout << qPrintable(linePrefix(Level::CRITICAL) + "Logger::log(): Could not open file: " + m_file.errorString()) << std::endl;
+            std::cout << qPrintable(linePrefix(Level::CRITICAL) + "Logger: Could not open file: " + m_file.errorString()) << std::endl;
             return;
         }
         else
@@ -159,5 +159,5 @@ void Logger::log(Verbose verbosity, Level logLevel, const QString& data)
         m_writer.flush();
     }
     else
-        std::cout << qPrintable(linePrefix(Level::CRITICAL) + "Logger::log(): File is not open, valid filename must be provided beforehand.") << std::endl;
+        std::cout << qPrintable(linePrefix(Level::CRITICAL) + "Logger: File is not open, valid filename must be provided beforehand.") << std::endl;
 }
