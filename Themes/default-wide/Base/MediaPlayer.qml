@@ -496,7 +496,7 @@ FocusScope
 
     function switchURL(newURL)
     {
-        log.debug(Verbose.PLAYBACK "MediaPlayer: switchURL -  " + newURL);
+        log.debug(Verbose.PLAYBACK, "MediaPlayer: switchURL -  " + newURL);
 
         if (feedSource.feedList.get(feedSource.currentFeed).title !== "")
             title.text = feedSource.feedList.get(feedSource.currentFeed).title;
