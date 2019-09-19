@@ -3,6 +3,7 @@
 #include <QDomDocument>
 #include <QDomNode>
 
+#include "context.h"
 #include "mythincrementalmodel.h"
 
 MythIncrementalModel::MythIncrementalModel(void)
@@ -164,7 +165,7 @@ void MythIncrementalModel::addStringData(RowData* row, const QDomNode &node, con
 {
     if (!m_roleMap.contains(roleName))
     {
-        qWarning() << "MythIncrementalModel::addStringData roleName not found: " << roleName;
+        gContext->m_logger->warning(Verbose::MODEL, "MythIncrementalModel: addStringData - roleName not found: " + roleName);
         return;
     }
 
@@ -176,7 +177,7 @@ void MythIncrementalModel::addIntData(RowData* row, const QDomNode &node, const 
 {
     if (!m_roleMap.contains(roleName))
     {
-        qWarning() << "MythIncrementalModel::addIntData roleName not found: " << roleName;
+        gContext->m_logger->warning(Verbose::MODEL, "MythIncrementalModel: addIntData - roleName not found: " + roleName);
         return;
     }
 
@@ -188,7 +189,7 @@ void MythIncrementalModel::addLongData(RowData* row, const QDomNode &node, const
 {
     if (!m_roleMap.contains(roleName))
     {
-        qWarning() << "MythIncrementalModel::addLongData roleName not found: " << roleName;
+        gContext->m_logger->warning(Verbose::MODEL, "MythIncrementalModel: addLongData - roleName not found: " + roleName);
         return;
     }
 
@@ -200,7 +201,7 @@ void MythIncrementalModel::addDoubleData(RowData* row, const QDomNode &node, con
 {
     if (!m_roleMap.contains(roleName))
     {
-        qWarning() << "MythIncrementalModel::addDoubleData roleName not found: " << roleName;
+        gContext->m_logger->warning(Verbose::MODEL, "MythIncrementalModel: addDoubleData - roleName not found: " + roleName);
         return;
     }
 
@@ -212,7 +213,7 @@ void MythIncrementalModel::addDateTimeData(RowData* row, const QDomNode &node, c
 {
     if (!m_roleMap.contains(roleName))
     {
-        qWarning() << "MythIncrementalModel::addDatTimeData roleName not found: " << roleName;
+        gContext->m_logger->warning(Verbose::MODEL, "MythIncrementalModel: addDateTimeData - roleName not found: " + roleName);
         return;
     }
 
@@ -224,7 +225,7 @@ void MythIncrementalModel::addDateData(RowData* row, const QDomNode &node, const
 {
     if (!m_roleMap.contains(roleName))
     {
-        qWarning() << "MythIncrementalModel::addDateData roleName not found: " << roleName;
+        gContext->m_logger->warning(Verbose::MODEL, "MythIncrementalModel: addDateData - roleName not found: " + roleName);
         return;
     }
 
@@ -236,7 +237,7 @@ void MythIncrementalModel::addBoolData(RowData* row, const QDomNode &node, const
 {
     if (!m_roleMap.contains(roleName))
     {
-        qWarning() << "MythIncrementalModel::addBoolData roleName not found: " << roleName;
+        gContext->m_logger->warning(Verbose::MODEL, "MythIncrementalModel: addBoolData - roleName not found: " + roleName);
         return;
     }
 
@@ -248,7 +249,7 @@ void MythIncrementalModel::addStringData(RowData* row, const QJsonValue &node, c
 {
     if (!m_roleMap.contains(roleName))
     {
-        qWarning() << "MythIncrementalModel::addStringData roleName not found: " << roleName;
+        gContext->m_logger->warning(Verbose::MODEL, "MythIncrementalModel: addStringData - roleName not found: " + roleName);
         return;
     }
 
@@ -260,7 +261,7 @@ void MythIncrementalModel::addIntData(RowData* row, const QJsonValue &node, cons
 {
     if (!m_roleMap.contains(roleName))
     {
-        qWarning() << "MythIncrementalModel::addIntData roleName not found: " << roleName;
+        gContext->m_logger->warning(Verbose::MODEL, "MythIncrementalModel: addIntData - roleName not found: " + roleName);
         return;
     }
 
@@ -272,7 +273,7 @@ void MythIncrementalModel::addLongData(RowData* row, const QJsonValue &node, con
 {
     if (!m_roleMap.contains(roleName))
     {
-        qWarning() << "MythIncrementalModel::addLongData roleName not found: " << roleName;
+        gContext->m_logger->warning(Verbose::MODEL, "MythIncrementalModel: addLongData - roleName not found: " + roleName);
         return;
     }
 
@@ -284,7 +285,7 @@ void MythIncrementalModel::addDoubleData(RowData* row, const QJsonValue &node, c
 {
     if (!m_roleMap.contains(roleName))
     {
-        qWarning() << "MythIncrementalModel::addDoubleData roleName not found: " << roleName;
+        gContext->m_logger->warning(Verbose::MODEL, "MythIncrementalModel: addDoubleData - roleName not found: " + roleName);
         return;
     }
 
@@ -296,7 +297,7 @@ void MythIncrementalModel::addDateTimeData(RowData* row, const QJsonValue &node,
 {
     if (!m_roleMap.contains(roleName))
     {
-        qWarning() << "MythIncrementalModel::addDatTimeData roleName not found: " << roleName;
+        gContext->m_logger->warning(Verbose::MODEL, "MythIncrementalModel: addDateTimeData - roleName not found: " + roleName);
         return;
     }
 
@@ -308,7 +309,7 @@ void MythIncrementalModel::addDateData(RowData* row, const QJsonValue&node, cons
 {
     if (!m_roleMap.contains(roleName))
     {
-        qWarning() << "MythIncrementalModel::addDateData roleName not found: " << roleName;
+        gContext->m_logger->warning(Verbose::MODEL, "MythIncrementalModel: addDateData - roleName not found: " + roleName);
         return;
     }
 
@@ -320,7 +321,7 @@ void MythIncrementalModel::addBoolData(RowData* row, const QJsonValue &node, con
 {
     if (!m_roleMap.contains(roleName))
     {
-        qWarning() << "MythIncrementalModel::addBoolData roleName not found: " << roleName;
+        gContext->m_logger->warning(Verbose::MODEL, "MythIncrementalModel: addBoolData - roleName not found: " + roleName);
         return;
     }
 

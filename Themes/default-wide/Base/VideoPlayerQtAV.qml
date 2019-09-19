@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.0
 import QtAV 1.5
+import mythqml.net 1.0
 
 import "../../../Util.js" as Util
 
@@ -50,43 +51,43 @@ FocusScope
             {
                 if (status == MediaPlayer.NoMedia)
                 {
-                    console.info("status: no media");
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerQtAV: status: no media");
                     showMessage("No Media", settings.osdTimeoutMedium);
                 }
                 else if (status === MediaPlayer.Loading)
                 {
-                    console.info("status: loading");
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerQtAV: status: loading");
                 }
                 else if (status === MediaPlayer.Loaded)
                 {
-                    console.info("status: loaded");
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerQtAV: status: loaded");
                 }
                 else if (status === MediaPlayer.Buffering)
                 {
-                    console.info("status: buffering");
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerQtAV: status: buffering");
                     showMessage("Buffering", settings.osdTimeoutLong);
                 }
                 else if (status === MediaPlayer.Stalled)
                 {
-                    console.info("status: Stalled");
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerQtAV: status: Stalled");
                 }
                 else if (status === MediaPlayer.Buffered)
                 {
-                    console.info("status: Buffered");
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerQtAV: status: Buffered");
                     showMessage("", settings.osdTimeoutShort);
                 }
                 else if (status === MediaPlayer.EndOfMedia)
                 {
-                    console.info("status: EndOfMedia");
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerQtAV: status: EndOfMedia");
                     playbackEnded();
                 }
                 else if (status === MediaPlayer.InvalidMedia)
                 {
-                    console.info("status: InvalidMedia");
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerQtAV: status: InvalidMedia");
                 }
                 else if (status === MediaPlayer.UnknownStatus)
                 {
-                    console.info("status: UnknownStatus");
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerQtAV: status: UnknownStatus");
                 }
             }
         }
@@ -119,7 +120,6 @@ FocusScope
 
     function togglePaused()
     {
-        console.info("MediaPlayer.state: " + mediaplayer.state);
         if (mediaplayer.playbackState === MediaPlayer.StoppedState)
             mediaplayer.play();
         else if (mediaplayer.playbackState === MediaPlayer.PlayingState)

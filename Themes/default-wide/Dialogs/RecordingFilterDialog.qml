@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import Base 1.0
 import "../../../Models"
+import mythqml.net 1.0
 
 BaseDialog
 {
@@ -213,7 +214,7 @@ BaseDialog
             }
             else
             {
-                console.log("Unknow search field: " + _searchField);
+                log.error(Verbose.GUI, "RecordingFilterDialog: onItemSelected - Unknow search field: " + _searchField);
                 titleButton.focus = true;
             }
         }

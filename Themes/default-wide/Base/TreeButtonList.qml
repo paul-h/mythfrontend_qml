@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Base 1.0
+import mythqml.net 1.0
 
 FocusScope
 {
@@ -151,7 +152,7 @@ FocusScope
         if (list === null)
         {
             // Error Handling
-            console.log("Error creating object");
+            log.debug(Verbose.GUI, "TreeButtonList: createList - Error creating object");
         }
         else
         {
@@ -174,7 +175,7 @@ FocusScope
 
             if (objRoot.model.get(parseInt(szSplit[0])) === undefined)
             {
-                console.log("Error - Given node does not exist !")
+                log.error(Verbose.GUI, "TreeButtonList: addNode - Error: Given node does not exist!")
                 return false
             }
 
@@ -184,7 +185,7 @@ FocusScope
             {
                 if (node.subNodes.get(parseInt(szSplit[i])) === undefined)
                 {
-                    console.log("Error - Given node does not exist !")
+                    log.error(Verbose.GUI, "TreeButtonList: addNode - Error: Given node does not exist !")
                     return false
                 }
                 node = node.subNodes.get(parseInt(szSplit[i]))
@@ -218,7 +219,7 @@ FocusScope
 
         if (node === undefined)
         {
-            console.log("Error - Given node does not exist !")
+            log.error(Verbose.GUI, "TreeButtonList: setFocusedNode - Error: Given node does not exist !")
             return
         }
 
@@ -226,7 +227,7 @@ FocusScope
         {
             if (node.subNode.get(parseInt(szSplit[i])) === undefined)
             {
-                console.log("Error - Given node does not exist !")
+                log.error(Verbose.GUI, "TreeButtonList: setFocusedNode - Error: Given node does not exist !")
                 return
             }
             node = node.subNode.get(parseInt(szSplit[i]))

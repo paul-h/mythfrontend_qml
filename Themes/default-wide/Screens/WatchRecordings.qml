@@ -3,6 +3,7 @@ import Base 1.0
 import Dialogs 1.0
 import RecordingsModel 1.0
 import Models 1.0
+import mythqml.net 1.0
 
 BaseScreen
 {
@@ -312,7 +313,7 @@ BaseScreen
         }
         onDataChanged:
         {
-            console.log("onDatachanged row: " + topLeft.row + ", currentIndex: " + recordingList.currentIndex);
+            log.debug(Verbose.GENERAL, "WatchRecordings:  onDatachanged - row: " + topLeft.row + ", currentIndex: " + recordingList.currentIndex);
             if (topLeft.row === recordingList.currentIndex)
                 updateProgramDetails();
         }

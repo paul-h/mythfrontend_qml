@@ -2,6 +2,7 @@ import QtQuick 2.0
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
+import mythqml.net 1.0
 
 BaseScreen
 {
@@ -120,7 +121,7 @@ BaseScreen
                     labelText: "Category"
                     //editText: "Test"
                     model: ProgCategoryModel {}
-                    onItemChanged: console.info("New category is: " +  editText)
+                    onItemChanged: log.debug(Verbose.GENERAL, "TestPage3: New category is: " +  editText)
                     onStateChanged: if (state == "expanded") filterBackground.state = "category"; else filterBackground.state = ""
                     KeyNavigation.down: recGroupDropDown;
                     KeyNavigation.up: titleEdit;
@@ -136,7 +137,7 @@ BaseScreen
                     labelText: "Recording Group"
                     //editText: "Test"
                     model: RecGroupModel {}
-                    onItemChanged: console.info("New recording group is: " +  editText)
+                    onItemChanged: log.debug(Verbose.GENERAL, "TestPage3: New recording group is: " +  editText)
                     onStateChanged: if (state == "expanded") filterBackground.state = "recgroup"; else filterBackground.state = ""
                     KeyNavigation.up: categoryDropDown
                     KeyNavigation.down: titleEdit

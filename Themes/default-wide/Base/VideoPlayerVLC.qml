@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import VLCQt 1.1
+import mythqml.net 1.0
 
 import "../../../Util.js" as Util
 
@@ -54,10 +55,10 @@ FocusScope
 
             onStateChanged:
             {
-                console.log("videoplayer onStateChanged called " + state);
+                log.debug(Verbose.PLAYBACK, "VideoPlayerVLC: onStateChanged called " + state);
                 if (loop && state === 6)
                 {
-                    console.log("videoplayer restarting playback");
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerVLC: restarting playback");
                     stop();
                     play();
                 }
@@ -160,6 +161,6 @@ FocusScope
     function toggleMute()
     {
         mediaplayer.muted = !mediaplayer.muted;
-        console.log("muted is now: " + mediaplayer.muted)
+        log.debug(Verbose.PLAYBACK, "VideoPlayerVLC: toggleMute - muted is now: " + mediaplayer.muted)
     }
 }

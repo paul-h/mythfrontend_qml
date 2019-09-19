@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import mythqml.net 1.0
 
 // Accordion list
 FocusScope
@@ -161,7 +162,7 @@ FocusScope
                             textIndent: root.indent
                             onClicked:
                             {
-                                console.log("Clicked: " + itemTitle + "/" + subItemTitle)
+                                log.debug(Verbose.GUI, "AccordionList: Clicked - " + itemTitle + "/" + subItemTitle)
                                 itemClicked(itemTitle, subItemTitle)
                             }
                         }

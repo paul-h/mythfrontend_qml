@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
+import mythqml.net 1.0
 
 XmlListModel
 {
@@ -12,17 +13,17 @@ XmlListModel
     {
         if (status == XmlListModel.Ready)
         {
-            console.info("Status: " + "GetCategories - Found " + count + " categories");
+            log.debug(Verbose.MODEL, "ProgCategoryModel: READY - Found " + count + " categories");
         }
 
         if (status === XmlListModel.Loading)
         {
-            console.info("Status: " + "GetCategories - LOADING - " + source.toString());
+            log.debug(Verbose.MODEL, "ProgCategoryModel: LOADING - " + source.toString());
         }
 
         if (status === XmlListModel.Error)
         {
-            console.info("Status: " + "GetCategories - ERROR: " + errorString() + "\n" + source.toString());
+            log.error(Verbose.MODEL, "ProgCategoryModel: ERROR - " + errorString() + " - " + source.toString());
         }
     }
 }

@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
+import mythqml.net 1.0
 
 XmlListModel
 {
@@ -24,18 +25,18 @@ XmlListModel
     {
         if (status == XmlListModel.Ready)
         {
-            console.log("READY >> Found " + count + " webvideos")
+            log.debug(Verbose.MODEL, "WebVideoModel: READY - Found " + count + " webvideos");
             updateLists();
         }
 
         if (status === XmlListModel.Loading)
         {
-            console.log("LOADING >> " + webvideoModel.source.toString())
+            log.debug(Verbose.MODEL, "WebVideoModel: LOADING - " + source.toString());
         }
 
         if (status === XmlListModel.Error)
         {
-            console.log("Error: " + errorString() + "\n \n \n " + webvideoModel.source.toString());
+            log.error(Verbose.MODEL, "WebVideoModel: ERROR: " + errorString() + " - " + source.toString());
         }
     }
 

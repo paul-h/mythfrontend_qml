@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
+import mythqml.net 1.0
 
 XmlListModel
 {
@@ -34,6 +35,7 @@ XmlListModel
     {
         if (status == XmlListModel.Ready)
         {
+            log.debug(Verbose.MODEL, "MusicTracksModel: Found " + count + " tracks");
             screenBackground.showBusyIndicator = false
 
             updateLists();
@@ -43,13 +45,14 @@ XmlListModel
 
         if (status === XmlListModel.Loading)
         {
+            log.debug(Verbose.MODEL, "MusicTracksModel: LOADING - " + source.toString());
             screenBackground.showBusyIndicator = true
         }
 
         if (status === XmlListModel.Error)
         {
             screenBackground.showBusyIndicator = false
-            console.log("Error: " + errorString() + "\n" + musicModel.source.toString());
+            log.error(Verbose.MODEL, "MusicTracksModel: Error: " + errorString() + " - " + source.toString());
         }
     }
 

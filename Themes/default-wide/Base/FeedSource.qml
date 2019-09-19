@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import SortFilterProxyModel 0.2
+import mythqml.net 1.0
 
 Item
 {
@@ -115,12 +116,13 @@ Item
         else if (feed === "Adhoc")
             switchToAdhoc(filter, currFeed);
         else
-            console.log("FeedSource: Error - unknown feed: " + feed);
+            log.error(Verbose.PLAYBACK, "FeedSource: switchToFeed Error - unknown feed: " + feed);
     }
 
     function switchToLiveTV(sourceId, currFeed)
     {
-        console.log("FeedSource: switchToLiveTV - sourceId: " + sourceId + ", currFeed: " + currFeed )
+        log.debug(Verbose.PLAYBACK, "FeedSource: switchToLiveTV - sourceId: " + sourceId + ", currFeed: " + currFeed )
+
         feedName = "Live TV";
         currentFeed = currFeed;
         sourceFilter.value = sourceId == "-1" ? playerSources.videoSourceList.get(0).Id : sourceId; // Don't change == to ===

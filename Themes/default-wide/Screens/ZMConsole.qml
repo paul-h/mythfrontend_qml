@@ -3,6 +3,7 @@ import Base 1.0
 import Dialogs 1.0
 import Models 1.0
 import "../../../Util.js" as Util
+import mythqml.net 1.0
 
 BaseScreen
 {
@@ -226,11 +227,11 @@ BaseScreen
             {
                 if (http.status == 200)
                 {
-                    console.log("ZoneMinder has been stopped OK")
+                    log.info(Verbose.GENERAL, "ZMConsole: ZoneMinder has been stopped OK")
                 }
                 else
                 {
-                    console.log("error zmStop: " + http.status)
+                    log.error(Verbose.GENERAL, "ZMConsole: Error zmStop failed with status - " + http.status)
                 }
             }
         }
@@ -252,11 +253,11 @@ BaseScreen
             {
                 if (http.status == 200)
                 {
-                    console.log("ZoneMinder has been started OK")
+                    log.info(Verbose.GENERAL, "ZMConsole: ZoneMinder has been started OK")
                 }
                 else
                 {
-                    console.log("error zmStart: " + http.status)
+                    log.error(Verbose.GENERAL, "ZMConsole: Error zmStart failed with status - " + http.status)
                 }
             }
         }
@@ -278,11 +279,11 @@ BaseScreen
             {
                 if (http.status == 200)
                 {
-                    console.log("ZoneMinder has been restarted OK")
+                    log.info(Verbose.GENERAL, "ZMConsole: ZoneMinder has been restarted OK")
                 }
                 else
                 {
-                    console.log("error zmRestart: " + http.status)
+                    log.error(Verbose.GENERAL, "ZMConsole: Error zmRestart failed with status - " + http.status)
                 }
             }
         }
@@ -304,12 +305,12 @@ BaseScreen
             {
                 if (http.status == 200)
                 {
-                    console.log("ZoneMinder function of monitor " + monitorID + " has been changed to '" + _function + "', enabled: " + (enabled ? "true" : "false"))
+                    log.info(Verbose.GENERAL, "ZMConsole: ZoneMinder function of monitor " + monitorID + " has been changed to '" + _function + "', enabled: " + (enabled ? "true" : "false"))
                 }
                 else
                 {
-                    console.log("error zmChangeMonitorState: " + http.status);
-                    console.log(http.responseText);
+                    log.error(Verbose.GENERAL, "ZMConsole: Error zmChangeMonitorState failed with status - " + http.status);
+                    log.error(Verbose.GENERAL, "ZMConsole: resonse was - " + http.responseText);
                 }
             }
         }

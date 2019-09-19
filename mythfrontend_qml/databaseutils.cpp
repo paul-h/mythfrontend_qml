@@ -1,17 +1,16 @@
-#include <iostream>
-
+// qt
 #include <QVariant>
 
+// mythfrontend_qml
 #include "databaseutils.h"
 #include "context.h"
+#include "logger.h"
 
 void DatabaseUtils::updateChannel(int chanid, QString chanName, QString chanNo, QString xmltvid, QString callsign)
 {
-    std::cout << "DatabaseUtils::updateChannel: " << "chanid is: " << chanid
-    << ", chanName is: " << qPrintable(chanName)
-    << ", chanNo is: " << qPrintable(chanNo)
-    << ", xmltv is: " << qPrintable(xmltvid)
-    << ", callsign is: " << qPrintable(callsign) << std::endl;
+    gContext->m_logger->debug(Verbose::DATABASE,
+                              QString("DatabaseUtils::updateChannel: chanid is: %1, chanName is: %2, chanNo is: %3, xmltv is: %4, callsign is: %5")
+                              .arg(chanid).arg(chanName).arg(chanNo).arg(xmltvid).arg(callsign));
 
     QSqlQuery query(gContext->m_db);
     query.prepare("UPDATE channel SET channum = :CHANNUM, name = :NAME, xmltvid = :XMLTVID, callsign = :CALLSIGN "
@@ -65,7 +64,7 @@ bool DatabaseUtils::setSetting(QString settingName, QString hostName, QString va
 
     if (!query.exec())
     {
-        std::cout << "DatabaseUtils::setSetting delete failed" << std::endl;
+        gContext->m_logger->error(Verbose::DATABASE, "DatabaseUtils::setSetting delete failed");
         return false;
     }
     else
@@ -90,7 +89,7 @@ bool DatabaseUtils::setSetting(QString settingName, QString hostName, QString va
         if (!query.exec())
         {
             success = false;
-            std::cout << "DatabaseUtils::setSetting insert failed" << std::endl;
+            gContext->m_logger->error(Verbose::DATABASE, "DatabaseUtils::setSetting insert failed");
         }
     }
 

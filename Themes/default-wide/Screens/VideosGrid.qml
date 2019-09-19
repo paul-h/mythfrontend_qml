@@ -3,6 +3,7 @@ import Models 1.0
 import Base 1.0
 import Dialogs 1.0
 import SortFilterProxyModel 0.2
+import mythqml.net 1.0
 
 BaseScreen
 {
@@ -171,7 +172,7 @@ BaseScreen
 
     function feedChanged(filter, index)
     {
-        console.log("VideoGrid feedChange - filter: " + filter + ", index: " + index);
+        log.debug(Verbose.GENERAL, "VideosGrid: feedChanged - filter: " + filter + ", index: " + index);
 
         var list = filter.split(",");
 
@@ -185,5 +186,3 @@ BaseScreen
         videoList.currentIndex = index;
     }
 }
-
-

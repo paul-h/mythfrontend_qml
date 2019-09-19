@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
+import mythqml.net 1.0
 
 XmlListModel
 {
@@ -12,17 +13,17 @@ XmlListModel
     {
         if (status == XmlListModel.Ready)
         {
-            console.info("Status: " + "GetRecGroupList - Found " + count + " rec groups");
+            log.debug(Verbose.MODEL, "RecGroupModel: READY - Found " + count + " rec groups");
         }
 
         if (status === XmlListModel.Loading)
         {
-            console.info("Status: " + "GetRecGroupList - LOADING - " + source.toString());
+            log.debug(Verbose.MODEL, "RecGroupModel: LOADING - " + source.toString());
         }
 
         if (status === XmlListModel.Error)
         {
-            console.info("Status: " + "GetRecGroupList - ERROR: " + errorString() + "\n" + source.toString());
+            log.debug(Verbose.MODEL, "RecGroupModel: ERROR: " + errorString() + " - " + source.toString());
         }
     }
 }

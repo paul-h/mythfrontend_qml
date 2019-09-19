@@ -137,7 +137,7 @@ void ZMEventsModel::processDownload(QByteArray buffer)
 {
     if (buffer.isEmpty())
     {
-        qWarning() << "ZMEventsModel: got an empty buffer!";
+        gContext->m_logger->warning(Verbose::MODEL, "ZMEventsModel: processDownload - got an empty buffer!");
         return;
     }
 
@@ -147,8 +147,8 @@ void ZMEventsModel::processDownload(QByteArray buffer)
 
     if (parseError.error != QJsonParseError::NoError)
     {
-        qWarning() << "Failed to parse json - Location: " << parseError.offset << " Error: " << parseError.errorString();
-        qDebug() << buffer;
+        gContext->m_logger->warning(Verbose::MODEL, "ZMEventsModel: processDownload - Failed to parse json - Location: " + QString(parseError.offset) + " Error: " + parseError.errorString());
+        gContext->m_logger->warning(Verbose::MODEL, "ZMEventsModel: processDownload - " + buffer);
         return;
     }
 
@@ -162,7 +162,7 @@ void ZMEventsModel::processDownload(QByteArray buffer)
         if (!countNode.isNull())
         {
             int totalAvailable = countNode.toInt();
-            qDebug() << "TotalAvailable  found: " << totalAvailable;
+            gContext->m_logger->warning(Verbose::MODEL, "ZMEventsModel: processDownload - TotalAvailable  found: " + QString(totalAvailable));
 
             if (totalAvailable == 0)
             {
@@ -190,7 +190,7 @@ void ZMEventsModel::processDownload(QByteArray buffer)
         }
         else
         {
-            qDebug() << "count node not found";
+            gContext->m_logger->warning(Verbose::MODEL, "ZMEventsModel: processDownload - count node not found");
         }
 
         // get the StartIndex
@@ -214,12 +214,12 @@ void ZMEventsModel::processDownload(QByteArray buffer)
             if (data)
             {
                 // we already have it so just update it?
-                //qDebug() << "ZMEventsModel: event found in events at: " << startIndex + x;
+                //gContext->m_logger->warning(Verbose::MODEL, "ZMEventsModel: processDownload - event found in events at: " + QString(startIndex + x);
             }
             else
             {
                 // not found so add it to the model
-                //qDebug() << "ZMEventsModel: adding new event: " << startIndex + x;
+                //gContext->m_logger->warning(Verbose::MODEL, "ZMEventsModel: processDownload - adding new event: " + QString(startIndex + x));
                 data = addNewRow();
                 m_data[startIndex + x] = data;
 
@@ -275,7 +275,7 @@ void ZMEventsModel::processDownload(QByteArray buffer)
     }
     else
     {
-        qWarning() << "ZMEventsModel: Doesn't look like valid recording list XML!";
+        gContext->m_logger->warning(Verbose::MODEL, "ZMEventsModel: processDownload - Doesn't look like valid recording list XML!");
         return;
     }
 

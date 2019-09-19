@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
+import mythqml.net 1.0
 
 XmlListModel
 {
@@ -60,17 +61,17 @@ XmlListModel
     {
         if (status == XmlListModel.Ready)
         {
-            console.info("Status: " + "Channels - Found " + count + " channels");
+            log.debug(Verbose.MODEL, "ChannelsModel: Found " + count + " channels");
         }
 
         if (status === XmlListModel.Loading)
         {
-            console.log("Status: " + "Channels - LOADING - " + source.toString());
+            log.debug(Verbose.MODEL, "ChannelsModel: LOADING - " + source.toString());
         }
 
         if (status === XmlListModel.Error)
         {
-            console.log("Status: " + "Channels - ERROR: " + errorString() + "\n" + source.toString());
+            log.error(Verbose.MODEL, "ChannelsModel: ERROR: " + errorString() + " - " + source.toString());
         }
     }
 

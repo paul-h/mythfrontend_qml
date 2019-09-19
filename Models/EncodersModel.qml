@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
+import mythqml.net 1.0
 
 XmlListModel
 {
@@ -21,17 +22,17 @@ XmlListModel
     {
         if (status == XmlListModel.Ready)
         {
-            console.info("Status: " + "Encoders - Found " + count + " encoders");
+            log.debug(Verbose.MODEL, "EncodersModel: READY - Found " + count + " encoders");
         }
 
         if (status === XmlListModel.Loading)
         {
-            console.info("Status: " + "Encoders - LOADING - " + source.toString());
+            log.debug(Verbose.MODEL, "EncodersModel: LOADING - " + source.toString());
         }
 
         if (status === XmlListModel.Error)
         {
-            console.info("Status: " + "Encoders - ERROR: " + errorString() + "\n" + source.toString());
+            log.error(Verbose.MODEL, "EncodersModel: ERROR - " + errorString() + " - " + source.toString());
         }
     }
 }

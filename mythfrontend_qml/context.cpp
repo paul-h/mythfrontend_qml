@@ -9,7 +9,6 @@
 #include <QDomDocument>
 #include <QFile>
 #include <QDir>
-#include <QDebug>
 
 // common
 #include "databaseutils.h"
@@ -27,12 +26,22 @@
 Context::Context(const QString &appName, QObject *parent) : QObject(parent)
 {
     m_appName = appName;
+    m_logger = nullptr;
     m_engine = nullptr;
     m_settings = nullptr;
     m_databaseUtils = nullptr;
     m_mythUtils = nullptr;
     m_eventListener = nullptr;
     m_urlInterceptor = nullptr;
+
+    // create the logger
+    m_logger = new Logger();
+    m_logger->setFilename(QString("/var/log/mythqml/%1.log").arg(m_appName));
+    //m_logger->setVerbosity(Verbose::GENERAL | Verbose::GUI | Verbose::FILE | Verbose::PROCESS | Verbose::DATABASE | Verbose::PLAYBACK | Verbose::WEBSOCKET | Verbose::SERVICESAPI);
+    m_logger->setVerbosity(Verbose::ALL);
+    m_logger->setLogLevel(Level::INFO);
+
+    m_logger->info(Verbose::GENERAL, QString("Starting ") + m_appName + ": version " + APP_VERSION);
 }
 
 Context::~Context(void)
@@ -43,10 +52,13 @@ Context::~Context(void)
     delete m_mythUtils;
     delete m_eventListener;
     delete m_urlInterceptor;
+    delete m_logger;
 }
 
 void Context::init()
 {
+    m_engine = new QQmlApplicationEngine;
+
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QtWebEngine::initialize();
@@ -54,8 +66,10 @@ void Context::init()
     QCoreApplication::setApplicationName(m_appName);
     QCoreApplication::setAttribute(Qt::AA_X11InitThreads);
 
-    qDebug() << "Starting " + m_appName + ": version " << APP_VERSION;
     qmlRegisterType<Process>("Process", 1, 0, "Process");
+
+    qRegisterMetaType<Verbose>("Verbose");
+    qmlRegisterUncreatableType<VerboseClass>("mythqml.net", 1, 0, "Verbose", "Not creatable as it is an enum type");
 
     RegisterQmlVlc();
     QmlVlcConfig& config = QmlVlcConfig::instance();
@@ -66,7 +80,8 @@ void Context::init()
     config.enableLoopPlayback(false);
     config.setTrustedEnvironment(true);
 
-    m_engine = new QQmlApplicationEngine;
+    // create the logger for QML
+    m_engine->rootContext()->setContextProperty("log", m_logger);
 
     // create version property
     m_engine->rootContext()->setContextProperty("version", QString(APP_VERSION));
@@ -132,24 +147,24 @@ bool Context::loadDBSettings(void)
 
     if (configFile.isEmpty())
     {
-        qDebug() << "ERROR: Unable to find config file\nYou need to put a valid config.xml file at: ~/.mythqml/config.xml";
+        m_logger->error(Verbose::GENERAL, "ERROR: Unable to find config file.You need to put a valid config.xml file at: ~/.mythqml/config.xml");
         return false;
     }
 
-    qDebug() << "Loading database config from: " << configFile;
+    m_logger->info(Verbose::DATABASE, "Loading database config from: " + configFile);
 
     QFile file(configFile);
 
     if (!file.open(QIODevice::ReadOnly))
     {
-        qDebug() << "Failed to open config file";
+        m_logger->error(Verbose::GENERAL, "Failed to open config file");
         return false;
     }
 
     if (!doc.setContent(&file))
     {
         file.close();
-        qDebug() << "Failed to read from config file";
+        m_logger->error(Verbose::GENERAL, "Failed to read from config file");
         return false;
     }
     file.close();
@@ -164,7 +179,7 @@ bool Context::loadDBSettings(void)
 
     if (nodeList.count() != 1)
     {
-        qDebug() << "Expected 1 'Database' node but got " << nodeList.count();
+        m_logger->error(Verbose::GENERAL, "Expected 1 'Database' node but got " + nodeList.count());
         return false;
     }
 
@@ -184,7 +199,7 @@ bool Context::loadDBSettings(void)
 
     if (!ok)
     {
-        qDebug() << "Failed to open the database";
+        m_logger->error(Verbose::GENERAL, "Failed to open the database");
         return false;
     }
 

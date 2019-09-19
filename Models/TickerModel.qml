@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
+import mythqml.net 1.0
 
 XmlListModel
 {
@@ -14,7 +15,19 @@ XmlListModel
 
     onStatusChanged:
     {
+        if (status == XmlListModel.Ready)
+        {
+            log.debug(Verbose.MODEL, "TickerModel: READY - Found " + count + " ticker items");
+        }
+
+        if (status === XmlListModel.Loading)
+        {
+            log.debug(Verbose.MODEL, "TickerModel: LOADING - " + source.toString());
+        }
+
         if (status === XmlListModel.Error)
-            console.info("Status: " + "TickerModel - ERROR: " + errorString() + "\n" + tickerModel.source.toString());
+        {
+            log.error(Verbose.MODEL, "TickerModel: ERROR: " + errorString() + " - " + source.toString());
+        }
     }
 }

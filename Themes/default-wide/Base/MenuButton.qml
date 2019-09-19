@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import mythqml.net 1.0
 
 Item
 {
@@ -30,8 +31,8 @@ Item
     {
         state = "Pressed"
         clicked();
-        console.log("button return pressed on: " + buttonText)
     }
+
     //define a scale animation
     Behavior on scale
     {
@@ -60,7 +61,7 @@ Item
         }
     }
 
-    //change the color of the button in differen button states
+    //change the color of the button in different button states
     states:
     [
         State

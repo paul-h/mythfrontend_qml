@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Base 1.0
+import mythqml.net 1.0
 
 BaseDialog
 {
@@ -74,7 +75,7 @@ BaseDialog
             KeyNavigation.left: titleButton;
             KeyNavigation.right: typeButton;
             KeyNavigation.down: genreEdit;
-            onEditingFinished: console.log("Type is now: " + text);
+            onEditingFinished: log.debug(Verbose.GUI, "VideoFilterDialog: onEditingFinished - Type is now: " + text);
         }
 
         BaseButton
@@ -211,7 +212,7 @@ BaseDialog
             }
             else
             {
-                console.log("Unknow search field: " + _searchField);
+                log.error(Verbose.GUI, "VideoFilterDialog: onItemSelected - Unknow search field: " + _searchField);
                 titleButton.focus = true;
             }
         }

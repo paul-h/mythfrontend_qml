@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
+import mythqml.net 1.0
 
 XmlListModel
 {
@@ -28,18 +29,18 @@ XmlListModel
     {
         if (status == XmlListModel.Ready)
         {
-            console.log("READY >> Found " + count + " webcams")
+            log.debug(Verbose.MODEL, "WebCamModel: READY - Found " + count + " webcams");
             updateLists();
         }
 
         if (status === XmlListModel.Loading)
         {
-            console.log("LOADING >> " + webcamModel.source.toString())
+            log.debug(Verbose.MODEL, "WebCamModel: LOADING - " + source.toString());
         }
 
         if (status === XmlListModel.Error)
         {
-            console.log("Error: " + errorString() + "\nSource: " + webcamModel.source.toString());
+            log.error(Verbose.MODEL, "WebCamModel: ERROR: " + errorString() + " - " + source.toString());
         }
     }
 

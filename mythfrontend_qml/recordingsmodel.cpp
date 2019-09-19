@@ -128,7 +128,7 @@ void RecordingsModel::processDownload(QByteArray buffer)
 {
     if (buffer.isEmpty())
     {
-        qWarning() << "RecordingsModel: got an empty buffer!";
+        gContext->m_logger->warning(Verbose::MODEL, "RecordingsModel: processDownload - got an empty buffer!");
         return;
     }
 
@@ -137,8 +137,8 @@ void RecordingsModel::processDownload(QByteArray buffer)
 
     if (!domDoc.setContent(buffer))
     {
-        qWarning() << "Failed to parse xml";
-        qDebug() << buffer;
+        gContext->m_logger->warning(Verbose::MODEL, "RecordingsModel: processDownload - Failed to parse xml");
+        gContext->m_logger->debug(Verbose::MODEL, "RecordingsModel: processDownload - " + buffer);
         return;
     }
 
@@ -188,12 +188,12 @@ void RecordingsModel::processDownload(QByteArray buffer)
             if (data)
             {
                 // we already have it so just update it?
-                qDebug() << "RecordingsModel: recording found in recordings at: " << startIndex + x;
+                gContext->m_logger->debug(Verbose::MODEL, "RecordingsModel: processDownload - recording found in recordings at: " + QString(startIndex + x));
             }
             else
             {
                 // not found so add it to the model
-                qDebug() << "RecordingsModel: adding new recording: " << startIndex + x;
+                gContext->m_logger->debug(Verbose::MODEL, "RecordingsModel: processDownload - adding new recording: " + QString(startIndex + x));
                 data = addNewRow();
                 m_data[startIndex + x] = data;
 
@@ -268,7 +268,7 @@ void RecordingsModel::processDownload(QByteArray buffer)
     }
     else
     {
-        qWarning() << "RecordingsModel: Doesn't look like valid recording list XML!";
+        gContext->m_logger->warning(Verbose::MODEL, "RecordingsModel: processDownload - Doesn't look like valid recording list XML!");
         return;
     }
 }

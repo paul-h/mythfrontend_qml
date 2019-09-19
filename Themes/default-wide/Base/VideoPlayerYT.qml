@@ -57,7 +57,7 @@ Item
             }
         }
 
-        Component.onCompleted: { settings.playbackRequiresUserGesture = false; }
+        Component.onCompleted: settings.playbackRequiresUserGesture = false;
         onWidthChanged: setSize(width, height)
         onHeightChanged: setSize(width, height)
     }

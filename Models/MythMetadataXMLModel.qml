@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
+import mythqml.net 1.0
 
 XmlListModel
 {
@@ -20,17 +21,17 @@ XmlListModel
     {
         if (status == XmlListModel.Ready)
         {
-            console.log("READY >> " + mxmlModel.source.toString())
+            log.debug(Verbose.MODEL, "MythMetadataXMLModel: READY - found " + count + " items")
         }
 
         if (status === XmlListModel.Loading)
         {
-            console.log("LOADING >> " + mxmlModel.source.toString())
+            log.debug(Verbose.MODEL, "MythMetadataXMLModel: LOADING - " + mxmlModel.source.toString())
         }
 
         if (status === XmlListModel.Error)
         {
-            console.log("Error: " + errorString() + "\n \n \n " + mxmlModel.source.toString());
+            log.error(Verbose.MODEL, "MythMetadataXMLModel: ERROR - " + errorString() + " - " + source.toString());
         }
     }
 }

@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Base 1.0
+import mythqml.net 1.0
 
 BaseDialog
 {
@@ -54,7 +55,7 @@ BaseDialog
             focus: true
             onNodeClicked:
             {
-                console.log("node.itemTitle: " + node.itemTitle + ", node.itemData: " + node.itemData);
+                log.debug(Verbose.GUI, "PopupMenu: onNodeClicked - itemTitle: " + node.itemTitle + ", node.itemData: " + node.itemData);
                 popupMenu.state = "";
                 popupMenu.itemSelected(node.itemTitle, node.itemData);
             }

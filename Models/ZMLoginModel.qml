@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
+import mythqml.net 1.0
 
 XmlListModel
 {
@@ -20,13 +21,18 @@ XmlListModel
     {
         if (status == XmlListModel.Ready)
         {
-             loaded();
+            log.debug(Verbose.MODEL, "ZMLoginModel: READY - Found " + count + " login responses");
+            loaded();
+        }
+
+        if (status === XmlListModel.Loading)
+        {
+            log.debug(Verbose.MODEL, "ZMLoginModel: LOADING - " + source.toString());
         }
 
         if (status === XmlListModel.Error)
         {
-
-            console.log("Status: " + "Zoneminder Login - ERROR: " + errorString() + "\n" + source.toString());
+            log.error(Verbose.MODEL, "ZMLoginModel: ERROR: " + errorString() + " - " + source.toString());
         }
     }
 
@@ -50,7 +56,7 @@ XmlListModel
                 }
                 else
                 {
-                    console.log("error: " + http.status)
+                    log.error(Verbose.MODEL, "ZMLoginModel: ERROR: getLogin() got status " + http.status)
                 }
             }
         }

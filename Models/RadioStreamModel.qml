@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
+import mythqml.net 1.0
 
 XmlListModel
 {
@@ -35,23 +36,22 @@ XmlListModel
     {
         if (status == XmlListModel.Ready)
         {
-            screenBackground.showBusyIndicator = false
-
-            console.log("Loaded XML: " + streamModel.source.toString());
+            log.debug(Verbose.MODEL, "RadioStreamModel: READY - found " + count + " radio streams");
             //updateLists();
-            console.log("Loaded Lists: " + streamModel.source.toString());
             loaded();
+            screenBackground.showBusyIndicator = false
         }
 
         if (status === XmlListModel.Loading)
         {
+            log.debug(Verbose.MODEL, "RadioStreamModel:- LOADING" + source.toString());
             screenBackground.showBusyIndicator = true
         }
 
         if (status === XmlListModel.Error)
         {
             screenBackground.showBusyIndicator = false
-            console.log("Error: " + errorString() + "\n" + streamModel.source.toString());
+            log.debug(Verbose.MODEL, "RadioStreamModel: ERROR - " + errorString() + " - " + source.toString());
         }
     }
 

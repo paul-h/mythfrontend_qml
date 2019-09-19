@@ -74,7 +74,7 @@ BaseDialog
             KeyNavigation.left: broadcasterButton;
             KeyNavigation.right: channelButton;
             KeyNavigation.down: genreEdit;
-            onEditingFinished: console.log("Type is now: " + text);
+            onEditingFinished: log.debug(Verbose.GUI, "StreamFilterDialog: onEditingFinished - Type is now: " + text);
         }
 
         BaseButton
@@ -211,7 +211,7 @@ BaseDialog
             }
             else
             {
-                console.log("Unknown search field: " + _searchField);
+                log.error(Verbose.GUI, "StreamFilterDialog: onItemSelected - Unknown search field: " + _searchField);
                 titleButton.focus = true;
             }
         }
