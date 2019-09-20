@@ -44,16 +44,21 @@ Depends: python,
          streamlink,
          zlib1g
 Description: Personal video recorder application (QML client)
- MythTV provides a unified graphical interface for recording and viewing
- television programs. Refer to the mythtv package for more information.
- .
- This package contains only the QML client software, which provides a front-end
- for playback and configuration. It requires access to a mythtv-backend
- installation, either on the same system or one reachable via the network.
- .
- A database is also required. The mythtv-database package must be installed,
- either on the same system, or one reachable via the network.
- .
- For a complete installation of all MythTV components, install the 'mythtv'
- package.
+THIS SOFTWARE IS STILL IN ALPHA PRODUCTION AND IS NOT FULLY FUNCTIONAL.
 
+MythQML is an experimental frontend (client) to MythTV based on QT's QML.
+More Information about MythQML is available at https://mythqml.net
+
+This project has both a stable and development PPA . Most users should use the
+stable PPA where the packages are built from the stable branch and the hope is
+they should be fairly stable but as noted above some features are still not
+fully functional and subject to change.
+
+The main focus is to create a modern looking frontend which allows mixing
+normal TV content with streaming content like YouTube videos, webcam feeds,
+ZoneMinder CCTV feeds. There is currently support for up to 4 video feeds
+that can be displayed in various screen layouts like PIP, PBP, Quad Screen etc.
+
+The long term goal is to create a frontend that only uses the MythTV services
+API and doesn't require access to the MythTV database or network protocol but
+the current version requires both.
