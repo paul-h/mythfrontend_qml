@@ -64,7 +64,7 @@ void MythQmlAbstractUrlInterceptor::setTheme(const QString& theme)
 {
    m_theme = theme;
 
-   m_defaultThemePath = gContext->m_settings->sharePath() + "qml/Themes/default-wide";
+   m_defaultThemePath = gContext->m_settings->sharePath() + "qml/Themes/Default";
    m_activeThemePath = gContext->m_settings->sharePath() + "qml/Themes/" + m_theme;
 
    m_fileMap.clear();
