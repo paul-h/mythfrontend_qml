@@ -30,8 +30,8 @@ QString MythUtils::findThemeFile(const QString &fileName)
         return gContext->m_settings->qmlPath() + fileName;
 
     // look in the default theme
-    if (QFile::exists(gContext->m_settings->sharePath().remove("file://") + "qml/Themes/default-wide/" + fileName))
-        return gContext->m_settings->sharePath() + "qml/Themes/default-wide/" + fileName;
+    if (QFile::exists(gContext->m_settings->sharePath().remove("file://") + "qml/Themes/Default/" + fileName))
+        return gContext->m_settings->sharePath() + "qml/Themes/Default/" + fileName;
 
     // not found
     return QString();

@@ -97,7 +97,7 @@ void Context::init()
     m_engine->rootContext()->setContextProperty("dbUtils", m_databaseUtils);
 
     QString hostName = QHostInfo::localHostName();
-    QString theme = m_databaseUtils->getSetting("Qml_theme", hostName, "MythCenter-wide");
+    QString theme = m_databaseUtils->getSetting("Qml_theme", hostName, "MythCenter");
 
     // create the settings
     m_settings = new Settings(hostName, theme);
@@ -126,7 +126,7 @@ void Context::init()
     m_urlInterceptor->setTheme(theme);
     m_engine->setUrlInterceptor(m_urlInterceptor);
 
-    m_engine->addImportPath(QString(SHAREPATH) + "qml/Themes/default-wide");
+    m_engine->addImportPath(QString(SHAREPATH) + "qml/Themes/Default");
     m_engine->addImportPath(QString(SHAREPATH) + "qml");
 }
 

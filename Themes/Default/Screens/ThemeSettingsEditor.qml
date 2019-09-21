@@ -25,27 +25,27 @@ BaseScreen
 
         ListElement
         {
-            itemText: "MythCenter-wide"
+            itemText: "MythCenter"
         }
         ListElement
         {
-            itemText: "MythCenterAUTUMN-wide"
+            itemText: "MythCenterAUTUMN"
         }
         ListElement
         {
-            itemText: "MythCenterEASTER-wide"
+            itemText: "MythCenterEASTER"
         }
         ListElement
         {
-            itemText: "MythCenterFIREWORKS-wide"
+            itemText: "MythCenterFIREWORKS"
         }
         ListElement
         {
-            itemText: "MythCenterHALLOWEEN-wide"
+            itemText: "MythCenterHALLOWEEN"
         }
         ListElement
         {
-            itemText: "MythCenterXMAS-wide"
+            itemText: "MythCenterXMAS"
         }
     }
 

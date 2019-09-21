@@ -7,7 +7,7 @@ contains(QT_MAJOR_VERSION, 4) {
 
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
-QML_IMPORT_PATH = Themes/default-wide Models MenuThemes mythfrontend_qml
+QML_IMPORT_PATH = Themes/Default Models MenuThemes mythfrontend_qml
 
 TEMPLATE = subdirs
 
