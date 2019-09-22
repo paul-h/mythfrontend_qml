@@ -8,14 +8,8 @@ QtObject
 
     // screen background
     property string   backgroundImage:  "background.png"
-    property string   backgroundVideo:  settings.configPath + "Themes/Videos/autumn.mkv"
-    property bool     needsDownload:    true
-    property string   downloadCommand:  settings.sharePath.replace("file://", "") + "/qml/Scripts/youtube-dl"
-    property var      downloadOptions:  [
-                                            "-o",  settings.configPath + "Themes/Videos/autumn",
-                                            "-f", "bestvideo[height<=720]+bestaudio/best[height<=720]",
-                                            "https://www.youtube.com/watch?v=1doA_pc3ahQ"
-                                        ]
+    property string   backgroundVideo:  "autumn.mkv"
+
     // main menu font
     property string menuFontFamily:     "Liberation Sans"
     property int    menuFontPixelSize:  30
