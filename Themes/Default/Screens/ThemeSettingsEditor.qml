@@ -99,7 +99,7 @@ BaseScreen
             settings.qmlPath = settings.sharePath + "qml/Themes/" + settings.themeName + "/";
 
             window.theme = loadTheme();
-            screenBackground.setVideo("file://" + theme.backgroundVideo);
+            screenBackground.setVideo("file://" + settings.configPath + "Themes/Videos/" + theme.backgroundVideo);
 
             // force the stack to reload the main menu
             stack.clear();

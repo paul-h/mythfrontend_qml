@@ -71,7 +71,7 @@ Window
             if (exitStatus === Process.NormalExit)
             {
                 screenBackground.showVideo = true;
-                screenBackground.setVideo("file://" + theme.backgroundVideo);
+                screenBackground.setVideo("file://" + settings.configPath + "Themes/Videos/" + theme.backgroundVideo);
                 screenBackground.showImage = false;
             }
         }
@@ -358,11 +358,19 @@ Window
 
             if (theme.backgroundVideo !== "")
             {
-                if (theme.needsDownload && !mythUtils.fileExists(theme.backgroundVideo))
+                if (!mythUtils.fileExists(settings.configPath + "Themes/Videos/" + theme.backgroundVideo))
                 {
+                    var source = "https://mythqml.net/downloads/themes/" + settings.themeName +"/" + theme.backgroundVideo;
+                    var dest = settings.configPath + "Themes/Videos/" + theme.backgroundVideo
                     screenBackground.showVideo = false;
                     screenBackground.showImage = true;
-                    themeDLProcess.start(theme.downloadCommand, theme.downloadOptions);
+
+                    log.info(Verbose.GUI, "MainWindow: Downloading theme background video from - " + source);
+                    log.info(Verbose.GUI, "to - " + dest);
+
+                    showNotification("Downloading the background video. Please Wait....", settings.osdTimeoutLong);
+
+                    themeDLProcess.start("wget", ['-O', dest, source]);
                 }
                 else
                 {

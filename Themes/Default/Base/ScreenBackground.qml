@@ -127,6 +127,6 @@ Item
     Component.onCompleted:
     {
         if (showVideo)
-            videoPlayer.source = "file://" + mythUtils.findThemeFile(theme.backgroundVideo);
+            videoPlayer.source = "file://" + settings.configPath + "Themes/Videos/" + theme.backgroundVideo;
     }
 }
