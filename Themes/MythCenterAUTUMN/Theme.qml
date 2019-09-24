@@ -8,7 +8,7 @@ QtObject
 
     // screen background
     property string   backgroundImage:  "background.png"
-    property string   backgroundVideo:  "autumn.mkv"
+    property string   backgroundVideo:  "autumn.mp4"
 
     // main menu font
     property string menuFontFamily:     "Liberation Sans"
