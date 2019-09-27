@@ -70,6 +70,7 @@ Window
         {
             if (exitStatus === Process.NormalExit)
             {
+                showNotification("");
                 screenBackground.showVideo = true;
                 screenBackground.setVideo("file://" + settings.configPath + "Themes/Videos/" + theme.backgroundVideo);
                 screenBackground.showImage = false;
@@ -197,6 +198,18 @@ Window
 
     Timer
     {
+        id: mouseMoveTimer
+        interval: 1000; running: true; repeat: false
+        onTriggered:
+        {
+            // wiggle the mouse to force it to timeout and auto hide itself
+            var pos =  mythUtils.getMousePos();
+            mythUtils.moveMouse(pos.x + 1, pos.y + 1);
+        }
+    }
+
+    Timer
+    {
         id: idleTimer
         interval: (idleTime * 60) * 1000; running: (idleTime > 0 ? true : false); repeat: true
         onTriggered:
@@ -261,6 +274,8 @@ Window
 
             anchors.fill: parent
             enabled: true;
+            cursorShape: Qt.BlankCursor
+
             preventStealing: true
             propagateComposedEvents: true
 
@@ -271,7 +286,7 @@ Window
             onPressed: mouse.accepted = false;
             onReleased: mouse.accepted = false;
             onDoubleClicked: mouse.accepted = false;
-            onPressAndHold: mouse.accepted = false
+            onPressAndHold: mouse.accepted = false;
         }
 
         StackView
@@ -285,7 +300,7 @@ Window
             {
                 if (currentItem)
                 {
-                    currentItem.defaultFocusItem.focus = true
+                    currentItem.defaultFocusItem.focus = true;
                 }
             }
 
@@ -325,6 +340,7 @@ Window
                 id: notificationText
                 anchors.fill: parent
                 horizontalAlignment: Text.AlignHCenter
+                multiline: true
             }
         }
 
@@ -368,7 +384,7 @@ Window
                     log.info(Verbose.GUI, "MainWindow: Downloading theme background video from - " + source);
                     log.info(Verbose.GUI, "to - " + dest);
 
-                    showNotification("Downloading the background video. Please Wait....", settings.osdTimeoutLong);
+                    showNotification("Downloading the background video.\nPlease Wait....", settings.osdTimeoutLong);
 
                     themeDLProcess.start("wget", ['-O', dest, source]);
                 }
@@ -405,7 +421,7 @@ Window
     Timer
     {
         id: mouseTimer
-        interval: 3000; running: false; repeat: true
+        interval: 3000; running: true; repeat: true
         onTriggered:
         {
             if (mouseArea.mouseX === mouseArea.oldX || mouseArea.mouseY === mouseArea.oldY)

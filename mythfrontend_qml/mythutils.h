@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QDateTime>
 #include <QQmlApplicationEngine>
+#include <QPoint>
 
 // mythfrontend_qml
 #include "settings.h"
@@ -25,6 +26,7 @@ class MythUtils : public QObject
     Q_INVOKABLE void moveMouse(int x, int y);
     Q_INVOKABLE bool clickMouse(QObject *obj, int x, int y);
     Q_INVOKABLE bool doubleClickMouse(QObject *obj, int x, int y);
+    Q_INVOKABLE QPoint getMousePos(void);
 
   private:
     QQmlApplicationEngine *m_engine;

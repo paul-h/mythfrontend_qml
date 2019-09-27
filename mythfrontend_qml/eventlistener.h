@@ -33,12 +33,17 @@ public:
 
         if (event->type() == QEvent::MouseMove)
         {
-            emit mouseMoved();
+            QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent*>(event);
+            if (mouseEvent)
+            {
+                emit mouseMoved(mouseEvent->globalX(), mouseEvent->globalY());
+            }
+
         }
         return false;
     }
 
   signals:
     void keyPressed(void);
-    void mouseMoved(void);
+    void mouseMoved(int x, int y);
 };
