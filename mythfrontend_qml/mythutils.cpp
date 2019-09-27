@@ -147,6 +147,11 @@ bool MythUtils::sendKeyEvent(QObject *obj, int keyCode)
     return true;
 }
 
+QPoint MythUtils::getMousePos(void)
+{
+    return QCursor::pos();
+}
+
 void MythUtils::moveMouse(int x, int y)
 {
     QPoint globalPoint = QPoint(x, y);
