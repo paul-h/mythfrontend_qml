@@ -432,8 +432,9 @@ FocusScope
             qtAVPlayer.visible = false;
 
             var url = feedSource.feedList.get(feedSource.currentFeed).url;
+            var pluginPath = settings.sharePath.replace("file://", "") + "qml/Streamlink/plugins/";
             var command = "streamlink"
-            var parameters = ["--player-external-http", "--player-external-http-port", streamlinkPort, url, "best"]
+            var parameters = ["--plugin-dirs", pluginPath, "--player-external-http", "--player-external-http-port", streamlinkPort, url, "best"]
 
             streamLinkProcess.start(command, parameters);
 
