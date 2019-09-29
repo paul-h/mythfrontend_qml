@@ -384,7 +384,7 @@ Window
                     log.info(Verbose.GUI, "MainWindow: Downloading theme background video from - " + source);
                     log.info(Verbose.GUI, "to - " + dest);
 
-                    showNotification("Downloading the background video.\nPlease Wait....", settings.osdTimeoutLong);
+                    showNotification("Downloading the background video.<br>Please Wait....", settings.osdTimeoutLong);
 
                     themeDLProcess.start("wget", ['-O', dest, source]);
                 }
