@@ -7,14 +7,14 @@ QtObject
     id: root
 
     // screen background
-    property string   backgroundImage:  "background.png"
-    property string   backgroundVideo:  "autumn.mp4"
+    property string   backgroundImage:  "background2019.png"
+    property string   backgroundVideo:  "autumn2019.mp4"
 
     // main menu font
     property string menuFontFamily:     "Liberation Sans"
     property int    menuFontPixelSize:  30
     property bool   menuFontBold:       true
-    property color  menuFontColor:      "white"
+    property color  menuFontColor:      "orange"
     property real   menuShadowAlpha:    100 / 255
     property color  menuShadowColor:    "#000000"
     property int    menuShadowXOffset:  2
@@ -24,8 +24,8 @@ QtObject
     property string titleFontFamily:     "Liberation Sans"
     property int    titleFontPixelSize:  30
     property bool   titleFontBold:       true
-    property color  titleFontColor:      "#00ff00"
-    property real   titleShadowAlpha:    100 / 255
+    property color  titleFontColor:      "orangered"
+    property real   titleShadowAlpha:    120 / 255
     property color  titleShadowColor:    "#000000"
     property int    titleShadowXOffset:  2
     property int    titleShadowYOffset:  2
@@ -34,7 +34,7 @@ QtObject
     property string labelFontFamily:     "Droid Sans"
     property int    labelFontPixelSize:  20
     property bool   labelFontBold:       true
-    property color  labelFontColor:      "#ff00ff"
+    property color  labelFontColor:      "#7d280b"
     property real   labelShadowAlpha:    100 / 255
     property color  labelShadowColor:    "#000000"
     property int    labelShadowXOffset:  2
@@ -47,7 +47,7 @@ QtObject
     property string infoFontFamily:     "Liberation Sans"
     property int    infoFontPixelSize:  20
     property bool   infoFontBold:       false
-    property color  infoFontColor:      "#ffffff"
+    property color  infoFontColor:      "gold"
     property real   infoShadowAlpha:    100 / 255
     property color  infoShadowColor:    "#000000"
     property int    infoShadowXOffset:  0
@@ -57,7 +57,7 @@ QtObject
     property string clockFontFamily:     "Liberation Sans"
     property int    clockFontPixelSize:  25
     property bool   clockFontBold:       false
-    property color  clockFontColor:      "#00ff00"
+    property color  clockFontColor:      "gold"
     property real   clockShadowAlpha:    100 / 255
     property color  clockShadowColor:    "#000000"
     property int    clockShadowXOffset:  1
@@ -66,31 +66,31 @@ QtObject
     // base background
     property color bgColor:       "#000000"
     property real  bgOpacity:     120 / 255
-    property color bgBorderColor: "#ffffffff"
+    property color bgBorderColor: "gold"
     property int   bgBorderWidth: 2
     property int   bgRadius:      12
 
     // base dialog background
     property color bgDialogColor:       "#000020"
     property real  bgDialogOpacity:     230 / 255
-    property color bgDialogBorderColor: "#aa00ff00"
+    property color bgDialogBorderColor: "#aaffa500"
     property int   bgDialogBorderWidth: 3
     property int   bgDialogRadius:      12
 
     // list view
     property color lvRowBackgroundNormal:          "#20000000"; // not selected or focused
     property color lvRowBackgroundFocused:         "#20000000"; // focused
-    property color lvRowBackgroundSelected:        "#2000aa00"; // selected not focused
-    property color lvRowBackgroundFocusedSelected: "#8000aa00"; // selected and focused
+    property color lvRowBackgroundSelected:        "#20cc7000"; // selected not focused
+    property color lvRowBackgroundFocusedSelected: "#80cc7000"; // selected and focused
 
-    property color lvRowTextNormal:          "#80ffffff"; // not selected or focused
-    property color lvRowTextFocused:         "#a0ffffff"; // focused
-    property color lvRowTextSelected:        "#80ffffff"; // selected not focused
-    property color lvRowTextFocusedSelected: "#ffffffff"; // selected and focused
+    property color lvRowTextNormal:          "#80ffa500"; // not selected or focused
+    property color lvRowTextFocused:         "#a0ffa500"; // focused
+    property color lvRowTextSelected:        "#80ffa500"; // selected not focused
+    property color lvRowTextFocusedSelected: "#ffffa500"; // selected and focused
 
     property real  lvBackgroundOpacity:      1.0;
-    property color lvBackgroundBorderColor:  "green";
-    property int   lvBackgroundBorderWidth:  2;
+    property color lvBackgroundBorderColor:  "orangered";
+    property int   lvBackgroundBorderWidth:  3;
     property int   lvBackgroundBorderRadius: 10;
 
     // button
@@ -116,24 +116,24 @@ QtObject
     property color txTextBackgroundColorFocused: "#c8ffffff"
 
     // ticker text
-    property color tiTextColor:       "green"
+    property color tiTextColor:       "orange"
     property color tiBackgroundColor: "#88101010"
 
     readonly property color colorDumb : "#FF00FF"; // magenta
     readonly property color colorNone : "transparent";
 
     // background gradients
-    property color colorNormalStart: "#7800aa00"
-    property color colorNormalStop:  "#78008800"
+    property color colorNormalStart: "#78aa5000"
+    property color colorNormalStop:  "#78883000"
 
-    property color colorFocusedStart: "#c800ff00"
-    property color colorFocusedStop:  "#c800dd00"
+    property color colorFocusedStart: "#c8ffa500"
+    property color colorFocusedStop:  "#c8dd9300"
 
-    property color colorSelectedStart: "#c800ff00"
-    property color colorSelectedStop:  "#c800dd00"
+    property color colorSelectedStart: "#c8ffa500"
+    property color colorSelectedStop:  "#c8dd9300"
 
-    property color colorFocusedSelectedStart: "#c800ff00"
-    property color colorFocusedSelectedStop:  "#c800ff00"
+    property color colorFocusedSelectedStart: "#c8ffa500"
+    property color colorFocusedSelectedStop:  "#c8ffa500"
 
     property color colorDisabledStart: "#80cccccc"
     property color colorDisabledStop:  "#80111111"
