@@ -113,10 +113,10 @@ BaseScreen
         }
         else if (event.key === Qt.Key_F5)
         {
-            playerSources.webVideoPathIndex++;
+            playerSources.webvideoPathIndex++;
 
-            if (playerSources.webVideoPathIndex >= playerSources.webVideoPaths.length)
-                playerSources.webVideoPathIndex = 0;
+            if (playerSources.webvideoPathIndex >= playerSources.webvideoPaths.length)
+                playerSources.webvideoPathIndex = 0;
 
             filterCategory = "";
             footer.greenText = "Show (All Web Videos)"
@@ -125,7 +125,7 @@ BaseScreen
             webvideoProxyModel.sorters = titleSorter;
             footer.redText = "Sort (Name)";
 
-            playerSources.webvideoList.source = playerSources.webVideoPaths[playerSources.webVideoPathIndex] + "/WebVideo.xml"
+            playerSources.webvideoList.source = playerSources.webvideoPaths[playerSources.webvideoPathIndex] + "/WebVideo.xml"
         }
         else if (event.key === Qt.Key_F6)
         {
@@ -319,7 +319,7 @@ BaseScreen
             if (iconURL.startsWith("file://") || iconURL.startsWith("http://") || iconURL.startsWith("https://"))
                 return iconURL;
             else
-                return playerSources.webVideoPaths[playerSources.webVideoPathIndex] + "/" + iconURL;
+                return playerSources.webvideoPaths[playerSources.webvideoPathIndex] + "/" + iconURL;
         }
 
         return ""
