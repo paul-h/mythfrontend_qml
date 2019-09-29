@@ -1,4 +1,4 @@
-mythfrontend-qml (3:0.0.5.alpha~stable) disco; urgency=medium
+mythfrontend-qml (3:0.0.6.alpha~stable) disco; urgency=medium
 
   * Use new version numbers to match upstream
 
