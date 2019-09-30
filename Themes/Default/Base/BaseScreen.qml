@@ -12,6 +12,7 @@ Item
     property bool   oldShowTime: false
     property bool   oldShowVideo: false
     property bool   oldShowImage: false
+    property bool   oldMuteAudio: false
 
     x: 0; y: 0; width: parent.width; height: parent.height
 
@@ -61,7 +62,7 @@ Item
 
     function muteAudio(mute)
     {
-        screenBackground.muteAudio(mute);
+        screenBackground.muteAudio = mute;
     }
 
     function pauseVideo(pause)
@@ -78,6 +79,7 @@ Item
         oldShowTime = screenBackground.showTime;
         oldShowVideo = screenBackground.showVideo;
         oldShowImage = screenBackground.showImage;
+        oldMuteAudio = screenBackground.muteAudio;
     }
 
     Component.onDestruction:
@@ -89,5 +91,6 @@ Item
         screenBackground.showTime = oldShowTime;
         screenBackground.showVideo = oldShowVideo;
         screenBackground.showImage = oldShowImage;
+        screenBackground.muteAudio = oldMuteAudio;
     }
 }

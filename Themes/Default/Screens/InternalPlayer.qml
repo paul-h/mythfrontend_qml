@@ -31,7 +31,7 @@ BaseScreen
         showTitle(true, "Media Player");
         showTime(false);
         showTicker(false);
-        screenBackground.muteAudio(true);
+        muteAudio(true);
 
         mediaPlayer1.feed.switchToFeed(defaultFeedSource === "" ? "Live TV" : defaultFeedSource, defaultFilter, defaultCurrentFeed === -1 ? 0 : defaultCurrentFeed);
 
@@ -59,7 +59,6 @@ BaseScreen
         mediaPlayer2.stop();
         mediaPlayer3.stop();
         mediaPlayer4.stop();
-        screenBackground.muteAudio(false);
     }
 
     Action

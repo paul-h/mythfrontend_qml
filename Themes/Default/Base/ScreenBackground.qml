@@ -11,6 +11,9 @@ Item
     property alias showVideo: videoPlayer.visible
     property alias showTicker: ticker.visible
     property alias showBusyIndicator: busyIndicator.running
+    property bool  muteAudio: videoPlayer.muteAudio
+
+    onMuteAudioChanged: videoPlayer.setMute(muteAudio);
 
     function setTitle (show, newTitle)
     {
@@ -32,11 +35,6 @@ Item
     function clearTickerItems()
     {
         ticker.model.clear();
-    }
-
-    function muteAudio(mute)
-    {
-        videoPlayer.setMute(mute);
     }
 
     function setVideo(video)
@@ -61,7 +59,7 @@ Item
     Image
     {
         id: background
-        visible: true
+        visible: !videoPlayer.playbackStarted
         anchors.fill: parent
         source: mythUtils.findThemeFile(theme.backgroundImage)
     }
