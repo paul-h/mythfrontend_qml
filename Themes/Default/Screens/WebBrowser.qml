@@ -19,6 +19,7 @@ BaseScreen
         showTicker(false);
         pauseVideo(false);
         showVideo(true);
+        muteAudio(true);
     }
 
     Component.onDestruction:
@@ -88,6 +89,9 @@ BaseScreen
 
         settings.pluginsEnabled: true
         settings.javascriptCanOpenWindows: true;
+        audioMuted: false;
+
+        Component.onCompleted: settings.playbackRequiresUserGesture = false;
 
         onNewViewRequested:
         {

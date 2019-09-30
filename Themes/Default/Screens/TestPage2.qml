@@ -13,7 +13,7 @@ BaseScreen
         showTitle(true, "Test Page 2");
         showTime(false);
         showTicker(false);
-        screenBackground.muteAudio(true);
+        muteAudio(true);
 
         treeView.addNode("", "All");
         treeView.addNode("", "Title");
@@ -231,10 +231,6 @@ BaseScreen
         }
     }
 */
-    Component.onDestruction:
-    {
-        screenBackground.muteAudio(false);
-    }
 
     BaseBackground
     {

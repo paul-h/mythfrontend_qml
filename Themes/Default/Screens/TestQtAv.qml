@@ -13,13 +13,12 @@ BaseScreen
         showTitle(true, "QtAV Player Test");
         showTime(false);
         showTicker(false);
-        screenBackground.muteAudio(true);
+        muteAudio(true);
     }
 
     Component.onDestruction:
     {
         videoPlayer.stop();
-        screenBackground.muteAudio(false);
     }
 
     LabelText

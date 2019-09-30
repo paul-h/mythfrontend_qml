@@ -13,12 +13,7 @@ BaseScreen
         showTitle(true, "Test Page");
         showTime(false);
         showTicker(false);
-        screenBackground.muteAudio(true);
-    }
-
-    Component.onDestruction:
-    {
-        screenBackground.muteAudio(false);
+        muteAudio(true);
     }
 
     FocusScope

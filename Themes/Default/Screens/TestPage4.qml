@@ -10,14 +10,9 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "Rich Text Test");
-        showTime(false);
-        showTicker(false);
-        screenBackground.muteAudio(true);
-    }
-
-    Component.onDestruction:
-    {
-        screenBackground.muteAudio(false);
+        showTime(true);
+        showTicker(true);
+        muteAudio(true);
     }
 
     BaseMultilineEdit

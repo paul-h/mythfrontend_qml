@@ -13,14 +13,9 @@ BaseScreen
         showTitle(true, "Test Page");
         showTime(false);
         showTicker(false);
-        screenBackground.muteAudio(true);
+        muteAudio(true);
 
         videoplayer.source = "http://192.168.1.110:55555/Film4";
-    }
-
-    Component.onDestruction:
-    {
-        screenBackground.muteAudio(false);
     }
 
     Keys.onEscapePressed: videoplayer.stop();
