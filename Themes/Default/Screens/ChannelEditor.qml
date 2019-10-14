@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import Base 1.0
 import Models 1.0
+import SortFilterProxyModel 0.2
 
 BaseScreen
 {
@@ -14,6 +15,20 @@ BaseScreen
     }
 
     BaseBackground { anchors.fill: parent; anchors.margins: 10 }
+
+    property list<QtObject> chanNameSorter:
+    [
+        RoleSorter { roleName: "name"; ascendingOrder: true }
+    ]
+
+    SortFilterProxyModel
+    {
+        id: sdChannelsProxyModel
+        sourceModel: SDChannelsModel {}
+
+        sorters: chanNameSorter
+    }
+
 
     Keys.onPressed:
     {
@@ -70,7 +85,7 @@ BaseScreen
         id: sdChannelList
         x: 50; y: 30; width: 500; height: 500
 
-        model: SDChannelsModel {}
+        model: sdChannelsProxyModel
         delegate: listRow
 
         Keys.onReturnPressed:
