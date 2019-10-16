@@ -8,7 +8,7 @@ QtObject
 
     // screen background
     property string   backgroundImage:  "background.png"
-    property string   backgroundVideo:  "Haunted_House.mp4"
+    property string   backgroundVideo:  "Halloween_Village.mkv"
 
     // main menu font
     property string menuFontFamily:     "Liberation Sans"
