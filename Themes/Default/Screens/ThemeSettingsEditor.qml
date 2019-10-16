@@ -29,6 +29,10 @@ BaseScreen
         }
         ListElement
         {
+            itemText: "3DVillageHALLOWEEN"
+        }
+        ListElement
+        {
             itemText: "MythCenter"
         }
         ListElement
