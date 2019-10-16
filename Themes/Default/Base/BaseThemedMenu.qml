@@ -39,6 +39,7 @@ Item
         x: xscale(550); y: yscale(500)
         width: xscale(sourceSize.width)
         height: yscale(sourceSize.height)
+        visible: watermark.visible
         source: mythUtils.findThemeFile("ui/horizon.png")
     }
 
