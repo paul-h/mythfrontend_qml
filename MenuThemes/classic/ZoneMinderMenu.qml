@@ -9,7 +9,7 @@ ListModel
     ListElement
     {
         menutext: "Show Console"
-        loaderSource: "ZMConsole.qml"
+        loaderSource: "zoneminder/ZMConsole.qml"
         waterMark: "watermark/zoneminder.png"
     }
     ListElement
@@ -23,7 +23,7 @@ ListModel
     ListElement
     {
         menutext:"Show Events"
-        loaderSource: "ZMEventsView.qml"
+        loaderSource: "zoneminder/ZMEventsView.qml"
         waterMark: "watermark/zoneminder.png"
     }
 }

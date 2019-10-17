@@ -33,7 +33,7 @@ ListModel
     ListElement
     {
         menutext: "ZoneMinder Settings"
-        loaderSource: "ZMSettingsEditor.qml"
+        loaderSource: "zoneminder/ZMSettingsEditor.qml"
         waterMark: "watermark/keys.png"
     }
     ListElement

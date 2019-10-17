@@ -2,7 +2,7 @@ import QtQuick 2.0
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
-import "../../../Util.js" as Util
+import "../../../../Util.js" as Util
 import mythqml.net 1.0
 
 BaseScreen
