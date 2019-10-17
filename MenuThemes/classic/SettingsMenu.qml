@@ -9,25 +9,25 @@ ListModel
     ListElement
     {
         menutext: "Myth Backend"
-        loaderSource: "BackendSettingsEditor.qml"
+        loaderSource: "settings/BackendSettingsEditor.qml"
         waterMark: "watermark/keys.png"
     }
     ListElement
     {
         menutext: "Theme Settings"
-        loaderSource: "ThemeSettingsEditor.qml"
+        loaderSource: "settings/ThemeSettingsEditor.qml"
         waterMark: "watermark/keys.png"
     }
     ListElement
     {
         menutext: "Feed Sources Settings"
-        loaderSource: "FeedSettingsEditor.qml"
+        loaderSource: "settings/FeedSettingsEditor.qml"
         waterMark: "watermark/keys.png"
     }
     ListElement
     {
         menutext: "Shutdown Settings"
-        loaderSource: "ShutdownSettingsEditor.qml"
+        loaderSource: "settings/ShutdownSettingsEditor.qml"
         waterMark: "watermark/keys.png"
     }
     ListElement
@@ -39,13 +39,13 @@ ListModel
     ListElement
     {
         menutext: "Channel Editor"
-        loaderSource:"ChannelEditor.qml"
+        loaderSource:"settings/ChannelEditor.qml"
         waterMark: "watermark/keys.png"
     }
     ListElement
     {
         menutext: "MythTV Channel Editor"
-        loaderSource:"MythChannelEditor.qml"
+        loaderSource:"settings/MythChannelEditor.qml"
         waterMark: "watermark/keys.png"
     }
 }
