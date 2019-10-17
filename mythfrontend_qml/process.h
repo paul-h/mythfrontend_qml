@@ -6,7 +6,7 @@ class Process : public QProcess
     Q_OBJECT
 
 public:
-    Process(QObject *parent = 0) : QProcess(parent) { }
+    Process(QObject *parent = nullptr) : QProcess(parent) { }
 
     Q_INVOKABLE void start(const QString &program, const QVariantList &arguments) 
     {
@@ -43,5 +43,10 @@ public:
     Q_INVOKABLE bool waitForFinished(int msecs = 30000)
     {
         return QProcess::waitForFinished(msecs);
+    }
+
+    Q_INVOKABLE int exitCode()
+    {
+        return QProcess::exitCode();
     }
 };
