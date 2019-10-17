@@ -68,12 +68,21 @@ Window
         id: themeDLProcess
         onFinished:
         {
-            if (exitStatus === Process.NormalExit)
+            if (exitStatus === Process.NormalExit && themeDLProcess.exitCode() === 0)
             {
                 showNotification("");
                 screenBackground.showVideo = true;
                 screenBackground.setVideo("file://" + settings.configPath + "Themes/Videos/" + theme.backgroundVideo);
                 screenBackground.showImage = false;
+            }
+            else
+            {
+                var source = "https://mythqml.net/downloads/themes/" + settings.themeName + "/" + theme.backgroundVideo;
+                var dest = settings.configPath + "Themes/Videos/" + theme.backgroundVideo;
+                mythUtils.removeFile(dest);
+                showNotification("Downloading of the background video failed!");
+                log.error(Verbose.GUI, "MainWindow: Error - failed to download background video from: " + source);
+                log.error(Verbose.GUI, "MainWindow: Error - exit code was: " + themeDLProcess.exitCode());
             }
         }
     }
@@ -377,7 +386,7 @@ Window
                 if (!mythUtils.fileExists(settings.configPath + "Themes/Videos/" + theme.backgroundVideo))
                 {
                     var source = "https://mythqml.net/downloads/themes/" + settings.themeName +"/" + theme.backgroundVideo;
-                    var dest = settings.configPath + "Themes/Videos/" + theme.backgroundVideo
+                    var dest = settings.configPath + "Themes/Videos/" + theme.backgroundVideo;
                     screenBackground.showVideo = false;
                     screenBackground.showImage = true;
 
