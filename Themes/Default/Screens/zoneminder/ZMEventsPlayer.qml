@@ -3,7 +3,7 @@ import QtQuick.Controls 1.4
 import Base 1.0
 import Models 1.0
 import ZMEventsModel 1.0
-import "../../../Util.js" as Util
+import "../../../../Util.js" as Util
 
 BaseScreen
 {
