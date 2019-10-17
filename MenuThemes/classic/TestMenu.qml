@@ -9,43 +9,43 @@ ListModel
     ListElement
     {
         menutext: "Test 1"
-        loaderSource:"TestPage1.qml"
+        loaderSource:"tests/TestPage1.qml"
         waterMark: "watermark/setup.png"
     }
     ListElement
     {
         menutext: "Sidebar"
-        loaderSource:"TestPage3.qml"
+        loaderSource:"tests/TestPage3.qml"
         waterMark: "watermark/setup.png"
     }
     ListElement
     {
         menutext: "Tree Component Test"
-        loaderSource: "TestPage2.qml"
+        loaderSource: "tests/TestPage2.qml"
         waterMark: "watermark/setup.png"
     }
     ListElement
     {
         menutext: "Rich Text Test"
-        loaderSource: "TestPage4.qml"
+        loaderSource: "tests/TestPage4.qml"
         waterMark: "watermark/setup.png"
     }
     ListElement
     {
         menutext:"QtAV Player Test"
-        loaderSource: "TestQtAv.qml"
+        loaderSource: "tests/TestQtAv.qml"
         waterMark: "watermark/setup.png"
     }
     ListElement
     {
         menutext:"QmlVlc Player Test"
-        loaderSource: "TestQmlVlc.qml"
+        loaderSource: "tests/TestQmlVlc.qml"
         waterMark: "watermark/setup.png"
     }
     ListElement
     {
         menutext:"VLC-Qt Player Test"
-        loaderSource: "TestVlcQt.qml"
+        loaderSource: "Ttests/estVlcQt.qml"
         waterMark: "watermark/setup.png"
     }
 }
