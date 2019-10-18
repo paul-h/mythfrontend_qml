@@ -6,6 +6,7 @@ import Dialogs 1.0
 import Models 1.0
 import SortFilterProxyModel 0.2
 import "../../../Util.js" as Util
+import mythqml.net 1.0
 
 BaseScreen
 {
@@ -22,7 +23,7 @@ BaseScreen
 
         while (stack.busy) {};
 
-        filterSourceID = 15; //dbUtils.getSetting("Qml_lastChannelSourceID", settings.hostName)
+        filterSourceID = dbUtils.getSetting("Qml_lastChannelSourceID", settings.hostName)
 
         if (filterSourceID == "<All Channels>" || filterSourceID == "")
             footer.greenText = "Show (All Channels)"
@@ -36,6 +37,7 @@ BaseScreen
         }
 
         updateChannelDetails();
+
     }
 
     Component.onDestruction:
@@ -69,6 +71,21 @@ BaseScreen
             }
         ]
         sorters: chanNameSorter
+    }
+
+    Timer
+    {
+        id: updateTimer
+        interval: 1000; running: true; repeat: true
+        onTriggered:
+        {
+            // update now/next program once per minute at 00 seconds
+            var now = new Date(Date.now());
+            if (now.getSeconds() === 0)
+                 getNowNext();
+            else
+                updateTimeIndicator();
+        }
     }
 
     ProgramListModel
@@ -402,9 +419,25 @@ BaseScreen
         // icon
         channelIcon.source = currentItem.IconURL ? settings.masterBackend + "Guide/GetChannelIcon?ChanId=" + currentItem.ChanId : mythUtils.findThemeFile("images/grid_noimage.png");
 
-       // get now/next program
-       guideModel.chanId = channelGrid.model.get(channelGrid.currentIndex).ChanId;
-       guideModel.load();
+        getNowNext();
+    }
+
+    function getNowNext()
+    {
+        // get now/next program
+        var now = new Date();
+        var now2 = new Date(Date.now() + (now.getTimezoneOffset() * 60 * 1000));
+
+        // work around a MythTV services API bug
+        if (now2.getSeconds() === 0)
+            now2.setSeconds(1);
+
+        guideModel.startTime = Qt.formatDateTime(now2, "yyyy-MM-ddThh:mm:ss");
+
+        now2.setDate(now2.getDate() + 1);
+        guideModel.endTime = Qt.formatDateTime(now2, "yyyy-MM-ddThh:mm:ss");
+        guideModel.chanId = channelGrid.model.get(channelGrid.currentIndex).ChanId;
+        guideModel.load();
     }
 
     function updateNowNext()
@@ -483,6 +516,22 @@ BaseScreen
             timeIndictor.position = 0;
             timeIndictor.length = 100;
 
+        }
+    }
+
+    function updateTimeIndicator()
+    {
+        if (guideModel.count > 0)
+        {
+            var dtStart = Date.parse(guideModel.get(0).StartTime);
+            var dtEnd = Date.parse(guideModel.get(0).EndTime);
+            var dtNow = Date.now();
+
+            var position = dtNow - dtStart;
+            var length = dtEnd - dtStart;
+
+            timeIndictor.position = position;
+            timeIndictor.length = length;
         }
     }
 }
