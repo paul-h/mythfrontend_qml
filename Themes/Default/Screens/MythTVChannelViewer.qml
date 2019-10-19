@@ -12,8 +12,9 @@ BaseScreen
 {
     defaultFocusItem: channelGrid
 
-    property int filterSourceID: 6
+    property int filterSourceID: -1
     property bool chanNameSorterActive: true
+    property bool showPreview: false
 
     Component.onCompleted:
     {
@@ -25,7 +26,7 @@ BaseScreen
 
         filterSourceID = dbUtils.getSetting("Qml_lastChannelSourceID", settings.hostName)
 
-        if (filterSourceID == "<All Channels>" || filterSourceID == "")
+        if (filterSourceID === -1)
             footer.greenText = "Show (All Channels)"
         else
         {
@@ -88,6 +89,17 @@ BaseScreen
         }
     }
 
+    Timer
+    {
+        id: previewTimer
+        interval: 3000; running: false; repeat: false
+        onTriggered:
+        {
+            if (showPreview)
+                updatePlayer();
+        }
+    }
+
     ProgramListModel
     {
         id: guideModel
@@ -143,7 +155,17 @@ BaseScreen
         else if (event.key === Qt.Key_F4)
         {
             //BLUE
-
+            if (showPreview)
+            {
+                videoPlayer.stop();
+                videoPlayer.visible = false;
+                showPreview = false;
+            }
+            else
+            {
+                showPreview = true;
+                updatePlayer();
+            }
         }
     }
 
@@ -198,6 +220,8 @@ BaseScreen
 
         Keys.onReturnPressed:
         {
+            videoPlayer.stop();
+            showPreview = false;
             returnSound.play();
             var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Live TV", defaultFilter:  filterSourceID, defaultCurrentFeed: channelGrid.currentIndex}});
             item.feedChanged.connect(feedChanged);
@@ -217,7 +241,14 @@ BaseScreen
             }
         }
 
-        onCurrentIndexChanged: updateChannelDetails();
+        onCurrentIndexChanged:
+        {
+
+            videoPlayer.stop();
+            videoPlayer.visible = false;
+            updateChannelDetails();
+            previewTimer.start();
+        }
     }
 
     TitleText
@@ -234,7 +265,15 @@ BaseScreen
         id: channelIcon
         x: xscale(970); y: yscale(480); width: xscale(266); height: yscale(150)
         asynchronous: true
+        visible: !videoPlayer.visible
         onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/grid_noimage.png")
+    }
+
+    VideoPlayerQmlVLC
+    {
+        id: videoPlayer
+        x: xscale(970); y: yscale(480); width: xscale(266); height: yscale(150)
+        visible: false
     }
 
     RichText
@@ -343,7 +382,7 @@ BaseScreen
         redText: "Sort (Channel Name)"
         greenText: "Show (All Channels)"
         yellowText: ""
-        blueText: ""
+        blueText: "Toggle Preview"
     }
 
     SearchListDialog
@@ -392,15 +431,17 @@ BaseScreen
     {
         if (filter !== filterSourceID)
         {
-            if (filter === "")
-            {
-                filterSourceID = filter;
+            filterSourceID = filter;
+
+            if (filterSourceID === "<All Channels>" || filterSourceID === "")
                 footer.greenText = "Show (All Channels)"
-            }
             else
             {
-                filterSourceID = filter;
-                footer.greenText = "Show (" + filter + ")"
+                var i = playerSources.videoSourceList.findById(filterSourceID);
+                if (i !== -1)
+                    footer.greenText = "Show (" + playerSources.videoSourceList.get(i).SourceName + ")"
+                else
+                    footer.greenText = "Show (UNKNOWN SOURCE)";
             }
         }
 
@@ -420,6 +461,12 @@ BaseScreen
         channelIcon.source = currentItem.IconURL ? settings.masterBackend + "Guide/GetChannelIcon?ChanId=" + currentItem.ChanId : mythUtils.findThemeFile("images/grid_noimage.png");
 
         getNowNext();
+
+       if (videoPlayer.visible)
+       {
+
+           previewTimer.start();
+       }
     }
 
     function getNowNext()
@@ -533,5 +580,16 @@ BaseScreen
             timeIndictor.position = position;
             timeIndictor.length = length;
         }
+    }
+
+    function updatePlayer()
+    {
+        //TODO check encoder availability
+        var encoderNum = 1
+        var ip = settings.masterIP
+        var chanNum = channelGrid.model.get(channelGrid.currentIndex).ChanNum;
+        var pin = settings.securityPin;
+        videoPlayer.visible = true;
+        videoPlayer.source = "myth://type=livetv:server=" + ip + ":pin=" + pin + ":encoder=" + encoderNum + ":channum=" + chanNum
     }
 }
