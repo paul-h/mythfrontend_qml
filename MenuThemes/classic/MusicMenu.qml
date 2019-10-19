@@ -18,40 +18,4 @@ ListModel
         loaderSource: "RadioPlayer.qml"
         waterMark: "watermark/radio.png"
     }
-    ListElement
-    {
-        menutext:"Select Music"
-        loaderSource: "ComingSoon.qml"
-        waterMark: "watermark/music.png"
-    }
-    ListElement
-    {
-        menutext: "Import CD"
-        loaderSource: "ComingSoon.qml"
-        waterMark: "watermark/cd_rip.png"
-    }
-    ListElement
-    {
-        menutext:"Import Music"
-        loaderSource: "ComingSoon.qml"
-        waterMark: "watermark/music.png"
-    }
-    ListElement
-    {
-        menutext:"Scan For New  Music"
-        loaderSource: "ComingSoon.qml"
-        waterMark: "watermark/music.png"
-    }
-    ListElement
-    {
-        menutext:"Eject CD"
-        loaderSource: "ComingSoon.qml"
-        waterMark: "watermark/dvd_eject.png"
-    }
-    ListElement
-    {
-        menutext:"Music Settings"
-        loaderSource: "ComingSoon.qml"
-        waterMark: "watermark/music_settings.png"
-    }
 }
