@@ -8,44 +8,26 @@ ListModel
 
     ListElement
     {
-        menutext: "Browse Videos"
+        menutext: "Browse MythTV Videos"
         loaderSource:"VideosGrid.qml"
         waterMark: "watermark/video.png"
     }
     ListElement
     {
-        menutext: "Video List"
+        menutext: "Browse Folder Videos"
         loaderSource: "VideosGridFolder.qml"
         waterMark: "watermark/video_settings.png"
     }
     ListElement
     {
-        menutext:"Video Gallery"
-        loaderSource: "ComingSoon.qml"
+        menutext: "WebVideo Viewer"
+        loaderSource:"WebVideoViewer.qml"
         waterMark: "watermark/video.png"
     }
     ListElement
     {
-        menutext: "Video Manager"
-        loaderSource: "ComingSoon.qml"
-        waterMark: "watermark/video_settings.png"
-    }
-    ListElement
-    {
-        menutext:"Play a DVD or Blu-ray"
-        loaderSource: "ComingSoon.qml"
-        waterMark: "watermark/dvd.png"
-    }
-    ListElement
-    {
-        menutext:"Eject Media"
-        loaderSource: "ComingSoon.qml"
-        waterMark: "watermark/dvd_eject.png"
-    }
-    ListElement
-    {
-        menutext:"Video Settings"
-        loaderSource: "ComingSoon.qml"
-        waterMark: "watermark/video_settings.png"
+        menutext: "Feed Sources Settings"
+        loaderSource: "settings/FeedSettingsEditor.qml"
+        waterMark: "watermark/keys.png"
     }
 }
