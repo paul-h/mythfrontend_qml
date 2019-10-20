@@ -16,24 +16,39 @@
 
 QString MythUtils::findThemeFile(const QString &fileName)
 {
+    gContext->m_logger->debug(Verbose::FILE, QString("MythUtils::findThemeFile: looking for '%1'").arg(fileName));
+
     // do we have a http file
     if (fileName.startsWith("http"))
+    {
+        gContext->m_logger->debug(Verbose::FILE, QString("MythUtils::findThemeFile: is http file - Result is: '%1'").arg(fileName));
         return fileName;
+    }
 
     // do we have a full path
     QString f = fileName;
     if (QFile::exists(f.remove("file://")))
+    {
+        gContext->m_logger->debug(Verbose::FILE, QString("MythUtils::findThemeFile: have full path - Result is: '%1'").arg(fileName));
         return fileName;
+    }
 
     // look in the active theme
     if (QFile::exists(gContext->m_settings->qmlPath().remove("file://") + fileName))
+    {
+        gContext->m_logger->debug(Verbose::FILE, QString("MythUtils::findThemeFile: is in active theme - Result is: '%1'").arg(gContext->m_settings->qmlPath() + fileName));
         return gContext->m_settings->qmlPath() + fileName;
+    }
 
     // look in the default theme
     if (QFile::exists(gContext->m_settings->sharePath().remove("file://") + "qml/Themes/Default/" + fileName))
+    {
+        gContext->m_logger->debug(Verbose::FILE, QString("MythUtils::findThemeFile: is in default theme - Result is: '%1'").arg(gContext->m_settings->sharePath() + "qml/Themes/Default/" + fileName));
         return gContext->m_settings->sharePath() + "qml/Themes/Default/" + fileName;
+    }
 
     // not found
+    gContext->m_logger->debug(Verbose::FILE, QString("MythUtils::findThemeFile: file not found!"));
     return QString();
 }
 
