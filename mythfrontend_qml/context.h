@@ -18,7 +18,7 @@ class Context : public QObject
 
 
 public:
-    Context(const QString &appName, QObject *parent = nullptr);
+    Context(const QString &appName, const QString &logLevel, const QString &verbose, QObject *parent = nullptr);
     ~Context(void);
 
 signals:
