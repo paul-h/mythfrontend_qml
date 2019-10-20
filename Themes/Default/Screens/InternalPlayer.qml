@@ -65,7 +65,18 @@ BaseScreen
     {
         shortcut: "Escape"
         enabled: _actionsEnabled
-        onTriggered: if (stack.depth > 1) {stack.pop(); escapeSound.play();}
+        onTriggered:
+        {
+            if (stack.depth > 1)
+            {
+                mediaPlayer1.stop();
+                mediaPlayer2.stop();
+                mediaPlayer3.stop();
+                mediaPlayer4.stop();
+                stack.pop();
+                escapeSound.play();
+            }
+        }
     }
 
     Action
