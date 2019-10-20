@@ -36,14 +36,15 @@ int main(int argc, char *argv[])
 
     // add loglevel option
     QCommandLineOption logLevelOption(QStringList() << "l" << "loglevel",
-                                             QCoreApplication::translate("main", "Set log level one of CRITICAL, ERROR, WARNING, INFO or DEBUG."),
-                                             QCoreApplication::translate("main", "loglevel"));
+                                      QCoreApplication::translate("main", "Set log level one of CRITICAL, ERROR, WARNING, NOTICE, INFO or DEBUG."),
+                                      QCoreApplication::translate("main", "loglevel"));
     parser.addOption(logLevelOption);
 
     // add verbose option
     QCommandLineOption verboseOption(QStringList() << "d" << "verbose",
-                                             QCoreApplication::translate("main", "Set verbose levels one or more of ALL, GENERAL, MODEL, PROCESS, GUI, DATABASE, FILE, WEBSOCKET, SERVICESAPI, PLAYBACK, NETWORK, LIBVLC."),
-                                             QCoreApplication::translate("main", "verbose"));
+                                     QCoreApplication::translate("main", "Set verbose levels one or more of ALL, GENERAL, MODEL, PROCESS, GUI, "
+                                                                         "DATABASE, FILE, WEBSOCKET, SERVICESAPI, PLAYBACK, NETWORK, LIBVLC."),
+                                     QCoreApplication::translate("main", "verbose"));
     parser.addOption(verboseOption);
 
     // Process the command line arguments given by the user
