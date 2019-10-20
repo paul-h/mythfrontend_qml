@@ -12,7 +12,8 @@ class VerboseClass
 public:
     enum Value
     {
-        ALL     =     0xffffffff,
+        ALL =         0xffffffff,
+        NONE =        0x00000000,
         GENERAL =     0x00000001,
         MODEL =       0x00000002,
         PROCESS =     0x00000004,
@@ -22,7 +23,8 @@ public:
         WEBSOCKET =   0x00000040,
         SERVICESAPI = 0x00000080,
         PLAYBACK =    0x00000100,
-        NETWORK =     0x00000200
+        NETWORK =     0x00000200,
+        LIBVLC =      0x00000400
     };
     Q_ENUM(Value)
 
@@ -41,8 +43,9 @@ public:
         CRITICAL = 1,
         ERROR = 2,
         WARNING = 3,
-        INFO = 4,
-        DEBUG = 5,
+        NOTICE = 4,
+        INFO = 5,
+        DEBUG = 6,
     };
     Q_ENUM(Value)
 
@@ -61,7 +64,7 @@ class Logger : public QObject
     Q_PROPERTY(bool logMillisec READ logMillisec WRITE setLogMillisec NOTIFY logMillisecChanged)
     Q_PROPERTY(bool toConsole READ toConsole WRITE setToConsole NOTIFY toConsoleChanged)
     Q_PROPERTY(bool isEnabled READ isEnabled WRITE setIsEnabled NOTIFY isEnabledChanged)
-    Q_PROPERTY(uint verbosity READ verbosity WRITE setVerbosity NOTIFY verbosityChanged)
+    Q_PROPERTY(Verbose verbose READ verbose WRITE setVerbose NOTIFY verboseChanged)
     Q_PROPERTY(Level logLevel READ logLevel WRITE setLogLevel NOTIFY logLevelChanged)
 
 public:
@@ -69,11 +72,13 @@ public:
     Logger(QObject *parent = nullptr);
     ~Logger();
 
-    uint verbosity() { return m_verbosity; }
-    void setVerbosity(uint verbosity) { m_verbosity = verbosity; }
+    Verbose verbose() { return m_verbose; }
+    void setVerbose(Verbose verbose);
+    void setVerbose(const QString &verbose);
 
     Level logLevel() { return m_logLevel; }
-    void setLogLevel(Level logLevel) { m_logLevel = logLevel; }
+    void setLogLevel(Level logLevel);
+    void setLogLevel(const QString &verbose);
 
     QString filename() { return m_filename; }
     void setFilename(const QString& filename);
@@ -97,22 +102,25 @@ signals:
     void logMillisecChanged();
     void toConsoleChanged();
     void isEnabledChanged();
-    void verbosityChanged();
+    void verboseChanged();
     void logLevelChanged();
 
 public slots:
-    void log(Verbose verbosity, Level logLevel, const QString& data);
-    void info(Verbose verbosity, const QString& data);
-    void warning(Verbose verbosity, const QString& data);
-    void error(Verbose verbosity, const QString& data);
-    void debug(Verbose verbosity, const QString& data);
-    void critical(Verbose verbosity, const QString& data);
+    void log(Verbose verbose, Level logLevel, const QString& data);
+    void critical(Verbose verbose, const QString& data);
+    void error(Verbose verbose, const QString& data);
+    void warning(Verbose verbose, const QString& data);
+    void notice(Verbose verbose, const QString& data);
+    void info(Verbose verbose, const QString& data);
+    void debug(Verbose verbose, const QString& data);
 
 private:
     QString linePrefix(Level logLevel);
+    QString logLevelToStr(Level logLevel);
+    QString verboseToStr(Verbose verbose);
 
     Level m_logLevel;
-    uint m_verbosity;
+    Verbose m_verbose;
     bool m_isEnabled;
     bool m_toConsole;
     bool m_logTime;

@@ -23,7 +23,7 @@
 #include <QmlVlc.h>
 #include <QmlVlc/QmlVlcConfig.h>
 
-Context::Context(const QString &appName, QObject *parent) : QObject(parent)
+Context::Context(const QString &appName, const QString &logLevel, const QString &verbose, QObject *parent) : QObject(parent)
 {
     m_appName = appName;
     m_logger = nullptr;
@@ -37,11 +37,9 @@ Context::Context(const QString &appName, QObject *parent) : QObject(parent)
     // create the logger
     m_logger = new Logger();
     m_logger->setFilename(QString("/var/log/mythqml/%1.log").arg(m_appName));
-    //m_logger->setVerbosity(Verbose::GENERAL | Verbose::GUI | Verbose::FILE | Verbose::PROCESS | Verbose::DATABASE | Verbose::PLAYBACK | Verbose::WEBSOCKET | Verbose::SERVICESAPI);
-    m_logger->setVerbosity(Verbose::ALL);
-    m_logger->setLogLevel(Level::INFO);
-
     m_logger->info(Verbose::GENERAL, QString("Starting ") + m_appName + ": version " + APP_VERSION);
+    m_logger->setLogLevel(logLevel);
+    m_logger->setVerbose(verbose);
 }
 
 Context::~Context(void)

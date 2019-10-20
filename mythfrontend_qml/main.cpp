@@ -26,8 +26,34 @@ int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
+    QCoreApplication::setApplicationName("mythfrontend_qml");
+    QCoreApplication::setApplicationVersion(APP_VERSION);
+
+    QCommandLineParser parser;
+    parser.setApplicationDescription("Experimental MythTV client");
+    parser.addHelpOption();
+    parser.addVersionOption();
+
+    // add loglevel option
+    QCommandLineOption logLevelOption(QStringList() << "l" << "loglevel",
+                                             QCoreApplication::translate("main", "Set log level one of CRITICAL, ERROR, WARNING, INFO or DEBUG."),
+                                             QCoreApplication::translate("main", "loglevel"));
+    parser.addOption(logLevelOption);
+
+    // add verbose option
+    QCommandLineOption verboseOption(QStringList() << "d" << "verbose",
+                                             QCoreApplication::translate("main", "Set verbose levels one or more of ALL, GENERAL, MODEL, PROCESS, GUI, DATABASE, FILE, WEBSOCKET, SERVICESAPI, PLAYBACK, NETWORK, LIBVLC."),
+                                             QCoreApplication::translate("main", "verbose"));
+    parser.addOption(verboseOption);
+
+    // Process the command line arguments given by the user
+    parser.process(app);
+
+    QString logLevel = parser.value(logLevelOption);
+    QString verbose = parser.value(verboseOption);
+
     // create the context
-    gContext = new Context("MythFrontendQML");
+    gContext = new Context("MythFrontendQML", logLevel, verbose);
 
     // attempt to connect to the database
     if (!gContext->loadDBSettings())
