@@ -11,17 +11,26 @@
 
 QUrl MythQmlAbstractUrlInterceptor::intercept(const QUrl &url, DataType type)
 {
-    Q_UNUSED(type)
+    if (type != QQmlAbstractUrlInterceptor::QmlFile)
+        return url;
 
     QString sUrl = url.toString();
 
+    gContext->m_logger->debug(Verbose::FILE, QString("MythQmlAbstractUrlInterceptor::intercept: looking for: '%1'").arg(sUrl));
+
     // we are only interested in our theme urls
     if (!sUrl.startsWith(gContext->m_settings->sharePath()) || sUrl.endsWith("qmldir"))
+    {
+        gContext->m_logger->debug(Verbose::FILE, QString("MythQmlAbstractUrlInterceptor::intercept: not one of our URLs ignoring"));
         return url;
+    }
 
     // look in the map first
     if (m_fileMap.contains(sUrl))
+    {
+        gContext->m_logger->debug(Verbose::FILE, QString("MythQmlAbstractUrlInterceptor::intercept: found in map - result: '%1'").arg("file://" + sUrl));
         return QUrl("file://" + m_fileMap.value(sUrl));
+    }
 
     QString fileName = sUrl;
 
@@ -39,6 +48,7 @@ QUrl MythQmlAbstractUrlInterceptor::intercept(const QUrl &url, DataType type)
         if (QFile::exists(searchURL.remove("file://")))
         {
             m_fileMap.insert(sUrl, searchURL);
+            gContext->m_logger->debug(Verbose::FILE, QString("MythQmlAbstractUrlInterceptor::intercept: found in active theme - result: '%1'").arg("file://" + searchURL));
             return QUrl("file://" + searchURL);
         }
     }
@@ -51,12 +61,14 @@ QUrl MythQmlAbstractUrlInterceptor::intercept(const QUrl &url, DataType type)
         if (QFile::exists(searchURL.remove("file://")))
         {
             m_fileMap.insert(sUrl, searchURL);
+            gContext->m_logger->debug(Verbose::FILE, QString("MythQmlAbstractUrlInterceptor::intercept: found in default theme - result: '%1'").arg("file://" + searchURL));
             return QUrl("file://" + searchURL);
         }
     }
 
     // fall back to the original url
     m_fileMap.insert(sUrl, sUrl);
+    gContext->m_logger->debug(Verbose::FILE, QString("MythQmlAbstractUrlInterceptor::intercept: not found using origal URL - result: '%1'").arg(sUrl));
     return url;
 }
 
