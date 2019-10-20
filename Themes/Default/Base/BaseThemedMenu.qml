@@ -40,7 +40,7 @@ Item
         width: xscale(sourceSize.width)
         height: yscale(sourceSize.height)
         visible: watermark.visible
-        source: mythUtils.findThemeFile("ui/horizon.png")
+        source: if (visible) mythUtils.findThemeFile("ui/horizon.png"); else "";
     }
 
     Rectangle
@@ -196,7 +196,7 @@ Item
                 event.accepted = true;
             }
 
-            onCurrentItemChanged: watermark.swapImage(mythUtils.findThemeFile(model.get(currentIndex).waterMark))
+            onCurrentItemChanged: if (showWatermark) watermark.swapImage(mythUtils.findThemeFile(model.get(currentIndex).waterMark))
         }
     }
 
