@@ -112,7 +112,7 @@ BaseScreen
             // force the stack to reload the main menu
             stack.clear();
             stack.initialItem = null
-            stack.push({item: Qt.resolvedUrl("ThemedMenu.qml"), properties:{model: mainMenuLoader.item}});
+            stack.push({item: mythUtils.findThemeFile("Screens/ThemedMenu.qml"), properties:{model: mainMenuLoader.item}});
 
             returnSound.play();
             stack.pop();
