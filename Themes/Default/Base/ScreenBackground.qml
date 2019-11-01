@@ -18,7 +18,8 @@ Item
     function setTitle (show, newTitle)
     {
         screenTitle.visible = show;
-        screenTitle.text = newTitle;
+        if (newTitle !== undefined)
+            screenTitle.text = newTitle;
     }
 
     function setTicker(show, newText)
