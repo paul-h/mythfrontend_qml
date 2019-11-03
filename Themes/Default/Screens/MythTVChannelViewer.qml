@@ -427,8 +427,11 @@ BaseScreen
         }
     }
 
-    function feedChanged(filter, index)
+    function feedChanged(feedSource, filter, index)
     {
+        if (feedSource !== "Live TV")
+            return;
+
         if (filter !== filterSourceID)
         {
             filterSourceID = filter;

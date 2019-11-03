@@ -31,12 +31,14 @@ MainWindow 1.0 MainWindow.qml
 MediaPlayer 1.0 MediaPlayer.qml
 MenuButton 1.0 MenuButton.qml
 OkCancelDialog 1.0 OkCancelDialog.qml
+PlayerLayout 1.0 PlayerLayout.qml
 PopupMenu 1.0 PopupMenu.qml
 ReflectionImage 1.0 ReflectionImage.qml
 RichText 1.0 RichText.qml
 ScreenBackground 1.0 ScreenBackground.qml
 Scroller 1.0 Scroller.qml
 TitleText 1.0 TitleText.qml
+Tracer 1.0 Tracer.qml
 TreeButtonList 1.0 TreeButtonList.qml
 VideoPlayerQtAV 1.0 VideoPlayerQtAV.qml
 VideoPlayerQmlVLC 1.0 VideoPlayerQmlVLC.qml

@@ -292,9 +292,13 @@ BaseScreen
         }
     }
 
-    function feedChanged(filter, index)
+    function feedChanged(feedSource, filter, index)
     {
         log.debug(Verbose.GENERAL, "WebVideoViewer: feedChanged - filter: " + filter + ", index: " + index);
+
+        if (feedSource !== "Web Videos")
+            return;
+
         if (filter !== filterCategory)
         {
             if (filter === "")

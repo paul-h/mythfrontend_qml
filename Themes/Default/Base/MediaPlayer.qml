@@ -25,9 +25,23 @@ FocusScope
     property bool showBorder: true
     property bool muteAudio: false
 
+    // private properties
     property bool _playbackStarted: false
+    property double _wmult: width / 1280
+    property double _hmult: height / 720
 
     signal playbackEnded()
+    signal activeFeedChanged()
+
+    function xscale(x)
+    {
+        return window.xscale(x) * _wmult;
+    }
+
+    function yscale(y)
+    {
+        return window.yscale(y) * _hmult;
+    }
 
     FeedSource
     {
@@ -74,7 +88,7 @@ FocusScope
         anchors.fill: parent
         focus: true
         color: "black"
-        border.width: root.showBorder ? xscale(5) : 0
+        border.width: root.showBorder ? window.xscale(5) : 0
         border.color: root.focus ? "green" : "white"
     }
 
@@ -107,30 +121,27 @@ FocusScope
 
     WebEngineView
     {
-        id: railcamBrowser
+        id: browser
         x: 0
         y: 0
-        width: 10;
-        height: 10;
-
+        width: 300;
+        height: 720;
+        z: 99
         zoomFactor: parent.width / xscale(1280)
         visible: false
         enabled: visible
 
         settings.pluginsEnabled: true
 
-        onLoadingChanged:
-        {
-            if (loadRequest.status === WebEngineLoadRequest.LoadSucceededStatus)
-            {
-                x = (parent.width - contentsSize.width) / 2;
-                y = parent.height - contentsSize.height - yscale(20);
-                width = contentsSize.width;
-                height = contentsSize.height;
-            }
+        profile:  WebEngineProfile
+                  {
+                      storageName: "YouTube"
+                      offTheRecord: false
+                      httpCacheType: WebEngineProfile.DiskHttpCache
+                      persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
+                      httpUserAgent: "Mozilla/5.0 (SMART-TV; Linux; Tizen 5.0) AppleWebKit/538.1 (KHTML, like Gecko) Version/5.0 NativeTVAds Safari/538.1"
+                  }
         }
-
-
     }
 
     VideoPlayerYT
@@ -139,7 +150,7 @@ FocusScope
         visible: false
         enabled: visible
         anchors.fill: parent
-        anchors.margins: xscale(5)
+        anchors.margins: playerRect.border.width
 
         onPlaybackEnded:
         {
@@ -159,7 +170,7 @@ FocusScope
         visible: false
         enabled: visible
         anchors.fill: parent
-        anchors.margins: xscale(5)
+        anchors.margins: playerRect.border.width
 
         onPlaybackEnded:
         {
@@ -179,7 +190,7 @@ FocusScope
         visible: false
         enabled: visible
         anchors.fill: parent
-        anchors.margins: xscale(5)
+        anchors.margins: playerRect.border.width
 
         fillMode: VideoOutput.Stretch
 
@@ -204,7 +215,11 @@ FocusScope
     BaseBackground
     {
         id: infoPanel
-        x: xscale(10); y: parent.height - yscale(170); width: parent.width - xscale(20); height: yscale(110)
+        x: xscale(10);
+        y: parent.height - yscale(170);
+        width: parent.width - xscale(20);
+        height: yscale(110)
+
         visible: false
 
         TitleText
@@ -341,7 +356,7 @@ FocusScope
     BaseBackground
     {
         id: messagePanel
-        x: xscale(100); y: yscale(120); width: xscale(400); height: yscale(110)
+        x: root.xscale(100); y: root.yscale(120); width: root.xscale(400); height: root.yscale(110)
         visible: false
 
         InfoText
@@ -421,7 +436,7 @@ FocusScope
         youtubePlayer.stop();
         vlcPlayer.stop();
         qtAVPlayer.stop();
-        webPlayer.url = mythUtils.findThemeFile("HTML/blank.html");;
+        webPlayer.url = "about:blank";
 
         // we always need to restart the StreamLink process even if it is already running
         if (newPlayer === "StreamLink")
@@ -499,6 +514,8 @@ FocusScope
     {
         log.debug(Verbose.PLAYBACK, "MediaPlayer: switchURL -  " + newURL);
 
+        activeFeedChanged();
+
         if (feedSource.feedList.get(feedSource.currentFeed).title !== "")
             title.text = feedSource.feedList.get(feedSource.currentFeed).title;
         else
@@ -507,8 +524,8 @@ FocusScope
         if (feedSource.feedName == "ZoneMinder Cameras")
             newURL += "&connkey=" + Util.randomIntFromRange(0, 999999);
 
-        railcamBrowser.visible = false;
-        railcamBrowser.url = "";
+        browser.visible = false;
+        browser.url = "";
 
         if (root.player === "VLC" || root.player === "Internal")
         {
@@ -679,24 +696,6 @@ FocusScope
         }
     }
 
-    function showRailCamDiagram()
-    {
-        if (feedSource.feedList.get(feedSource.currentFeed).player === "RailCam")
-        {
-            if (railcamBrowser.visible)
-            {
-                railcamBrowser.url = "";
-                railcamBrowser.visible = false;
-            }
-            else
-            {
-                railcamBrowser.zoomFactor = xscale(feedSource.feedList.get(feedSource.currentFeed).zoom)
-                railcamBrowser.url = feedSource.feedList.get(feedSource.currentFeed).website;
-                railcamBrowser.visible = true;
-            }
-        }
-    }
-
     function nextFeed()
     {
         if (feedSource.feedName === "Advent Calendar")
@@ -729,6 +728,21 @@ FocusScope
         startPlayback();
 
         showInfo(true);
+    }
+
+    function getLink(linktype)
+    {
+        var links = feedSource.feedList.get(feedSource.currentFeed).links.split("\n");
+
+        for (var x = 0; x < links.length; x++)
+        {
+            if (links[x].startsWith(linktype))
+            {
+                return links[x].substring(linktype.length + 1, links[x].length);
+            }
+        }
+
+        return undefined;
     }
 }
 

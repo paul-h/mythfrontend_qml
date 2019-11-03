@@ -170,9 +170,12 @@ BaseScreen
         }
     }
 
-    function feedChanged(filter, index)
+    function feedChanged(feedSource, filter, index)
     {
         log.debug(Verbose.GENERAL, "VideosGrid: feedChanged - filter: " + filter + ", index: " + index);
+
+        if (feedSource !== "Videos")
+            return;
 
         var list = filter.split(",");
 
