@@ -88,7 +88,8 @@ BaseScreen
         height: root.fullscreen ? parent.height : parent.height - yscale(60)
 
         settings.pluginsEnabled: true
-        settings.javascriptCanOpenWindows: true;
+        settings.javascriptEnabled: true
+        settings.javascriptCanOpenWindows: true
         audioMuted: false;
 
         Component.onCompleted: settings.playbackRequiresUserGesture = false;
