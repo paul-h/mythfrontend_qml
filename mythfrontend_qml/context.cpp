@@ -57,8 +57,6 @@ void Context::init()
 {
     m_engine = new QQmlApplicationEngine;
 
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-
     QtWebEngine::initialize();
 
     QCoreApplication::setApplicationName(m_appName);

@@ -333,8 +333,11 @@ BaseScreen
         }
     }
 
-    function feedChanged(filter, index)
+    function feedChanged(feedSource, filter, index)
     {
+        if (feedSource !== "Webcams")
+            return;
+
         if (filter !== filterCategory)
         {
             if (filter === "")

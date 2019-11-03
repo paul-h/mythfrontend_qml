@@ -3,6 +3,7 @@ import QtQuick.Window 2.0
 import QtQuick.Layouts 1.0
 import QtQuick.Controls 1.0
 import QtQuick.XmlListModel 2.0
+import QtWebEngine 1.3
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
@@ -12,11 +13,11 @@ BaseScreen
 {
     id: root
 
-    defaultFocusItem: mediaPlayer1
+    defaultFocusItem: playerLayout.mediaPlayer1
 
-    property var activePlayer: mediaPlayer1
+    property alias activePlayer: playerLayout.activePlayer
 
-    property int layout: 0
+    property alias layout: playerLayout.playerLayout
 
     property string defaultFeedSource: ""
     property string defaultFilter: "-1"
@@ -24,41 +25,41 @@ BaseScreen
 
     property bool _actionsEnabled: true
 
-    signal feedChanged(string filter, int index)
+    signal feedChanged(string feedSource, string filter, int index)
 
     Component.onCompleted:
     {
-        showTitle(true, "Media Player");
+        showTitle(false, "Media Player");
         showTime(false);
         showTicker(false);
         muteAudio(true);
 
-        mediaPlayer1.feed.switchToFeed(defaultFeedSource === "" ? "Live TV" : defaultFeedSource, defaultFilter, defaultCurrentFeed === -1 ? 0 : defaultCurrentFeed);
+        playerLayout.mediaPlayer1.feed.switchToFeed(defaultFeedSource === "" ? "Live TV" : defaultFeedSource, defaultFilter, defaultCurrentFeed === -1 ? 0 : defaultCurrentFeed);
 
         if (defaultFeedSource === "" || defaultFeedSource === "Advent Calendar")
         {
-            mediaPlayer2.feed.switchToFeed("Live TV" , -1, 1);
-            mediaPlayer3.feed.switchToFeed("Live TV" , -1, 2);
-            mediaPlayer4.feed.switchToFeed("Live TV" , -1, 3);
+            playerLayout.mediaPlayer2.feed.switchToFeed("Live TV" , -1, 1);
+            playerLayout.mediaPlayer3.feed.switchToFeed("Live TV" , -1, 2);
+            playerLayout.mediaPlayer4.feed.switchToFeed("Live TV" , -1, 3);
         }
         else
         {
-            mediaPlayer2.feed.switchToFeed(defaultFeedSource, defaultFilter, defaultCurrentFeed === -1 ? 1 : defaultCurrentFeed + 1);
-            mediaPlayer3.feed.switchToFeed(defaultFeedSource, defaultFilter, defaultCurrentFeed === -1 ? 2 : defaultCurrentFeed + 2);
-            mediaPlayer4.feed.switchToFeed(defaultFeedSource, defaultFilter, defaultCurrentFeed === -1 ? 3 : defaultCurrentFeed + 3);
+            playerLayout.mediaPlayer2.feed.switchToFeed(defaultFeedSource, defaultFilter, defaultCurrentFeed === -1 ? 1 : defaultCurrentFeed + 1);
+            playerLayout.mediaPlayer3.feed.switchToFeed(defaultFeedSource, defaultFilter, defaultCurrentFeed === -1 ? 2 : defaultCurrentFeed + 2);
+            playerLayout.mediaPlayer4.feed.switchToFeed(defaultFeedSource, defaultFilter, defaultCurrentFeed === -1 ? 3 : defaultCurrentFeed + 3);
         }
 
         setLayout(layout);
-
+        playerLayout.mediaPlayer1.startPlayback();
         showInfo(true);
     }
 
     Component.onDestruction:
     {
-        mediaPlayer1.stop();
-        mediaPlayer2.stop();
-        mediaPlayer3.stop();
-        mediaPlayer4.stop();
+        playerLayout.mediaPlayer1.stop();
+        playerLayout.mediaPlayer2.stop();
+        playerLayout.mediaPlayer3.stop();
+        playerLayout.mediaPlayer4.stop();
     }
 
     Action
@@ -69,10 +70,10 @@ BaseScreen
         {
             if (stack.depth > 1)
             {
-                mediaPlayer1.stop();
-                mediaPlayer2.stop();
-                mediaPlayer3.stop();
-                mediaPlayer4.stop();
+                playerLayout.mediaPlayer1.stop();
+                playerLayout.mediaPlayer2.stop();
+                playerLayout.mediaPlayer3.stop();
+                playerLayout.mediaPlayer4.stop();
                 stack.pop();
                 escapeSound.play();
             }
@@ -83,28 +84,28 @@ BaseScreen
     {
         shortcut: "Down"
         enabled: _actionsEnabled
-        onTriggered: nextPlayer();
+        onTriggered: changeFocus("down");
     }
 
     Action
     {
         shortcut: "Up"
         enabled: _actionsEnabled
-        onTriggered: previousPlayer();
+        onTriggered: changeFocus("up");
     }
 
     Action
     {
         shortcut: "Left"
         enabled: _actionsEnabled
-        onTriggered: previousPlayer();
+        onTriggered: changeFocus("left");
     }
 
     Action
     {
         shortcut: "Right"
         enabled: _actionsEnabled
-        onTriggered: nextPlayer();
+        onTriggered: changeFocus("right");
     }
 
     Action
@@ -114,8 +115,8 @@ BaseScreen
         onTriggered:
         {
             getActivePlayer().previousFeed();
-
-            feedChanged(getActivePlayer().feed.currentFilter, getActivePlayer().feed.currentFeed);
+            updateChat();
+            feedChanged(getActivePlayer().feed.feedName, getActivePlayer().feed.currentFilter, getActivePlayer().feed.currentFeed);
         }
     }
 
@@ -126,8 +127,9 @@ BaseScreen
         onTriggered:
         {
             getActivePlayer().nextFeed();
-
-            feedChanged(getActivePlayer().feed.currentFilter, getActivePlayer().feed.currentFeed);
+            updateChat();
+            updateRailCam();
+            feedChanged(getActivePlayer().feed.feedName, getActivePlayer().feed.currentFilter, getActivePlayer().feed.currentFeed);
         }
     }
 
@@ -137,7 +139,9 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            getActivePlayer().showRailCamDiagram();
+            playerLayout.showChat = !playerLayout.showChat;
+            updateChat();
+            updateRailCam();
         }
     }
 
@@ -147,7 +151,33 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            // TODO show web site?
+            playerLayout.showRailCam = !playerLayout.showRailCam
+
+            if (playerLayout.showRailCam)
+                playerLayout.railcamBrowser.url = getActivePlayer().getLink("railcam_minidiagram")
+        }
+    }
+
+    Action
+    {
+        shortcut: "F5" // switch to next player layout
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            if (playerLayout.playerLayout < 6)
+                playerLayout.playerLayout = playerLayout.playerLayout + 1;
+            else
+                playerLayout.playerLayout = 1
+        }
+    }
+
+    Action
+    {
+        shortcut: "F6" // toggle show screen header
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            playerLayout.showHeader = !playerLayout.showHeader;
         }
     }
 
@@ -213,29 +243,29 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            if (layout === 0)
+            if (layout === 1)
                 return;
 
-            if (mediaPlayer2.focus)
+            if (playerLayout.mediaPlayer2.focus)
             {
-                mediaPlayer1.feed.switchToFeed(mediaPlayer2.feed.feedName, mediaPlayer2.feed.currentFilter, mediaPlayer2.feed.currentFeed);
+                playerLayout.mediaPlayer1.feed.switchToFeed(playerLayout.mediaPlayer2.feed.feedName, playerLayout.mediaPlayer2.feed.currentFilter, playerLayout.mediaPlayer2.feed.currentFeed);
             }
-            else if (mediaPlayer3.focus)
+            else if (playerLayout.mediaPlayer3.focus)
             {
-                mediaPlayer1.feed.switchToFeed(mediaPlayer3.feed.feedName, mediaPlayer3.feed.currentFilter, mediaPlayer3.feed.currentFeed);;
+                playerLayout.mediaPlayer1.feed.switchToFeed(playerLayout.mediaPlayer3.feed.feedName, playerLayout.mediaPlayer3.feed.currentFilter, playerLayout.mediaPlayer3.feed.currentFeed);;
             }
-            else if (mediaPlayer4.focus)
+            else if (playerLayout.mediaPlayer4.focus)
             {
-                mediaPlayer1.feed.switchToFeed(mediaPlayer4.feed.feedName, mediaPlayer4.feed.currentFilter, mediaPlayer4.feed.currentFeed);;
+                playerLayout.mediaPlayer1.feed.switchToFeed(playerLayout.mediaPlayer4.feed.feedName, playerLayout.mediaPlayer4.feed.currentFilter, playerLayout.mediaPlayer4.feed.currentFeed);;
             }
 
-            mediaPlayer1.focus = true;
-            mediaPlayer1.startPlayback();
-            mediaPlayer2.stop();
-            mediaPlayer3.stop();
-            mediaPlayer4.stop();
+            playerLayout.mediaPlayer1.focus = true;
+            playerLayout.mediaPlayer1.startPlayback();
+            playerLayout.mediaPlayer2.stop();
+            playerLayout.mediaPlayer3.stop();
+            playerLayout.mediaPlayer4.stop();
 
-            setLayout(0);
+            setLayout(1);
         }
     }
 
@@ -389,45 +419,25 @@ BaseScreen
         }
     }
 
-    MediaPlayer
+    Action
     {
-        id: mediaPlayer1
-        objectName: "Player 1"
-        visible: false
-        enabled: visible
-
-        onFocusChanged: if (focus) activePlayer = mediaPlayer1
-        onPlaybackEnded: if (layout === 0) { stop(); stack.pop(); }
+        shortcut: "Return" // change chat?
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            if (playerLayout.showChat);
+            {
+                updateChat();
+                updateRailCam();
+            }
+        }
     }
 
-    MediaPlayer
+    PlayerLayout
     {
-        id: mediaPlayer2
-        objectName: "Player 2"
-        visible: false
-        enabled: visible
-
-        onFocusChanged: if (focus) activePlayer = mediaPlayer2
-    }
-
-    MediaPlayer
-    {
-        id: mediaPlayer3
-        objectName: "Player 3"
-        visible: false
-        enabled: visible
-
-        onFocusChanged: if (focus) activePlayer = mediaPlayer3
-    }
-
-    MediaPlayer
-    {
-        id: mediaPlayer4
-        objectName: "Player 4"
-        visible: false
-        enabled: visible
-
-        onFocusChanged: if (focus) activePlayer = mediaPlayer4
+        id: playerLayout
+        showChat: false
+        showRailCam: false
     }
 
     BaseBackground
@@ -471,7 +481,14 @@ BaseScreen
         InfoText
         {
             x: xscale(705); y: yscale(5); width: xscale(285); height: yscale(32)
-            text: if (getActivePlayer().player === "RailCam") "Show Mini Diagram"; else "";
+            text:
+            {
+                if (getActivePlayer().player === "RailCam")
+                    "RailCam Options";
+                else if (getActivePlayer().player === "YouTube" || getActivePlayer().player === "YouTubeTV")
+                    "YouTube Options";
+                else "";
+            }
         }
 
         Image
@@ -483,7 +500,7 @@ BaseScreen
         InfoText
         {
             x: xscale(1025); y: yscale(5); width: xscale(285); height: yscale(32)
-            text: "Go To Website"
+            text: "RailCam Diagrams"
         }
     }
 
@@ -501,27 +518,27 @@ BaseScreen
 
             if (itemText == "Full Screen")
             {
-                setLayout(0);
+                setLayout(1);
             }
             else if (itemText == "Full screen with PIP")
             {
-                setLayout(1);
+                setLayout(2);
             }
             else if (itemText == "PBP 1/2 screen")
             {
-                setLayout(2);
+                setLayout(3);
             }
             else if (itemText == "PBP 3/4 screen with overlap")
             {
-                setLayout(3);
+                setLayout(4);
             }
             else if (itemText == "PBP 1 + 2")
             {
-                setLayout(4);
+                setLayout(5);
             }
             else if (itemText == "Quad Screen")
             {
-                setLayout(5);
+                setLayout(6);
             }
             else if (itemText == "Live TV")
             {
@@ -567,9 +584,11 @@ BaseScreen
                     feedSource = list[1];
                     filter = list[2];
                     feedNo = list[3];
-                    feedChanged(filter, feedNo);
+                    feedChanged(feedSource, filter, feedNo);
                     getActivePlayer().feed.switchToFeed(feedSource, filter, feedNo);
                     getActivePlayer().startPlayback();
+                    updateChat();
+                    updateRailCam();
                 }
             }
         }
@@ -581,219 +600,96 @@ BaseScreen
         }
     }
 
-    function nextPlayer()
+    function changeFocus(direction)
     {
-        if (mediaPlayer1.focus && mediaPlayer2.visible)
-            mediaPlayer2.focus = true;
-        else if (mediaPlayer2.focus)
-        {
-            if (mediaPlayer3.visible)
-                mediaPlayer3.focus = true;
-            else
-                mediaPlayer1.focus = true;
-        }
-        else if (mediaPlayer3.focus)
-        {
-            if (mediaPlayer4.visible)
-                mediaPlayer4.focus = true;
-            else
-                mediaPlayer1.focus = true;
-        }
-        else if (mediaPlayer4.focus)
-            mediaPlayer1.focus = true;
+        if (playerLayout.mediaPlayer1.focus)
+            doChangeFocus(playerLayout.mediaPlayer1, direction);
+        else if (playerLayout.mediaPlayer2.focus)
+            doChangeFocus(playerLayout.mediaPlayer2, direction);
+        else if (playerLayout.mediaPlayer3.focus)
+            doChangeFocus(playerLayout.mediaPlayer3, direction);
+        else if (playerLayout.mediaPlayer4.focus)
+            doChangeFocus(playerLayout.mediaPlayer4, direction);
+        else if (playerLayout.chatBrowser.focus)
+            doChangeFocus(playerLayout.chatBrowser, direction);
+        else if (playerLayout.railcamBrowser.focus)
+            doChangeFocus(playerLayout.railcamBrowser, direction);
     }
 
-    function previousPlayer()
+    function doChangeFocus(item, direction)
     {
-        if (mediaPlayer4.focus)
-            mediaPlayer3.focus = true;
-        else if (mediaPlayer3.focus)
-            mediaPlayer2.focus = true;
-        else if (mediaPlayer2.focus)
-            mediaPlayer1.focus = true;
-        else if (mediaPlayer1.focus)
+        var found = false;
+        var i = item;
+        do
         {
-            if (mediaPlayer4.visible)
-                mediaPlayer4.focus = true;
-            else if (mediaPlayer3.visible)
-                mediaPlayer3.focus = true;
-            else if (mediaPlayer2.visible)
-                mediaPlayer2.focus = true;
+            if (direction === "left")
+                i = i.KeyNavigation.left;
+            else if (direction === "right")
+                i = i.KeyNavigation.right;
+            else if (direction === "up")
+                i = i.KeyNavigation.up;
+            else if (direction === "down")
+                i = i.KeyNavigation.down;
+
+            if (i.visible && i !== item)
+            {
+                i.focus = true;
+                item.focus = false;
+                return;
+            }
+        } while (i !== undefined && i !== item);
+    }
+
+    function updateChat()
+    {
+        if (playerLayout.showChat)
+        {
+            var chatURL = getActivePlayer().getLink("youtube_chat");
+            var railcamURL = getActivePlayer().getLink("railcam_chat");
+
+            if (chatURL !== undefined)
+            {
+                if (chatURL != playerLayout.chatBrowser.url)
+                {
+                    playerLayout.chatTitle.text = "YouTube Chat";
+                    playerLayout.chatBrowser.url = chatURL;
+                }
+            }
+            else if (railcamURL !== undefined)
+            {
+                if (railcamURL != playerLayout.chatBrowser.url)
+                {
+                    playerLayout.chatTitle.text = "RailCam Chat";
+                    playerLayout.chatBrowser.url = railcamURL;
+                }
+            }
+            else
+            {
+                playerLayout.chatTitle.text = "No Chat Available";
+                playerLayout.chatBrowser.url = "about:blank"; //TODO should show no chat available
+            }
+        }
+    }
+
+    function updateRailCam()
+    {
+        if (playerLayout.showRailCam)
+        {
+            var railcamURL = getActivePlayer().getLink("railcam_minidiagram");
+
+            if (railcamURL !== undefined)
+            {
+                if (railcamURL != playerLayout.railcamBrowser.url)
+                    playerLayout.railcamBrowser.url = railcamURL;
+            }
+            else
+                playerLayout.railcamBrowser.url = "about:blank"; //TODO should show no railcam diagrams available
         }
     }
 
     function setLayout(newLayout)
     {
         root.layout = newLayout;
-
-        if (root.layout === 0)
-        {
-            // full screen
-            showVideo(false);
-
-            mediaPlayer1.visible = true;
-            mediaPlayer2.visible = false;
-            mediaPlayer3.visible = false;
-            mediaPlayer4.visible = false;
-
-            mediaPlayer1.x = 0;
-            mediaPlayer1.y = 0;
-            mediaPlayer1.width = root.width;
-            mediaPlayer1.height = root.height;
-            mediaPlayer1.showBorder = false;
-
-            mediaPlayer1.play();
-            mediaPlayer2.stop();
-            mediaPlayer3.stop();
-            mediaPlayer4.stop();
-        }
-        else if (root.layout === 1)
-        {
-            // fullscreen with PIP
-            showVideo(false);
-
-            mediaPlayer1.visible = true;
-            mediaPlayer2.visible = true;
-            mediaPlayer3.visible = false;
-            mediaPlayer4.visible = false;
-
-            mediaPlayer1.x = 0;
-            mediaPlayer1.y = 0;
-            mediaPlayer1.width = root.width;
-            mediaPlayer1.height = root.height;
-            mediaPlayer1.showBorder = true;
-
-            mediaPlayer2.x = root.width - xscale(50) - xscale(400);
-            mediaPlayer2.y = yscale(50);
-            mediaPlayer2.width = xscale(400);
-            mediaPlayer2.height = yscale(225);
-
-            mediaPlayer1.play();
-            mediaPlayer2.play();
-            mediaPlayer3.stop();
-            mediaPlayer4.stop();
-        }
-        else if (root.layout === 2)
-        {
-            // PBP 1/2 screen
-            showVideo(true);
-
-            mediaPlayer1.visible = true;
-            mediaPlayer2.visible = true;
-            mediaPlayer3.visible = false;
-            mediaPlayer4.visible = false;
-
-            mediaPlayer1.x = 0;
-            mediaPlayer1.y = yscale(250);
-            mediaPlayer1.width = root.width / 2;
-            mediaPlayer1.height = mediaPlayer1.width / 1.77777777;
-            mediaPlayer1.showBorder = true;
-
-            mediaPlayer2.x = root.width / 2;
-            mediaPlayer2.y = yscale(250);
-            mediaPlayer2.width = root.width / 2;
-            mediaPlayer2.height = mediaPlayer2.width / 1.77777777;
-
-            mediaPlayer1.play();
-            mediaPlayer2.play();
-            mediaPlayer3.stop();
-            mediaPlayer4.stop();
-        }
-        else if (root.layout === 3)
-        {
-            // PBP 3/4 screen with overlap
-            showVideo(true);
-
-            mediaPlayer1.visible = true;
-            mediaPlayer2.visible = true;
-            mediaPlayer3.visible = false;
-            mediaPlayer4.visible = false;
-
-            mediaPlayer1.x = 0;
-            mediaPlayer1.y = (root.height - (((root.width / 4) * 3) / 1.77777777)) / 2;
-            mediaPlayer1.width = (root.width / 4) * 3;
-            mediaPlayer1.height = ((root.width / 4) * 3) / 1.77777777;
-            mediaPlayer1.showBorder = true;
-
-            mediaPlayer2.x = root.width - xscale(400);
-            mediaPlayer2.y = (root.height - 255) / 2;
-            mediaPlayer2.width = xscale(400);
-            mediaPlayer2.height = yscale(225);
-
-            mediaPlayer1.play();
-            mediaPlayer2.play();
-            mediaPlayer3.stop();
-            mediaPlayer4.stop();
-        }
-        else if (root.layout === 4)
-        {
-            // PBP 1 + 2
-            showVideo(true);
-
-            mediaPlayer1.visible = true;
-            mediaPlayer2.visible = true;
-            mediaPlayer3.visible = true;
-            mediaPlayer4.visible = false;
-
-            mediaPlayer1.x = 0;
-            mediaPlayer1.y = (root.height - (((root.width / 4) * 3) / 1.77777777)) / 2;
-            mediaPlayer1.width = (root.width / 4) * 3;
-            mediaPlayer1.height = ((root.width / 4) * 3) / 1.77777777;
-            mediaPlayer1.showBorder = true;
-
-            mediaPlayer2.x = root.width - xscale(400);
-            mediaPlayer2.y = yscale(90);
-            mediaPlayer2.width = xscale(400);
-            mediaPlayer2.height = yscale(225);
-
-            mediaPlayer3.x = root.width - xscale(400);
-            mediaPlayer3.y = yscale(400);
-            mediaPlayer3.width = xscale(400);
-            mediaPlayer3.height = yscale(225);
-
-            mediaPlayer1.play();
-            mediaPlayer2.play();
-            mediaPlayer3.play();
-            mediaPlayer4.stop();
-        }
-        else if (root.layout === 5)
-        {
-            // Quad Screen
-            showVideo(false);
-
-            mediaPlayer1.visible = true;
-            mediaPlayer2.visible = true;
-            mediaPlayer3.visible = true;
-            mediaPlayer4.visible = true;
-
-            mediaPlayer1.x = 0;
-            mediaPlayer1.y = 0;
-            mediaPlayer1.width = root.width / 2;
-            mediaPlayer1.height = root.height / 2;
-            mediaPlayer1.showBorder = true;
-
-            mediaPlayer2.x = root.width / 2;
-            mediaPlayer2.y = 0;
-            mediaPlayer2.width = root.width / 2;
-            mediaPlayer2.height = root.height / 2;
-
-            mediaPlayer3.x = 0;
-            mediaPlayer3.y = root.height / 2;
-            mediaPlayer3.width = root.width / 2;
-            mediaPlayer3.height = root.height / 2;
-
-            mediaPlayer4.x = root.width / 2;
-            mediaPlayer4.y = root.height / 2;
-            mediaPlayer4.width = root.width / 2;
-            mediaPlayer4.height = root.height / 2;;
-
-            mediaPlayer1.play();
-            mediaPlayer2.play();
-            mediaPlayer3.play();
-            mediaPlayer4.play();
-        }
-
-        mediaPlayer1.focus = true;
     }
 
     Timer
@@ -808,7 +704,7 @@ BaseScreen
         if (activePlayer)
             return activePlayer;
 
-        return mediaPlayer1;
+        return playerLayout.mediaPlayer1;
     }
 
     function showInfo(restart)
