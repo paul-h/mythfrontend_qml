@@ -3,6 +3,7 @@ import QtQuick.Window 2.0
 import QtQuick.Layouts 1.0
 import QtQuick.Controls 1.0
 import Base 1.0
+import VLCQt 1.1
 
 BaseScreen
 {
