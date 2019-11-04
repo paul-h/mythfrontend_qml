@@ -8,7 +8,7 @@ XmlListModel
 
     signal loaded();
 
-    source: "https://mythqml.net/download.php?f=whatsnew.xml"
+    source: "https://mythqml.net/download.php?f=whatsnew.xml&v=" + version + "&s=" + systemid
 
     query: "/items/item"
     XmlRole { name: "id"; query: "id/number()" }
