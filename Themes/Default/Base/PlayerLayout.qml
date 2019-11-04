@@ -92,7 +92,7 @@ Item
             PropertyChanges { target: root; y: yscale(50); height: parent.height - yscale(50); }
             PropertyChanges { target: chat; width: 0 }
             PropertyChanges { target: railcam; height: 0 }
-            PropertyChanges { target: videoTitle1; height: 30 }
+            PropertyChanges { target: videoTitle1; height: yscale(30) }
             PropertyChanges { target: playerArea; height: root.height - playerArea.y - yscale(5) }
             StateChangeScript { script: doShowHeader(true); }
         },
@@ -102,7 +102,7 @@ Item
             PropertyChanges { target: root; y: yscale(50); height: parent.height - yscale(50); }
             PropertyChanges { target: chat; width: xscale(400) }
             PropertyChanges { target: railcam; height: 0 }
-            PropertyChanges { target: videoTitle1; height: 30 }
+            PropertyChanges { target: videoTitle1; height: yscale(30) }
             PropertyChanges { target: playerArea; height: root.height - playerArea.y - yscale(5) }
             StateChangeScript { script: doShowHeader(true); }
         },
@@ -112,7 +112,7 @@ Item
             PropertyChanges { target: root; y: yscale(50); height: parent.height - yscale(50); }
             PropertyChanges { target: chat; width: 0 }
             PropertyChanges { target: railcam; height: yscale(180) }
-            PropertyChanges { target: videoTitle1; height: 30 }
+            PropertyChanges { target: videoTitle1; height: yscale(30) }
             PropertyChanges { target: playerArea; height: root.height - playerArea.y - yscale(5) - yscale(180) }
             StateChangeScript { script: doShowHeader(true); }
         },
@@ -122,7 +122,7 @@ Item
             PropertyChanges { target: root; y: yscale(50); height: parent.height - yscale(50); }
             PropertyChanges { target: chat; width: xscale(400) }
             PropertyChanges { target: railcam; height: yscale(180) }
-            PropertyChanges { target: videoTitle1; height: 30 }
+            PropertyChanges { target: videoTitle1; height: yscale(30) }
             PropertyChanges { target: playerArea; height: root.height - playerArea.y - yscale(5) - yscale(180) }
             StateChangeScript { script: doShowHeader(true); }
         }
@@ -774,6 +774,7 @@ Item
             y: chatTitle.height + yscale(5)
             width: parent.width - xscale(10)
             height: parent.height - y - yscale(5)
+            zoomFactor: xscale(1)
             focus: false
             enabled: visible
             backgroundColor: "black"
