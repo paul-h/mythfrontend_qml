@@ -13,6 +13,12 @@ INCLUDEPATH += .. ../QmlVlc ../mythfrontend_qml
 
 LIBS += -lvlc
 
+packagesExist(libVLCQtQml) {
+    DEFINES += USE_VLCQT
+    LIBS += -lVLCQtCore -lVLCQtQml
+}
+
+
 QT += qml quick sql xml webengine
 CONFIG += c++11
 

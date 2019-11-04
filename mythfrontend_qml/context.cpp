@@ -24,6 +24,12 @@
 #include <QmlVlc.h>
 #include <QmlVlc/QmlVlcConfig.h>
 
+// from VlcQml
+#ifdef USE_VLCQT
+#include <VLCQtQml/Qml.h>
+#include <VLCQtQml/QmlPlayer.h>
+#endif
+
 Context::Context(const QString &appName, const QString &logLevel, const QString &verbose, QObject *parent) : QObject(parent)
 {
     m_appName = appName;
@@ -76,6 +82,12 @@ void Context::init()
     config.enableDebug(false);
     config.enableLoopPlayback(false);
     config.setTrustedEnvironment(true);
+
+#ifdef USE_VLCQT
+    //VlcCommon::setPluginPath("/usr/local/qml/");
+    //VlcQmlVideoPlayer::registerPlugin();
+    VlcQml::registerTypes();
+#endif
 
     // create the logger for QML
     m_engine->rootContext()->setContextProperty("log", m_logger);

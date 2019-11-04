@@ -13,6 +13,12 @@ INCLUDEPATH += .. ../QmlVlc
 
 LIBS += -lvlc
 
+packagesExist(libVLCQtQml) {
+    DEFINES += USE_VLCQT
+    LIBS += -lVLCQtCore -lVLCQtQml
+}
+
+
 QT += qml quick sql xml webengine
 CONFIG += c++11
 
@@ -39,4 +45,3 @@ HEADERS += mythincrementalmodel.h recordingsmodel.h zmeventsmodel.h eventlistene
 SOURCES += main.cpp
 SOURCES += sqlquerymodel.cpp databaseutils.cpp urlinterceptor.cpp settings.cpp mythutils.cpp downloadmanager.cpp
 SOURCES += mythincrementalmodel.cpp recordingsmodel.cpp zmeventsmodel.cpp context.cpp logger.cpp
-

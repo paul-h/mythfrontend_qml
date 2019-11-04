@@ -45,7 +45,7 @@ ListModel
     ListElement
     {
         menutext:"VLC-Qt Player Test"
-        loaderSource: "Ttests/estVlcQt.qml"
+        loaderSource: "tests/TestVlcQt.qml"
         waterMark: "watermark/setup.png"
     }
 }
