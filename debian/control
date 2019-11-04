@@ -41,6 +41,7 @@ Depends: python,
          qml-module-qtav,
          qml-module-qtwebengine,
          qml-module-qtwebsockets,
+         qml-module-qtquick-particles2,
          python3-streamlink,
          streamlink,
          zlib1g
