@@ -28,6 +28,7 @@ public slots:
 public:
     void init(void);
     bool loadDBSettings(void);
+    QString systemID(void);
 
     QString m_appName;
 
@@ -40,6 +41,7 @@ public:
     EventListener *m_eventListener;
     MythQmlAbstractUrlInterceptor *m_urlInterceptor;
 
+    QString m_systemID;
     QString m_dbHost;
     QString m_dbPort;
     QString m_dbUser;

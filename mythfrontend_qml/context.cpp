@@ -9,6 +9,7 @@
 #include <QDomDocument>
 #include <QFile>
 #include <QDir>
+#include <QUuid>
 
 // common
 #include "databaseutils.h"
@@ -91,6 +92,9 @@ void Context::init()
     // create the database utils
     m_databaseUtils = new DatabaseUtils();
     m_engine->rootContext()->setContextProperty("dbUtils", m_databaseUtils);
+
+    // create systemid property
+    m_engine->rootContext()->setContextProperty("systemid", systemID());
 
     QString hostName = QHostInfo::localHostName();
     QString theme = m_databaseUtils->getSetting("Qml_theme", hostName, "MythCenter");
@@ -200,4 +204,25 @@ bool Context::loadDBSettings(void)
     }
 
     return true;
+}
+
+QString Context::systemID(void)
+{
+    if (m_systemID.isEmpty())
+    {
+        m_systemID = m_databaseUtils->getSetting("Qml_systemID", QHostInfo::localHostName());
+
+        if (m_systemID.isEmpty())
+        {
+            QUuid id = QUuid::createUuid();
+            m_systemID = id.toString();
+            m_systemID.remove('{');
+            m_systemID.remove('}');
+            m_databaseUtils->setSetting("Qml_systemID", QHostInfo::localHostName(), m_systemID);
+        }
+    }
+
+    m_logger->debug(Verbose::GENERAL, "Context: SystemID - " + m_systemID);
+
+    return m_systemID;
 }
