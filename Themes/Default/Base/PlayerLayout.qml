@@ -15,6 +15,8 @@ Item
     property bool showChat: false
     property bool showRailCam: false
 
+    property int chatWidth: xscale(400)
+    property int railcamHeight: yscale(250)
     property int playerLayout: 1
 
     property var activePlayer: player1
@@ -100,7 +102,7 @@ Item
         {
             name: "showchat"
             PropertyChanges { target: root; y: yscale(50); height: parent.height - yscale(50); }
-            PropertyChanges { target: chat; width: xscale(400) }
+            PropertyChanges { target: chat; width: chatWidth }
             PropertyChanges { target: railcam; height: 0 }
             PropertyChanges { target: videoTitle1; height: yscale(30) }
             PropertyChanges { target: playerArea; height: root.height - playerArea.y - yscale(5) }
@@ -111,19 +113,19 @@ Item
             name: "showrailcam"
             PropertyChanges { target: root; y: yscale(50); height: parent.height - yscale(50); }
             PropertyChanges { target: chat; width: 0 }
-            PropertyChanges { target: railcam; height: yscale(180) }
+            PropertyChanges { target: railcam; height: railcamHeight }
             PropertyChanges { target: videoTitle1; height: yscale(30) }
-            PropertyChanges { target: playerArea; height: root.height - playerArea.y - yscale(5) - yscale(180) }
+            PropertyChanges { target: playerArea; height: root.height - playerArea.y - yscale(5) - railcamHeight }
             StateChangeScript { script: doShowHeader(true); }
         },
         State
         {
             name: "showboth"
             PropertyChanges { target: root; y: yscale(50); height: parent.height - yscale(50); }
-            PropertyChanges { target: chat; width: xscale(400) }
-            PropertyChanges { target: railcam; height: yscale(180) }
+            PropertyChanges { target: chat; width: chatWidth }
+            PropertyChanges { target: railcam; height: railcamHeight }
             PropertyChanges { target: videoTitle1; height: yscale(30) }
-            PropertyChanges { target: playerArea; height: root.height - playerArea.y - yscale(5) - yscale(180) }
+            PropertyChanges { target: playerArea; height: root.height - playerArea.y - yscale(5) - railcamHeight }
             StateChangeScript { script: doShowHeader(true); }
         }
     ]
@@ -170,17 +172,17 @@ Item
                                 }
                 StateChangeScript { script: player1.play() }
 
+                StateChangeScript { script: player2.stop() }
                 PropertyChanges { target: videoTitle2; width: 0 }
                 PropertyChanges { target: player2; width: 0 }
-                StateChangeScript { script: player2.stop() }
 
+                StateChangeScript { script: player3.stop() }
                 PropertyChanges { target: videoTitle3; width: 0 }
                 PropertyChanges { target: player3; width: 0 }
-                StateChangeScript { script: player3.stop() }
 
+                StateChangeScript { script: player4.stop() }
                 PropertyChanges { target: videoTitle4; width: 0 }
                 PropertyChanges { target: player4; width: 0 }
-                StateChangeScript { script: player4.stop() }
 
                 PropertyChanges { target: chatBrowser;
                                   KeyNavigation.left: player1;
@@ -237,13 +239,13 @@ Item
                                  }
                 StateChangeScript { script: player2.play() }
 
+                StateChangeScript { script: player3.stop() }
                 PropertyChanges { target: videoTitle3; width: 0 }
                 PropertyChanges { target: player3; width: 0 }
-                StateChangeScript { script: player3.stop() }
 
+                StateChangeScript { script: player4.stop() }
                 PropertyChanges { target: videoTitle4; width: 0 }
                 PropertyChanges { target: player4; width: 0 }
-                StateChangeScript { script: player4.stop() }
 
                 PropertyChanges { target: chatBrowser;
                                   KeyNavigation.left: player2;
@@ -300,13 +302,13 @@ Item
                                 }
                 StateChangeScript { script: player2.play() }
 
+                StateChangeScript { script: player3.stop() }
                 PropertyChanges { target: videoTitle3; width: 0 }
                 PropertyChanges { target: player3; width: 0 }
-                StateChangeScript { script: player3.stop() }
 
+                StateChangeScript { script: player4.stop() }
                 PropertyChanges { target: videoTitle4; width: 0 }
                 PropertyChanges { target: player4; width: 0 }
-                StateChangeScript { script: player4.stop() }
 
                 PropertyChanges { target: chatBrowser;
                                   KeyNavigation.left: player2;
@@ -365,13 +367,14 @@ Item
                                 }
                 StateChangeScript { script: player2.play() }
 
+                StateChangeScript { script: player3.stop() }
                 PropertyChanges { target: videoTitle3; width: 0 }
                 PropertyChanges { target: player3; width: 0 }
-                StateChangeScript { script: player3.stop() }
 
+                StateChangeScript { script: player4.stop() }
                 PropertyChanges { target: videoTitle4; width: 0 }
                 PropertyChanges { target: player4; width: 0 }
-                StateChangeScript { script: player4.stop() }
+
 
                 PropertyChanges { target: chatBrowser;
                                   KeyNavigation.left: player2;
@@ -448,9 +451,9 @@ Item
                                 }
                 StateChangeScript { script: player3.play() }
 
+                StateChangeScript { script: player4.stop() }
                 PropertyChanges { target: videoTitle4; width: 0 }
                 PropertyChanges { target: player4; width: 0 }
-                StateChangeScript { script: player4.stop() }
 
                 PropertyChanges { target: chatBrowser;
                                   KeyNavigation.left: player3;
