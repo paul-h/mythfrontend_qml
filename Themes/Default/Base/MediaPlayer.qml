@@ -585,6 +585,7 @@ FocusScope
         streamLinkProcess.stop();
         checkProcessTimer.running = false;
         streamLinkProcess.waitForFinished();
+        _playbackStarted = false;
 
         if (getActivePlayer() === "VLC")
         {
@@ -599,7 +600,7 @@ FocusScope
         else if (getActivePlayer() === "YOUTUBE")
             youtubePlayer.stop();
         else if (getActivePlayer() === "BROWSER")
-            webPlayer.url = "";
+            webPlayer.url = "about:blank";
     }
 
     function togglePaused()
