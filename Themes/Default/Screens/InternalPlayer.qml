@@ -232,6 +232,9 @@ BaseScreen
 
             popupMenu.addMenuItem("", "Toggle Mute");
 
+            if (getActivePlayer().feed.feedName === "Webcams")
+                popupMenu.addMenuItem("", "Report Broken WebCam");
+
             _actionsEnabled = false;
             popupMenu.show();
         }
@@ -572,6 +575,15 @@ BaseScreen
             }
             else if (itemText == "Toggle Mute")
                 getActivePlayer().toggleMute();
+            else if (itemText == "Report Broken WebCam")
+            {
+                var name = getActivePlayer().feed.feedList.get(getActivePlayer().feed.currentFeed).title
+                var url = getActivePlayer().feed.feedList.get(getActivePlayer().feed.currentFeed).url
+
+                Util.reportBroken("webcam", version, systemid, name, url);
+                showNotification(name + "<br>Thank you for reporting this broken WebCam.<br>It will be fixed shortly", settings.osdTimeoutMedium);
+
+            }
             else if (itemData.startsWith("player="))
             {
                 var list = itemData.split("\n");
