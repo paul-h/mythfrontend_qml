@@ -200,6 +200,37 @@ function updateChannel(chanID, chanName, callsign, chanNo, XMLTVID)
     http.send(params);
 }
 
+function reportBroken(type, version, systemid, name, feedurl)
+{
+    var http = new XMLHttpRequest();
+    var url = "https://mythqml.net/report-broken.php";
+    var params = "t=" + type + "&v=" + version + "&s=" + systemid + "&n=" + encodeURIComponent(name) + "&u=" + encodeURIComponent(feedurl);
+
+    http.open("POST", url, true);
+
+    // Send the proper header information along with the request
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    http.setRequestHeader("Content-length", params.length);
+    http.setRequestHeader("Connection", "close");
+
+    http.onreadystatechange = function()
+    {
+        if (http.readyState == 4)
+        {
+            if (http.status == 200)
+            {
+                if (http.responseText.length > 0)
+                    console.log("reportBroken : got ok but response was: " + http.responseText)
+            }
+            else
+            {
+                console.log("reportBroken error: " + http.status + "\n" + http.responseText)
+            }
+        }
+    }
+    http.send(params);
+}
+
 function randomIntFromRange(min, max) // min and max included
 {
     return Math.floor(Math.random()*(max-min+1)+min);
