@@ -33,12 +33,12 @@ FocusScope
     signal playbackEnded()
     signal activeFeedChanged()
 
-    function xscale(x)
+    function _xscale(x)
     {
         return window.xscale(x) * _wmult;
     }
 
-    function yscale(y)
+    function _yscale(y)
     {
         return window.yscale(y) * _hmult;
     }
@@ -88,8 +88,7 @@ FocusScope
         anchors.fill: parent
         focus: true
         color: "black"
-        border.width: root.showBorder ? window.xscale(5) : 0
-        border.color: root.focus ? "green" : "white"
+        radius: theme.bgRadius
     }
 
     WebEngineView
@@ -98,7 +97,7 @@ FocusScope
         visible: false
         enabled: visible
         anchors.fill: parent
-        anchors.margins: playerRect.border.width
+        anchors.margins: playerBorder.border.width
         url: ""
         settings.pluginsEnabled: true
         settings.javascriptEnabled: true
@@ -149,7 +148,7 @@ FocusScope
         visible: false
         enabled: visible
         anchors.fill: parent
-        anchors.margins: playerRect.border.width
+        anchors.margins: playerBorder.border.width
 
         onPlaybackEnded:
         {
@@ -169,7 +168,7 @@ FocusScope
         visible: false
         enabled: visible
         anchors.fill: parent
-        anchors.margins: playerRect.border.width
+        anchors.margins: playerBorder.border.width
 
         onPlaybackEnded:
         {
@@ -189,7 +188,7 @@ FocusScope
         visible: false
         enabled: visible
         anchors.fill: parent
-        anchors.margins: playerRect.border.width
+        anchors.margins: playerBorder.border.width
 
         fillMode: VideoOutput.Stretch
 
@@ -202,6 +201,17 @@ FocusScope
         {
             root.showMessage(message, timeOut);
         }
+    }
+
+    Rectangle
+    {
+        id: playerBorder
+        anchors.fill: parent
+        focus: true
+        color: "transparent"
+        border.color: root.focus ? theme.lvBackgroundBorderColor : theme.bgBorderColor
+        border.width: root.showBorder ? xscale(5) : 0
+        radius: theme.bgRadius
     }
 
     Timer
@@ -355,7 +365,7 @@ FocusScope
     BaseBackground
     {
         id: messagePanel
-        x: root.xscale(100); y: root.yscale(120); width: root.xscale(400); height: root.yscale(110)
+        x: root._xscale(100); y: root._yscale(120); width: root._xscale(400); height: root._yscale(110)
         visible: false
 
         InfoText

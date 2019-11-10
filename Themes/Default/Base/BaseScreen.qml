@@ -14,6 +14,8 @@ Item
     property bool   oldShowImage: false
     property bool   oldMuteAudio: false
 
+    signal stateSaved()
+
     x: 0; y: 0; width: parent.width; height: parent.height
 
     Keys.onEscapePressed:
@@ -80,6 +82,8 @@ Item
         oldShowVideo = screenBackground.showVideo;
         oldShowImage = screenBackground.showImage;
         oldMuteAudio = screenBackground.muteAudio;
+
+        stateSaved();
     }
 
     Component.onDestruction:

@@ -17,7 +17,7 @@ ListModel
         menutext: "Show Live View"
         loaderSource: "InternalPlayer.qml"
         waterMark: "watermark/zoneminder.png"
-        layout: 5
+        layout: 6
         feedSource: "ZoneMinder Cameras"
     }
     ListElement

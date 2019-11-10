@@ -19,7 +19,7 @@ Item
     property int railcamHeight: yscale(250)
     property int playerLayout: 1
 
-    property var activePlayer: player1
+    property var activeItem: player1
 
     property alias mediaPlayer1: player1
     property alias mediaPlayer2: player2
@@ -33,14 +33,20 @@ Item
 
     state: ""
 
-    Component.onCompleted:  { changeState(); changePlayerLayout(); }
+    // make sure we don't change the screen title or show time properties
+    // before they have been saved in BaseScreen
+    Component.onCompleted: parent.onStateSaved.connect(initState)
 
     onShowChatChanged: changeState()
     onShowRailCamChanged: changeState()
     onShowHeaderChanged: changeState()
     onPlayerLayoutChanged: changePlayerLayout()
 
-    onStateChanged: console.log("state is now: " + state)
+    function initState()
+    {
+        changeState();
+        changePlayerLayout();
+    }
 
     function changeState()
     {
@@ -74,6 +80,17 @@ Item
             playerArea.state = "layout5";
         else if (playerLayout === 6)
             playerArea.state = "layout6";
+        else
+            playerArea.state = "layout1";
+    }
+
+    function changeFocus(item)
+    {
+        if (activeItem != item)
+        {
+            activeItem.focus = false;
+            activeItem = item;
+        }
     }
 
     states:
@@ -170,7 +187,7 @@ Item
                                   KeyNavigation.up: railcamBrowser;
                                   KeyNavigation.down: railcamBrowser;
                                 }
-                StateChangeScript { script: player1.play() }
+                StateChangeScript { script: player1.startPlayback() }
 
                 StateChangeScript { script: player2.stop() }
                 PropertyChanges { target: videoTitle2; width: 0 }
@@ -219,7 +236,7 @@ Item
                                   KeyNavigation.up: railcamBrowser;
                                   KeyNavigation.down: railcamBrowser;
                                 }
-                StateChangeScript { script: player1.play() }
+                StateChangeScript { script: player1.startPlayback() }
 
                 PropertyChanges { target: videoTitle2;
                                   x: playerArea.width - (playerArea.width / 3) - xscale(50);
@@ -237,13 +254,13 @@ Item
                                   KeyNavigation.up: railcamBrowser;
                                   KeyNavigation.down: railcamBrowser;
                                  }
-                StateChangeScript { script: player2.play() }
+                StateChangeScript { script: player2.startPlayback() }
 
                 StateChangeScript { script: player3.stop() }
                 PropertyChanges { target: videoTitle3; width: 0 }
                 PropertyChanges { target: player3; width: 0 }
 
-                StateChangeScript { script: player4.stop() }
+                StateChangeScript { script: player4.startPlayback() }
                 PropertyChanges { target: videoTitle4; width: 0 }
                 PropertyChanges { target: player4; width: 0 }
 
@@ -281,7 +298,7 @@ Item
                                   KeyNavigation.up: railcamBrowser;
                                   KeyNavigation.down: railcamBrowser;
                                 }
-                StateChangeScript { script: player1.play() }
+                StateChangeScript { script: player1.startPlayback() }
 
                 PropertyChanges { target: videoTitle2;
                                   x: videoTitle1.x + videoTitle1.width;
@@ -300,7 +317,7 @@ Item
                                   KeyNavigation.up: railcamBrowser;
                                   KeyNavigation.down: railcamBrowser;
                                 }
-                StateChangeScript { script: player2.play() }
+                StateChangeScript { script: player2.startPlayback() }
 
                 StateChangeScript { script: player3.stop() }
                 PropertyChanges { target: videoTitle3; width: 0 }
@@ -345,7 +362,7 @@ Item
                                   KeyNavigation.up: railcamBrowser;
                                   KeyNavigation.down: railcamBrowser;
                                 }
-                StateChangeScript { script: player1.play() }
+                StateChangeScript { script: player1.startPlayback() }
 
                 PropertyChanges { target: videoTitle2;
                                   x: playerArea.width - player2.width;
@@ -365,7 +382,7 @@ Item
                                   KeyNavigation.up: player2;
                                   KeyNavigation.down: railcamBrowser;
                                 }
-                StateChangeScript { script: player2.play() }
+                StateChangeScript { script: player2.startPlayback() }
 
                 StateChangeScript { script: player3.stop() }
                 PropertyChanges { target: videoTitle3; width: 0 }
@@ -411,7 +428,7 @@ Item
                                   KeyNavigation.up: railcamBrowser;
                                   KeyNavigation.down: railcamBrowser;
                                 }
-                StateChangeScript { script: player1.play() }
+                StateChangeScript { script: player1.startPlayback() }
 
                 PropertyChanges { target: videoTitle2;
                                   x: playerArea.width - videoTitle2.width;
@@ -430,7 +447,7 @@ Item
                                   KeyNavigation.up: railcamBrowser;
                                   KeyNavigation.down: player3;
                                 }
-                StateChangeScript { script: player2.play() }
+                StateChangeScript { script: player2.startPlayback() }
 
                 PropertyChanges { target: videoTitle3;
                                   x: videoTitle2.x;
@@ -449,7 +466,7 @@ Item
                                   KeyNavigation.up: player2;
                                   KeyNavigation.down: railcamBrowser;
                                 }
-                StateChangeScript { script: player3.play() }
+                StateChangeScript { script: player3.startPlayback() }
 
                 StateChangeScript { script: player4.stop() }
                 PropertyChanges { target: videoTitle4; width: 0 }
@@ -489,7 +506,7 @@ Item
                                   KeyNavigation.up: railcamBrowser;
                                   KeyNavigation.down: player3;
                                 }
-                StateChangeScript { script: player1.play() }
+                StateChangeScript { script: player1.startPlayback() }
 
                 PropertyChanges { target: videoTitle2;
                                   x: playerArea.width / 2;
@@ -508,7 +525,7 @@ Item
                                   KeyNavigation.up: railcamBrowser;
                                   KeyNavigation.down: player4;
                                 }
-                StateChangeScript { script: player2.play() }
+                StateChangeScript { script: player2.startPlayback() }
 
                 PropertyChanges { target: videoTitle3;
                                   x: 0;
@@ -528,7 +545,7 @@ Item
                                   KeyNavigation.up: player1;
                                   KeyNavigation.down: railcamBrowser;
                                 }
-                StateChangeScript { script: player3.play() }
+                StateChangeScript { script: player3.startPlayback() }
 
                 PropertyChanges { target: videoTitle4;
                                   x: playerArea.width / 2;
@@ -548,7 +565,7 @@ Item
                                   KeyNavigation.up: player2;
                                   KeyNavigation.down: railcamBrowser;
                                 }
-                StateChangeScript { script: player4.play() }
+                StateChangeScript { script: player4.startPlayback() }
 
                 PropertyChanges { target: chatBrowser;
                                   KeyNavigation.left: player2;
@@ -606,7 +623,7 @@ Item
             height: parent.height
             enabled: visible
 
-            onFocusChanged: if (focus) activePlayer = player1
+            onFocusChanged: if (focus) changeFocus(this);
             onPlaybackEnded: if (layout === 0) { stop(); stack.pop(); }
             onActiveFeedChanged:
             {
@@ -621,8 +638,8 @@ Item
         LabelText
         {
             id: videoTitle2
-            x: 0
-            y: 0
+            x: parent.width / 2
+            y: parent.height / 2
             width: 0
             height: 0
             visible: (width !== 0)
@@ -635,14 +652,15 @@ Item
         {
             id: player2
             objectName: "Player 2"
-            x: 0
-            y: 0
+            x: parent.width / 2
+            y: parent.height / 2
             visible: (width !== 0)
             width: 0
             height: 0
             enabled: visible
 
-            onFocusChanged: if (focus) activePlayer = player2
+            onFocusChanged: if (focus) changeFocus(this);
+            onVisibleChanged: if (!visible && focus) { focus = false; player1.focus = true; }
             onActiveFeedChanged:
             {
                 if (feed.feedList.get(feed.currentFeed).title !== "")
@@ -657,8 +675,8 @@ Item
         LabelText
         {
             id: videoTitle3
-            x: 0
-            y: 0
+            x: parent.width / 2
+            y: parent.height / 2
             width: 0
             height: 0
             visible: (width !== 0)
@@ -671,14 +689,15 @@ Item
         {
             id: player3
             objectName: "Player 3"
-            x: 0
-            y: 0
+            x: parent.width / 2
+            y: parent.height / 2
             visible: (width !== 0)
             width: 0
             height: 0
             enabled: visible
 
-            onFocusChanged: if (focus) activePlayer = player3
+            onFocusChanged: if (focus) changeFocus(this);
+            onVisibleChanged: if (!visible && focus) { focus = false; player1.focus = true; }
             onActiveFeedChanged:
             {
                 if (feed.feedList.get(feed.currentFeed).title !== "")
@@ -693,8 +712,8 @@ Item
         LabelText
         {
             id: videoTitle4
-            x: 0
-            y: 0
+            x: parent.width / 2
+            y: parent.height / 2
             width: 0
             height: 0
             visible: (width !== 0)
@@ -707,14 +726,15 @@ Item
         {
             id: player4
             objectName: "Player 4"
-            x: 0
-            y: 0
+            x: parent.width / 2
+            y: parent.height / 2
             visible: (width !== 0)
             width: 0
             height: 0
             enabled: visible
 
-            onFocusChanged: if (focus) activePlayer = player4
+            onFocusChanged: if (focus) changeFocus(this);
+            onVisibleChanged: if (!visible && focus) { focus = false; player1.focus = true; }
             onActiveFeedChanged:
             {
                 if (feed.feedList.get(feed.currentFeed).title !== "")
@@ -729,7 +749,7 @@ Item
         Tracer {}
     }
 
-    FocusScope
+    Item
     {
         id: chat
 
@@ -740,6 +760,8 @@ Item
         visible: (width !== 0)
         width: 0
         height: parent.height - y - yscale(5)
+
+        onVisibleChanged: if (!visible && chatBrowser.focus) { chatBrowser.focus = false; player1.focus = true; }
 
         Tracer {}
 
@@ -765,8 +787,7 @@ Item
             width: parent.width
             height: parent.height - y
             color: "black"
-            border.width: chat.showBorder ? xscale(5) : 0
-            border.color: chatBrowser.focus ? "green" : "white"
+            radius: theme.bgRadius
         }
 
         WebEngineView
@@ -783,6 +804,8 @@ Item
             backgroundColor: "black"
             settings.pluginsEnabled: true
 
+            onFocusChanged: if (focus) changeFocus(this);
+
             profile:  WebEngineProfile
                       {
                           storageName: "MythQML"
@@ -794,6 +817,19 @@ Item
             Tracer {}
         }
 
+        Rectangle
+        {
+            id: chatBorder
+            x: 0
+            y: chatTitle.height
+            width: parent.width
+            height: parent.height - y
+            color: "transparent"
+            border.color: chatBrowser.focus ? theme.lvBackgroundBorderColor : theme.bgBorderColor
+            border.width: chat.showBorder ? xscale(5) : 0
+            radius: theme.bgRadius
+        }
+
         InfoText
         {
             anchors.fill: parent
@@ -803,7 +839,7 @@ Item
         }
     }
 
-    FocusScope
+    Item
     {
         id: railcam
 
@@ -813,13 +849,14 @@ Item
         height: 0
         visible: (height != 0)
 
+        onVisibleChanged: if (!visible && railcamBrowser.focus) { railcamBrowser.focus = false; player1.focus = true; }
+
         Rectangle
         {
             id: railcamRect
             anchors.fill: parent
             color: "black"
-            border.width: chat.showBorder ? xscale(5) : 0
-            border.color: railcamBrowser.focus ? "green" : "white"
+            radius: theme.bgRadius
         }
 
         WebEngineView
@@ -837,14 +874,16 @@ Item
             focus: false
             url: "about:blank"
 
+            onFocusChanged: if (focus) changeFocus(this);
+
             settings.pluginsEnabled: true
 
             onLoadingChanged:
             {
                 if (loadRequest.status === WebEngineLoadRequest.LoadSucceededStatus)
                 {
-                                    zoomFactor = (height / contentsSize.height)- 0.1;
-                                    zoomFactor = (height / contentsSize.height) - 0.11;
+                                    zoomFactor = (height / contentsSize.height)- 0.01;
+                                    zoomFactor = (height / contentsSize.height) - 0.02;
                     //                x = (parent.width - contentsSize.width) / 2;
                     //                y = parent.height - contentsSize.height - yscale(20);
                     //                width = contentsSize.width;
@@ -859,6 +898,16 @@ Item
                 httpCacheType: WebEngineProfile.DiskHttpCache
                 persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
             }
+        }
+
+        Rectangle
+        {
+            id: railcamBorder
+            anchors.fill: parent
+            color: "transparent"
+            border.color: railcamBrowser.focus ? theme.lvBackgroundBorderColor : theme.bgBorderColor
+            border.width: chat.showBorder ? xscale(5) : 0
+            radius: theme.bgRadius
         }
 
         InfoText

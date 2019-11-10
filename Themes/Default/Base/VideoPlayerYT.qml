@@ -63,6 +63,7 @@ Item
                 _playerLoaded = true;
                 runJavaScript("loadVideo(" + root.source + ")");
                 statusUpdateTimer.start();
+                setSize(width, height);
             }
         }
 
