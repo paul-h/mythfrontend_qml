@@ -141,7 +141,6 @@ BaseScreen
             var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Videos", defaultFilter:  filterList, defaultCurrentFeed: currentIndex}});
             item.feedChanged.connect(feedChanged);
             event.accepted = true;
-            returnSound.play();
         }
     }
 
