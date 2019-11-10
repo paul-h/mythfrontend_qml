@@ -15,8 +15,6 @@ BaseScreen
 
     defaultFocusItem: playerLayout.mediaPlayer1
 
-    property alias activePlayer: playerLayout.activePlayer
-
     property alias layout: playerLayout.playerLayout
 
     property string defaultFeedSource: ""
@@ -36,7 +34,7 @@ BaseScreen
 
         playerLayout.mediaPlayer1.feed.switchToFeed(defaultFeedSource === "" ? "Live TV" : defaultFeedSource, defaultFilter, defaultCurrentFeed === -1 ? 0 : defaultCurrentFeed);
 
-        if (defaultFeedSource === "" || defaultFeedSource === "Advent Calendar")
+        if (defaultFeedSource === "" || defaultFeedSource === "Adhoc")
         {
             playerLayout.mediaPlayer2.feed.switchToFeed("Live TV" , -1, 1);
             playerLayout.mediaPlayer3.feed.switchToFeed("Live TV" , -1, 2);
@@ -50,7 +48,19 @@ BaseScreen
         }
 
         setLayout(layout);
+
+        // FIXME why aren't the players starting on layout changes at first show?
         playerLayout.mediaPlayer1.startPlayback();
+
+        if (layout >= 2)
+            playerLayout.mediaPlayer2.startPlayback();
+
+        if (layout >= 5)
+            playerLayout.mediaPlayer3.startPlayback();
+
+        if (layout === 6)
+            playerLayout.mediaPlayer4.startPlayback();
+
         showInfo(true);
     }
 
@@ -207,36 +217,12 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            popupMenu.message = "Media " + getActivePlayer().objectName + " Options";
-            popupMenu.clearMenuItems();
-
-            popupMenu.addMenuItem("", "Switch Layout");
-
-            popupMenu.addMenuItem("0", "Full Screen");
-            popupMenu.addMenuItem("0", "Full screen with PIP");
-            popupMenu.addMenuItem("0", "PBP 1/2 screen");
-            popupMenu.addMenuItem("0", "PBP 3/4 screen with overlap");
-            popupMenu.addMenuItem("0", "PBP 1 + 2");
-            popupMenu.addMenuItem("0", "Quad Screen");
-
-            popupMenu.addMenuItem("", "Switch Source");
-            popupMenu.addMenuItem("1", "Live TV");
-            popupMenu.addMenuItem("1", "Recordings");
-            popupMenu.addMenuItem("1", "Videos");
-            popupMenu.addMenuItem("1", "Webcams");
-            popupMenu.addMenuItem("1", "Web Videos");
-            popupMenu.addMenuItem("1", "ZoneMinder Cameras");
-
-            popupMenu.addMenuItem("", getActivePlayer().feed.feedName);
-            playerSources.addFeedMenu(popupMenu, getActivePlayer().feed.feedName, "2", 1);
-
-            popupMenu.addMenuItem("", "Toggle Mute");
-
-            if (getActivePlayer().feed.feedName === "Webcams")
-                popupMenu.addMenuItem("", "Report Broken WebCam");
-
-            _actionsEnabled = false;
-            popupMenu.show();
+            if (playerLayout.activeItem.objectName === "Chat Browser")
+            showChatMenu();
+            else if (playerLayout.activeItem.objectName === "RailCam Browser")
+                showRailCamMenu();
+            else
+                showPlayerMenu();
         }
     }
 
@@ -516,7 +502,8 @@ BaseScreen
 
         onItemSelected:
         {
-            getActivePlayer().focus = true;
+            playerLayout.activeItem.focus = true;
+
             _actionsEnabled = true;
 
             if (itemText == "Full Screen")
@@ -603,35 +590,41 @@ BaseScreen
                     updateRailCam();
                 }
             }
+
+            // chat options
+            else if (itemText == "Hide Chat")
+                playerLayout.showChat = false;
+            else if (itemText == "Reload" && itemData == "Chat")
+                playerLayout.chatBrowser.reload();
+            else if (itemText == "Zoom In" && itemData == "Chat")
+                { playerLayout.chatBrowser.zoomFactor += 0.1; playerLayout.chatBrowser.zoomFactor += 0.25 }
+            else if (itemText == "Zoom Out" && itemData == "Chat")
+                { playerLayout.chatBrowser.zoomFactor -= 0.1; playerLayout.chatBrowser.zoomFactor -= 0.25; }
+
+            // railcam options
+            else if (itemText == "Hide RailCam")
+                playerLayout.showRailCam = false;
+            else if (itemText == "Reload"  && itemData == "RailCam")
+                playerLayout.railcamBrowser.reload();
+            else if (itemText == "Zoom In" && itemData == "RailCam")
+                { playerLayout.railcamBrowser.zoomFactor += 0.1; playerLayout.railcamBrowser.zoomFactor += 0.25; }
+            else if (itemText == "Zoom Out" && itemData == "RailCam")
+                { playerLayout.railcamBrowser.zoomFactor -= 0.1; playerLayout.railcamBrowser.zoomFactor -= 0.25; }
+
+
         }
 
         onCancelled:
         {
             _actionsEnabled = true;
-            getActivePlayer().focus = true;
+            playerLayout.activeItem.focus = true;
         }
     }
 
     function changeFocus(direction)
     {
-        if (playerLayout.mediaPlayer1.focus)
-            doChangeFocus(playerLayout.mediaPlayer1, direction);
-        else if (playerLayout.mediaPlayer2.focus)
-            doChangeFocus(playerLayout.mediaPlayer2, direction);
-        else if (playerLayout.mediaPlayer3.focus)
-            doChangeFocus(playerLayout.mediaPlayer3, direction);
-        else if (playerLayout.mediaPlayer4.focus)
-            doChangeFocus(playerLayout.mediaPlayer4, direction);
-        else if (playerLayout.chatBrowser.focus)
-            doChangeFocus(playerLayout.chatBrowser, direction);
-        else if (playerLayout.railcamBrowser.focus)
-            doChangeFocus(playerLayout.railcamBrowser, direction);
-    }
-
-    function doChangeFocus(item, direction)
-    {
         var found = false;
-        var i = item;
+        var i = playerLayout.activeItem;
         do
         {
             if (direction === "left")
@@ -643,13 +636,12 @@ BaseScreen
             else if (direction === "down")
                 i = i.KeyNavigation.down;
 
-            if (i.visible && i !== item)
+            if (i.visible && i !== playerLayout.activeItem)
             {
                 i.focus = true;
-                item.focus = false;
                 return;
             }
-        } while (i !== undefined && i !== item);
+        } while (i !== undefined && i !== playerLayout.activeItem);
     }
 
     function updateChat()
@@ -678,7 +670,7 @@ BaseScreen
             else
             {
                 playerLayout.chatTitle.text = "No Chat Available";
-                playerLayout.chatBrowser.url = "about:blank"; //TODO should show no chat available
+                playerLayout.chatBrowser.url = "about:blank";
             }
         }
     }
@@ -695,7 +687,7 @@ BaseScreen
                     playerLayout.railcamBrowser.url = railcamURL;
             }
             else
-                playerLayout.railcamBrowser.url = "about:blank"; //TODO should show no railcam diagrams available
+                playerLayout.railcamBrowser.url = "about:blank";
         }
     }
 
@@ -713,8 +705,8 @@ BaseScreen
 
     function getActivePlayer()
     {
-        if (activePlayer)
-            return activePlayer;
+        if (playerLayout.activeItem.objectName.startsWith("Player"))
+            return playerLayout.activeItem;
 
         return playerLayout.mediaPlayer1;
     }
@@ -741,4 +733,67 @@ BaseScreen
 
         getActivePlayer().showInfo(restart);
     }
+
+    function showPlayerMenu()
+    {
+        popupMenu.message = "Media " + getActivePlayer().objectName + " Options";
+        popupMenu.clearMenuItems();
+
+        popupMenu.addMenuItem("", "Switch Layout");
+
+        popupMenu.addMenuItem("0", "Full Screen");
+        popupMenu.addMenuItem("0", "Full screen with PIP");
+        popupMenu.addMenuItem("0", "PBP 1/2 screen");
+        popupMenu.addMenuItem("0", "PBP 3/4 screen with overlap");
+        popupMenu.addMenuItem("0", "PBP 1 + 2");
+        popupMenu.addMenuItem("0", "Quad Screen");
+
+        popupMenu.addMenuItem("", "Switch Source");
+        popupMenu.addMenuItem("1", "Live TV");
+        popupMenu.addMenuItem("1", "Recordings");
+        popupMenu.addMenuItem("1", "Videos");
+        popupMenu.addMenuItem("1", "Webcams");
+        popupMenu.addMenuItem("1", "Web Videos");
+        popupMenu.addMenuItem("1", "ZoneMinder Cameras");
+
+        popupMenu.addMenuItem("", getActivePlayer().feed.feedName);
+        playerSources.addFeedMenu(popupMenu, getActivePlayer().feed.feedName, "2", 1);
+
+        popupMenu.addMenuItem("", "Toggle Mute");
+
+        if (getActivePlayer().feed.feedName === "Webcams")
+            popupMenu.addMenuItem("", "Report Broken WebCam");
+
+        _actionsEnabled = false;
+        popupMenu.show();
+    }
+
+    function showChatMenu()
+    {
+        popupMenu.message = "Chat Options";
+        popupMenu.clearMenuItems();
+
+        popupMenu.addMenuItem("", "Hide Chat");
+        popupMenu.addMenuItem("", "Reload", "Chat");
+        popupMenu.addMenuItem("", "Zoom In", "Chat");
+        popupMenu.addMenuItem("", "Zoom Out", "Chat");
+
+        _actionsEnabled = false;
+        popupMenu.show();
+    }
+
+    function showRailCamMenu()
+    {
+        popupMenu.message = "RailCam Options";
+        popupMenu.clearMenuItems();
+
+        popupMenu.addMenuItem("", "Hide RailCam");
+        popupMenu.addMenuItem("", "Reload", "RailCam");
+        popupMenu.addMenuItem("", "Zoom In", "RailCam");
+        popupMenu.addMenuItem("", "Zoom Out", "RailCam");
+
+        _actionsEnabled = false;
+        popupMenu.show();
+    }
+
 }
