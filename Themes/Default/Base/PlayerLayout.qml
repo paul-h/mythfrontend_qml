@@ -627,10 +627,14 @@ Item
             onPlaybackEnded: if (layout === 1) { stop(); stack.pop(); }
             onActiveFeedChanged:
             {
-                if (feed.feedList.get(feed.currentFeed).title !== "")
+                if (!feed.feedList.get(feed.currentFeed))
+                    videoTitle1.text = "";
+                else if (feed.feedList.get(feed.currentFeed).title !== undefined)
                     videoTitle1.text = feed.feedList.get(feed.currentFeed).title;
-                else
+                else if (feed.feedList.get(feed.currentFeed).url !== undefined)
                     videoTitle1.text = feed.feedList.get(feed.currentFeed).url;
+                else
+                    videoTitle1.text = "";
             }
             Tracer { color: Qt.rgba(Math.random(), Math.random(), Math.random(), 1)}
         }
@@ -663,7 +667,9 @@ Item
             onVisibleChanged: if (!visible && focus) { focus = false; player1.focus = true; }
             onActiveFeedChanged:
             {
-                if (feed.feedList.get(feed.currentFeed).title !== "")
+                if (!feed.feedList.get(feed.currentFeed))
+                    videoTitle2.text = "";
+                else if (feed.feedList.get(feed.currentFeed).title !== "")
                     videoTitle2.text = feed.feedList.get(feed.currentFeed).title;
                 else
                     videoTitle2.text = feed.feedList.get(feed.currentFeed).url;
@@ -700,7 +706,9 @@ Item
             onVisibleChanged: if (!visible && focus) { focus = false; player1.focus = true; }
             onActiveFeedChanged:
             {
-                if (feed.feedList.get(feed.currentFeed).title !== "")
+                if (!feed.feedList.get(feed.currentFeed))
+                    videoTitle3.text = "";
+                else if (feed.feedList.get(feed.currentFeed).title !== "")
                     videoTitle3.text = feed.feedList.get(feed.currentFeed).title;
                 else
                     videoTitle3.text = feed.feedList.get(feed.currentFeed).url;
@@ -737,7 +745,9 @@ Item
             onVisibleChanged: if (!visible && focus) { focus = false; player1.focus = true; }
             onActiveFeedChanged:
             {
-                if (feed.feedList.get(feed.currentFeed).title !== "")
+                if (!feed.feedList.get(feed.currentFeed))
+                    videoTitle4.text = "";
+                else if (feed.feedList.get(feed.currentFeed).title !== "")
                     videoTitle4.text = feed.feedList.get(feed.currentFeed).title;
                 else
                     videoTitle4.text = feed.feedList.get(feed.currentFeed).url;
