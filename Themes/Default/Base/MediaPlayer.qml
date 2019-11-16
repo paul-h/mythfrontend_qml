@@ -246,10 +246,14 @@ FocusScope
             x: xscale(10); y: yscale(5); width: parent.width - currFeed.width - xscale(20)
             text:
             {
-                if (feedSource.feedList.get(feedSource.currentFeed).title !== "")
+                if (!feedSource.feedList.get(feedSource.currentFeed))
+                   return "";
+                else if (feedSource.feedList.get(feedSource.currentFeed).title !== undefined)
                     return feedSource.feedList.get(feedSource.currentFeed).title
-                else
+                else if (feedSource.feedList.get(feedSource.currentFeed).url !== undefined)
                     return feedSource.feedList.get(feedSource.currentFeed).url
+                else
+                    return ""
             }
 
             verticalAlignment: Text.AlignTop
@@ -436,7 +440,9 @@ FocusScope
 
     function startPlayback()
     {
-        if (feedSource.feedList === undefined)
+        if (feedSource.feedList === undefined ||
+                feedSource.feedList.get(feedSource.currentFeed).player === undefined ||
+                feedSource.feedList.get(feedSource.currentFeed).url === undefined)
             return;
 
         var newPlayer = feedSource.feedList.get(feedSource.currentFeed).player;
@@ -535,10 +541,14 @@ FocusScope
 
         activeFeedChanged();
 
-        if (feedSource.feedList.get(feedSource.currentFeed).title !== "")
+        if (!feedSource.feedList.get(feedSource.currentFeed))
+                title.text = "";
+        else if (feedSource.feedList.get(feedSource.currentFeed).title !== undefined)
             title.text = feedSource.feedList.get(feedSource.currentFeed).title;
-        else
+        else if (feedSource.feedList.get(feedSource.currentFeed).url !== undefined)
             title.text = feedSource.feedList.get(feedSource.currentFeed).url;
+        else
+            title.text = "";
 
         if (feedSource.feedName == "ZoneMinder Cameras")
             newURL += "&connkey=" + Util.randomIntFromRange(0, 999999);
