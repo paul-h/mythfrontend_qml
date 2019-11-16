@@ -243,7 +243,7 @@ FocusScope
         TitleText
         {
             id: title
-            x: xscale(10); y: yscale(5); width: parent.width - xscale(20)
+            x: xscale(10); y: yscale(5); width: parent.width - currFeed.width - xscale(20)
             text:
             {
                 if (feedSource.feedList.get(feedSource.currentFeed).title !== "")
@@ -274,6 +274,7 @@ FocusScope
         {
             id: timeLeft
             x: parent.width - width - xscale(15); y: yscale(45)
+            width: xscale(100)
             text:
             {
                 if (getActivePlayer() === "VLC")
@@ -291,7 +292,7 @@ FocusScope
         {
             id: currFeed
             x: parent.width - width - xscale(15); y: yscale(0)
-            width: xscale(380)
+            width: xscale(200)
             text: feedSource.currentFeed + 1 + " of " + feedSource.feedCount + " (" + feedSource.feedName + ")"
 
             horizontalAlignment: Text.AlignRight
@@ -301,7 +302,7 @@ FocusScope
         {
             id: currPlayer
             x: parent.width - width - xscale(15); y: yscale(24)
-            width: xscale(380)
+            width: xscale(100)
             text: getActivePlayer();
 
             horizontalAlignment: Text.AlignRight
