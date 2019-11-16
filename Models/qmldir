@@ -1,4 +1,5 @@
 module Models
+AdventCalendarModel 1.0 AdventCalendarModel.qml
 CaptureCardModel 1.0 CaptureCardModel.qml
 ChannelGroupsModel 1.0 ChannelGroupsModel.qml
 ChannelsModel 1.0 ChannelsModel.qml
