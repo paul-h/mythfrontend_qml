@@ -147,7 +147,7 @@ FocusScope
             y: buttonsRow.y
             width: buttonsRow.width
             height: buttonsRow.height
-            color: "red"
+            color: "transparent"
             border.color: Qt.rgba(Math.random(), Math.random(), Math.random(), 1)
             border.width: 1
             visible: settings.showTextBorder
