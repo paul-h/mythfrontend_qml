@@ -624,7 +624,7 @@ Item
             enabled: visible
 
             onFocusChanged: if (focus) changeFocus(this);
-            onPlaybackEnded: if (layout === 0) { stop(); stack.pop(); }
+            onPlaybackEnded: if (layout === 1) { stop(); stack.pop(); }
             onActiveFeedChanged:
             {
                 if (feed.feedList.get(feed.currentFeed).title !== "")
