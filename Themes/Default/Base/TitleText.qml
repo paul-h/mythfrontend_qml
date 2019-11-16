@@ -42,6 +42,7 @@ Item
         verticalAlignment: root.verticalAlignment
         visible: shadowXOffset != 0 || shadowYOffset != 0 ? true : false
         wrapMode: root.multiline ? Text.WordWrap : Text.NoWrap
+        elide: Text.ElideRight
         clip: true
     }
 
@@ -58,6 +59,7 @@ Item
         horizontalAlignment: root.horizontalAlignment
         verticalAlignment: root.verticalAlignment
         wrapMode: root.multiline ? Text.WordWrap : Text.NoWrap
+        elide: Text.ElideRight
         clip: true
     }
 }
