@@ -296,7 +296,7 @@ FocusScope
         {
             id: currFeed
             x: parent.width - width - xscale(15); y: yscale(0)
-            width: xscale(200)
+            width: xscale(240)
             text: feedSource.currentFeed + 1 + " of " + feedSource.feedCount + " (" + feedSource.feedName + ")"
 
             horizontalAlignment: Text.AlignRight
