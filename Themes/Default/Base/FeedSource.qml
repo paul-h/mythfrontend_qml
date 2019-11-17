@@ -6,7 +6,6 @@ Item
 {
     id: root
 
-    // screen background
     property string feedName:  "Live TV"
     property string currentFilter: ""
     property int currentFeed: 0
@@ -115,6 +114,8 @@ Item
             switchToZMCameras(filter, currFeed);
         else if (feed === "Adhoc")
             switchToAdhoc(filter, currFeed);
+        else if (feed === "Advent Calendar")
+            switchToAdventCalendar(filter, currFeed);
         else
             log.error(Verbose.PLAYBACK, "FeedSource: switchToFeed Error - unknown feed: " + feed);
     }
@@ -189,9 +190,9 @@ Item
         feedName = "Advent Calendar";
         currentFeed = currFeed;
         currentFilter = day;
-        filters = adventCalendarFilter;
+        filters = [];
         sorters = [];
-        feedList.sourceModel = playerSources.adventCalendarList;
+        feedList.sourceModel = playerSources.adhocList;;
     }
 
     function switchToAdhoc(filter, currFeed)

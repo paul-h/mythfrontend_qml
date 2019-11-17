@@ -211,7 +211,7 @@ BaseScreen
             dbUtils.setSetting("Qml_advent" + calendarModel.calendarIndex + "Day" + calendarGrid.currentIndex, settings.hostName,  "opened");
             calendarGrid.focus = true;
             playerSources.adhocList = calendarGrid.model;
-            stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: calendarGrid.currentIndex}});
+            stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Advent Calendar", defaultFilter:  "", defaultCurrentFeed: calendarGrid.currentIndex}});
         }
         onCancelled:
         {
