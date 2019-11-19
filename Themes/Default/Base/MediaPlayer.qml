@@ -291,7 +291,7 @@ FocusScope
         {
             id: timeLeft
             x: parent.width - width - xscale(15); y: yscale(45)
-            width: xscale(100)
+            width: xscale(240)
             text:
             {
                 if (getActivePlayer() === "VLC")
@@ -319,7 +319,7 @@ FocusScope
         {
             id: currPlayer
             x: parent.width - width - xscale(15); y: yscale(24)
-            width: xscale(100)
+            width: xscale(240)
             text: getActivePlayer();
 
             horizontalAlignment: Text.AlignRight
