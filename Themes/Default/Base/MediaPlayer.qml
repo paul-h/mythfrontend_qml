@@ -91,6 +91,26 @@ FocusScope
         radius: theme.bgRadius
     }
 
+    WebEngineProfile
+    {
+        id: youtubeWebProfile
+        storageName: "YouTube"
+        offTheRecord: false
+        httpCacheType: WebEngineProfile.DiskHttpCache
+        persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
+        httpUserAgent: "Mozilla/5.0 (SMART-TV; Linux; Tizen 5.0) AppleWebKit/538.1 (KHTML, like Gecko) Version/5.0 NativeTVAds Safari/538.1"
+    }
+
+    WebEngineProfile
+    {
+        id: mythqmlWebProfile
+        storageName: "MythQML"
+        offTheRecord: false
+        httpCacheType: WebEngineProfile.DiskHttpCache
+        persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
+        //httpUserAgent: "Mozilla/5.0 (SMART-TV; Linux; Tizen 5.0) AppleWebKit/538.1 (KHTML, like Gecko) Version/5.0 NativeTVAds Safari/538.1"
+    }
+
     WebEngineView
     {
         id: webPlayer
@@ -105,14 +125,7 @@ FocusScope
 
         Component.onCompleted: settings.playbackRequiresUserGesture = false;
 
-        profile:  WebEngineProfile
-                  {
-                      storageName: "YouTube"
-                      offTheRecord: false
-                      httpCacheType: WebEngineProfile.DiskHttpCache
-                      persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
-                      httpUserAgent: "Mozilla/5.0 (SMART-TV; Linux; Tizen 5.0) AppleWebKit/538.1 (KHTML, like Gecko) Version/5.0 NativeTVAds Safari/538.1"
-                  }
+        profile: youtubeWebProfile
 
         onLoadingChanged:
         {
@@ -564,8 +577,14 @@ FocusScope
         {
             qtAVPlayer.source = newURL;
         }
-        else if (root.player === "WebBrowser" || root.player === "RailCam" || root.player === "YouTubeTV")
+        else if (root.player === "WebBrowser" || root.player === "RailCam")
         {
+            webPlayer.profile = mythqmlWebProfile;
+            webPlayer.url = newURL;
+        }
+        else if (root.player === "YouTubeTV")
+        {
+            webPlayer.profile = youtubeWebProfile;
             webPlayer.url = newURL;
         }
         else if (root.player === "YouTube")
