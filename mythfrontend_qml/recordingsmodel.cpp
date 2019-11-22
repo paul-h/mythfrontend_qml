@@ -214,7 +214,7 @@ void RecordingsModel::processDownload(QByteArray buffer)
                 addDoubleData(data, programNode, "Stars");
                 addDateTimeData(data, programNode, "LastModified");
                 addIntData(data, programNode, "ProgramFlags");
-                addDateData(data, programNode, "Airdate");
+                addDateData(data, programNode, "Airdate", "yyyy-MM-dd");
                 addStringData(data, programNode, "Inetref");
                 addIntData(data, programNode, "Season");
                 addIntData(data, programNode, "Episode");
