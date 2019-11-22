@@ -74,9 +74,9 @@ BaseScreen
         KeyNavigation.down: ipEdit
         onClicked:
         {
-            dbUtils.setSetting("Qml_masterIP",    settings.hostName, ipEdit.text);
-            dbUtils.setSetting("Qml_masterPort",  settings.hostName, portEdit.text);
-            dbUtils.setSetting("Qml_securityPin", settings.hostName, pinEdit.text);
+            dbUtils.setSetting("MasterIP",    settings.hostName, ipEdit.text);
+            dbUtils.setSetting("MasterPort",  settings.hostName, portEdit.text);
+            dbUtils.setSetting("SecurityPin", settings.hostName, pinEdit.text);
 
             settings.masterIP    = ipEdit.text;
             settings.masterPort  = parseInt(portEdit.text);

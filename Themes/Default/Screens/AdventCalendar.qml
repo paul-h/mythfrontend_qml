@@ -13,7 +13,7 @@ BaseScreen
     {
         showTitle(true, "Advent Calendar 2019");
 
-        var index = dbUtils.getSetting("Qml_adventIndex", settings.hostName, "");
+        var index = dbUtils.getSetting("AdventIndex", settings.hostName, "");
 
         if (index !== "")
             calendarModel.calendarIndex = index;
@@ -24,10 +24,10 @@ BaseScreen
         for (var i = 0; i < calendarModel.model.count; i++)
         {
             var opened = calendarModel.model.get(i).opened ? "opened" : "closed";
-            dbUtils.setSetting("Qml_advent" + calendarModel.calendarIndex + "Day" + i, settings.hostName, opened);
+            dbUtils.setSetting("Advent" + calendarModel.calendarIndex + "Day" + i, settings.hostName, opened);
         }
 
-        dbUtils.setSetting("Qml_adventIndex", settings.hostName, calendarModel.calendarIndex);
+        dbUtils.setSetting("AdventIndex", settings.hostName, calendarModel.calendarIndex);
     }
 
     AdventCalendarModel
@@ -39,7 +39,7 @@ BaseScreen
 
             for (var i = 0; i < model.count; i++)
             {
-                var day = dbUtils.getSetting("Qml_advent" + calendarIndex + "Day" + i, settings.hostName);
+                var day = dbUtils.getSetting("Advent" + calendarIndex + "Day" + i, settings.hostName);
                 model.get(i).opened = (day === "opened");
             }
         }
@@ -164,7 +164,7 @@ BaseScreen
                 for (var i = 0; i < calendarModel.model.count; i++)
                 {
                     calendarModel.model.get(i).opened = false;
-                    dbUtils.setSetting("Qml_advent" + calendarModel.calendarIndex + "Day" + i, settings.hostName,  "closed");
+                    dbUtils.setSetting("Advent" + calendarModel.calendarIndex + "Day" + i, settings.hostName,  "closed");
                 }
             }
             else if (itemData !== "")
@@ -208,7 +208,7 @@ BaseScreen
         onAccepted:
         {
             calendarModel.model.get(calendarGrid.currentIndex).opened = true
-            dbUtils.setSetting("Qml_advent" + calendarModel.calendarIndex + "Day" + calendarGrid.currentIndex, settings.hostName,  "opened");
+            dbUtils.setSetting("Advent" + calendarModel.calendarIndex + "Day" + calendarGrid.currentIndex, settings.hostName,  "opened");
             calendarGrid.focus = true;
             playerSources.adhocList = calendarGrid.model;
             stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Advent Calendar", defaultFilter:  "", defaultCurrentFeed: calendarGrid.currentIndex}});

@@ -20,13 +20,14 @@ BaseScreen
 
         while (stack.busy) {};
 
-        filterCategory = dbUtils.getSetting("Qml_lastWebcamCategory", settings.hostName)
+        filterCategory = dbUtils.getSetting("LastWebcamCategory", settings.hostName)
 
         if (filterCategory == "<All Webcams>" || filterCategory == "")
             footer.greenText = "Show (All Webcams)"
         else
             footer.greenText = "Show (" + filterCategory + ")"
 
+        webcamGrid.currentIndex = 0;
         updateWebcamDetails();
 
         delay(1500, checkForUpdates);
@@ -34,8 +35,8 @@ BaseScreen
 
     Component.onDestruction:
     {
-        dbUtils.setSetting("Qml_lastWebcamPath", settings.hostName, playerSources.webcamPaths[playerSources.webcamPathIndex])
-        dbUtils.setSetting("Qml_lastWebcamCategory", settings.hostName, filterCategory)
+        dbUtils.setSetting("LastWebcamPath", settings.hostName, playerSources.webcamPaths[playerSources.webcamPathIndex])
+        dbUtils.setSetting("LastWebcamCategory", settings.hostName, filterCategory)
     }
 
     property list<QtObject> titleSorter:
@@ -149,7 +150,7 @@ BaseScreen
         else if (event.key === Qt.Key_R)
         {
             // for testing reset the last checked to now -4 weeks
-            dbUtils.setSetting("Qml_lastWebcamCheck", settings.hostName, Util.addDays(Date(Date.now()), -28));
+            dbUtils.setSetting("LastWebcamCheck", settings.hostName, Util.addDays(Date(Date.now()), -28));
         }
     }
 
@@ -391,7 +392,7 @@ BaseScreen
     function checkForUpdates()
     {
         var defaultDate = Date(Date.now());
-        var lastChecked = Date.parse(dbUtils.getSetting("Qml_lastWebcamCheck", settings.hostName, defaultDate));
+        var lastChecked = Date.parse(dbUtils.getSetting("LastWebcamCheck", settings.hostName, defaultDate));
         var x;
         var firstAdded = true;
         var firstModified = true;
@@ -477,7 +478,7 @@ BaseScreen
         // do we need to show any new or updated webcams
         if (updatesModel.count > 0)
         {
-            dbUtils.setSetting("Qml_lastWebcamCheck", settings.hostName, Date(Date.now()));
+            dbUtils.setSetting("LastWebcamCheck", settings.hostName, Date(Date.now()));
             messageSound.play();
             updatesDialog.show();
         }

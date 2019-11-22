@@ -97,8 +97,8 @@ BaseScreen
         KeyNavigation.down: themeSelector
         onClicked:
         {
-            dbUtils.setSetting("Qml_theme",           settings.hostName, themeModel.get(themeSelector.currentIndex).itemText);
-            dbUtils.setSetting("Qml_startFullScreen", settings.hostName, startFullscreenCheck.checked);
+            dbUtils.setSetting("Theme",           settings.hostName, themeModel.get(themeSelector.currentIndex).itemText);
+            dbUtils.setSetting("StartFullScreen", settings.hostName, startFullscreenCheck.checked);
 
             settings.themeName       = themeModel.get(themeSelector.currentIndex).itemText;
             settings.startFullscreen = startFullscreenCheck.checked;

@@ -44,8 +44,12 @@ int main(int argc, char *argv[])
     // create the context
     gContext = new Context("MythLauncherQML", logLevel, verbose);
 
-    // attempt to connect to the database
-    if (!gContext->loadDBSettings())
+    // attempt to connect to the local mythqml database
+    if (!gContext->initMythQMLDB())
+        return 1;
+
+    // attempt to connect to the MythTV database
+    if (!gContext->loadMythDBSettings())
         return 1;
 
     gContext->init();

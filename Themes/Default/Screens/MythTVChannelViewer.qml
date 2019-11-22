@@ -24,7 +24,7 @@ BaseScreen
 
         while (stack.busy) {};
 
-        filterSourceID = dbUtils.getSetting("Qml_lastChannelSourceID", settings.hostName)
+        filterSourceID = dbUtils.getSetting("LastChannelSourceID", settings.hostName)
 
         if (filterSourceID === -1)
             footer.greenText = "Show (All Channels)"
@@ -43,7 +43,7 @@ BaseScreen
 
     Component.onDestruction:
     {
-        dbUtils.setSetting("Qml_lastChannelSourceID", settings.hostName, filterSourceID)
+        dbUtils.setSetting("LastChannelSourceID", settings.hostName, filterSourceID)
     }
 
     property list<QtObject> chanNameSorter:

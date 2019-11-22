@@ -99,7 +99,7 @@ BaseScreen
     {
         shortcut: "R" // for testing reset the last shown setting to -1
         enabled: browser.focus
-        onTriggered: dbUtils.setSetting("Qml_lastWhatsNewShown", settings.hostName, -1);
+        onTriggered: dbUtils.setSetting("LastWhatsNewShown", settings.hostName, -1);
     }
 
     WhatsNewModel
@@ -155,7 +155,7 @@ BaseScreen
 
         browser.url = whatsNewModel.get(currentPage).url;
 
-        if (currentPage > dbUtils.getSetting("Qml_lastWhatsNewShown", settings.hostName, "-1"))
+        if (currentPage > dbUtils.getSetting("LastWhatsNewShown", settings.hostName, "-1"))
             dbUtils.setSetting("Qml_lastWhatsNewShown", settings.hostName, currentPage);
     }
 
