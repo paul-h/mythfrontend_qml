@@ -132,10 +132,10 @@ FocusScope
             if (loadRequest.status === WebEngineLoadRequest.LoadSucceededStatus)
             {
                 // hack to defeat Chrome's Web Audio autoplay policy
-                //if (feedSource.feedList.get(feedSource.currentFeed).url.includes("railcam.co.uk"))
-                //{
-                //     runJavaScript("document.getElementsByClassName(\"drawer-icon media-control-icon\")[0].click();");
-                //}
+                if (feedSource.feedList.get(feedSource.currentFeed).url.includes("railcam.co.uk"))
+                {
+                     runJavaScript("document.getElementsByClassName(\"drawer-icon media-control-icon\")[0].click();");
+                }
             }
         }
     }
