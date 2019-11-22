@@ -27,14 +27,14 @@ public slots:
 
 public:
     void init(void);
-    bool loadDBSettings(void);
+    bool initMythQMLDB(void);
+    bool loadMythDBSettings(void);
     QString systemID(void);
 
     QString m_appName;
 
     QQmlApplicationEngine *m_engine;
     Logger *m_logger;
-    QSqlDatabase m_db;
     Settings *m_settings;
     DatabaseUtils *m_databaseUtils;
     MythUtils *m_mythUtils;
@@ -42,11 +42,17 @@ public:
     MythQmlAbstractUrlInterceptor *m_urlInterceptor;
 
     QString m_systemID;
-    QString m_dbHost;
-    QString m_dbPort;
-    QString m_dbUser;
-    QString m_dbPassword;
-    QString m_dbName;
+
+    // local DB
+    QSqlDatabase m_mythQMLDB;
+
+    // MythTV DB
+    QSqlDatabase m_mythDB;
+    QString m_mythDBHost;
+    QString m_mythDBPort;
+    QString m_mythDBUser;
+    QString m_mythDBPassword;
+    QString m_mythDBName;
 };
 
 extern Context *gContext;

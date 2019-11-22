@@ -130,7 +130,7 @@ Item
                     if (window.backgroundVideoVolume * 100 >= 1.00)
                         window.backgroundVideoVolume -= 0.01;
 
-                    dbUtils.setSetting("Qml_backgroundVideoVolume", settings.hostName, window.backgroundVideoVolume);
+                    dbUtils.setSetting("BackgroundVideoVolume", settings.hostName, window.backgroundVideoVolume);
 
                     showNotification("Background Volume: " + Math.round(backgroundVideoVolume * 100) + "%");
                 }
@@ -140,7 +140,7 @@ Item
                     if (window.backgroundVideoVolume * 100 <= 99)
                         window.backgroundVideoVolume += 0.01;
 
-                    dbUtils.setSetting("Qml_backgroundVideoVolume", settings.hostName, window.backgroundVideoVolume);
+                    dbUtils.setSetting("BackgroundVideoVolume", settings.hostName, window.backgroundVideoVolume);
 
                     showNotification("Background Volume: " + Math.round(backgroundVideoVolume * 100) + "%");
                 }
@@ -308,8 +308,8 @@ Item
             window.soundEffectsVolume = volumeModel.get(effectsSelector.currentIndex).volume / 100;
             window.backgroundVideoVolume = volumeModel.get(backgroundSelector.currentIndex).volume / 100;
 
-            dbUtils.setSetting("Qml_soundEffectsVolume", settings.hostName, window.soundEffectsVolume);
-            dbUtils.setSetting("Qml_backgroundVideoVolume", settings.hostName, window.backgroundVideoVolume);
+            dbUtils.setSetting("SoundEffectsVolume", settings.hostName, window.soundEffectsVolume);
+            dbUtils.setSetting("BackgroundVideoVolume", settings.hostName, window.backgroundVideoVolume);
         }
 
         onCancelled:

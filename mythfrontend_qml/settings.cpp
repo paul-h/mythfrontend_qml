@@ -19,9 +19,9 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     setHostName(hostName);
 
     // master backend
-    setMasterIP(gContext->m_databaseUtils->getSetting("Qml_masterIP", hostName));
-    setMasterPort(gContext->m_databaseUtils->getSetting("Qml_masterPort", hostName).toInt());
-    setSecurityPin(gContext->m_databaseUtils->getSetting("Qml_securityPin", hostName));
+    setMasterIP(gContext->m_databaseUtils->getSetting("MasterIP", hostName));
+    setMasterPort(gContext->m_databaseUtils->getSetting("MasterPort", hostName).toInt());
+    setSecurityPin(gContext->m_databaseUtils->getSetting("SecurityPin", hostName));
 
     // system paths
     setConfigPath(QDir::homePath() + "/.mythqml/");
@@ -29,24 +29,24 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     setQmlPath(QString(SHAREPATH) + "qml/Themes/" + theme + "/");
 
     // feed source paths
-    setVideoPath(gContext->m_databaseUtils->getSetting("Qml_videoPath", hostName));
-    setPicturePath(gContext->m_databaseUtils->getSetting("Qml_picturePath", hostName));
-    setSdChannels(gContext->m_databaseUtils->getSetting("Qml_sdChannels", hostName));
-    setWebcamPath(gContext->m_databaseUtils->getSetting("Qml_webcamPath", hostName));
+    setVideoPath(gContext->m_databaseUtils->getSetting("VideoPath", hostName));
+    setPicturePath(gContext->m_databaseUtils->getSetting("PicturePath", hostName));
+    setSdChannels(gContext->m_databaseUtils->getSetting("SdChannels", hostName));
+    setWebcamPath(gContext->m_databaseUtils->getSetting("WebcamPath", hostName));
 
     // set the websocket url using the master backend as a starting point
     QUrl url(QString("ws://%1:%2").arg(masterIP()).arg(masterPort() + 5));
     setWebSocketUrl(url.toString());
 
     // start fullscreen
-    setStartFullscreen((gContext->m_databaseUtils->getSetting("Qml_startFullScreen", hostName) == "true"));
+    setStartFullscreen((gContext->m_databaseUtils->getSetting("StartFullScreen", hostName) == "true"));
 
     // vbox
-    setVboxFreeviewIP(gContext->m_databaseUtils->getSetting("Qml_vboxFreeviewIP", hostName));
-    setVboxFreesatIP(gContext->m_databaseUtils->getSetting("Qml_vboxFreesatIP", hostName));
+    setVboxFreeviewIP(gContext->m_databaseUtils->getSetting("VboxFreeviewIP", hostName));
+    setVboxFreesatIP(gContext->m_databaseUtils->getSetting("VboxFreesatIP", hostName));
 
     // hdmiEncoder
-    setHdmiEncoder(gContext->m_databaseUtils->getSetting("Qml_hdmiEncoder", hostName));
+    setHdmiEncoder(gContext->m_databaseUtils->getSetting("HdmiEncoder", hostName));
 
     // menu theme
     QString menuTheme = "classic"; // just use this for now
@@ -61,85 +61,85 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     setOsdTimeoutLong(30000);
 
     // zoneminder settings
-    setZMIP(gContext->m_databaseUtils->getSetting("Qml_zmIP", hostName));
-    setZMUserName(gContext->m_databaseUtils->getSetting("Qml_zmUserName", hostName));
-    setZMPassword(gContext->m_databaseUtils->getSetting("Qml_zmPassword", hostName));
+    setZMIP(gContext->m_databaseUtils->getSetting("ZmIP", hostName));
+    setZMUserName(gContext->m_databaseUtils->getSetting("ZmUserName", hostName));
+    setZMPassword(gContext->m_databaseUtils->getSetting("ZmPassword", hostName));
 
     // shutdown settings
-    setFrontendIdleTime(gContext->m_databaseUtils->getSetting("Qml_frontendIdleTime", hostName).toInt());
-    setLauncherIdleTime(gContext->m_databaseUtils->getSetting("Qml_launcherIdleTime", hostName).toInt());
-    setRebootCommand(gContext->m_databaseUtils->getSetting("Qml_rebootCommand", hostName));
-    setShutdownCommand(gContext->m_databaseUtils->getSetting("Qml_shutdownCommand", hostName));
+    setFrontendIdleTime(gContext->m_databaseUtils->getSetting("FrontendIdleTime", hostName).toInt());
+    setLauncherIdleTime(gContext->m_databaseUtils->getSetting("LauncherIdleTime", hostName).toInt());
+    setRebootCommand(gContext->m_databaseUtils->getSetting("RebootCommand", hostName));
+    setShutdownCommand(gContext->m_databaseUtils->getSetting("ShutdownCommand", hostName));
 
     // auto start
-    setAutoStartFrontend(gContext->m_databaseUtils->getSetting("Qml_autoStartFrontend", hostName));
+    setAutoStartFrontend(gContext->m_databaseUtils->getSetting("AutoStartFrontend", hostName));
 }
 
 void Settings::setDefaultSettings(const QString &hostName)
 {
     // master backend
-    if (gContext->m_databaseUtils->getSetting("Qml_masterIP", hostName) == "")
+    if (gContext->m_databaseUtils->getSetting("MasterIP", hostName) == "")
     {
         setMasterIP("127.0.0.1");
-        gContext->m_databaseUtils->setSetting("Qml_masterIP", hostName, "127.0.0.1");
+        gContext->m_databaseUtils->setSetting("MasterIP", hostName, "127.0.0.1");
     }
 
-    if (gContext->m_databaseUtils->getSetting("Qml_masterPort", hostName) == "")
+    if (gContext->m_databaseUtils->getSetting("MasterPort", hostName) == "")
     {
         setMasterPort(6544);
-        gContext->m_databaseUtils->setSetting("Qml_masterPort", hostName, "6544");
+        gContext->m_databaseUtils->setSetting("MasterPort", hostName, "6544");
     }
 
-    if (gContext->m_databaseUtils->getSetting("Qml_securityPin", hostName) == "")
+    if (gContext->m_databaseUtils->getSetting("SecurityPin", hostName) == "")
     {
         setSecurityPin("0000"); // TODO check this is the default
-        gContext->m_databaseUtils->setSetting("Qml_securityPin", hostName, "0000");
+        gContext->m_databaseUtils->setSetting("SecurityPin", hostName, "0000");
     }
 
     // feed source paths
-    if (gContext->m_databaseUtils->getSetting("Qml_webcamPath", hostName) == "")
+    if (gContext->m_databaseUtils->getSetting("WebcamPath", hostName) == "")
     {
         setWebcamPath("https://mythqml.net/downloads/webcams/");
-        gContext->m_databaseUtils->setSetting("Qml_webcamPath", hostName, "https://mythqml.net/downloads/webcams/");
+        gContext->m_databaseUtils->setSetting("WebcamPath", hostName, "https://mythqml.net/downloads/webcams/");
     }
 
     // start fullscreen
-    if (gContext->m_databaseUtils->getSetting("Qml_startFullScreen", hostName) == "")
+    if (gContext->m_databaseUtils->getSetting("StartFullScreen", hostName) == "")
     {
         setStartFullscreen(true);
-        gContext->m_databaseUtils->setSetting("Qml_startFullScreen", hostName, "true");
+        gContext->m_databaseUtils->setSetting("StartFullScreen", hostName, "true");
     }
 
     // shutdown settings
-    if (gContext->m_databaseUtils->getSetting("Qml_frontendIdleTime", hostName) == "")
+    if (gContext->m_databaseUtils->getSetting("FrontendIdleTime", hostName) == "")
     {
         setFrontendIdleTime(90);
-        gContext->m_databaseUtils->setSetting("Qml_frontendIdleTime", hostName, "90");
+        gContext->m_databaseUtils->setSetting("FrontendIdleTime", hostName, "90");
     }
 
-    if (gContext->m_databaseUtils->getSetting("Qml_launcherIdleTime", hostName) == "")
+    if (gContext->m_databaseUtils->getSetting("LauncherIdleTime", hostName) == "")
     {
         setLauncherIdleTime(10);
-        gContext->m_databaseUtils->setSetting("Qml_launcherIdleTime", hostName, "10");
+        gContext->m_databaseUtils->setSetting("LauncherIdleTime", hostName, "10");
     }
 
-    if (gContext->m_databaseUtils->getSetting("Qml_rebootCommand", hostName) == "")
+    if (gContext->m_databaseUtils->getSetting("RebootCommand", hostName) == "")
     {
         setRebootCommand("sudo /sbin/reboot");
-        gContext->m_databaseUtils->setSetting("Qml_rebootCommand", hostName, "sudo /sbin/reboot");
+        gContext->m_databaseUtils->setSetting("RebootCommand", hostName, "sudo /sbin/reboot");
     }
 
-    if (gContext->m_databaseUtils->getSetting("Qml_shutdownCommand", hostName) == "")
+    if (gContext->m_databaseUtils->getSetting("ShutdownCommand", hostName) == "")
     {
         setShutdownCommand("sudo /sbin/poweroff");
-        gContext->m_databaseUtils->setSetting("Qml_shutdownCommand", hostName, "sudo /sbin/poweroff");
+        gContext->m_databaseUtils->setSetting("shutdownCommand", hostName, "sudo /sbin/poweroff");
     }
 
     // auto start
-    if (gContext->m_databaseUtils->getSetting("Qml_autoStartFrontend", hostName) == "")
+    if (gContext->m_databaseUtils->getSetting("AutoStartFrontend", hostName) == "")
     {
         setAutoStartFrontend("QML_Frontend");
-        gContext->m_databaseUtils->setSetting("Qml_autoStartFrontend", hostName, "QML_Frontend");
+        gContext->m_databaseUtils->setSetting("AutoStartFrontend", hostName, "QML_Frontend");
     }
 }
 

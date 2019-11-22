@@ -22,7 +22,7 @@ BaseScreen
 
         while (stack.busy) {};
 
-        filterCategory = dbUtils.getSetting("Qml_lastWebvideoCategory", settings.hostName)
+        filterCategory = dbUtils.getSetting("LastWebvideoCategory", settings.hostName)
 
         if (filterCategory == "<All Web Videos>" || filterCategory == "")
             footer.greenText = "Show (All Web Videos)"
@@ -34,8 +34,8 @@ BaseScreen
 
     Component.onDestruction:
     {
-        dbUtils.setSetting("Qml_lastWebvideoPath", settings.hostName, playerSources.webvideoPaths[playerSources.webvideoPathIndex])
-        dbUtils.setSetting("Qml_lastWebvideoCategory", settings.hostName, filterCategory)
+        dbUtils.setSetting("LastWebvideoPath", settings.hostName, playerSources.webvideoPaths[playerSources.webvideoPathIndex])
+        dbUtils.setSetting("LastWebvideoCategory", settings.hostName, filterCategory)
     }
 
     property list<QtObject> titleSorter:

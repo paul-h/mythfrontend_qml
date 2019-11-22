@@ -73,9 +73,9 @@ BaseScreen
         KeyNavigation.down: zmIPEdit
         onClicked:
         {
-            dbUtils.setSetting("Qml_zmIP",         settings.hostName, zmIPEdit.text);
-            dbUtils.setSetting("Qml_zmUserName",   settings.hostName, zmUserNameEdit.text);
-            dbUtils.setSetting("Qml_zmPassword",   settings.hostName, zmPasswordEdit.text);
+            dbUtils.setSetting("ZmIP",         settings.hostName, zmIPEdit.text);
+            dbUtils.setSetting("ZmUserName",   settings.hostName, zmUserNameEdit.text);
+            dbUtils.setSetting("ZmPassword",   settings.hostName, zmPasswordEdit.text);
 
             settings.zmIP       = zmIPEdit.text;
             settings.zmUserName = zmUserNameEdit.text;

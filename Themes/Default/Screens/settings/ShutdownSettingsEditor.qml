@@ -94,10 +94,10 @@ BaseScreen
         KeyNavigation.down: frontendIdleTimeEdit
         onClicked:
         {
-            dbUtils.setSetting("Qml_frontendIdleTime", settings.hostName, frontendIdleTimeEdit.text);
-            dbUtils.setSetting("Qml_launcherIdleTime", settings.hostName, launcherIdleTimeEdit.text);
-            dbUtils.setSetting("Qml_rebootCommand",   settings.hostName, rebootCmdEdit.text);
-            dbUtils.setSetting("Qml_shutdownCommand", settings.hostName, shutdownCmdEdit.text);
+            dbUtils.setSetting("FrontendIdleTime", settings.hostName, frontendIdleTimeEdit.text);
+            dbUtils.setSetting("LauncherIdleTime", settings.hostName, launcherIdleTimeEdit.text);
+            dbUtils.setSetting("RebootCommand",   settings.hostName, rebootCmdEdit.text);
+            dbUtils.setSetting("ShutdownCommand", settings.hostName, shutdownCmdEdit.text);
 
             settings.frontendIdleTime = frontendIdleTimeEdit.text;
             settings.launcherIdleTime = launcherIdleTimeEdit.text;

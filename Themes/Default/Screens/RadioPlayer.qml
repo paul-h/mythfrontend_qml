@@ -52,7 +52,7 @@ BaseScreen
         Component.onCompleted:
         {
             // try to restore the last playing station
-            var url = dbUtils.getSetting("Qml_radioPlayerBookmark", settings.hostName)
+            var url = dbUtils.getSetting("RadioPlayerBookmark", settings.hostName)
 
             for (var i = 0; i < radioStreamsModel.rowCount(); i++)
             {
@@ -76,7 +76,7 @@ BaseScreen
 
             streamPlayer.mrl = url;
 
-            var vol = dbUtils.getSetting("Qml_radioPlayerVolume", settings.hostName)
+            var vol = dbUtils.getSetting("RadioPlayerVolume", settings.hostName)
             if (vol !== undefined && vol !== "")
                 audio.volume = vol;
             else
@@ -87,7 +87,7 @@ BaseScreen
 
         Component.onDestruction:
         {
-            dbUtils.setSetting("Qml_radioPlayerBookmark", settings.hostName, mrl)
+            dbUtils.setSetting("RadioPlayerBookmark", settings.hostName, mrl)
         }
     }
 
@@ -346,7 +346,7 @@ BaseScreen
         else
             streamPlayer.audio.volume = Math.min(200.0, streamPlayer.audio.volume + amount);
 
-        dbUtils.setSetting("Qml_radioPlayerVolume", settings.hostName, streamPlayer.audio.volume)
+        dbUtils.setSetting("RadioPlayerVolume", settings.hostName, streamPlayer.audio.volume)
     }
 
     function toggleMute()

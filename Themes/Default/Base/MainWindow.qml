@@ -38,8 +38,8 @@ Window
     {
         eventListener.listenTo(window)
 
-        soundEffectsVolume = dbUtils.getSetting("Qml_soundEffectsVolume", settings.hostName, "1.0");
-        backgroundVideoVolume = dbUtils.getSetting("Qml_backgroundVideoVolume", settings.hostName, "1.0");
+        soundEffectsVolume = dbUtils.getSetting("SoundEffectsVolume", settings.hostName, "1.0");
+        backgroundVideoVolume = dbUtils.getSetting("BackgroundVideoVolume", settings.hostName, "1.0");
     }
 
     Connections
@@ -554,12 +554,16 @@ Window
 
     function checkWhatsNew()
     {
-        var lastShownIndex = parseInt(dbUtils.getSetting("Qml_lastWhatsNewShown", settings.hostName, -1)) + 1;
+        var lastShownIndex = parseInt(dbUtils.getSetting("LastWhatsNewShown", settings.hostName, -1));
 
-        if (lastShownIndex < whatsNewModel.count)
+        if (lastShownIndex === -1)
+        {
+            // must be first run?
+        }
+        else if (lastShownIndex + 1 < whatsNewModel.count)
         {
             messageSound.play();
-            stack.push({item: mythUtils.findThemeFile("Screens/WhatsNew.qml"), properties:{currentPage:  lastShownIndex}});
+            stack.push({item: mythUtils.findThemeFile("Screens/WhatsNew.qml"), properties:{currentPage:  lastShownIndex + 1}});
         }
     }
 

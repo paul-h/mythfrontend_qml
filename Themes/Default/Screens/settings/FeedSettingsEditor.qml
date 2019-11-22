@@ -206,13 +206,13 @@ BaseScreen
         KeyNavigation.down: videoPathEdit
         onClicked:
         {
-            dbUtils.setSetting("Qml_videoPath    ",   settings.hostName, videoPathEdit.text);
-            dbUtils.setSetting("Qml_picturePath",     settings.hostName, picturePathEdit.text);
-            dbUtils.setSetting("Qml_sdChannels",      settings.hostName, sdChannelsEdit.text);
-            dbUtils.setSetting("Qml_vboxFreeviewIP",  settings.hostName, vboxFreeviewIPEdit.text);
-            dbUtils.setSetting("Qml_vboxFreesatIP",   settings.hostName, vboxFreesatIPEdit.text);
-            dbUtils.setSetting("Qml_hdmiEncoder",     settings.hostName, hdmiEncoderEdit.text);
-            dbUtils.setSetting("Qml_webcamPath",      settings.hostName, webcamPathEdit.text);
+            dbUtils.setSetting("VideoPath    ",   settings.hostName, videoPathEdit.text);
+            dbUtils.setSetting("PicturePath",     settings.hostName, picturePathEdit.text);
+            dbUtils.setSetting("SdChannels",      settings.hostName, sdChannelsEdit.text);
+            dbUtils.setSetting("VboxFreeviewIP",  settings.hostName, vboxFreeviewIPEdit.text);
+            dbUtils.setSetting("VboxFreesatIP",   settings.hostName, vboxFreesatIPEdit.text);
+            dbUtils.setSetting("HdmiEncoder",     settings.hostName, hdmiEncoderEdit.text);
+            dbUtils.setSetting("WebcamPath",      settings.hostName, webcamPathEdit.text);
 
             settings.videoPath       = videoPathEdit.text;
             settings.picturePath     = picturePathEdit.text;
