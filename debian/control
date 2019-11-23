@@ -1,8 +1,8 @@
 Source: mythfrontend-qml
 Section: graphics
 Priority: optional
-Maintainer: Paul Harrison <pharrison@mythtv.org>
-Uploaders: Paul Harrison <pharrison@mythtv.org>
+Maintainer: Paul Harrison <paul@mythqml.net>
+Uploaders: Paul Harrison <paul@mythqml.net>
 Homepage: https://mythqml.net
 Standards-Version: 3.9.4
 Vcs-Git: https://github.com/paul-h/packaging.git
@@ -21,7 +21,6 @@ Build-Depends:  debhelper (>= 9),
                 python-mysqldb,
                 python-pycurl,
                 python-urlgrabber,
-                libvlc-bin,
                 libvlccore-dev,
                 libvlc-dev,
                 zlib1g-dev
