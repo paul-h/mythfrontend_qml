@@ -1,9 +1,9 @@
 Source: mythfrontend-qml
 Section: graphics
 Priority: optional
-Maintainer: Paul Harrison <pharrison@mythtv.org>
-Uploaders: Paul Harrison <pharrison@mythtv.org>
-Homepage: http://www.mythtv.org
+Maintainer: Paul Harrison <paul@mythqml.net>
+Uploaders: Paul Harrison <paul@mythqml.net>
+Homepage: http://www.mythqml.net
 Standards-Version: 3.9.4
 Vcs-Git: https://github.com/paul-h/packaging.git
 Build-Conflicts: libqt3-mt-dev
