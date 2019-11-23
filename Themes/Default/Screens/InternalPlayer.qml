@@ -489,7 +489,13 @@ BaseScreen
         InfoText
         {
             x: xscale(1025); y: yscale(5); width: xscale(285); height: yscale(32)
-            text: "RailCam Diagrams"
+            text:
+            {
+                if (getActivePlayer().player === "RailCam")
+                    "RailCam Diagrams";
+                else
+                    "";
+            }
         }
     }
 
