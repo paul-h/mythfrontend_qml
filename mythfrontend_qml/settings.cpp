@@ -18,6 +18,13 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     setThemeName(theme);
     setHostName(hostName);
 
+    // mysql database
+    setMysqlIP(gContext->m_databaseUtils->getSetting("MysqlIP", hostName));
+    setMysqlPort(gContext->m_databaseUtils->getSetting("MysqlPort", hostName).toInt());
+    setMysqlUser(gContext->m_databaseUtils->getSetting("MysqlUser", hostName));
+    setMysqlPassword(gContext->m_databaseUtils->getSetting("MysqlPassword", hostName));
+    setMysqlDBName(gContext->m_databaseUtils->getSetting("MysqlDBName", hostName));
+
     // master backend
     setMasterIP(gContext->m_databaseUtils->getSetting("MasterIP", hostName));
     setMasterPort(gContext->m_databaseUtils->getSetting("MasterPort", hostName).toInt());
@@ -77,6 +84,37 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
 
 void Settings::setDefaultSettings(const QString &hostName)
 {
+    // mysql
+    if (gContext->m_databaseUtils->getSetting("MysqlIP", hostName) == "")
+    {
+        setMysqlIP("127.0.0.1");
+        gContext->m_databaseUtils->setSetting("MysqlIP", hostName, "127.0.0.1");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("MysqlPort", hostName) == "")
+    {
+        setMysqlPort(3306);
+        gContext->m_databaseUtils->setSetting("MysqlPort", hostName, "3306");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("MysqlUser", hostName) == "")
+    {
+        setMysqlUser("mythtv");
+        gContext->m_databaseUtils->setSetting("MysqlUser", hostName, "mythtv");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("MysqlPassword", hostName) == "")
+    {
+        setMysqlPassword("mythtv");
+        gContext->m_databaseUtils->setSetting("MysqlPassword", hostName, "mythtv");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("MysqlDBName", hostName) == "")
+    {
+        setMysqlDBName("mythconverg");
+        gContext->m_databaseUtils->setSetting("MysqlDBName", hostName, "mythconverg");
+    }
+
     // master backend
     if (gContext->m_databaseUtils->getSetting("MasterIP", hostName) == "")
     {
@@ -132,7 +170,7 @@ void Settings::setDefaultSettings(const QString &hostName)
     if (gContext->m_databaseUtils->getSetting("ShutdownCommand", hostName) == "")
     {
         setShutdownCommand("sudo /sbin/poweroff");
-        gContext->m_databaseUtils->setSetting("shutdownCommand", hostName, "sudo /sbin/poweroff");
+        gContext->m_databaseUtils->setSetting("ShutdownCommand", hostName, "sudo /sbin/poweroff");
     }
 
     // auto start
@@ -143,6 +181,62 @@ void Settings::setDefaultSettings(const QString &hostName)
     }
 }
 
+// Mysql Database
+QString Settings::mysqlIP(void)
+{
+    return m_mysqlIP;
+}
+
+void Settings::setMysqlIP(const QString &mysqlIP)
+{
+    m_mysqlIP = mysqlIP;
+    emit mysqlIPChanged();
+}
+
+int Settings::mysqlPort(void)
+{
+    return m_mysqlPort;
+}
+
+void Settings::setMysqlPort(int mysqlPort)
+{
+    m_mysqlPort = mysqlPort;
+    emit mysqlPortChanged();
+}
+
+QString Settings::mysqlUser(void)
+{
+    return m_mysqlUser;
+}
+
+void Settings::setMysqlUser(const QString &mysqlUser)
+{
+    m_mysqlUser = mysqlUser;
+    emit mysqlUserChanged();
+}
+
+QString Settings::mysqlPassword(void)
+{
+    return m_mysqlPassword;
+}
+
+void Settings::setMysqlPassword(const QString &mysqlPassword)
+{
+    m_mysqlPassword = mysqlPassword;
+    emit mysqlPasswordChanged();
+}
+QString Settings::mysqlDBName(void)
+{
+    return m_mysqlDBName;
+}
+
+void Settings::setMysqlDBName(const QString &mysqlDBName)
+{
+    m_mysqlDBName = mysqlDBName;
+    emit mysqlDBNameChanged();
+}
+
+// MythTV backend
 QString Settings::themeName(void)
 {
     return m_themeName;

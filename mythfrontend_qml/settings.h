@@ -7,6 +7,14 @@
 class Settings : public QObject
 {
     Q_OBJECT
+    // mysql DB
+    Q_PROPERTY(QString mysqlIP READ mysqlIP WRITE setMysqlIP NOTIFY mysqlIPChanged)
+    Q_PROPERTY(int     mysqlPort READ mysqlPort WRITE setMysqlPort NOTIFY mysqlPortChanged)
+    Q_PROPERTY(QString mysqlUser READ mysqlUser WRITE setMysqlUser NOTIFY mysqlUserChanged)
+    Q_PROPERTY(QString mysqlPassword READ mysqlPassword WRITE setMysqlPassword NOTIFY mysqlPasswordChanged)
+    Q_PROPERTY(QString mysqlDBName READ mysqlDBName WRITE setMysqlDBName NOTIFY mysqlDBNameChanged)
+
+    //  MythTV backend
     Q_PROPERTY(QString themeName READ themeName WRITE setThemeName NOTIFY themeNameChanged)
     Q_PROPERTY(QString hostName READ hostName WRITE setHostName NOTIFY hostNameChanged)
     Q_PROPERTY(QString masterIP READ masterIP WRITE setMasterIP NOTIFY masterIPChanged)
@@ -55,6 +63,11 @@ class Settings : public QObject
     Q_PROPERTY(QString autoStartFrontend READ autoStartFrontend WRITE setAutoStartFrontend NOTIFY autoStartFrontendChanged)
 
    signals:
+     void mysqlIPChanged(void);
+     void mysqlPortChanged(void);
+     void mysqlUserChanged(void);
+     void mysqlPasswordChanged(void);
+     void mysqlDBNameChanged(void);
      void themeNameChanged(void);
      void hostNameChanged(void);
      void masterIPChanged(void);
@@ -92,6 +105,23 @@ class Settings : public QObject
     void setDefaultSettings(const QString &hostName);
     void initSettings(const QString &hostName, const QString &theme);
 
+    // Mysql Database
+    QString mysqlIP(void);
+    void setMysqlIP(const QString &mysqlIP);
+
+    int mysqlPort(void);
+    void setMysqlPort(int mysqlPort);
+
+    QString mysqlUser(void);
+    void setMysqlUser(const QString &mysqlUser);
+
+    QString mysqlPassword(void);
+    void setMysqlPassword(const QString &mysqlPassword);
+
+    QString mysqlDBName(void);
+    void setMysqlDBName(const QString &mysqlDBName);
+
+    // MythTV backend
     QString themeName(void);
     void    setThemeName(const QString &themeName);
 
@@ -185,6 +215,14 @@ class Settings : public QObject
     void    setAutoStartFrontend(const QString &autoStartFrontend);
 
   private:
+    // Mysql Database
+    QString m_mysqlIP;
+    int     m_mysqlPort;
+    QString m_mysqlUser;
+    QString m_mysqlPassword;
+    QString m_mysqlDBName;
+
+    // MythTV Backend
     QString m_themeName;
     QString m_hostName;
     QString m_masterIP;
