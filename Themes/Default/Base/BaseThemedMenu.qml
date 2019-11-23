@@ -261,7 +261,7 @@ Item
     {
         id: versionDialog
 
-        title: "MythQML"
+        title: appName
         message: '<font  color="yellow"><b>Version: </font></b>' + version  +
                  '<br><font color="yellow"><b>Date: </font></b>' + buildtime +
                  '<br><font  color="yellow"><b>Qt Version: </font></b>' + qtversion +

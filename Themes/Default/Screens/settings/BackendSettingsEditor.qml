@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import Base 1.0
 import Models 1.0
+import Dialogs 1.0
 
 BaseScreen
 {
@@ -183,6 +184,29 @@ BaseScreen
             settings.MysqlPassword = mysqlPasswordEdit.text;
             settings.MysqlDBName   = mysqlDBNameEdit.text;
 
+            okDialog.show();
+        }
+    }
+
+    OkCancelDialog
+    {
+        id: okDialog
+
+        title: "Backend Settings"
+        message: "NOTE: you will have to restart " + appName + " for the settings to take effect"
+        rejectButtonText: ""
+        acceptButtonText: "OK"
+
+        width: xscale(600); height: yscale(300)
+
+        onAccepted:
+        {
+            returnSound.play();
+            stack.pop();
+
+        }
+        onCancelled:
+        {
             returnSound.play();
             stack.pop();
         }
