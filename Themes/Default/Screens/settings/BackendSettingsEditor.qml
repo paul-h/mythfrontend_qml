@@ -8,15 +8,16 @@ BaseScreen
 
     Component.onCompleted:
     {
-        showTitle(true, "Backend Settings");
+        showTitle(true, "MythTV Settings");
         showTime(false);
         showTicker(false);
     }
 
+    // MythTV Backend Settings
     LabelText
     {
         x: xscale(50); y: yscale(100)
-        text: "Master Backend IP:"
+        text: "MythTV Master Backend IP:"
     }
 
     BaseEdit
@@ -33,7 +34,7 @@ BaseScreen
     LabelText
     {
         x: xscale(50); y: yscale(150)
-        text: "Master Backend Port:"
+        text: "MythTV Master Backend Port:"
     }
 
     BaseEdit
@@ -51,7 +52,7 @@ BaseScreen
     LabelText
     {
         x: xscale(50); y: yscale(200)
-        text: "Security Pin:"
+        text: "MythTV Security Pin:"
     }
 
     BaseEdit
@@ -62,6 +63,92 @@ BaseScreen
         height: yscale(50)
         text: settings.securityPin
         KeyNavigation.up: portEdit
+        KeyNavigation.down: mysqlIPEdit
+    }
+
+    // Mysql Database Settings
+    LabelText
+    {
+        x: xscale(50); y: yscale(270)
+        text: "Mysql Database IP:"
+    }
+
+    BaseEdit
+    {
+        id: mysqlIPEdit
+        x: xscale(400); y: yscale(270)
+        width: xscale(700)
+        height: yscale(50)
+        text: settings.mysqlIP
+        KeyNavigation.up: pinEdit
+        KeyNavigation.down: mysqlPortEdit
+    }
+
+    LabelText
+    {
+        x: xscale(50); y: yscale(320)
+        text: "Mysql Port:"
+    }
+
+    BaseEdit
+    {
+        id: mysqlPortEdit
+        x: xscale(400); y: yscale(320)
+        width: xscale(700)
+        height: yscale(50)
+        text: settings.mysqlPort
+        KeyNavigation.up: mysqlIPEdit
+        KeyNavigation.down: mysqlUserEdit
+    }
+
+    LabelText
+    {
+        x: xscale(50); y: yscale(370)
+        text: "Mysql User Name:"
+    }
+
+    BaseEdit
+    {
+        id: mysqlUserEdit
+        x: xscale(400); y: yscale(370)
+        width: xscale(700)
+        height: yscale(50)
+        text: settings.mysqlUser
+        KeyNavigation.up: mysqlPortEdit
+        KeyNavigation.down: mysqlPasswordEdit
+    }
+
+    LabelText
+    {
+        x: xscale(50); y: yscale(420)
+        text: "Mysql Password:"
+    }
+
+    BaseEdit
+    {
+        id: mysqlPasswordEdit
+        x: xscale(400); y: yscale(420)
+        width: xscale(700)
+        height: yscale(50)
+        text: settings.mysqlPassword
+        KeyNavigation.up: mysqlUserEdit
+        KeyNavigation.down: mysqlDBNameEdit
+    }
+
+    LabelText
+    {
+        x: xscale(50); y: yscale(470)
+        text: "Mysql Database Name:"
+    }
+
+    BaseEdit
+    {
+        id: mysqlDBNameEdit
+        x: xscale(400); y: yscale(470)
+        width: xscale(700)
+        height: yscale(50)
+        text: settings.mysqlDBName
+        KeyNavigation.up: mysqlPasswordEdit
         KeyNavigation.down: saveButton
     }
 
@@ -70,10 +157,11 @@ BaseScreen
         id: saveButton;
         x: xscale(900); y: yscale(630);
         text: "Save";
-        KeyNavigation.up: pinEdit
+        KeyNavigation.up: mysqlDBNameEdit
         KeyNavigation.down: ipEdit
         onClicked:
         {
+            // master backend settings
             dbUtils.setSetting("MasterIP",    settings.hostName, ipEdit.text);
             dbUtils.setSetting("MasterPort",  settings.hostName, portEdit.text);
             dbUtils.setSetting("SecurityPin", settings.hostName, pinEdit.text);
@@ -81,6 +169,19 @@ BaseScreen
             settings.masterIP    = ipEdit.text;
             settings.masterPort  = parseInt(portEdit.text);
             settings.securityPin = pinEdit.text;
+
+            // mysql database settings
+            dbUtils.setSetting("MysqlIP", settings.hostName, mysqlIPEdit.text);
+            dbUtils.setSetting("MysqlPort", settings.hostName,mysqlPortEdit.text);
+            dbUtils.setSetting("MysqlUser", settings.hostName, mysqlUserEdit.text);
+            dbUtils.setSetting("MysqlPassword", settings.hostName, mysqlPasswordEdit.text);
+            dbUtils.setSetting("MysqlDBName", settings.hostName, mysqlDBNameEdit.text);
+
+            settings.MysqlIP       = mysqlIPEdit.text;
+            settings.MysqlPort     = mysqlPortEdit.text;
+            settings.MysqlUser     = mysqlUserEdit.text;
+            settings.MysqlPassword = mysqlPasswordEdit.text;
+            settings.MysqlDBName   = mysqlDBNameEdit.text;
 
             returnSound.play();
             stack.pop();
