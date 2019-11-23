@@ -207,23 +207,6 @@ void Logger::log(Verbose verbose, Level logLevel, const QString& data)
     // File needs re-opening
     if (m_fileNeedsReopen)
     {
-        QDir dir(m_filename);
-        if (dir.isAbsolute())
-            std::cout << qPrintable(linePrefix(Level::INFO) + "Logger: Opening " + m_filename + " to log") << std::endl;
-        else
-        {
-            m_filename =
-                #if defined(Q_OS_WIN)
-                    QStandardPaths::writableLocation(QStandardPaths::StandardLocation::AppDataLocation)
-                #else
-                    QStandardPaths::writableLocation(QStandardPaths::StandardLocation::DocumentsLocation)
-                #endif
-                + "/" + m_filename;
-            std::cout << qPrintable(linePrefix(Level::INFO) + "Logger: Absolute path not given, opening " + m_filename + " to log.") << std::endl;
-            emit filenameChanged();
-        }
-        QDir::root().mkpath(QFileInfo(m_filename).absolutePath());
-
         m_file.setFileName(m_filename);
 
         if (!m_file.open(QIODevice::WriteOnly))
