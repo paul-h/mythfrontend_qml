@@ -206,7 +206,7 @@ BaseScreen
         KeyNavigation.down: videoPathEdit
         onClicked:
         {
-            dbUtils.setSetting("VideoPath    ",   settings.hostName, videoPathEdit.text);
+            dbUtils.setSetting("VideoPath",       settings.hostName, videoPathEdit.text);
             dbUtils.setSetting("PicturePath",     settings.hostName, picturePathEdit.text);
             dbUtils.setSetting("SdChannels",      settings.hostName, sdChannelsEdit.text);
             dbUtils.setSetting("VboxFreeviewIP",  settings.hostName, vboxFreeviewIPEdit.text);
