@@ -46,6 +46,7 @@ Depends: python,
          zlib1g,
          vlc,
          libqt5sql5-mysql,
+         libqt5sql5-sqlite,
          libqt5xml5
 Description: Personal video recorder application (QML client)
  NOTE: THIS SOFTWARE IS STILL IN ALPHA PRODUCTION AND IS NOT FULLY FUNCTIONAL.
