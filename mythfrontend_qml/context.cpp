@@ -94,6 +94,9 @@ void Context::init()
     // create the logger for QML
     m_engine->rootContext()->setContextProperty("log", m_logger);
 
+    // create appName property
+    m_engine->rootContext()->setContextProperty("appName", m_appName);
+
     // create version property
     m_engine->rootContext()->setContextProperty("version", QString(APP_VERSION));
 
@@ -144,6 +147,35 @@ void Context::init()
     m_engine->addImportPath(QString(SHAREPATH) + "qml");
 }
 
+bool Context::initMythDB(void)
+{
+    // attemp to connect the MythTV Mysql database using our stored setting
+    m_mythDB = QSqlDatabase::addDatabase("QMYSQL", "MythTV");
+    m_mythDB.setHostName(m_settings->mysqlIP());
+    m_mythDB.setPort((m_settings->mysqlPort()));
+    m_mythDB.setDatabaseName(m_settings->mysqlDBName());
+    m_mythDB.setUserName(m_settings->mysqlUser());
+    m_mythDB.setPassword(m_settings->mysqlPassword());
+
+    m_logger->info(Verbose::DATABASE, "Context: Connecting to MythTV DB using stored credentials");
+    m_logger->info(Verbose::DATABASE, QString("IP: %1, Port: %2, DBName: %3, User: %4, Password: %5")
+                   .arg(m_settings->mysqlIP()).arg(m_settings->mysqlPort()).arg(m_settings->mysqlDBName())
+                   .arg(m_settings->mysqlUser()).arg(m_settings->mysqlPassword()));
+
+    bool ok = m_mythDB.open();
+
+    if (!ok)
+    {
+        m_logger->error(Verbose::GENERAL, "Context: Failed to open the MythTV database using our stored credentials");
+        m_mythDB.close();
+        return false;
+    }
+
+    m_logger->error(Verbose::GENERAL, "Context: Connected to MythTV database");
+
+    return true;
+}
+
 bool Context::loadMythDBSettings(void)
 {
     QDomDocument doc("mydocument");
@@ -165,20 +197,20 @@ bool Context::loadMythDBSettings(void)
         return false;
     }
 
-    m_logger->info(Verbose::DATABASE, "Loading database config from: " + configFile);
+    m_logger->info(Verbose::DATABASE, "Context: Loading database config from: " + configFile);
 
     QFile file(configFile);
 
     if (!file.open(QIODevice::ReadOnly))
     {
-        m_logger->error(Verbose::GENERAL, "Failed to open MythTV config file");
+        m_logger->error(Verbose::GENERAL, "Context: Failed to open MythTV config file");
         return false;
     }
 
     if (!doc.setContent(&file))
     {
         file.close();
-        m_logger->error(Verbose::GENERAL, "Failed to read from MythTV config file");
+        m_logger->error(Verbose::GENERAL, "Context: Failed to read from MythTV config file");
         return false;
     }
     file.close();
@@ -193,30 +225,46 @@ bool Context::loadMythDBSettings(void)
 
     if (nodeList.count() != 1)
     {
-        m_logger->error(Verbose::GENERAL, "Expected 1 'Database' node but got " + nodeList.count());
+        m_logger->error(Verbose::GENERAL, QString("Context: Expected 1 'Database' node but got %1").arg( nodeList.count()));
         return false;
     }
 
     node = nodeList.at(0);
-    m_mythDBHost = node.namedItem(QString("Host")).toElement().text();
-    m_mythDBUser = node.namedItem(QString("UserName")).toElement().text();
-    m_mythDBPassword = node.namedItem(QString("Password")).toElement().text();
-    m_mythDBName = node.namedItem(QString("DatabaseName")).toElement().text();
-    m_mythDBPort = node.namedItem(QString("Port")).toElement().text();
+    QString host = node.namedItem(QString("Host")).toElement().text();
+    QString user = node.namedItem(QString("UserName")).toElement().text();
+    QString password = node.namedItem(QString("Password")).toElement().text();
+    QString dbName = node.namedItem(QString("DatabaseName")).toElement().text();
+    int dbPort = node.namedItem(QString("Port")).toElement().text().toInt();
 
     m_mythDB = QSqlDatabase::addDatabase("QMYSQL");
-    m_mythDB.setHostName(m_mythDBHost);
-    m_mythDB.setDatabaseName(m_mythDBName);
-    m_mythDB.setUserName(m_mythDBUser);
-    m_mythDB.setPassword(m_mythDBPassword);
+    m_mythDB.setHostName(host);
+    m_mythDB.setPort(dbPort);
+    m_mythDB.setDatabaseName(dbName);
+    m_mythDB.setUserName(user);
+    m_mythDB.setPassword(password);
+
     bool ok = m_mythDB.open();
 
     if (!ok)
     {
-        m_logger->error(Verbose::GENERAL, "Failed to open the MythTV database");
+        m_logger->error(Verbose::GENERAL, "Context: Failed to open the MythTV database using credentials from " + configFile);
         return false;
     }
 
+    // save for future use
+    m_settings->setMysqlIP(host);
+    m_settings->setMysqlPort(dbPort);
+    m_settings->setMysqlUser(user);
+    m_settings->setMysqlPassword(password);
+    m_settings->setMysqlDBName(dbName);
+
+    m_databaseUtils->setSetting("MysqlIP", m_settings->hostName(), host);
+    m_databaseUtils->setSetting("MysqlPort", m_settings->hostName(), QString::number(dbPort));
+    m_databaseUtils->setSetting("MysqlUser", m_settings->hostName(), user);
+    m_databaseUtils->setSetting("MysqlPassword", m_settings->hostName(), password);
+    m_databaseUtils->setSetting("MysqlDBName", m_settings->hostName(), dbName);
+
+    m_logger->error(Verbose::GENERAL, "Context: Connected to MythTV database using credentials from " + configFile);
     return true;
 }
 
@@ -224,7 +272,7 @@ bool Context::initMythQMLDB(void)
 {
     QString dbFilename = QDir::homePath() + "/.mythqml/mythqml.db";
 
-    m_logger->info(Verbose::DATABASE, "MythQML DB File is: " + dbFilename);
+    m_logger->info(Verbose::DATABASE, "Context: MythQML DB File is: " + dbFilename);
 
     // open local DB
     m_mythQMLDB = QSqlDatabase::addDatabase("QSQLITE", "mythqml");
@@ -232,7 +280,7 @@ bool Context::initMythQMLDB(void)
 
     if (!m_mythQMLDB.open())
     {
-        m_logger->error(Verbose::GENERAL, "Failed to open MythQML DB - " + m_mythQMLDB.lastError().text());
+        m_logger->error(Verbose::GENERAL, "Context: Failed to open MythQML DB - " + m_mythQMLDB.lastError().text());
     }
 
     if (!m_mythQMLDB.isOpen())
@@ -249,12 +297,13 @@ bool Context::initMythQMLDB(void)
                               "    hostname VARCHAR(64) default NULL"
                               ");")))
     {
-        m_logger->error(Verbose::GENERAL, "Failed to create table errorn MythQML table: error - " + q.lastError().text());
+        m_logger->error(Verbose::GENERAL, "Context: Failed to create settings table error - " + q.lastError().text());
         return false;
     }
 
     return true;
 }
+
 QString Context::systemID(void)
 {
     if (m_systemID.isEmpty())

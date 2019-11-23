@@ -27,6 +27,7 @@ public slots:
 
 public:
     void init(void);
+    bool initMythDB(void);
     bool initMythQMLDB(void);
     bool loadMythDBSettings(void);
     QString systemID(void);
@@ -48,11 +49,6 @@ public:
 
     // MythTV DB
     QSqlDatabase m_mythDB;
-    QString m_mythDBHost;
-    QString m_mythDBPort;
-    QString m_mythDBUser;
-    QString m_mythDBPassword;
-    QString m_mythDBName;
 };
 
 extern Context *gContext;

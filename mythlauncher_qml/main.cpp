@@ -48,11 +48,15 @@ int main(int argc, char *argv[])
     if (!gContext->initMythQMLDB())
         return 1;
 
-    // attempt to connect to the MythTV database
-    if (!gContext->loadMythDBSettings())
-        return 1;
-
     gContext->init();
+
+    // attempt to connect to the MythTV database
+    if (!gContext->initMythDB())
+    {
+        // try to get the DB credentials from the config.xml
+        if (!gContext->loadMythDBSettings())
+            return 1;
+    }
 
     gContext->m_engine->load(QUrl(QString(SHAREPATH) + "qml/launcher.qml"));
 
