@@ -43,7 +43,11 @@ Depends: python,
          qml-module-qtquick-particles2,
          python3-streamlink,
          streamlink,
-         zlib1g
+         zlib1g,
+         vlc,
+         libqt5sql5-mysql,
+         libqt5xml5
+
 Description: Personal video recorder application (QML client)
  NOTE: THIS SOFTWARE IS STILL IN ALPHA PRODUCTION AND IS NOT FULLY FUNCTIONAL.
  .
