@@ -43,9 +43,14 @@ Context::Context(const QString &appName, const QString &logLevel, const QString 
     m_eventListener = nullptr;
     m_urlInterceptor = nullptr;
 
+    // make sure our log path exists
+    QDir d;
+    QString logPath(QDir::homePath() + "/.mythqml/logs");
+    d.mkpath(logPath);
+
     // create the logger
     m_logger = new Logger();
-    m_logger->setFilename(QString("/var/log/mythqml/%1.log").arg(m_appName));
+    m_logger->setFilename(QString("%1/%2.log").arg(logPath).arg(m_appName));
     m_logger->info(Verbose::GENERAL, QString("Starting ") + m_appName + ": version " + APP_VERSION);
     m_logger->setLogLevel(logLevel);
     m_logger->setVerbose(verbose);
