@@ -65,12 +65,16 @@ int main(int argc, char *argv[])
 
     gContext->init();
 
-    // attempt to connect to the MythTV database
+    // attempt to connect to the MythTV database using our stored credentials
     if (!gContext->initMythDB())
     {
-        // try to get the DB credentials from the config.xml
+        // failed so try to get the DB credentials from the config.xml
         if (!gContext->loadMythDBSettings())
-            return 1;
+        {
+            // failed to open MythTV database using stored/default credentials or from the mythtv config.xml file
+            gContext->m_logger->error(Verbose::GENERAL, "Failed to open the MythTV database - Please make sure the "
+                                                        "Mysql settings are correct on the Myth Backend settings page");
+        }
     }
 
     // these are frontend only
