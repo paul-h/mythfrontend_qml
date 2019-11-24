@@ -29,6 +29,7 @@ Package: mythfrontend-qml
 Architecture: any
 Depends: python,
          python-feedparser,
+         python-lxml
          python3-streamlink,
          streamlink,
          qml-module-qtwebengine,
@@ -41,8 +42,6 @@ Depends: python,
          qml-module-qtwebengine,
          qml-module-qtwebsockets,
          qml-module-qtquick-particles2,
-         python3-streamlink,
-         streamlink,
          zlib1g,
          vlc,
          libqt5sql5-mysql,
