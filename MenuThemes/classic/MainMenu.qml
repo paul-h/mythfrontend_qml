@@ -88,11 +88,11 @@ ListModel
         waterMark: "watermark/setup.png"
         menuSource: "SettingsMenu.qml"
     }
-    ListElement
-    {
-        menutext: "Test Pages"
-        loaderSource: "ThemedMenu.qml"
-        waterMark: "watermark/setup.png"
-        menuSource: "TestMenu.qml"
-    }
+//    ListElement
+//    {
+//        menutext: "Test Pages"
+//        loaderSource: "ThemedMenu.qml"
+//        waterMark: "watermark/setup.png"
+//        menuSource: "TestMenu.qml"
+//    }
 }
