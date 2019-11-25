@@ -6,6 +6,8 @@ XmlListModel
 {
     id: videoSourceModel
 
+    property var sourceList: ListModel{}
+
     source: settings.masterBackend + "Channel/GetVideoSourceList"
     query: "/VideoSourceList/VideoSources/VideoSource"
 
@@ -24,6 +26,7 @@ XmlListModel
         if (status == XmlListModel.Ready)
         {
             log.debug(Verbose.MODEL, "VideoSourceModel: READY - Found " + count + " video sources");
+            updateLists();
         }
 
         if (status === XmlListModel.Loading)
@@ -46,5 +49,38 @@ XmlListModel
         }
 
         return -1;
+    }
+
+    function findByName(Name)
+    {
+        for (var x = 0; x < count; x++)
+        {
+            if (get(x).SourceName == Name)
+                return x;
+        }
+
+        return -1;
+    }
+
+    function updateLists()
+    {
+        var sourceName;
+        var sources = [];
+
+        sourceList.clear();
+
+        for (var x = 0; x < count; x++)
+        {
+            sourceName = get(x).SourceName;
+
+            if (sources.indexOf(sourceName) < 0)
+                    sources.push(sourceName);
+        }
+
+        sources.sort();
+        sourceList.append({"item": "<All Sources>"});
+
+        for (var x = 0; x < sources.length; x++)
+            sourceList.append({"item": sources[x]});
     }
 }
