@@ -17,7 +17,18 @@ XmlListModel
     property string _ip: settings.masterIP;
     property string _pin: settings.securityPin;
 
-    source:
+    signal loaded();
+
+    onSourceIdChanged: updateSource()
+    onChannelGroupIdChanged: updateSource()
+    onStartIndexChanged: updateSource()
+    onItemCountChanged: updateSource()
+    onDetailsChanged: updateSource()
+    onOnlyVisibleChanged: updateSource()
+    onOrderByNameChanged: updateSource()
+    onGroupByCallsignChanged: updateSource()
+
+    function updateSource()
     {
         var url = settings.masterBackend + "Channel/GetChannelInfoList?Details=" + (details ? "true" : "false")
 
@@ -36,10 +47,10 @@ XmlListModel
         if (orderByName)
             url += "&OrderByName=true"
 
-        if (groupByCallsign)
+        if (groupByCallsign || sourceId == -1)
             url += "&GroupByCallsign=true"
 
-        return url;
+        source = url;
     }
 
     query: "/ChannelInfoList/ChannelInfos/ChannelInfo"
@@ -62,6 +73,7 @@ XmlListModel
         if (status == XmlListModel.Ready)
         {
             log.debug(Verbose.MODEL, "ChannelsModel: Found " + count + " channels");
+            loaded();
         }
 
         if (status === XmlListModel.Loading)

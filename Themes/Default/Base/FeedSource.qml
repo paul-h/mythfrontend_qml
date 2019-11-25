@@ -126,11 +126,34 @@ Item
 
         feedName = "Live TV";
         currentFeed = currFeed;
-        sourceFilter.value = sourceId == "-1" ? playerSources.videoSourceList.get(0).Id : sourceId; // Don't change == to ===
-        currentFilter = sourceFilter.value;
+
+        if (sourceId == -1) // Don't change == to ===
+        {
+            sourceFilter.enabled = false;
+            currentFilter = "-1";
+        }
+        else
+        {
+            sourceFilter.value = sourceId;
+            sourceFilter.enabled = true;
+            currentFilter = sourceFilter.value;
+        }
+
         filters = sourceIDFilter;
         sorters = chanNumSorter;
         feedList.sourceModel = playerSources.channelList;
+    }
+
+    function switchToRecordings(category, currFeed)
+    {
+        // FIXME:
+//        feedName = "Web Videos";
+//        currentFeed = currFeed;
+//        currentFilter = category;
+//        categoryFilter.pattern = category;
+//        filters = categoryFilter;
+//        sorters = titleSorter;
+//        feedList.sourceModel = playerSources.webvideoList;
     }
 
     function switchToWebcams(category, currFeed)

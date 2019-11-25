@@ -16,6 +16,8 @@ BaseScreen
     property bool chanNameSorterActive: true
     property bool showPreview: false
 
+    onFilterSourceIDChanged: playerSources.channelList.sourceId = filterSourceID
+
     Component.onCompleted:
     {
         showTitle(true, "LiveTV Channel Viewer");
@@ -24,21 +26,22 @@ BaseScreen
 
         while (stack.busy) {};
 
-        filterSourceID = dbUtils.getSetting("LastChannelSourceID", settings.hostName)
+        filterSourceID = dbUtils.getSetting("LastChannelSourceID", settings.hostName, 0)
 
-        if (filterSourceID === -1)
-            footer.greenText = "Show (All Channels)"
+        if (filterSourceID == -1)
+            footer.greenText = "Show (All Sources)"
         else
         {
             var index = playerSources.videoSourceList.findById(filterSourceID);
             if (index !== -1)
                 footer.greenText = "Show (" + playerSources.videoSourceList.get(index).SourceName + ")"
             else
-                footer.greenText = "Show (UNKNOWN SOURCE)";
+                footer.greenText = "Show (All Sources)";
         }
 
         updateChannelDetails();
 
+        playerSources.channelList.loaded.connect(updateChannelDetails);
     }
 
     Component.onDestruction:
@@ -60,17 +63,7 @@ BaseScreen
     {
         id: channelProxyModel
         sourceModel: playerSources.channelList
-        filters:
-        [
-            AllOf
-            {
-                ValueFilter
-                {
-                    roleName: "SourceId"
-                    value: filterSourceID
-                }
-            }
-        ]
+        filters: []
         sorters: chanNameSorter
     }
 
@@ -144,7 +137,7 @@ BaseScreen
         else if (event.key === Qt.Key_F2)
         {
             // GREEN
-            searchDialog.model = playerSources.videoSourceList
+            searchDialog.model = playerSources.videoSourceList.sourceList;
             searchDialog.show();
         }
         else if (event.key === Qt.Key_F3)
@@ -226,19 +219,6 @@ BaseScreen
             var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Live TV", defaultFilter:  filterSourceID, defaultCurrentFeed: channelGrid.currentIndex}});
             item.feedChanged.connect(feedChanged);
             event.accepted = true;
-        }
-
-        Keys.onPressed:
-        {
-            if (event.key === Qt.Key_M)
-            {
-                searchDialog.model = playerSources.videoSourceList
-                searchDialog.show();
-            }
-            else
-            {
-                event.accepted = false;
-            }
         }
 
         onCurrentIndexChanged:
@@ -380,7 +360,7 @@ BaseScreen
     {
         id: footer
         redText: "Sort (Channel Name)"
-        greenText: "Show (All Channels)"
+        greenText: "Show (All Sources)"
         yellowText: ""
         blueText: "Toggle Preview"
     }
@@ -391,8 +371,6 @@ BaseScreen
 
         title: "Choose a source"
         message: ""
-        displayField: "SourceName"
-        dataField: "Id"
 
         onAccepted:
         {
@@ -406,19 +384,17 @@ BaseScreen
 
         onItemSelected:
         {
-            if (itemText != "<All Channels>")
+            var index = playerSources.videoSourceList.findByName(itemText);
+
+            if (index !== -1)
             {
-                filterSourceID = parseInt(itemText);
-                var index = playerSources.videoSourceList.findById(filterSourceID);
-                if (index !== -1)
-                    footer.greenText = "Show (" + playerSources.videoSourceList.get(index).SourceName + ")"
-                else
-                    footer.greenText = "Show (UNKNOWN SOURCE)";
+                filterSourceID = playerSources.videoSourceList.get(index).Id;
+                footer.greenText = "Show (" + playerSources.videoSourceList.get(index).SourceName + ")"
             }
             else
             {
-                filterSourceID = "";
-                footer.greenText = "Show (All Channels)"
+                filterSourceID = -1;
+                footer.greenText = "Show (All Sources)";
             }
 
             channelGrid.focus = true;
@@ -432,19 +408,19 @@ BaseScreen
         if (feedSource !== "Live TV")
             return;
 
-        if (filter !== filterSourceID)
+        if (filter != filterSourceID)
         {
             filterSourceID = filter;
 
-            if (filterSourceID === "<All Channels>" || filterSourceID === "")
-                footer.greenText = "Show (All Channels)"
+            if (filterSourceID == -1)
+                footer.greenText = "Show (All Sources)"
             else
             {
                 var i = playerSources.videoSourceList.findById(filterSourceID);
                 if (i !== -1)
                     footer.greenText = "Show (" + playerSources.videoSourceList.get(i).SourceName + ")"
                 else
-                    footer.greenText = "Show (UNKNOWN SOURCE)";
+                    footer.greenText = "Show (All Sources)";
             }
         }
 
