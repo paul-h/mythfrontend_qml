@@ -156,7 +156,7 @@ BaseScreen
         browser.url = whatsNewModel.get(currentPage).url;
 
         if (currentPage > dbUtils.getSetting("LastWhatsNewShown", settings.hostName, "-1"))
-            dbUtils.setSetting("Qml_lastWhatsNewShown", settings.hostName, currentPage);
+            dbUtils.setSetting("LastWhatsNewShown", settings.hostName, currentPage);
     }
 
     function zoom(zoomIn)
