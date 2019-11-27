@@ -74,9 +74,9 @@ BaseScreen
             playerSources.webcamTitleSorterActive = !playerSources.webcamTitleSorterActive;
 
             if (playerSources.webcamTitleSorterActive)
-                footer.redText = "Sort (No.)";
-            else
                 footer.redText = "Sort (Name)";
+            else
+                footer.redText = "Sort (No.)";
         }
         else if (event.key === Qt.Key_F2)
         {

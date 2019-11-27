@@ -173,9 +173,9 @@ Item
         currentFeed = currFeed;
         currentFilter = category;
         categoryFilter.pattern = category;
-        filters = categoryFilter;
-        sorters = titleSorter;
-        feedList.sourceModel = playerSources.webvideoList;
+        filters = [];
+        sorters = [];
+        feedList.sourceModel = playerSources.webvideoProxyModel;;
     }
 
     function switchToZMCameras(category, currFeed)
