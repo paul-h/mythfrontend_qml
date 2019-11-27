@@ -23,22 +23,22 @@ Item
 
     // webvideo
     property string webvideoFilterCategory
-    property var webvideoPaths
-    property int webvideoPathIndex: 0
+    property bool webvideoTitleSorterActive: true
+    property var webvideoProxyModel: webvideoProxyModel
 
     // zoneminder
     property alias zmAuth: zmLogin.auth
 
-    Component.onCompleted:
-    {
-        var path;
+    /* ----------------------------------------------- Shared Sorters  --------------------------------------------------- */
+    property list<QtObject> titleSorter:
+    [
+        RoleSorter { roleName: "title"; ascendingOrder: true}
+    ]
 
-        webvideoPaths =  settings.webcamPath.split(",")
-        path = dbUtils.getSetting("LastWebvideoPath", settings.hostName, webvideoPaths[0])
-        path = path.replace("/WebVideo.xml", "")
-        webvideoPathIndex = webvideoPaths.indexOf(path)
-        webvideoModel.source = path + "/WebVideo.xml"
-    }
+    property list<QtObject> idSorter:
+    [
+        RoleSorter { roleName: "id" }
+    ]
 
     /* ----------------------------------------------- MythTV Channels --------------------------------------------------- */
     SortFilterProxyModel
@@ -90,25 +90,15 @@ Item
         id: webcamModel
     }
 
-    property list<QtObject> titleSorter:
-    [
-        RoleSorter { roleName: "title"; ascendingOrder: true}
-    ]
-
-    property list<QtObject> idSorter:
-    [
-        RoleSorter { roleName: "id" }
-    ]
-
     onWebcamTitleSorterActiveChanged:
     {
         if (webcamTitleSorterActive)
         {
-            webcamProxyModel.sorters = idSorter;
+            webcamProxyModel.sorters = titleSorter;
         }
         else
         {
-            webcamProxyModel.sorters = titleSorter;
+            webcamProxyModel.sorters = idSorter;
         }
     }
 
@@ -153,10 +143,24 @@ Item
         id: webvideoModel
     }
 
+
+    onWebvideoTitleSorterActiveChanged:
+    {
+        if (webvideoTitleSorterActive)
+        {
+            webvideoProxyModel.sorters = titleSorter;
+        }
+        else
+        {
+            webvideoProxyModel.sorters = idSorter;
+        }
+    }
+
     SortFilterProxyModel
     {
         id: webvideoProxyModel
-        sourceModel: playerSources.webvideoList
+
+        sourceModel: webvideoModel.model
         filters:
         [
             AllOf
@@ -167,9 +171,24 @@ Item
                     pattern: webvideoFilterCategory
                     caseSensitivity: Qt.CaseInsensitive
                 }
+
+                AnyOf
+                {
+                    ValueFilter
+                    {
+                        roleName: "status"
+                        value: "Working"
+                    }
+
+                    ValueFilter
+                    {
+                        roleName: "status"
+                        value: "Temporarily Offline"
+                    }
+                }
             }
         ]
-        sorters: RoleSorter { roleName: "title"; ascendingOrder: true}
+        sorters: titleSorter
     }
 
     /* ------------------------------------------------ ZoneMinder Cameras --------------------------------------------------- */
