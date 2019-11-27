@@ -4,30 +4,37 @@ import Dialogs 1.0
 import Models 1.0
 import SortFilterProxyModel 0.2
 import "../../../Util.js" as Util
+import mythqml.net 1.0
 
 BaseScreen
 {
-    defaultFocusItem: webcamGrid
+    id: root
 
-    property string filterCategory
-    property bool titleSorterActive: true
+    defaultFocusItem: webcamGrid
 
     Component.onCompleted:
     {
-        showTitle(true, "WebCam Viewer");
         showTime(false);
         showTicker(false);
 
         while (stack.busy) {};
 
-        filterCategory = dbUtils.getSetting("LastWebcamCategory", settings.hostName)
+        playerSources.webcamFilterCategory = dbUtils.getSetting("LastWebcamCategory", settings.hostName)
 
-        if (filterCategory == "<All Webcams>" || filterCategory == "")
+        if (playerSources.webcamFilterCategory == "<All Webcams>" || playerSources.webcamFilterCategory == "")
             footer.greenText = "Show (All Webcams)"
         else
-            footer.greenText = "Show (" + filterCategory + ")"
+            footer.greenText = "Show (" + playerSources.webcamFilterCategory + ")"
 
-        webcamGrid.currentIndex = 0;
+        var index = dbUtils.getSetting("WebcamListIndex", settings.hostName, "");
+
+        if (index !== "")
+            playerSources.webcamList.webcamListIndex = index;
+
+        showTitle(true, "WebCam Viewer - " + playerSources.webcamList.webcamList.get(playerSources.webcamList.webcamListIndex).title);
+
+        playerSources.webcamList.loaded.connect(function() { webcamGrid.currentIndex = 0; });
+
         updateWebcamDetails();
 
         delay(1500, checkForUpdates);
@@ -35,8 +42,9 @@ BaseScreen
 
     Component.onDestruction:
     {
-        dbUtils.setSetting("LastWebcamPath", settings.hostName, playerSources.webcamPaths[playerSources.webcamPathIndex])
-        dbUtils.setSetting("LastWebcamCategory", settings.hostName, filterCategory)
+        dbUtils.setSetting("WebcamListIndex", settings.hostName, playerSources.webcamList.webcamListIndex);
+        dbUtils.setSetting("LastWebcamCategory", settings.hostName, playerSources.webcamFilterCategory)
+        playerSources.webcamList.saveFavorites();
     }
 
     property list<QtObject> titleSorter:
@@ -49,60 +57,26 @@ BaseScreen
         RoleSorter { roleName: "id" }
     ]
 
-    SortFilterProxyModel
-    {
-        id: webcamProxyModel
-        sourceModel: playerSources.webcamList
-        filters:
-        [
-            AllOf
-            {
-                RegExpFilter
-                {
-                    roleName: "categories"
-                    pattern: filterCategory
-                    caseSensitivity: Qt.CaseInsensitive
-                }
-
-                AnyOf
-                {
-                    ValueFilter
-                    {
-                        roleName: "status"
-                        value: "Working"
-                    }
-
-                    ValueFilter
-                    {
-                        roleName: "status"
-                        value: "Temporarily Offline"
-                    }
-                }
-            }
-        ]
-        sorters: titleSorter
-    }
-
     Keys.onPressed:
     {
         if (event.key === Qt.Key_M)
         {
+            popupMenu.clearMenuItems();
+
+            popupMenu.addMenuItem("", "Switch WebCam List");
+            for (var x = 0; x < playerSources.webcamList.webcamList.count; x++)
+                popupMenu.addMenuItem("0", playerSources.webcamList.webcamList.get(x).title, x);
+
+            popupMenu.show();
         }
         else if (event.key === Qt.Key_F1)
         {
-            // RED
-            if (titleSorterActive)
-            {
-                webcamProxyModel.sorters = idSorter;
-                footer.redText = "Sort (No.)";
-            }
-            else
-            {
-                webcamProxyModel.sorters = titleSorter;
-                footer.redText = "Sort (Name)";
-            }
+            playerSources.webcamTitleSorterActive = !playerSources.webcamTitleSorterActive;
 
-            titleSorterActive = !titleSorterActive;
+            if (playerSources.webcamTitleSorterActive)
+                footer.redText = "Sort (No.)";
+            else
+                footer.redText = "Sort (Name)";
         }
         else if (event.key === Qt.Key_F2)
         {
@@ -113,7 +87,12 @@ BaseScreen
         else if (event.key === Qt.Key_F3)
         {
             // YELLOW
-        }
+            var id = webcamGrid.model.get(webcamGrid.currentIndex).id;
+            var index = playerSources.webcamList.findById(id);
+
+            if (index != -1)
+                playerSources.webcamList.model.get(index).favorite = !playerSources.webcamList.model.get(index).favorite;
+         }
         else if (event.key === Qt.Key_F4)
         {
             //BLUE
@@ -129,23 +108,7 @@ BaseScreen
         }
         else if (event.key === Qt.Key_F5)
         {
-            playerSources.webcamPathIndex++;
-
-            if (playerSources.webcamPathIndex >= playerSources.webcamPaths.length)
-               playerSources.webcamPathIndex = 0;
-
-            filterCategory = "";
-            footer.redText = "Show (All Webcams)"
-
-            titleSorterActive = true
-            webcamProxyModel.sorters = titleSorter;
-            footer.redText = "Sort (Name)";
-
-            playerSources.webcamList.source = playerSources.webcamPaths[playerSources.webcamPathIndex] + "/webcams.xml"
-        }
-        else if (event.key === Qt.Key_F6)
-        {
-            playerSources.webcamList.reload();
+            playerSources.webcamList.webcamList.reload();
         }
         else if (event.key === Qt.Key_R)
         {
@@ -209,6 +172,16 @@ BaseScreen
                 }
                 Image
                 {
+                    x: xscale(5)
+                    y: yscale(5)
+                    width: xscale(40)
+                    height: yscale(40)
+                    visible: favorite;
+                    opacity: 1.0
+                    source: mythUtils.findThemeFile("images/favorite.png");
+                }
+                Image
+                {
                     x: webcamGrid.cellWidth - xscale(45)
                     y: yscale(5)
                     width: xscale(40)
@@ -220,29 +193,16 @@ BaseScreen
             }
         }
 
-        model: webcamProxyModel
+        model: playerSources.webcamProxyModel
         delegate: webcamDelegate
         focus: true
 
         Keys.onReturnPressed:
         {
             returnSound.play();
-            var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Webcams", defaultFilter:  filterCategory, defaultCurrentFeed: webcamGrid.currentIndex}});
+            var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Webcams", defaultFilter:  playerSources.webcamFilterCategory, defaultCurrentFeed: webcamGrid.currentIndex}});
             item.feedChanged.connect(feedChanged);
             event.accepted = true;
-        }
-
-        Keys.onPressed:
-        {
-            if (event.key === Qt.Key_M)
-            {
-                searchDialog.model = playerSources.webcamList.categoryList
-                searchDialog.show();
-            }
-            else
-            {
-                event.accepted = false;
-            }
         }
 
         onCurrentIndexChanged: updateWebcamDetails();
@@ -293,7 +253,7 @@ BaseScreen
         id: footer
         redText: "Sort (Name)"
         greenText: "Show (All Webcams)"
-        yellowText: ""
+        yellowText: "Toggle Favorite"
         blueText: "Go To Website"
     }
 
@@ -318,12 +278,12 @@ BaseScreen
         {
             if (itemText != "<All Webcams>")
             {
-                filterCategory = itemText;
+                playerSources.webcamFilterCategory = itemText;
                 footer.greenText = "Show (" + itemText + ")"
             }
             else
             {
-                filterCategory = "";
+                playerSources.webcamFilterCategory = "";
                 footer.greenText = "Show (All Webcams)"
 
             }
@@ -334,21 +294,50 @@ BaseScreen
         }
     }
 
+    PopupMenu
+    {
+        id: popupMenu
+
+        title: "Menu"
+        message: "WebCam Viewer Options"
+
+        onItemSelected:
+        {
+            webcamGrid.focus = true;
+
+            if (itemData !== "")
+            {
+                playerSources.webcamList.saveFavorites();
+                playerSources.webcamList.webcamListIndex = itemData;
+
+                showTitle(true, "WebCam Viewer - " + playerSources.webcamList.webcamList.get(playerSources.webcamList.webcamListIndex).title);
+
+                playerSources.webcamFilterCategory = "";
+                footer.greenText = "Show (All Webcams)"
+            }
+        }
+
+        onCancelled:
+        {
+            webcamGrid.focus = true;
+        }
+    }
+
     function feedChanged(feedSource, filter, index)
     {
         if (feedSource !== "Webcams")
             return;
 
-        if (filter !== filterCategory)
+        if (filter !== playerSources.webcamFilterCategory)
         {
             if (filter === "")
             {
-                filterCategory = filter;
+                playerSources.webcamFilterCategory = filter;
                 footer.greenText = "Show (All Webcams)"
             }
             else
             {
-                filterCategory = filter;
+                playerSources.webcamFilterCategory = filter;
                 footer.greenText = "Show (" + filter + ")"
             }
         }
@@ -363,7 +352,13 @@ BaseScreen
             if (iconURL.startsWith("file://") || iconURL.startsWith("http://") || iconURL.startsWith("https://"))
                 return iconURL;
             else
-                return playerSources.webcamPaths[playerSources.webcamPathIndex] + "/" + iconURL;
+            {
+                // try to get the icon from the same URL the webcam list was loaded from
+                var url = playerSources.webcamList.webcamList.get(playerSources.webcamList.webcamListIndex).url
+                var r = /[^\/]*$/;
+                url = url.replace(r, '');
+                return url + iconURL;
+            }
         }
 
         return ""
