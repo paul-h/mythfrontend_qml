@@ -18,8 +18,8 @@ Item
 
     // webcam
     property string webcamFilterCategory
-    property var webcamPaths
-    property int webcamPathIndex: 0
+    property bool webcamTitleSorterActive: true
+    property var webcamProxyModel: webcamProxyModel
 
     // webvideo
     property string webvideoFilterCategory
@@ -32,13 +32,6 @@ Item
     Component.onCompleted:
     {
         var path;
-
-        // get list of webcam paths
-        webcamPaths =  settings.webcamPath.split(",")
-        path = dbUtils.getSetting("LastWebcamPath", settings.hostName, webcamPaths[0])
-        path = path.replace("/webcams.xml", "")
-        webcamPathIndex = webcamPaths.indexOf(path)
-        webcamModel.source = path + "/webcams.xml"
 
         webvideoPaths =  settings.webcamPath.split(",")
         path = dbUtils.getSetting("LastWebvideoPath", settings.hostName, webvideoPaths[0])
@@ -102,11 +95,28 @@ Item
         RoleSorter { roleName: "title"; ascendingOrder: true}
     ]
 
+    property list<QtObject> idSorter:
+    [
+        RoleSorter { roleName: "id" }
+    ]
+
+    onWebcamTitleSorterActiveChanged:
+    {
+        if (webcamTitleSorterActive)
+        {
+            webcamProxyModel.sorters = idSorter;
+        }
+        else
+        {
+            webcamProxyModel.sorters = titleSorter;
+        }
+    }
+
     SortFilterProxyModel
     {
         id: webcamProxyModel
 
-        sourceModel: webcamModel
+        sourceModel: webcamModel.model
         filters:
         [
             AllOf

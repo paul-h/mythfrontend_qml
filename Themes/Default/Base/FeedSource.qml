@@ -162,9 +162,9 @@ Item
         currentFeed = currFeed;
         categoryFilter.pattern = category;
         currentFilter = category;
-        filters = categoryFilter;
-        sorters = titleSorter;
-        feedList.sourceModel = playerSources.webcamList;
+        filters = [];
+        sorters = [];
+        feedList.sourceModel = playerSources.webcamProxyModel;
     }
 
     function switchToWebvideos(category, currFeed)
