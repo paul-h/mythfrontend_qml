@@ -163,7 +163,7 @@ bool Context::initMythDB(void)
     m_mythDB.setPassword(m_settings->mysqlPassword());
 
     m_logger->info(Verbose::DATABASE, "Context: Connecting to MythTV DB using stored credentials");
-    m_logger->info(Verbose::DATABASE, QString("IP: %1, Port: %2, DBName: %3, User: %4, Password: %5")
+    m_logger->debug(Verbose::DATABASE, QString("IP: %1, Port: %2, DBName: %3, User: %4, Password: %5")
                    .arg(m_settings->mysqlIP()).arg(m_settings->mysqlPort()).arg(m_settings->mysqlDBName())
                    .arg(m_settings->mysqlUser()).arg(m_settings->mysqlPassword()));
 
