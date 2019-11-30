@@ -1,4 +1,6 @@
-import QtQuick 2.0
+import QtMultimedia 5.4
+
+import QtQuick 2.5
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
@@ -12,6 +14,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "Advent Calendar 2019");
+        showTicker(false);
 
         var index = dbUtils.getSetting("AdventIndex", settings.hostName, "");
 
@@ -28,6 +31,27 @@ BaseScreen
         }
 
         dbUtils.setSetting("AdventIndex", settings.hostName, calendarModel.calendarIndex);
+    }
+
+    SoundEffect
+    {
+         id: openSound
+         source: mythUtils.findThemeFile("sounds/advent_open.wav")
+         volume: soundEffectsVolume
+    }
+
+    SoundEffect
+    {
+         id: closeSound
+         source: mythUtils.findThemeFile("sounds/advent_close.wav")
+         volume: soundEffectsVolume
+    }
+
+    SoundEffect
+    {
+         id: notyetSound
+         source: mythUtils.findThemeFile("sounds/downer.wav")
+         volume: soundEffectsVolume
     }
 
     AdventCalendarModel
@@ -86,45 +110,39 @@ BaseScreen
 
         Keys.onReturnPressed:
         {
-            var date = new Date;
-            var day = model.get(currentIndex).day;
-            if (!testMode && date.getMonth() == 10 || (date.getMonth() == 11 && day > date.getDate()))
-            {
-                returnSound.play();
-                notYetdialog.show();
-                event.accepted = true;
-            }
-            else
-            {
-                returnSound.play();
-                playDialog.show();
-                event.accepted = true;
-            }
+            openWindow();
         }
 
         Keys.onPressed:
         {
             if (event.key === Qt.Key_M)
             {
-                popupMenu.clearMenuItems();
-
-                popupMenu.addMenuItem("", "Switch Advent Calendar");
-                for (var x = 0; x < calendarModel.calendarList.count; x++)
-                    popupMenu.addMenuItem("0", calendarModel.calendarList.get(x).title, x);
-
+                showMenu();
+            }
+            else if (event.key === Qt.Key_F1)
+            {
+                // red
                 if (calendarModel.model.get(calendarGrid.currentIndex).opened)
-                    popupMenu.addMenuItem("", "Close Window");
+                    closeWindow();
                 else
-                    popupMenu.addMenuItem("", "Open Window");
-
-                popupMenu.addMenuItem("", "Close All Windows");
-
-                popupMenu.show();
+                    openWindow();
+            }
+            else if (event.key === Qt.Key_F2)
+            {
+                showMenu();
             }
             else
             {
                 event.accepted = false;
             }
+        }
+
+        onCurrentIndexChanged:
+        {
+            if (model.get(currentIndex).opened)
+                footer.redText = "Close Window";
+            else
+                footer.redText = "Open Window";
         }
     }
 
@@ -141,23 +159,11 @@ BaseScreen
 
             if (itemText == "Close Window")
             {
-                calendarModel.model.get(calendarGrid.currentIndex).opened = false;
+                closeWindow();
             }
             else if (itemText == "Open Window")
             {
-                var date = new Date;
-                var day = calendarModel.model.get(calendarGrid.currentIndex).day;
-                if (!testMode && date.getMonth() == 10 || (date.getMonth() == 11 && day > date.getDate()))
-                {
-                    returnSound.play();
-                    notYetdialog.show();
-                }
-                else
-                {
-                    calendarModel.model.get(calendarGrid.currentIndex).opened = true
-                    returnSound.play();
-                    playDialog.show();
-                }
+                openWindow();
             }
             else if (itemText == "Close All Windows")
             {
@@ -220,4 +226,55 @@ BaseScreen
     }
 
     Snow {}
+
+    Footer
+    {
+        id: footer
+        redText: "Open Window"
+        greenText: "Change Calendars"
+        yellowText: ""
+        blueText: ""
+    }
+
+    function showMenu()
+    {
+        popupMenu.clearMenuItems();
+
+        popupMenu.addMenuItem("", "Switch Advent Calendar");
+        for (var x = 0; x < calendarModel.calendarList.count; x++)
+            popupMenu.addMenuItem("0", calendarModel.calendarList.get(x).title, x);
+
+        if (calendarModel.model.get(calendarGrid.currentIndex).opened)
+            popupMenu.addMenuItem("", "Close Window");
+        else
+            popupMenu.addMenuItem("", "Open Window");
+
+        popupMenu.addMenuItem("", "Close All Windows");
+
+        popupMenu.show();
+    }
+
+    function openWindow()
+    {
+        var date = new Date;
+        var day = calendarModel.model.get(calendarGrid.currentIndex).day;
+        if (!testMode && date.getMonth() == 10 || (date.getMonth() == 11 && day > date.getDate()))
+        {
+            notyetSound.play();
+            notYetdialog.show();
+        }
+        else
+        {
+            calendarModel.model.get(calendarGrid.currentIndex).opened = true
+            footer.redText = "Close Window";
+            openSound.play();
+            playDialog.show();
+        }
+    }
+
+    function closeWindow()
+    {
+        calendarModel.model.get(calendarGrid.currentIndex).opened = false;
+        footer.redText = "Open Window";
+    }
 }
