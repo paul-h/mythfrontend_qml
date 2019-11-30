@@ -38,7 +38,6 @@ FocusScope
 
                 if (state === VlcPlayer.Playing)
                 {
-                    audio.mute = root.muteAudio;
                     playbackStarted = true;
                 }
             }
@@ -50,8 +49,18 @@ FocusScope
         Timer
         {
             id: muteTimer
-            interval: 500; running: false; repeat: false
-            onTriggered: mediaplayer.audio.mute = root.muteAudio;
+            interval: 500; running: false; repeat: true
+            onTriggered:
+            {
+                // keep checking the mute status until we get the result we want
+                if (mediaplayer.audio.mute != -1)
+                {
+                    if (mediaplayer.audio.mute != root.muteAudio)
+                        mediaplayer.audio.mute = root.muteAudio;
+                    else
+                        running = false;
+                }
+            }
         }
 
         VlcVideoSurface

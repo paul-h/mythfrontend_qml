@@ -49,7 +49,7 @@ namespace vlc
         audio( vlc::basic_player& player )
             : _player( player ) {};
 
-        bool is_muted();
+        int is_muted();
         void toggle_mute();
         void set_mute( bool );
 

@@ -39,12 +39,13 @@ void audio::notify( audio_event_e event )
     );
 }
 
-bool audio::is_muted()
+// returns 0 = unmuted, 1 = muted, -1 =  undefined/unapplicable
+int audio::is_muted()
 {
     if( !_player.is_open() )
-        return false;
+        return -1;
 
-    return libvlc_audio_get_mute( _player.get_mp() ) != 0;
+    return libvlc_audio_get_mute( _player.get_mp());
 }
 
 void audio::toggle_mute()
