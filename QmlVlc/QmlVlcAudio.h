@@ -50,14 +50,14 @@ public:
     Q_PROPERTY( unsigned count READ get_trackCount )
 
     Q_PROPERTY( int track READ get_track WRITE set_track )
-    Q_PROPERTY( bool mute READ get_mute WRITE set_mute NOTIFY muteChanged )
+    Q_PROPERTY( int mute READ get_mute WRITE set_mute NOTIFY muteChanged )
     Q_PROPERTY( unsigned volume READ get_volume WRITE set_volume NOTIFY volumeChanged )
     Q_PROPERTY( Output channel READ get_channel WRITE set_channel )
     Q_PROPERTY( int delay READ get_delay WRITE set_delay )
 
     unsigned get_trackCount();
 
-    bool get_mute();
+    int get_mute();
     void set_mute( bool );
 
     unsigned get_volume();

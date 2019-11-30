@@ -55,7 +55,7 @@ unsigned QmlVlcAudio::get_trackCount()
     return m_player.audio().track_count();
 }
 
-bool QmlVlcAudio::get_mute()
+int QmlVlcAudio::get_mute()
 {
     return m_player.audio().is_muted();
 }
