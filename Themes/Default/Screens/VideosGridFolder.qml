@@ -198,12 +198,10 @@ BaseScreen
                 {
                     playerSources.adhocList = mediaModel;
                     var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0}});
-                    returnSound.play();
                 }
             }
 
             event.accepted = true;
-            returnSound.play();
         }
     }
 
