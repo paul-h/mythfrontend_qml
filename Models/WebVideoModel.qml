@@ -30,8 +30,6 @@ Item
 
         signal loaded();
 
-        source: "https://mythqml.net/download.php?f=webvideos_list.xml&v=" + version + "&s=" + systemid
-
         query: "/items/item"
         XmlRole { name: "id"; query: "id/number()" }
         XmlRole { name: "title"; query: "title/string()" }
@@ -57,6 +55,15 @@ Item
             {
                 log.error(Verbose.MODEL, "WebvideoListModel: ERROR: " + errorString() + " - " + source.toString());
             }
+        }
+
+        Component.onCompleted:
+        {
+            var webvideoFile = settings.webvideoListFile;
+            if (webvideoFile == "" || webvideoFile == "https://mythqml.net/download.php?f=webvideos_list.xml")
+                webvideoFile = "https://mythqml.net/download.php?f=webvideos_list.xml&v=" + version + "&s=" + systemid;
+
+            source = webvideoFile;
         }
     }
     XmlListModel

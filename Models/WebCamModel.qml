@@ -31,8 +31,6 @@ Item
 
         signal loaded();
 
-        source: "https://mythqml.net/download.php?f=webcams_list.xml&v=" + version + "&s=" + systemid
-
         query: "/items/item"
         XmlRole { name: "id"; query: "id/number()" }
         XmlRole { name: "title"; query: "title/string()" }
@@ -58,6 +56,15 @@ Item
             {
                 log.error(Verbose.MODEL, "WebcamListModel: ERROR: " + errorString() + " - " + source.toString());
             }
+        }
+
+        Component.onCompleted:
+        {
+            var webcamFile = settings.webcamListFile;
+            if (webcamFile == "" || webcamFile == "https://mythqml.net/download.php?f=webcams_list.xml")
+                webcamFile = "https://mythqml.net/download.php?f=webcams_list.xml&v=" + version + "&s=" + systemid;
+
+            source = webcamFile;
         }
     }
 

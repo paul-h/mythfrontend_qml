@@ -161,35 +161,68 @@ BaseScreen
         height: yscale(50)
         text: settings.hdmiEncoder
         KeyNavigation.up: vboxFreesatIPEdit
-        KeyNavigation.down: webcamPathEdit
+        KeyNavigation.down: webcamListFileEdit
     }
 
     LabelText
     {
         x: xscale(50); y: yscale(400)
-        text: "Webcam Path:"
+        text: "Webcam List File:"
     }
 
     BaseEdit
     {
-        id: webcamPathEdit
+        id: webcamListFileEdit
         x: xscale(400); y: yscale(400)
         width: xscale(700)
         height: yscale(50)
-        text: settings.webcamPath
+        text: settings.webcamListFile
         KeyNavigation.up: hdmiEncoderEdit
-        KeyNavigation.right: webcamPathButton
+        KeyNavigation.right: webcamListFileButton
+        KeyNavigation.down: webvideoListFileEdit
+    }
+
+    BaseButton
+    {
+        id: webcamListFileButton;
+        x: xscale(1120); y: yscale(400);
+        width: xscale(50); height: yscale(50)
+        text: "";
+        KeyNavigation.up: hdmiEncoderEdit
+        KeyNavigation.left: webcamListFileEdit
+        KeyNavigation.down: webvideoListFileButton
+        onClicked:
+        {
+            // TODO show directory finder popup
+        }
+    }
+
+    LabelText
+    {
+        x: xscale(50); y: yscale(450)
+        text: "Webvideo List File:"
+    }
+
+    BaseEdit
+    {
+        id: webvideoListFileEdit
+        x: xscale(400); y: yscale(450)
+        width: xscale(700)
+        height: yscale(50)
+        text: settings.webvideoListFile
+        KeyNavigation.up: webcamListFileEdit
+        KeyNavigation.right: webvideoListFileButton
         KeyNavigation.down: saveButton
     }
 
     BaseButton
     {
-        id: webcamPathButton;
-        x: xscale(1120); y: yscale(400);
+        id: webvideoListFileButton;
+        x: xscale(1120); y: yscale(450);
         width: xscale(50); height: yscale(50)
         text: "";
-        KeyNavigation.up: hdmiEncoderEdit
-        KeyNavigation.left: webcamPathEdit
+        KeyNavigation.up: webcamListFileButton
+        KeyNavigation.left: webvideoListFileEdit
         KeyNavigation.down: saveButton
         onClicked:
         {
@@ -202,25 +235,27 @@ BaseScreen
         id: saveButton;
         x: xscale(900); y: yscale(630);
         text: "Save";
-        KeyNavigation.up: webcamPathEdit
+        KeyNavigation.up: webvideoListFileEdit
         KeyNavigation.down: videoPathEdit
         onClicked:
         {
-            dbUtils.setSetting("VideoPath",       settings.hostName, videoPathEdit.text);
-            dbUtils.setSetting("PicturePath",     settings.hostName, picturePathEdit.text);
-            dbUtils.setSetting("SdChannels",      settings.hostName, sdChannelsEdit.text);
-            dbUtils.setSetting("VboxFreeviewIP",  settings.hostName, vboxFreeviewIPEdit.text);
-            dbUtils.setSetting("VboxFreesatIP",   settings.hostName, vboxFreesatIPEdit.text);
-            dbUtils.setSetting("HdmiEncoder",     settings.hostName, hdmiEncoderEdit.text);
-            dbUtils.setSetting("WebcamPath",      settings.hostName, webcamPathEdit.text);
+            dbUtils.setSetting("VideoPath",        settings.hostName, videoPathEdit.text);
+            dbUtils.setSetting("PicturePath",      settings.hostName, picturePathEdit.text);
+            dbUtils.setSetting("SdChannels",       settings.hostName, sdChannelsEdit.text);
+            dbUtils.setSetting("VboxFreeviewIP",   settings.hostName, vboxFreeviewIPEdit.text);
+            dbUtils.setSetting("VboxFreesatIP",    settings.hostName, vboxFreesatIPEdit.text);
+            dbUtils.setSetting("HdmiEncoder",      settings.hostName, hdmiEncoderEdit.text);
+            dbUtils.setSetting("WebcamListFile",   settings.hostName, webcamListFileEdit.text);
+            dbUtils.setSetting("WebvideoListFile", settings.hostName, webvideoListFileEdit.text);
 
-            settings.videoPath       = videoPathEdit.text;
-            settings.picturePath     = picturePathEdit.text;
-            settings.sdChannels      = sdChannelsEdit.text;
-            settings.vboxFreeviewIP  = vboxFreeviewIPEdit.text;
-            settings.vboxFreesatIP   = vboxFreesatIPEdit.text;
-            settings.hdmiEncoder     = hdmiEncoderEdit.text;
-            settings.webcamPath      = webcamPathEdit.text;
+            settings.videoPath        = videoPathEdit.text;
+            settings.picturePath      = picturePathEdit.text;
+            settings.sdChannels       = sdChannelsEdit.text;
+            settings.vboxFreeviewIP   = vboxFreeviewIPEdit.text;
+            settings.vboxFreesatIP    = vboxFreesatIPEdit.text;
+            settings.hdmiEncoder      = hdmiEncoderEdit.text;
+            settings.webcamListFile   = webcamListFileEdit.text;
+            settings.webvideoListFile = webvideoListFileEdit.text;
 
             returnSound.play();
             stack.pop();
