@@ -39,7 +39,8 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     setVideoPath(gContext->m_databaseUtils->getSetting("VideoPath", hostName));
     setPicturePath(gContext->m_databaseUtils->getSetting("PicturePath", hostName));
     setSdChannels(gContext->m_databaseUtils->getSetting("SdChannels", hostName));
-    setWebcamPath(gContext->m_databaseUtils->getSetting("WebcamPath", hostName));
+    setWebcamListFile(gContext->m_databaseUtils->getSetting("WebcamListFile", hostName));
+    setWebvideoListFile(gContext->m_databaseUtils->getSetting("WebvideoListFile", hostName));
 
     // set the websocket url using the master backend as a starting point
     QUrl url(QString("ws://%1:%2").arg(masterIP()).arg(masterPort() + 5));
@@ -135,10 +136,16 @@ void Settings::setDefaultSettings(const QString &hostName)
     }
 
     // feed source paths
-    if (gContext->m_databaseUtils->getSetting("WebcamPath", hostName) == "")
+    if (gContext->m_databaseUtils->getSetting("WebcamListFile", hostName) == "")
     {
-        setWebcamPath("https://mythqml.net/downloads/webcams/");
-        gContext->m_databaseUtils->setSetting("WebcamPath", hostName, "https://mythqml.net/downloads/webcams/");
+        setWebcamListFile("https://mythqml.net/download.php?f=webcams_list.xml");
+        gContext->m_databaseUtils->setSetting("WebcamListFile", hostName, "https://mythqml.net/download.php?f=webcams_list.xml");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("WebvideoListFile", hostName) == "")
+    {
+        setWebvideoListFile("https://mythqml.net/download.php?f=webvideo_list.xml");
+        gContext->m_databaseUtils->setSetting("WebvideoListFile", hostName, "https://mythqml.net/download.php?f=webvideo_list.xml");
     }
 
     // start fullscreen
@@ -447,15 +454,26 @@ void Settings::setStartFullscreen(const bool startFullscreen)
     emit startFullscreenChanged();
 }
 
-QString Settings::webcamPath(void)
+QString Settings::webcamListFile(void)
 {
-    return m_webcamPath;
+    return m_webcamListFile;
 }
 
-void Settings::setWebcamPath(const QString &webcamPath)
+void Settings::setWebcamListFile(const QString &webcamListFile)
 {
-    m_webcamPath = webcamPath;
-    emit webcamPathChanged();
+    m_webcamListFile = webcamListFile;
+    emit webcamListFileChanged();
+}
+
+QString Settings::webvideoListFile(void)
+{
+    return m_webvideoListFile;
+}
+
+void Settings::setWebvideoListFile(const QString &webvideoListFile)
+{
+    m_webvideoListFile = webvideoListFile;
+    emit webvideoListFileChanged();
 }
 
 int Settings::osdTimeoutShort(void)
