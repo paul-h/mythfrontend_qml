@@ -242,7 +242,7 @@ BaseScreen
 
         popupMenu.addMenuItem("", "Switch Advent Calendar");
         for (var x = 0; x < calendarModel.calendarList.count; x++)
-            popupMenu.addMenuItem("0", calendarModel.calendarList.get(x).title, x);
+            popupMenu.addMenuItem("0", calendarModel.calendarList.get(x).title, x, (x === calendarModel.calendarIndex ? true : false));
 
         if (calendarModel.model.get(calendarGrid.currentIndex).opened)
             popupMenu.addMenuItem("", "Close Window");
