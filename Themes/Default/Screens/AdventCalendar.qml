@@ -129,7 +129,7 @@ BaseScreen
             }
             else if (event.key === Qt.Key_F2)
             {
-                showMenu();
+                showSwitchAdventMenu();
             }
             else
             {
@@ -238,6 +238,7 @@ BaseScreen
 
     function showMenu()
     {
+        popupMenu.message = "Advent Calendar Options";
         popupMenu.clearMenuItems();
 
         popupMenu.addMenuItem("", "Switch Advent Calendar");
@@ -250,6 +251,17 @@ BaseScreen
             popupMenu.addMenuItem("", "Open Window");
 
         popupMenu.addMenuItem("", "Close All Windows");
+
+        popupMenu.show();
+    }
+
+    function showSwitchAdventMenu()
+    {
+        popupMenu.message = "Switch Advent Calendar";
+        popupMenu.clearMenuItems();
+
+        for (var x = 0; x < calendarModel.calendarList.count; x++)
+            popupMenu.addMenuItem("", calendarModel.calendarList.get(x).title, x, (x === calendarModel.calendarIndex ? true : false));
 
         popupMenu.show();
     }
