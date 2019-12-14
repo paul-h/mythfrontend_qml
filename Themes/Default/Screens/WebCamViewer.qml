@@ -397,9 +397,9 @@ BaseScreen
         updatesModel.clear();
 
         // add new webcams
-        for (x = 0; x < playerSources.webcamList.count; x++)
+        for (x = 0; x < playerSources.webcamList.model.count; x++)
         {
-            var webcamAdded = Date.parse(playerSources.webcamList.get(x).dateadded);
+            var webcamAdded = Date.parse(playerSources.webcamList.model.get(x).dateadded);
 
             if (lastChecked < webcamAdded)
             {
@@ -409,16 +409,16 @@ BaseScreen
                     firstAdded = false;
                 }
 
-                updatesModel.append({"heading": "no", "title": playerSources.webcamList.get(x).title, "icon": playerSources.webcamList.get(x).icon});
+                updatesModel.append({"heading": "no", "title": playerSources.webcamList.model.get(x).title, "icon": playerSources.webcamList.model.get(x).icon});
             }
         }
 
         // add modified webcams
-        for (x = 0; x < playerSources.webcamList.count; x++)
+        for (x = 0; x < playerSources.webcamList.model.count; x++)
         {
-            var webcamModified = Date.parse(playerSources.webcamList.get(x).datemodified);
-            var webcamAdded = Date.parse(playerSources.webcamList.get(x).dateadded);
-            var status = playerSources.webcamList.get(x).status
+            var webcamModified = Date.parse(playerSources.webcamList.model.get(x).datemodified);
+            var webcamAdded = Date.parse(playerSources.webcamList.model.get(x).dateadded);
+            var status = playerSources.webcamList.model.get(x).status
 
             if (lastChecked < webcamModified && !(lastChecked < webcamAdded) && status !== "Temporarily Offline" && status !== "Not Working")
             {
@@ -428,16 +428,16 @@ BaseScreen
                     firstModified = false;
                 }
 
-                updatesModel.append({"heading": "no", "title": playerSources.webcamList.get(x).title, "icon": playerSources.webcamList.get(x).icon});
+                updatesModel.append({"heading": "no", "title": playerSources.webcamList.model.get(x).title, "icon": playerSources.webcamList.model.get(x).icon});
             }
         }
 
         // add temporarily offline webcams
-        for (x = 0; x < playerSources.webcamList.count; x++)
+        for (x = 0; x < playerSources.webcamList.model.count; x++)
         {
-            var webcamModified = Date.parse(playerSources.webcamList.get(x).datemodified);
-            var webcamAdded = Date.parse(playerSources.webcamList.get(x).dateadded);
-            var status = playerSources.webcamList.get(x).status
+            var webcamModified = Date.parse(playerSources.webcamList.model.get(x).datemodified);
+            var webcamAdded = Date.parse(playerSources.webcamList.model.get(x).dateadded);
+            var status = playerSources.webcamList.model.get(x).status
 
             if (lastChecked < webcamModified && !(lastChecked < webcamAdded) && status === "Temporarily Offline")
             {
@@ -447,16 +447,16 @@ BaseScreen
                     firstOffline = false;
                 }
 
-                updatesModel.append({"heading": "no", "title": playerSources.webcamList.get(x).title, "icon": playerSources.webcamList.get(x).icon});
+                updatesModel.append({"heading": "no", "title": playerSources.webcamList.model.get(x).title, "icon": playerSources.webcamList.model.get(x).icon});
             }
         }
 
         // add not working webcams
-        for (x = 0; x < playerSources.webcamList.count; x++)
+        for (x = 0; x < playerSources.webcamList.model.count; x++)
         {
-            var webcamModified = Date.parse(playerSources.webcamList.get(x).datemodified);
-            var webcamAdded = Date.parse(playerSources.webcamList.get(x).dateadded);
-            var status = playerSources.webcamList.get(x).status
+            var webcamModified = Date.parse(playerSources.webcamList.model.get(x).datemodified);
+            var webcamAdded = Date.parse(playerSources.webcamList.model.get(x).dateadded);
+            var status = playerSources.webcamList.model.get(x).status
 
             if (lastChecked < webcamModified && !(lastChecked < webcamAdded) && status === "Not Working")
             {
@@ -466,7 +466,7 @@ BaseScreen
                     firstNotWorking = false;
                 }
 
-                updatesModel.append({"heading": "no", "title": playerSources.webcamList.get(x).title, "icon": playerSources.webcamList.get(x).icon});
+                updatesModel.append({"heading": "no", "title": playerSources.webcamList.model.get(x).title, "icon": playerSources.webcamList.model.get(x).icon});
             }
         }
 
