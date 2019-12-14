@@ -27,9 +27,9 @@ BaseDialog
         menuList.reset();
     }
 
-    function addMenuItem(path, title, data)
+    function addMenuItem(path, title, data, checked)
     {
-        menuList.addNode(path, title, data);
+        menuList.addNode(path, title, data, checked);
     }
 
     Keys.onPressed:

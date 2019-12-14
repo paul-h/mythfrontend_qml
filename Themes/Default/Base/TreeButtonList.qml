@@ -95,6 +95,21 @@ FocusScope
                         ""
                 }
             }
+
+            AnimatedImage
+            {
+                id: checkImage
+                x: parent.width - width - xscale(5)
+                y: (parent.height - height) / 2
+                width: xscale(30); height: yscale(30)
+                source:
+                {
+                    if (model.checked)
+                        mythUtils.findThemeFile("images/check.png")
+                    else
+                        ""
+                }
+            }
         }
     }
 
@@ -163,11 +178,11 @@ FocusScope
         return list;
     }
 
-    function addNode(path, title, data)
+    function addNode(path, title, data, checked)
     {
         if (path === "")
         {
-            objRoot.model.append({"itemTitle": title, "itemData": data, "subNodes": []})
+            objRoot.model.append({"itemTitle": title, "itemData": data, "checked": checked, "subNodes": []})
         }
         else
         {
@@ -194,7 +209,7 @@ FocusScope
             if (node.subNodes === undefined)
                 node.subNodes = [];
 
-            node.subNodes.append({"itemTitle": title, "itemData": data, "subNodes": []})
+            node.subNodes.append({"itemTitle": title, "itemData": data, "checked": checked,  "subNodes": []})
         }
     }
 

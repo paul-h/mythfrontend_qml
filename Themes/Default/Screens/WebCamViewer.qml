@@ -65,7 +65,7 @@ BaseScreen
 
             popupMenu.addMenuItem("", "Switch WebCam List");
             for (var x = 0; x < playerSources.webcamList.webcamList.count; x++)
-                popupMenu.addMenuItem("0", playerSources.webcamList.webcamList.get(x).title, x);
+                popupMenu.addMenuItem("0", playerSources.webcamList.webcamList.get(x).title, x, (playerSources.webcamList.webcamListIndex == x ? true : false));
 
             popupMenu.show();
         }
