@@ -144,8 +144,8 @@ void Settings::setDefaultSettings(const QString &hostName)
 
     if (gContext->m_databaseUtils->getSetting("WebvideoListFile", hostName) == "")
     {
-        setWebvideoListFile("https://mythqml.net/download.php?f=webvideo_list.xml");
-        gContext->m_databaseUtils->setSetting("WebvideoListFile", hostName, "https://mythqml.net/download.php?f=webvideo_list.xml");
+        setWebvideoListFile("https://mythqml.net/download.php?f=webvideos_list.xml");
+        gContext->m_databaseUtils->setSetting("WebvideoListFile", hostName, "https://mythqml.net/download.php?f=webvideos_list.xml");
     }
 
     // start fullscreen
