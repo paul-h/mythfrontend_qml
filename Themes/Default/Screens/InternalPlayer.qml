@@ -301,6 +301,26 @@ BaseScreen
 
     Action
     {
+        shortcut: "}" // volume down
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            getActivePlayer().changeVolume(-1.0);
+        }
+    }
+
+    Action
+    {
+        shortcut: "{" // volume up
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            getActivePlayer().changeVolume(1.0);
+        }
+    }
+
+    Action
+    {
         shortcut: "D" // switch deinterlacer
         enabled: _actionsEnabled
         onTriggered:

@@ -43,9 +43,9 @@ FocusScope
                     stop();
                 else if (event.key === Qt.Key_P)
                     togglePaused();
-                else if (event.key === Qt.Key_BracketLeft)
+                else if (event.key === Qt.Key_BracketLeft || event.key === Qt.Key_BraceLeft)
                     changeVolume(-0.01);
-                else if (event.key === Qt.Key_BracketRight)
+                else if (event.key === Qt.Key_BracketRight || event.key === Qt.Key_BraceRight)
                     changeVolume(0.01);
                 else if (event.key === Qt.Key_M)
                     toggleMute();
