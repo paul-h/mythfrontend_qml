@@ -124,7 +124,7 @@ Item
 
                     popupMenu.show();
                 }
-                else if (event.key === Qt.Key_BracketLeft)
+                else if (event.key === Qt.Key_BracketLeft || event.key === Qt.Key_BraceLeft)
                 {
                     // background video volume down
                     if (window.backgroundVideoVolume * 100 >= 1.00)
@@ -134,7 +134,7 @@ Item
 
                     showNotification("Background Volume: " + Math.round(backgroundVideoVolume * 100) + "%");
                 }
-                else if (event.key === Qt.Key_BracketRight)
+                else if (event.key === Qt.Key_BracketRight || event.key === Qt.Key_BraceRight)
                 {
                     // background video volume up
                     if (window.backgroundVideoVolume * 100 <= 99)
