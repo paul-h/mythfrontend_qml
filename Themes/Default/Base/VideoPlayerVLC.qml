@@ -152,10 +152,21 @@ FocusScope
 
     function changeVolume(amount)
     {
+        // we get % so scale to 0 to 1.0
+        amount = amount / 100;
+
         if (amount < 0)
             mediaplayer.volume = Math.max(0.0, mediaplayer.volume + amount);
         else
             mediaplayer.volume = Math.min(1.0, mediaplayer.volume + amount);
+
+        showMessage("Volume: " + (mediaplayer.volume * 100) + "%", settings.osdTimeoutMedium);
+    }
+
+    function setVolume(volume)
+    {
+        mediaPlayer.volume = volume / 100;
+        showMessage("Volume: " + (mediaplayer.volume * 100) + "%", settings.osdTimeoutMedium);
     }
 
     function toggleMute()

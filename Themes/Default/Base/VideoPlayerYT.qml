@@ -152,6 +152,13 @@ Item
         showMessage("Volume: " + root.volume + "%", settings.osdTimeoutMedium);
     }
 
+    function setVolume(volume)
+    {
+        root.volume = volume;
+        browser.runJavaScript("changeVolume(" + root.volume + ");");
+        showMessage("Volume: " + root.volume + "%", settings.osdTimeoutMedium);
+    }
+
     function getMuted()
     {
         return root.muteAudio;
