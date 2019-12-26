@@ -144,12 +144,9 @@ BaseScreen
             {
                 if (sdChannelsProxyModel.get(x).channo == channum)
                 {
-                    console.log("found at " + x);
                     sdChannelList.currentIndex = x;
                     break;
                 }
-                else
-                    console.log("not found at " + x + "[" + sdChannelsProxyModel.get(x).channo + "]");
             }
 
             event.accepted = true;
@@ -185,7 +182,6 @@ BaseScreen
         onClicked:
         {
             chanNoEdit.text = sdChannelList.model.get(sdChannelList.currentIndex).channo;
-            //dbChannelList.model.data(dbChannelList.model.index(dbChannelList.currentIndex, 1)) = sdChannelList.model.get(sdChannelList.currentIndex).channo;
         }
     }
 
