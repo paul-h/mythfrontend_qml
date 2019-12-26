@@ -68,13 +68,13 @@ BaseScreen
             Image
             {
                id: channelImage
-               x: 3; y:3; height: parent.height - 6; width: height
+               x: xscale(3); y:yscale(3); height: parent.height - yscale(6); width: height
                source: if (icon) icon; else mythUtils.findThemeFile("images/grid_noimage.png");
             }
             ListText
             {
-                width:sdChannelList.width; height: 50
-                x: channelImage.width + 5
+                width:sdChannelList.width - xscale(10); height: yscale(50)
+                x: channelImage.width + xscale(5)
                 text: name + " ~ " + callsign + " ~ " + channo + " ~ " + xmltvid
             }
         }
@@ -83,17 +83,21 @@ BaseScreen
     ButtonList
     {
         id: sdChannelList
-        x: 50; y: 30; width: 500; height: 500
+        x: xscale(20); y: yscale(20); width: xscale(610); height: yscale(550)
 
         model: sdChannelsProxyModel
         delegate: listRow
 
         Keys.onReturnPressed:
         {
+            chanNoEdit.text = sdChannelList.model.get(sdChannelList.currentIndex).channo;
+            chanNameEdit.text = sdChannelList.model.get(sdChannelList.currentIndex).name;
+            callsignEdit.text = sdChannelList.model.get(sdChannelList.currentIndex).callsign;
+            xmltvidEdit.text = sdChannelList.model.get(sdChannelList.currentIndex).xmltvid;
             returnSound.play();
         }
 
-        KeyNavigation.left:  chanNoEdit;
+        KeyNavigation.left:  saveButton;
         KeyNavigation.right: dbChannelList;
     }
 
@@ -106,7 +110,7 @@ BaseScreen
             Image
             {
                 id: radioIcon
-                x: 3; y:3; height: parent.height - 6; width: height
+                x: xscale(3); y: yscale(3); height: parent.height - yscale(6); width: height
                 source: if (icon)
                     settings.masterBackend + "Guide/GetChannelIcon?ChanId=" + chanid
                 else
@@ -115,8 +119,8 @@ BaseScreen
 
             ListText
             {
-                width: dbChannelList.width; height: 50
-                x: radioIcon.width + 5
+                width: dbChannelList.width; height: yscale(50)
+                x: radioIcon.width + xscale(5)
                 text: name + " ~ " + callsign + " ~ " + channum + " ~ " + xmltvid
             }
         }
@@ -126,7 +130,7 @@ BaseScreen
     ButtonList
     {
         id: dbChannelList
-        x: 600; y: 30; width: 500; height: 500
+        x: xscale(650); y: yscale(20); width: xscale(610); height: yscale(550)
 
         model: dbChannelsModel
         delegate: streamRow
@@ -134,19 +138,32 @@ BaseScreen
         Keys.onReturnPressed:
         {
             returnSound.play();
-            var url = model.data(model.index(currentIndex, 4));
+            var channum = model.data(model.index(currentIndex, 1));
+            console.log("channum: " + channum);
+            for (var x = 0; x < sdChannelsProxyModel.count; x++)
+            {
+                if (sdChannelsProxyModel.get(x).channo == channum)
+                {
+                    console.log("found at " + x);
+                    sdChannelList.currentIndex = x;
+                    break;
+                }
+                else
+                    console.log("not found at " + x + "[" + sdChannelsProxyModel.get(x).channo + "]");
+            }
+
             event.accepted = true;
         }
 
         KeyNavigation.left: sdChannelList;
-        KeyNavigation.right: chanNoEdit;
+        KeyNavigation.right: saveButton;
     }
 
     BaseEdit
     {
         id: chanNoEdit
-        x: 30; y: 600
-        width: 240
+        x: xscale(30); y: yscale(600)
+        width: xscale(240)
         text: dbChannelList.model.data(dbChannelList.model.index(dbChannelList.currentIndex, 1))
         KeyNavigation.up: sdChannelList
         KeyNavigation.down: chanNameEdit
@@ -157,8 +174,8 @@ BaseScreen
     BaseButton
     {
         id: chanNoButton;
-        x: 280; y: 600;
-        width: 50; height: 50
+        x: xscale(280); y: yscale(600);
+        width: xscale(50); height: yscale(50)
         text: "F1";
         KeyNavigation.up: sdChannelList
         KeyNavigation.down: chanNameButton
@@ -175,8 +192,8 @@ BaseScreen
    BaseEdit
     {
         id: chanNameEdit
-        x: 30; y: 650
-        width: 240
+        x: xscale(30); y: yscale(650)
+        width: xscale(240)
         text: dbChannelList.model.data(dbChannelList.model.index(dbChannelList.currentIndex, 3))
         KeyNavigation.up: chanNoEdit;
         KeyNavigation.down: callsignEdit;
@@ -187,13 +204,13 @@ BaseScreen
     BaseButton
     {
         id: chanNameButton;
-        x: 280; y: 650;
-        width: 50; height: 50
+        x: xscale(280); y: yscale(650);
+        width: xscale(50); height: yscale(50)
         text: "F2";
         KeyNavigation.up: chanNoButton;
         KeyNavigation.down: callsignEdit;
         KeyNavigation.left: chanNameEdit
-        KeyNavigation.right: chanNameButton
+        KeyNavigation.right: xmltvidEdit
         onClicked:
         {
             //chanNameEdit.text = sdChannelList.model.get(sdChannelList.currentIndex).name;
@@ -204,8 +221,8 @@ BaseScreen
     BaseEdit
     {
         id: callsignEdit
-        x: 400; y: 600
-        width: 390
+        x: xscale(400); y: yscale(600)
+        width: xscale(390)
         text: dbChannelList.model.data(dbChannelList.model.index(dbChannelList.currentIndex, 2))
         KeyNavigation.up: chanNameEdit;
         KeyNavigation.down: xmltvidEdit;
@@ -216,8 +233,8 @@ BaseScreen
     BaseButton
     {
         id: callsignButton;
-        x: 800; y: 600;
-        width: 50; height: 50
+        x: xscale(800); y: yscale(600);
+        width: xscale(50); height: yscale(50)
         text: "F3";
         KeyNavigation.up: dbChannelList
         KeyNavigation.down: xmltvButton
@@ -233,8 +250,8 @@ BaseScreen
     BaseEdit
     {
         id: xmltvidEdit
-        x: 400; y: 650
-        width: 390
+        x: xscale(400); y: yscale(650)
+        width: xscale(390)
         text: dbChannelList.model.data(dbChannelList.model.index(dbChannelList.currentIndex, 5))
         KeyNavigation.up: callsignEdit;
         KeyNavigation.down: saveButton;
@@ -245,8 +262,8 @@ BaseScreen
     BaseButton
     {
         id: xmltvButton;
-        x: 800; y: 650;
-        width: 50; height: 50
+        x: xscale(800); y: yscale(650);
+        width: xscale(50); height: yscale(50)
         text: "F4";
         KeyNavigation.up: callsignButton
         KeyNavigation.down: dbChannelList
@@ -263,7 +280,7 @@ BaseScreen
     {
         id: saveButton;
         x: xscale(1050); y: yscale(630);
-        text: "Save";
+        text: "Save (F5)";
         KeyNavigation.up: dbChannelList
         KeyNavigation.down: dbChannelList
         KeyNavigation.left: xmltvButton

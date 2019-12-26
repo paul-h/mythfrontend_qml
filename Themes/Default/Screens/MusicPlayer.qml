@@ -337,7 +337,7 @@ BaseScreen
         Component.onCompleted:
         {
             // try to restore the last playing station
-//             var url = dbUtils.getSetting("Qml_radioPlayerBookmark", settings.hostName)
+//             var url = dbUtils.getSetting("RadioPlayerBookmark", settings.hostName)
 // 
 //             for (var i = 0; i < radioStreamsModel.rowCount(); i++)
 //             {
@@ -361,7 +361,7 @@ BaseScreen
 // 
 //             streamPlayer.mrl = url;
 
-            var vol = dbUtils.getSetting("Qml_musicPlayerVolume", settings.hostName)
+            var vol = dbUtils.getSetting("MusicPlayerVolume", settings.hostName)
             if (vol !== undefined && vol !== "")
                 audio.volume = vol;
             else
@@ -370,7 +370,7 @@ BaseScreen
 
         Component.onDestruction:
         {
-            dbUtils.setSetting("Qml_musicPlayerBookmark", settings.hostName, mrl)
+            dbUtils.setSetting("MusicPlayerBookmark", settings.hostName, mrl)
         }
     }
 }
