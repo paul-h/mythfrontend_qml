@@ -127,9 +127,14 @@ FocusScope
         showMessage("Volume: " + mediaplayer.volume + "%", settings.osdTimeoutMedium);
     }
 
+    function getVolume()
+    {
+        return mediaplayer.volume;
+    }
+
     function setVolume(volume)
     {
-        mediaPlayer.volume = volume;
+        mediaplayer.volume = volume;
         showMessage("Volume: " + mediaplayer.volume + "%", settings.osdTimeoutMedium);
     }
 

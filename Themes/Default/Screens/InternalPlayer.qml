@@ -61,6 +61,13 @@ BaseScreen
         if (layout === 6)
             playerLayout.mediaPlayer4.startPlayback();
 
+        // set the default volume
+        var volume = dbUtils.getSetting("VideoPlayerVolume", settings.hostName, "100");
+        playerLayout.mediaPlayer1.setVolume(volume);
+        playerLayout.mediaPlayer2.setVolume(volume);
+        playerLayout.mediaPlayer3.setVolume(volume);
+        playerLayout.mediaPlayer4.setVolume(volume);
+
         showInfo(true);
     }
 
@@ -285,7 +292,7 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            getActivePlayer().changeVolume(-1.0);
+            changeVolume(-1.0);
         }
     }
 
@@ -295,7 +302,7 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            getActivePlayer().changeVolume(1.0);
+            changeVolume(1.0);
         }
     }
 
@@ -305,7 +312,7 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            getActivePlayer().changeVolume(-1.0);
+            changeVolume(-1.0);
         }
     }
 
@@ -315,7 +322,7 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            getActivePlayer().changeVolume(1.0);
+            changeVolume(1.0);
         }
     }
 
@@ -822,4 +829,10 @@ BaseScreen
         popupMenu.show();
     }
 
+    function changeVolume(amount)
+    {
+        getActivePlayer().changeVolume(amount);
+        var volume = getActivePlayer().getVolume();
+        dbUtils.setSetting("VideoPlayerVolume", settings.hostName, volume)
+    }
 }

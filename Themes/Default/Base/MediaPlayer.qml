@@ -697,6 +697,18 @@ FocusScope
             youtubePlayer.changeVolume(amount);
     }
 
+    function getVolume()
+    {
+        if (getActivePlayer() === "VLC")
+            return vlcPlayer.getVolume();
+        else if (getActivePlayer() === "QTAV")
+            return qtAVPlayer.getVolume();
+        else if (getActivePlayer() === "YOUTUBE")
+            return youtubePlayer.getVolume();
+
+        return undefined
+    }
+
     function setVolume(volume)
     {
         if (getActivePlayer() === "VLC")

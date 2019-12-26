@@ -152,6 +152,11 @@ Item
         showMessage("Volume: " + root.volume + "%", settings.osdTimeoutMedium);
     }
 
+    function getVolume()
+    {
+        return root.volume;
+    }
+
     function setVolume(volume)
     {
         root.volume = volume;

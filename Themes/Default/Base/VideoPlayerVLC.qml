@@ -163,6 +163,11 @@ FocusScope
         showMessage("Volume: " + (mediaplayer.volume * 100) + "%", settings.osdTimeoutMedium);
     }
 
+    function getVolume()
+    {
+        return mediaplayer.volume * 100;
+    }
+
     function setVolume(volume)
     {
         mediaPlayer.volume = volume / 100;
