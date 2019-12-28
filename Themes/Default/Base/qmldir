@@ -37,6 +37,7 @@ ReflectionImage 1.0 ReflectionImage.qml
 RichText 1.0 RichText.qml
 ScreenBackground 1.0 ScreenBackground.qml
 Scroller 1.0 Scroller.qml
+SlideShow 1.0 SlideShow.qml
 Snow 1.0 Snow.qml
 Ticker 1.0 Ticker.qml
 TitleText 1.0 TitleText.qml
