@@ -1,5 +1,6 @@
 // qt
 #include <QVariant>
+#include <QSqlError>
 
 // mythfrontend_qml
 #include "databaseutils.h"
@@ -113,14 +114,20 @@ QString DatabaseUtils::getSetting(const QString &settingName, const QString &hos
     if (query.exec() && query.next())
     {
         value = query.value(0).toString();
+        gContext->m_logger->debug(Verbose::DATABASE, QString("DatabaseUtils::getSetting - settingName: '%1', hostName: '%2', value: '%3'")
+                                                            .arg(settingName).arg(hostName).arg(value));
         return value;
     }
 
+    gContext->m_logger->debug(Verbose::DATABASE, QString("DatabaseUtils::getSetting - settingName: '%1', hostName: '%2', value: '%3'")
+                                                        .arg(settingName).arg(hostName).arg(defaultValue));
     return defaultValue;
 }
 
 bool DatabaseUtils::setSetting(QString settingName, QString hostName, QString value)
 {
+    gContext->m_logger->debug(Verbose::DATABASE, QString("DatabaseUtils::setSetting - settingName: '%1', hostName: '%2', value: '%3'")
+                                                        .arg(settingName).arg(hostName).arg(value));
     QSqlQuery query(gContext->m_mythQMLDB);
     bool success = false;
 
@@ -162,7 +169,7 @@ bool DatabaseUtils::setSetting(QString settingName, QString hostName, QString va
         if (!query.exec())
         {
             success = false;
-            gContext->m_logger->error(Verbose::DATABASE, "DatabaseUtils::setSetting insert failed");
+            gContext->m_logger->error(Verbose::DATABASE, "DatabaseUtils::setSetting insert failed - " + query.lastError().text() + ", query was: " + query.lastQuery());
         }
     }
 
