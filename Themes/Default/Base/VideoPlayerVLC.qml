@@ -171,7 +171,6 @@ FocusScope
     function setVolume(volume)
     {
         mediaPlayer.volume = volume / 100;
-        showMessage("Volume: " + (mediaplayer.volume * 100) + "%", settings.osdTimeoutMedium);
     }
 
     function toggleMute()

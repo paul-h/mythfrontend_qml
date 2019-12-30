@@ -161,7 +161,6 @@ Item
     {
         root.volume = volume;
         browser.runJavaScript("changeVolume(" + root.volume + ");");
-        showMessage("Volume: " + root.volume + "%", settings.osdTimeoutMedium);
     }
 
     function getMuted()

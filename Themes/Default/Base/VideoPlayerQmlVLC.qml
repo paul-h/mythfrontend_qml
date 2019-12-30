@@ -135,7 +135,6 @@ FocusScope
     function setVolume(volume)
     {
         mediaplayer.volume = volume;
-        showMessage("Volume: " + mediaplayer.volume + "%", settings.osdTimeoutMedium);
     }
 
     function getMuted()
