@@ -59,6 +59,10 @@ BaseScreen
         {
             itemText: "MythCenterXMAS"
         }
+        ListElement
+        {
+            itemText: "SlideShowXMAS"
+        }
     }
 
     BaseSelector
