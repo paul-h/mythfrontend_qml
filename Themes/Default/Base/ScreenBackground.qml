@@ -6,6 +6,7 @@ Item
     id: screenBackground
     property alias title: screenTitle.text
     property alias showImage: background.visible
+    property alias showSlideShow: slideShow.visible
     property alias showTitle: screenTitle.visible
     property alias showTime: time.visible
     property alias showVideo: videoPlayer.visible
@@ -63,6 +64,15 @@ Item
         visible: !videoPlayer.playbackStarted
         anchors.fill: parent
         source: mythUtils.findThemeFile(theme.backgroundImage)
+    }
+
+    // background slideshow
+    SlideShow
+    {
+        id: slideShow
+        anchors.fill: parent
+        visible:  false
+        folder: settings.configPath + "Themes/Pictures/" + theme.backgroundSlideShow
     }
 
     // background video

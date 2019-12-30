@@ -381,7 +381,7 @@ Window
                 return null
             }
 
-            if (theme.backgroundVideo !== "")
+            if (theme.backgroundVideo != "")
             {
                 if (!mythUtils.fileExists(settings.configPath + "Themes/Videos/" + theme.backgroundVideo))
                 {
@@ -389,6 +389,7 @@ Window
                     var dest = settings.configPath + "Themes/Videos/" + theme.backgroundVideo;
                     screenBackground.showVideo = false;
                     screenBackground.showImage = true;
+                    screenBackground.showSlideShow = false;
 
                     log.info(Verbose.GUI, "MainWindow: Downloading theme background video from - " + source);
                     log.info(Verbose.GUI, "to - " + dest);
@@ -401,12 +402,20 @@ Window
                 {
                     screenBackground.showVideo = true;
                     screenBackground.showImage = false;
+                    screenBackground.showSlideShow = false;
                 }
+            }
+            else if (theme.backgroundSlideShow != "")
+            {
+                screenBackground.showVideo = false;
+                screenBackground.showImage = false;
+                screenBackground.showSlideShow = true;
             }
             else
             {
                 screenBackground.showVideo = false;
                 screenBackground.showImage = true;
+                screenBackground.showSlideShow = false;
             }
 
             return theme
