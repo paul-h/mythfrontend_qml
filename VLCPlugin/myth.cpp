@@ -190,6 +190,7 @@ bool filePlayback(stream_t *p_stream, const string &filename, const string &sgro
 
     if (p_sys->m_fp->OpenTransfer(filename, sgroup))
     {
+        msg_Info(p_stream, "INFO: file length is: %u", p_sys->m_fp->GetSize());
         return true;
     }
 
