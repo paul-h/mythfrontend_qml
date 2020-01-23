@@ -45,20 +45,24 @@ Item
 
     Rectangle
     {
+
         x: xscale(200); y: yscale(150)
         width: xscale(500); height: yscale(360)
         color: "#00000000"
         Component
         {
             id: menuDelegate
+
             Item
             {
+                property bool selected: ListView.isCurrentItem
+
                 width: parent.width; height: yscale(60)
                 TitleText
                 {
                     text: menutext
                     fontFamily: theme.menuFontFamily
-                    fontPixelSize: xscale(theme.menuFontPixelSize)
+                    fontPixelSize: selected ? xscale(theme.menuFontPixelSize) * xscale(1.2) : xscale(theme.menuFontPixelSize)
                     fontBold: theme.menuFontBold
                     fontColor: theme.menuFontColor
                     shadowAlpha: theme.menuShadowAlpha
@@ -67,6 +71,8 @@ Item
                     shadowYOffset: theme.menuShadowYOffset
                     x: xscale(10); width: parent.width - xscale(20);
                     anchors.verticalCenter: parent.verticalCenter
+
+                    Behavior on fontPixelSize { NumberAnimation { duration: 250 } }
                 }
             }
         }
