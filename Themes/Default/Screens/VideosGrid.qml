@@ -89,7 +89,7 @@ BaseScreen
             }
             ListText
             {
-                width: videoList.width - coverImage.width - xscale(20); height: xscale(50)
+                width: videoList.width - coverImage.width - xscale(20); height: parent.height
                 x: coverImage.width + xscale(20)
                 text: SubTitle ? Title + ": " + SubTitle : Title
             }
@@ -97,7 +97,7 @@ BaseScreen
             ListText
             {
                 x: xscale(1000);
-                width: xscale(200); height: xscale(50)
+                width: xscale(200); height: parent.height
                 text:
                 {
                     if (ContentType == "TELEVISION")

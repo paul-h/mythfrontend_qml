@@ -150,7 +150,7 @@ BaseScreen
             }
             ListText
             {
-                width: videoList.width - coverImage.width - xscale(20); height: xscale(50)
+                width: videoList.width - coverImage.width - xscale(20); height: parent.height
                 x: coverImage.width + xscale(5)
                 text: fileName
             }
