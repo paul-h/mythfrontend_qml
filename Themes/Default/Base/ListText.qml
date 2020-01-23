@@ -5,7 +5,7 @@ Item
     id: root
     property string text: ""
     property string fontFamily: theme.labelFontFamily
-    property int    fontPixelSize: xscale(theme.labelFontPixelSize)
+    property int    fontPixelSize: parent.selected ? xscale(theme.labelFontPixelSize) * xscale(1.4) : xscale(theme.labelFontPixelSize)
     property bool   fontBold: theme.labelFontBold
     property color  fontColor: theme.labelFontColor
     property int    horizontalAlignment: Text.AlignLeft
@@ -17,6 +17,8 @@ Item
     property bool   multiline: false
 
     x: xscale(50); y : 0; width: xscale(300); height: yscale(50)
+
+    Behavior on fontPixelSize { NumberAnimation { duration: 250 } }
 
     Rectangle
     {
@@ -31,7 +33,6 @@ Item
     {
         id: shadow
         text: root.text
-        //anchors.fill: parent
         font.family: root.fontFamily
         font.pixelSize: root.fontPixelSize
         font.bold: root.fontBold
@@ -54,7 +55,6 @@ Item
         font.family: root.fontFamily
         font.pixelSize: root.fontPixelSize
         font.bold: root.fontBold
-        //color: root.fontColor
         x: 0; y: 0;  width: parent.width; height: parent.height
         horizontalAlignment: root.horizontalAlignment
         verticalAlignment: root.verticalAlignment
