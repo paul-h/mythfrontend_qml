@@ -27,6 +27,7 @@ Rectangle
     FolderListModel
     {
         id: folderModel
+
         folder: ""
         nameFilters: ["*.jpg", "*.jpeg", "*.png"]
         showDirs : false
@@ -69,6 +70,12 @@ Rectangle
         // Initialisation
         onCountChanged:
         {
+            if (count === 0 || !root.visible)
+            {
+                mtimer.stop();
+                return;
+            }
+
             shuffleList();
             img1.item.asynchronous = false
             img1.item.visible = true;
