@@ -15,6 +15,7 @@ Item
     property int    shadowXOffset: theme.titleShadowXOffset
     property int    shadowYOffset: theme.titleShadowYOffset
     property bool   multiline: false
+    property int    elide:Text.ElideRight
 
     x: xscale(50); y : 0; width: xscale(300); height: yscale(50)
 
@@ -42,7 +43,7 @@ Item
         verticalAlignment: root.verticalAlignment
         visible: shadowXOffset != 0 || shadowYOffset != 0 ? true : false
         wrapMode: root.multiline ? Text.WordWrap : Text.NoWrap
-        elide: Text.ElideRight
+        elide: root.elide
         clip: true
     }
 
@@ -59,7 +60,7 @@ Item
         horizontalAlignment: root.horizontalAlignment
         verticalAlignment: root.verticalAlignment
         wrapMode: root.multiline ? Text.WordWrap : Text.NoWrap
-        elide: Text.ElideRight
+        elide: root.elide
         clip: true
     }
 }
