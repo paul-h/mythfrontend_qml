@@ -10,7 +10,7 @@ BaseScreen
 
     Component.onCompleted:
     {
-        showTitle(true, folderModel.folder);
+        showTitle(false);
         showTime(false);
         showTicker(false);
     }
@@ -18,6 +18,22 @@ BaseScreen
     BaseBackground
     {
         x: xscale(15); y: yscale(50); width: xscale(1250); height: yscale(655)
+    }
+
+    TitleText
+    {
+        id: title
+        text: folderModel.folder
+        width: xscale(1100)
+        visible : true
+        elide: Text.ElideLeft
+    }
+
+    InfoText
+    {
+        x: xscale(1150); y: yscale(5); width: xscale(100);
+        text: (imageList.currentIndex + 1) + " of " + imageList.model.count;
+        horizontalAlignment: Text.AlignRight
     }
 
     Component
