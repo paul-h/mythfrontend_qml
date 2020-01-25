@@ -26,13 +26,26 @@ ListView
         if (event.key === Qt.Key_PageDown)
         {
             currentIndex = currentIndex + rowCount >= count ? count - 1 : currentIndex + rowCount;
+            upSound.play();
             event.accepted = true;
         }
         else if (event.key === Qt.Key_PageUp)
         {
             currentIndex = currentIndex - rowCount < 0 ? 0 : currentIndex - rowCount;
+            downSound.play();
             event.accepted = true;
         }
+        else if (event.key === Qt.Key_Up)
+        {
+            upSound.play();
+            event.accepted = false;
+        }
+        else if (event.key === Qt.Key_Down)
+        {
+            downSound.play();
+            event.accepted = false;
+        }
+
     }
 
     Keys.onReturnPressed:
