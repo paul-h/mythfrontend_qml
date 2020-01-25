@@ -62,7 +62,7 @@ Item
                 {
                     text: menutext
                     fontFamily: theme.menuFontFamily
-                    fontPixelSize: selected ? xscale(theme.menuFontPixelSize) * xscale(1.2) : xscale(theme.menuFontPixelSize)
+                    fontPixelSize: selected ? xscale(theme.menuFontPixelSize) * 1.25 : xscale(theme.menuFontPixelSize)
                     fontBold: theme.menuFontBold
                     fontColor: theme.menuFontColor
                     shadowAlpha: theme.menuShadowAlpha

@@ -5,7 +5,7 @@ Item
     id: root
     property string text: ""
     property string fontFamily: theme.labelFontFamily
-    property int    fontPixelSize: parent.selected ? xscale(theme.labelFontPixelSize) * xscale(1.4) : xscale(theme.labelFontPixelSize)
+    property int    fontPixelSize: parent.selected ? xscale(theme.labelFontPixelSize) * 1.25 : xscale(theme.labelFontPixelSize)
     property bool   fontBold: theme.labelFontBold
     property color  fontColor: theme.labelFontColor
     property int    horizontalAlignment: Text.AlignLeft
