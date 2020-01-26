@@ -51,7 +51,8 @@ ListModel
         menutext: "Met Office Video Forecast"
         loaderSource:"WebBrowser.qml"
         waterMark: "watermark/weather.png"
-        url: "http://192.168.1.33/weewx/simple/video_forecast.html"
+        url: "https://players.brightcove.net/2310970326001/rkbBbpMdNx_default/index.html?playlistId=2320300299001&autoplay"
         zoom: 1.0
+        fullscreen: true
     }
 }
