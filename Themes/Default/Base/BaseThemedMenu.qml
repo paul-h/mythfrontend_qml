@@ -166,7 +166,8 @@ Item
                 {
                     var url = model.get(currentIndex).url
                     var zoom = xscale(model.get(currentIndex).zoom)
-                    stack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: url, fullscreen: false, zoomFactor: zoom}});
+                    var fullscreen = model.get(currentIndex).fullscreen
+                    stack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: url, fullscreen: fullscreen, zoomFactor: zoom}});
                 }
                 else if (model.get(currentIndex).loaderSource === "InternalPlayer.qml")
                 {
@@ -271,7 +272,7 @@ Item
         message: '<font  color="yellow"><b>Version: </font></b>' + version  +
                  '<br><font color="yellow"><b>Date: </font></b>' + buildtime +
                  '<br><font  color="yellow"><b>Qt Version: </font></b>' + qtversion +
-                 '<br><br>(c) Paul Harrison 2019'
+                 '<br><br>(c) Paul Harrison 2019-2020'
 
         rejectButtonText: ""
         acceptButtonText: "OK"
