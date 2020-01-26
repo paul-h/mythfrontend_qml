@@ -14,6 +14,7 @@ BaseScreen
         showTitle(false, "");
         showTime(false);
         showTicker(false);
+        showVideo(false);
         updatePosition();
     }
 
@@ -33,12 +34,20 @@ BaseScreen
         }
     }
 
+    Rectangle
+    {
+        anchors.fill: parent
+        color: "black"
+    }
+
     Image
     {
         id: image
         anchors.fill: parent
         source: folderModel.get(currentIndex, "filePath");
         asynchronous: true
+        fillMode: Image.PreserveAspectFit
+
         Keys.onLeftPressed:
         {
             prevImage();
