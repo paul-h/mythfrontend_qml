@@ -386,13 +386,21 @@ BaseScreen
 
     function checkForUpdates()
     {
-        var defaultDate = Date(Date.now());
-        var lastChecked = Date.parse(dbUtils.getSetting("LastWebcamCheck", settings.hostName, defaultDate));
         var x;
         var firstAdded = true;
         var firstModified = true;
         var firstOffline = true;
         var firstNotWorking = true;
+        var lastCheckSetting = dbUtils.getSetting("LastWebcamCheck", settings.hostName, "");
+
+        // if the setting is blank then must be new setup so don't show the updates dialog
+        if (lastCheckSetting === "")
+        {
+            dbUtils.setSetting("LastWebcamCheck", settings.hostName, Date(Date.now()));
+            return;
+        }
+
+        var lastChecked = Date.parse(lastCheckSetting);
 
         updatesModel.clear();
 
