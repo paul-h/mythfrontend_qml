@@ -5,6 +5,7 @@
 #include <QDateTime>
 #include <QQmlApplicationEngine>
 #include <QPoint>
+#include <QImage>
 
 // mythfrontend_qml
 #include "settings.h"
@@ -28,6 +29,7 @@ class MythUtils : public QObject
     Q_INVOKABLE bool clickMouse(QObject *obj, int x, int y);
     Q_INVOKABLE bool doubleClickMouse(QObject *obj, int x, int y);
     Q_INVOKABLE QPoint getMousePos(void);
+    Q_INVOKABLE QImage cropRailcamImage(QImage image);
 
   private:
     QQmlApplicationEngine *m_engine;

@@ -12,6 +12,7 @@ PlayerSourcesModel 1.0 PlayerSourcesModel.qml
 ProgCategoryModel 1.0 ProgCategoryModel.qml
 ProgramListModel 1.0 ProgramListModel.qml
 RadioStreamModel 1.0 RadioStreamModel.qml
+RailcamModel 1.0 RailcamModel.qml
 RecGroupModel 1.0 RecGroupModel.qml
 RssFeedModel 1.0 RssFeedModel.qml
 SDChannelsModel 1.0 SDChannelsModel.qml

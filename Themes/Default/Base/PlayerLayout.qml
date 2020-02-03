@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtWebEngine 1.3
 import Base 1.0
+import Models 1.0
 
 Item
 {
@@ -15,7 +16,7 @@ Item
     property bool showChat: false
     property bool showRailCam: false
 
-    property int chatWidth: xscale(400)
+    property int chatWidth: xscale(690 * 0.75)
     property int railcamHeight: yscale(250)
     property int playerLayout: 1
 
@@ -763,6 +764,8 @@ Item
     {
         id: chat
 
+        objectName: "Chat Browser"
+
         property bool showBorder: true
 
         x: xscale(5)
@@ -808,7 +811,13 @@ Item
             y: chatTitle.height + yscale(5)
             width: parent.width - xscale(10)
             height: parent.height - y - yscale(5)
-            zoomFactor: xscale(1)
+            zoomFactor:
+            {
+                if (url.startsWith("https://railcam.uk/rcdata/RCData2_detail.php"))
+                    return xscale(0.75);
+                else
+                    return xscale(1.0);
+            }
             focus: false
             enabled: visible
             backgroundColor: "black"
@@ -877,7 +886,7 @@ Item
             y: yscale(5)
             width: parent.width - xscale(10)
             height: parent.height - yscale(10)
-            zoomFactor: width / xscale(1280)
+            zoomFactor: 1.0; //width / xscale(1280)
             visible: (height != 0)
             enabled: visible
             backgroundColor: "black"
@@ -892,12 +901,11 @@ Item
             {
                 if (loadRequest.status === WebEngineLoadRequest.LoadSucceededStatus)
                 {
-                                    zoomFactor = (height / contentsSize.height)- 0.01;
-                                    zoomFactor = (height / contentsSize.height) - 0.02;
-                    //                x = (parent.width - contentsSize.width) / 2;
-                    //                y = parent.height - contentsSize.height - yscale(20);
-                    //                width = contentsSize.width;
-                    //                height = contentsSize.height;
+                    this.grabToImage(function(result)
+                    {
+                        filename = settings.configPath + "Snapshots/railcam.png";
+                        result.saveToFile(filename);
+                    });
                 }
             }
 

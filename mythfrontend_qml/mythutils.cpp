@@ -216,3 +216,55 @@ bool MythUtils::doubleClickMouse(QObject *obj, int x, int y)
 
     return true;
 }
+
+QImage MythUtils::cropRailcamImage(QImage image)
+{
+    QColor bgColor = image.pixelColor(QPoint(0,0));
+    QColor altBgColor = QColor(0x11, 0x11, 0x11);
+
+    int x = 0, y = 0, width = 0, height = 0;
+
+    // find left edge
+    for (int i = 0; i < image.width(); i++)
+    {
+        if (image.pixelColor(QPoint(i, 100)) != bgColor)
+        {
+            x = i;
+            break;
+        }
+    }
+
+    // find right edge
+    for (int i = image.width() - 1; i > 0; i--)
+    {
+        if (image.pixelColor(QPoint(i, 100)) != bgColor && image.pixelColor(QPoint(i, 100)) != altBgColor)
+        {
+            width = i - x;
+            break;
+        }
+    }
+
+    // find top edge
+    for (int i = 0; i < image.height(); i++)
+    {
+        if (image.pixelColor(QPoint(image.width() / 2, i)) != bgColor)
+        {
+            y = i;
+            break;
+        }
+    }
+
+    // find bottom edge
+    for (int i = image.height() - 1; i > 0; i--)
+    {
+        if (image.pixelColor(QPoint(image.width() / 2, i)) != bgColor && image.pixelColor(QPoint(image.width() / 2, i)) != altBgColor)
+        {
+            height = i - y;
+            break;
+        }
+    }
+
+    QImage res = image.copy(x, y, width, height);
+    res.save(gContext->m_settings->configPath() + "Snapshots/railcam.png");
+    return res;
+}
