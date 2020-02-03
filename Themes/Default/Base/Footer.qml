@@ -2,62 +2,123 @@ import QtQuick 2.0
 
 Item
 {
-    x: xscale(0); y: yscale(682); width: xscale(1280); height: yscale(32)
+    x: xscale(30); y: yscale(682); width: xscale(1280 - 60); height: yscale(32)
 
     property alias redText: red.text
     property alias greenText: green.text
     property alias yellowText: yellow.text
     property alias blueText: blue.text
 
-    Image
+    Item
     {
-        x: xscale(30); y: yscale(0); width: xscale(32); height: yscale(32)
-        source: mythUtils.findThemeFile("images/red_bullet.png")
+        // red
+        x: 0
+        y: 0
+        width: parent.width / 4
+        height: parent.height
+
+        Image
+        {
+            id: redImage
+            x: 0; y: 0; width: xscale(32); height: yscale(32)
+            source: mythUtils.findThemeFile("images/red_bullet.png")
+        }
+
+        InfoText
+        {
+            id: red
+            x: redImage.x + redImage.width + xscale(5)
+            y: 0;
+            width: parent.width - x - xscale(5)
+            height: parent.height
+            text: ""
+        }
     }
 
-    InfoText
+    Item
     {
-        id: red
-        x: xscale(65); y: yscale(0); width: xscale(285); height: yscale(32)
-        text: ""
+        // green
+        x: parent.width / 4
+        y: 0
+        width: parent.width / 4
+        height: parent.height
+
+        Image
+        {
+            id: greenImage
+            x: 0
+            y: 0
+            width: xscale(32)
+            height: yscale(32)
+            source: mythUtils.findThemeFile("images/green_bullet.png")
+        }
+
+        InfoText
+        {
+            id: green
+            x: greenImage.x + greenImage.width + xscale(5)
+            y: 0
+            width: parent.width - x - xscale(5)
+            height: parent.height
+            text: ""
+        }
     }
 
-    Image
+    Item
     {
-        x: xscale(350); y: yscale(0); width: xscale(32); height: yscale(32)
-        source: mythUtils.findThemeFile("images/green_bullet.png")
+        // yellow
+        x: (parent.width / 4) * 2
+        y: 0
+        width: parent.width / 4
+        height: parent.height
+
+        Image
+        {
+            id: yellowImage
+            x: 0
+            y: 0
+            width: xscale(32)
+            height: yscale(32)
+            source: mythUtils.findThemeFile("images/yellow_bullet.png")
+        }
+
+        InfoText
+        {
+            id: yellow
+            x: yellowImage.x + yellowImage.width + xscale(5)
+            y: 0
+            width: parent.width - x - xscale(5)
+            height: parent.height
+            text: ""
+        }
     }
 
-    InfoText
+    Item
     {
-        id: green
-        x: xscale(385); y: yscale(0); width: xscale(285); height: yscale(32)
-        text: ""
-    }
+        // blue
+        x: (parent.width / 4) * 3
+        y: 0
+        width: parent.width / 4
+        height: parent.height
 
-    Image
-    {
-        x: xscale(670); y: yscale(0); width: xscale(32); height: yscale(32)
-        source: mythUtils.findThemeFile("images/yellow_bullet.png")
-    }
+        Image
+        {
+            id: blueImage
+            x: 0
+            y: 0
+            width: xscale(32)
+            height: yscale(32)
+            source: mythUtils.findThemeFile("images/blue_bullet.png")
+        }
 
-    InfoText
-    {
-        id: yellow
-        x: xscale(705); y: yscale(0); width: xscale(285); height: yscale(32)
-        text: ""
-    }
-
-    Image
-    {
-        x: xscale(990); y: yscale(0); width: xscale(32); height: yscale(32)
-        source: mythUtils.findThemeFile("images/blue_bullet.png")
-    }
-
-    InfoText
-    {
-        id: blue
-        x: xscale(1025); y: yscale(0); width: xscale(285); height: yscale(32)
-        text: ""
+        InfoText
+        {
+            id: blue
+            x: blueImage.x + blueImage.width + xscale(5)
+            y: 0
+            width: parent.width - x - xscale(5)
+            height: parent.height
+            text: ""
+        }
     }
 }
