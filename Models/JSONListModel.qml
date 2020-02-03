@@ -40,7 +40,6 @@ Item
             jsonModel.append( jo );
         }
 
-        console.log("sending loaded signal");
         loaded();
     }
 
@@ -62,12 +61,11 @@ Item
             if (xhr.readyState == XMLHttpRequest.DONE)
             {
                 var str = xhr.responseText
+                str = str.replace("\n", "").replace("\r", "");
                 if (str.startsWith("("))
                     str = str.substring(1);
                 if (str.endsWith(");"))
                     str = str.substring(0, str.length - 2);
-
-                //console.log(str);
 
                 json = str;
             }
@@ -77,8 +75,6 @@ Item
 
     function reload()
     {
-        //json = "";
-        console.log("reload");
         doLoad();
     }
 }

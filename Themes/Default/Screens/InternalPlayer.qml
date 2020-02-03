@@ -68,7 +68,7 @@ BaseScreen
         playerLayout.mediaPlayer3.setVolume(volume);
         playerLayout.mediaPlayer4.setVolume(volume);
 
-        showInfo(true);
+        getActivePlayer().showInfo(true);
     }
 
     Component.onDestruction:
@@ -100,14 +100,14 @@ BaseScreen
     Action
     {
         shortcut: "Down"
-        enabled: _actionsEnabled
+        enabled: _actionsEnabled  && (playerLayout.activeItem.objectName !== "Chat Browser")
         onTriggered: changeFocus("down");
     }
 
     Action
     {
         shortcut: "Up"
-        enabled: _actionsEnabled
+        enabled: _actionsEnabled && (playerLayout.activeItem.objectName !== "Chat Browser")
         onTriggered: changeFocus("up");
     }
 
@@ -131,9 +131,17 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            getActivePlayer().previousFeed();
-            updateChat();
-            feedChanged(getActivePlayer().feed.feedName, getActivePlayer().feed.currentFilter, getActivePlayer().feed.currentFeed);
+            if (playerLayout.activeItem.objectName === "Chat Browser")
+            {
+                getActivePlayer().nextTrain();
+                updateChat();
+            }
+            else
+            {
+                getActivePlayer().previousFeed();
+                updateChat();
+                feedChanged(getActivePlayer().feed.feedName, getActivePlayer().feed.currentFilter, getActivePlayer().feed.currentFeed);
+            }
         }
     }
 
@@ -143,10 +151,17 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            getActivePlayer().nextFeed();
-            updateChat();
-            updateRailCam();
-            feedChanged(getActivePlayer().feed.feedName, getActivePlayer().feed.currentFilter, getActivePlayer().feed.currentFeed);
+            if (playerLayout.activeItem.objectName === "Chat Browser")
+            {
+                getActivePlayer().previousTrain();
+                updateChat();
+            }
+            else
+            {
+                getActivePlayer().nextFeed();
+                updateChat();
+                feedChanged(getActivePlayer().feed.feedName, getActivePlayer().feed.currentFilter, getActivePlayer().feed.currentFeed);
+            }
         }
     }
 
@@ -158,7 +173,6 @@ BaseScreen
         {
             playerLayout.showChat = !playerLayout.showChat;
             updateChat();
-            updateRailCam();
         }
     }
 
@@ -168,10 +182,29 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            playerLayout.showRailCam = !playerLayout.showRailCam
+            if (getActivePlayer().showRailcamApproach && getActivePlayer().showRailcamDiagram)
+            {
+                getActivePlayer().showRailcamApproach = false;
+                getActivePlayer().showRailcamDiagram = false;
+            }
+            else if (!getActivePlayer().showRailcamApproach && !getActivePlayer().showRailcamDiagram)
+            {
+                getActivePlayer().showRailcamApproach = true;
+                getActivePlayer().showRailcamDiagram = false;
+            }
+            else if (getActivePlayer().showRailcamApproach && !getActivePlayer().showRailcamDiagram)
+            {
+                getActivePlayer().showRailcamApproach = false;
+                getActivePlayer().showRailcamDiagram = true;
+            }
+            else if (!getActivePlayer().showRailcamApproach && getActivePlayer().showRailcamDiagram)
+            {
+                getActivePlayer().showRailcamApproach = true;
+                getActivePlayer().showRailcamDiagram = true;
+            }
 
-            if (playerLayout.showRailCam)
-                playerLayout.railcamBrowser.url = getActivePlayer().getLink("railcam_minidiagram")
+            getActivePlayer().hideInfo();
+            getActivePlayer().updateRailcamApproach();
         }
     }
 
@@ -214,7 +247,7 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            showInfo(false);
+            getActivePlayer().showInfo(false);
         }
     }
 
@@ -282,7 +315,7 @@ BaseScreen
         onTriggered:
         {
             getActivePlayer().togglePaused();
-            showInfo(true);
+            getActivePlayer().showInfo(true);
         }
     }
 
@@ -376,7 +409,7 @@ BaseScreen
         onTriggered:
         {
             getActivePlayer().skipBack(30000);
-            showInfo(true);
+            getActivePlayer().showInfo(true);
         }
     }
 
@@ -387,7 +420,7 @@ BaseScreen
         onTriggered:
         {
             getActivePlayer().skipForward(30000);
-            showInfo(true);
+            getActivePlayer().showInfo(true);
         }
     }
 
@@ -398,7 +431,7 @@ BaseScreen
         onTriggered:
         {
             getActivePlayer().skipBack(60000);
-            showInfo(true);
+            getActivePlayer().showInfo(true);
         }
     }
 
@@ -409,7 +442,7 @@ BaseScreen
         onTriggered:
         {
             getActivePlayer().skipForward(60000);
-            showInfo(true);
+            getActivePlayer().showInfo(true);
         }
     }
 
@@ -420,7 +453,7 @@ BaseScreen
         onTriggered:
         {
             getActivePlayer().skipBack(600000);
-            showInfo(true);
+            getActivePlayer().showInfo(true);
         }
     }
 
@@ -431,7 +464,7 @@ BaseScreen
         onTriggered:
         {
             getActivePlayer().skipForward(600000);
-            showInfo(true);
+            getActivePlayer().showInfo(true);
         }
     }
 
@@ -444,7 +477,6 @@ BaseScreen
             if (playerLayout.showChat);
             {
                 updateChat();
-                updateRailCam();
             }
         }
     }
@@ -454,76 +486,6 @@ BaseScreen
         id: playerLayout
         showChat: false
         showRailCam: false
-    }
-
-    BaseBackground
-    {
-        id: infoPanel
-        x: xscale(10); y: parent.height - yscale(50); width: parent.width - xscale(20); height: yscale(40)
-        visible: false
-
-        Image
-        {
-            x: xscale(30); y: yscale(5); width: xscale(32); height: yscale(32)
-            source: mythUtils.findThemeFile("images/red_bullet.png")
-        }
-
-        InfoText
-        {
-            id: sort
-            x: xscale(65); y: yscale(5); width: xscale(285); height: yscale(32)
-            text: "Previous"
-        }
-
-        Image
-        {
-            x: xscale(350); y: yscale(5); width: xscale(32); height: yscale(32)
-            source: mythUtils.findThemeFile("images/green_bullet.png")
-        }
-
-        InfoText
-        {
-            id: show
-            x: xscale(385); y: yscale(5); width: xscale(285); height: yscale(32)
-            text: "Next"
-        }
-
-        Image
-        {
-            x: xscale(670); y: yscale(5); width: xscale(32); height: yscale(32)
-            source: mythUtils.findThemeFile("images/yellow_bullet.png")
-        }
-
-        InfoText
-        {
-            x: xscale(705); y: yscale(5); width: xscale(285); height: yscale(32)
-            text:
-            {
-                if (getActivePlayer().player === "RailCam")
-                    "RailCam Options";
-                else if (getActivePlayer().player === "YouTube" || getActivePlayer().player === "YouTubeTV")
-                    "YouTube Options";
-                else "";
-            }
-        }
-
-        Image
-        {
-            x: xscale(990); y: yscale(5); width: xscale(32); height: yscale(32)
-            source: mythUtils.findThemeFile("images/blue_bullet.png")
-        }
-
-        InfoText
-        {
-            x: xscale(1025); y: yscale(5); width: xscale(285); height: yscale(32)
-            text:
-            {
-                if (getActivePlayer().player === "RailCam")
-                    "RailCam Diagrams";
-                else
-                    "";
-            }
-        }
     }
 
     PopupMenu
@@ -619,8 +581,8 @@ BaseScreen
                     feedChanged(feedSource, filter, feedNo);
                     getActivePlayer().feed.switchToFeed(feedSource, filter, feedNo);
                     getActivePlayer().startPlayback();
+                    getActivePlayer().showInfo(true);
                     updateChat();
-                    updateRailCam();
                 }
             }
 
@@ -681,10 +643,20 @@ BaseScreen
     {
         if (playerLayout.showChat)
         {
+
+            var traintimesURL =  getActivePlayer().getTrainTimesURL();
             var chatURL = getActivePlayer().getLink("youtube_chat");
             var railcamURL = getActivePlayer().getLink("railcam_chat");
 
-            if (chatURL !== undefined)
+            if (traintimesURL !== undefined)
+            {
+                if (traintimesURL != playerLayout.chatBrowser.url)
+                {
+                    playerLayout.chatTitle.text = "Train Times for " + getActivePlayer().getTrainTimesHeadcode();
+                    playerLayout.chatBrowser.url = traintimesURL;
+                }
+            }
+            else if (chatURL !== undefined)
             {
                 if (chatURL != playerLayout.chatBrowser.url)
                 {
@@ -708,32 +680,9 @@ BaseScreen
         }
     }
 
-    function updateRailCam()
-    {
-        if (playerLayout.showRailCam)
-        {
-            var railcamURL = getActivePlayer().getLink("railcam_minidiagram");
-
-            if (railcamURL !== undefined)
-            {
-                if (railcamURL != playerLayout.railcamBrowser.url)
-                    playerLayout.railcamBrowser.url = railcamURL;
-            }
-            else
-                playerLayout.railcamBrowser.url = "about:blank";
-        }
-    }
-
     function setLayout(newLayout)
     {
         root.layout = newLayout;
-    }
-
-    Timer
-    {
-        id: infoTimer
-        interval: 6000; running: false; repeat: false
-        onTriggered: infoPanel.visible = false;
     }
 
     function getActivePlayer()
@@ -742,29 +691,6 @@ BaseScreen
             return playerLayout.activeItem;
 
         return playerLayout.mediaPlayer1;
-    }
-
-    function showInfo(restart)
-    {
-        if (restart)
-        {
-            // restart the timer
-            infoPanel.visible = true;
-            infoTimer.restart();
-        }
-        else
-        {
-            // toggle info panel
-            if (infoPanel.visible)
-                infoPanel.visible = false;
-            else
-            {
-                infoPanel.visible = true;
-                infoTimer.start();
-            }
-        }
-
-        getActivePlayer().showInfo(restart);
     }
 
     function showPlayerMenu()

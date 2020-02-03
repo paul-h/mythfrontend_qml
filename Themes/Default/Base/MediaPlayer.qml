@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.0
 import QtWebEngine 1.3
 import Base 1.0
 import Process 1.0
+import Models 1.0
 import QtAV 1.5
 import SortFilterProxyModel 0.2
 import mythqml.net 1.0
@@ -24,6 +25,9 @@ FocusScope
 
     property bool showBorder: true
     property bool muteAudio: false
+    property bool showRailcamApproach: false
+    property bool showRailcamDiagram: false
+    property int  trainListIndex: 0
 
     // private properties
     property bool _playbackStarted: false
@@ -35,12 +39,12 @@ FocusScope
 
     function _xscale(x)
     {
-        return window.xscale(x) * _wmult;
+        return x * _wmult
     }
 
     function _yscale(y)
     {
-        return window.yscale(y) * _hmult;
+        return y * _wmult
     }
 
     FeedSource
@@ -225,6 +229,284 @@ FocusScope
         }
     }
 
+    RailcamModel
+    {
+        id: railcamModel
+        mediaPlayer: root
+
+        onMiniDiagramImageChanged: mediaPlayer.updateRailCamMiniDiagram(railcamImageFilename)
+     }
+
+    Item
+    {
+        id: railcamMiniDiagram
+        property bool hasDiagram: true
+        property alias source: diagram.source
+
+        x: 0
+        y: (parent.height / 2) - railcamApproaching.height - yscale(10)
+        width: parent.width
+        height: parent.height / 2
+        visible: false
+
+        Image
+        {
+            id: diagram
+
+            x: _xscale(100)
+            y: 0
+            width: parent.width - _xscale(200)
+            height: parent.height
+            verticalAlignment: Image.AlignBottom
+            opacity: 0.9
+            visible: railcamMiniDiagram.hasDiagram
+            cache: false
+            fillMode: Image.PreserveAspectFit
+            source: ""
+        }
+
+        Rectangle
+        {
+            id: noDiagrams
+            x: (parent.width / 2) - _xscale(300)
+            y: parent.height / 2
+            width: _xscale(600)
+            height: parent.height / 2
+            color: "#000000"
+            opacity: 0.75
+            visible: !railcamMiniDiagram.hasDiagram
+
+            InfoText
+            {
+                anchors.fill: parent
+                horizontalAlignment: Text.AlignHCenter
+                text: "This RailCam webcam does not provide any realtime diagrams"
+            }
+        }
+
+        Tracer{}
+    }
+
+    Item
+    {
+        id: railcamApproaching
+
+        property bool hasData: true
+
+        x: 0
+        y: parent.height - _yscale(50)
+        width: parent.width
+        height: _yscale(50)
+        visible: false
+
+        Rectangle
+        {
+            anchors.fill: parent
+            color: "#000000"
+            opacity: 0.75
+        }
+
+        InfoText
+        {
+            id: noAproachingData
+            anchors.fill: parent
+            horizontalAlignment: Text.AlignHCenter
+            visible: !railcamApproaching.hasData
+            text: "This RailCam webcam does not provide any live data"
+        }
+
+        Item
+        {
+            anchors.fill: parent
+            visible: railcamApproaching.hasData
+
+            Image
+            {
+                x: _xscale(5)
+                y: _yscale(5)
+                width: _xscale(40)
+                height: _xscale(40) // we want this square
+                source: railcamModel.approachLeftList.count === 0 ?  mythUtils.findThemeFile("images/grey_rewind.png") : mythUtils.findThemeFile("images/rewind.png")
+            }
+
+            InfoText
+            {
+                x: _xscale(50)
+                y: _yscale(5)
+                width: _xscale(200)
+                height: _yscale(40)
+                fontPixelSize: _xscale(20)
+                text: "Nothing in-range"
+                visible: (railcamModel.approachLeftList.count === 0)
+            }
+
+            Image
+            {
+                x: parent.width - _xscale(45)
+                y: _yscale(5)
+                width: _xscale(40)
+                height: _xscale(40) // we want this square
+                source: railcamModel.approachRightList.count === 0 ?  mythUtils.findThemeFile("images/grey_fastforward.png") :mythUtils.findThemeFile("images/fastforward.png")
+            }
+
+            InfoText
+            {
+                x: parent.width - _xscale(250)
+                y: _yscale(5)
+                width: _xscale(200)
+                height: _yscale(40)
+                horizontalAlignment: Text.AlignRight
+                fontPixelSize: _xscale(20)
+                text: "Nothing in-range"
+                visible: (railcamModel.approachRightList.count === 0)
+            }
+
+            Component
+            {
+                id: listRow
+
+                Item
+                {
+                    width: _xscale(180); height: leftList.height
+
+                    // background
+                    Rectangle
+                    {
+                        anchors.fill: parent
+                        color: "#000000"
+                        opacity: 0.5
+                        border.color: "grey"
+                        border.width: _xscale(2)
+                        radius: _xscale(5)
+                    }
+
+                    // signal
+                    Rectangle
+                    {
+                        x: _xscale(5)
+                        y: _yscale(8)
+                        width: _xscale(14)
+                        height: parent.height - _yscale(14)
+                        color: "#000000"
+                        opacity: 1.0
+                        border.color: "white"
+                        border.width: _xscale(1)
+                        radius: _xscale(5)
+
+                        Rectangle
+                        {
+                            x: _xscale(3)
+                            y: _yscale(4)
+                            width: _xscale(8)
+                            height: width
+                            radius: width / 2
+                            color:
+                            {
+                                if (status == "Passing")
+                                    return "green"
+                                else if (status == "Passed")
+                                    return "red"
+                                else if (status == "At Platform")
+                                    return "black"
+                                else if (status == "Approaching")
+                                {
+                                    if (approach_ind === "<1" || approach_ind === ">1")
+                                        return "yellow"
+                                    else
+                                        return "black"
+                                }
+                            }
+                        }
+
+                        Rectangle
+                        {
+                            x: _xscale(3)
+                            y: _yscale(14)
+                            width: _xscale(8)
+                            height: width
+                            radius: width / 2
+                            color:
+                            {
+                                if (status == "Passing")
+                                    return "black"
+                                else if (status == "Passed")
+                                    return "black"
+                                else if (status == "At Platform")
+                                    return "white"
+                                else if (status == "Approaching")
+                                    return "yellow"
+                            }
+                        }
+                    }
+
+                    InfoText
+                    {
+                        x: _xscale(23)
+                        y: 0
+                        width: _xscale(60)
+                        height: parent.height
+                        text: headcode
+                        fontPixelSize: _xscale(20)
+                        horizontalAlignment: Text.AlignHCenter
+                        fontColor:
+                        {
+                            if (status == "Passing")
+                                return "Green"
+                            else if (status == "Approaching")
+                                return "Yellow"
+                            else if (status == "Passed")
+                                return "red"
+                            else
+                                return "white"
+                        }
+                    }
+
+                    InfoText
+                    {
+                        x: _xscale(85)
+                        y: 0
+                        width: _xscale(100)
+                        height: parent.height
+                        text: status
+                        fontColor: "white"
+                        fontPixelSize: _xscale(16)
+                    }
+                }
+            }
+
+            ListView
+            {
+                id: leftList
+                x: _xscale(55)
+                y: _yscale(5)
+                width: (parent.width / 2) - _xscale(60)
+                height: _yscale(40)
+                spacing: _xscale(5)
+                orientation: ListView.Horizontal
+                clip: true
+                delegate: listRow
+                model: railcamModel.approachLeftList
+                Tracer {}
+            }
+
+            ListView
+            {
+                id: rightList
+                x: (parent.width / 2) + _xscale(5)
+                y: _yscale(5)
+                width: (parent.width / 2) - _xscale(60)
+                height: _yscale(40)
+                spacing: _xscale(5)
+                orientation: ListView.Horizontal
+                layoutDirection: Qt.RightToLeft
+                clip: true
+                delegate: listRow
+                model: railcamModel.approachRightList
+                Tracer {}
+            }
+        }
+    }
+
     Rectangle
     {
         id: playerBorder
@@ -232,7 +514,7 @@ FocusScope
         focus: true
         color: "transparent"
         border.color: root.focus ? theme.lvBackgroundBorderColor : theme.bgBorderColor
-        border.width: root.showBorder ? xscale(5) : 0
+        border.width: root.showBorder ? _xscale(5) : 0
         radius: theme.bgRadius
     }
 
@@ -240,23 +522,28 @@ FocusScope
     {
         id: infoTimer
         interval: 6000; running: false; repeat: false
-        onTriggered: infoPanel.visible = false;
+        onTriggered: { infoPanel.visible = false; updateRailcamApproach(); }
     }
 
     BaseBackground
     {
         id: infoPanel
-        x: xscale(10);
-        y: parent.height - yscale(170);
-        width: parent.width - xscale(20);
-        height: yscale(110)
+        x: _xscale(10);
+        y: parent.height - _yscale(170);
+        opacity: 0.85
+        width: parent.width - _xscale(20);
+        height: _yscale(160)
 
         visible: false
 
         TitleText
         {
             id: title
-            x: xscale(10); y: yscale(5); width: parent.width - currFeed.width - xscale(20)
+            x: _xscale(10)
+            y: _yscale(5)
+            width: parent.width - currFeed.width - _xscale(20)
+            height: _yscale(50)
+            fontPixelSize: _xscale(24)
             text:
             {
                 if (!feedSource.feedList.get(feedSource.currentFeed))
@@ -275,7 +562,11 @@ FocusScope
         InfoText
         {
             id: pos
-            x: xscale(50); y: yscale(45)
+            x: _xscale(50)
+            y: _yscale(50)
+            width: _xscale(400)
+            height: _yscale(50)
+            fontPixelSize: _xscale(16)
             text:
             {
                 if (getActivePlayer() === "VLC")
@@ -290,8 +581,10 @@ FocusScope
         InfoText
         {
             id: timeLeft
-            x: parent.width - width - xscale(15); y: yscale(45)
-            width: xscale(240)
+            x: parent.width - width - _xscale(15); y: _yscale(50)
+            width: _xscale(240)
+            height: _yscale(50)
+            fontPixelSize: _xscale(16)
             text:
             {
                 if (getActivePlayer() === "VLC")
@@ -308,8 +601,11 @@ FocusScope
         InfoText
         {
             id: currFeed
-            x: parent.width - width - xscale(15); y: yscale(0)
-            width: xscale(240)
+            x: parent.width - width - _xscale(15)
+            y: _yscale(0)
+            width: _xscale(240)
+            height: _yscale(50)
+            fontPixelSize: _xscale(16)
             text: feedSource.currentFeed + 1 + " of " + feedSource.feedCount + " (" + feedSource.feedName + ")"
 
             horizontalAlignment: Text.AlignRight
@@ -318,33 +614,64 @@ FocusScope
         InfoText
         {
             id: currPlayer
-            x: parent.width - width - xscale(15); y: yscale(24)
-            width: xscale(240)
+            x: parent.width - width - _xscale(15)
+            y: _yscale(24)
+            width: _xscale(240)
+            height: _yscale(50)
+            fontPixelSize: _xscale(16)
             text: getActivePlayer();
 
             horizontalAlignment: Text.AlignRight
         }
+
+        Footer
+        {
+            id: footer
+            x: _xscale(5)
+            y: parent.height - _yscale(42 - 5)
+            width: parent.width - (x * 2)
+            height: _yscale(32)
+
+            redText: "Previous"
+            greenText: "Next"
+            yellowText:
+            {
+                if (player === "RailCam")
+                    "RailCam Options";
+                else if (player === "YouTube" || player === "YouTubeTV")
+                    "YouTube Options";
+                else "";
+            }
+            blueText:
+            {
+                if (player === "RailCam")
+                    "RailCam Diagrams";
+                else
+                    "";
+           }
+       }
 
 
         RowLayout
         {
             id: toolbar
             opacity: .55
-            spacing: xscale(10)
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
+            spacing: _xscale(10)
+            x: _xscale(10)
+            y: _yscale(70)
+            width: parent.width - _xscale(20)
+            height: _yscale(50)
             anchors.bottomMargin: spacing
-            anchors.leftMargin: spacing * xscale(1.5)
-            anchors.rightMargin: spacing * xscale(1.5)
+            anchors.leftMargin: spacing * _xscale(1.5)
+            anchors.rightMargin: spacing * _xscale(1.5)
             Behavior on anchors.bottomMargin { PropertyAnimation { duration: 250} }
             Rectangle
             {
-                height: yscale(24)
+                height: _yscale(24)
                 width: height
-                radius: width * xscale(0.25)
+                radius: width * _xscale(0.25)
                 color: 'black'
-                border.width: xscale(1)
+                border.width: _xscale(1)
                 border.color: 'white'
                 Image
                 {
@@ -355,9 +682,9 @@ FocusScope
             Rectangle
             {
                 Layout.fillWidth: true
-                height: yscale(10)
+                height: _yscale(10)
                 color: 'transparent'
-                border.width: xscale(1)
+                border.width: _xscale(1)
                 border.color: 'white'
                 Rectangle
                 {
@@ -373,7 +700,7 @@ FocusScope
                         return (parent.width - anchors.leftMargin - anchors.rightMargin) * position;
                     }
                     color: 'blue'
-                    anchors.margins: xscale(2)
+                    anchors.margins: _xscale(2)
                     anchors.top: parent.top
                     anchors.left: parent.left
                     anchors.bottom: parent.bottom
@@ -392,7 +719,7 @@ FocusScope
     BaseBackground
     {
         id: messagePanel
-        x: root._xscale(100); y: root._yscale(120); width: root._xscale(400); height: root._yscale(110)
+        x: _xscale(100); y: _yscale(120); width: _xscale(400); height: _yscale(110)
         visible: false
 
         InfoText
@@ -765,6 +1092,14 @@ FocusScope
                 infoTimer.start();
             }
         }
+
+        updateRailcamApproach();
+    }
+
+    function hideInfo()
+    {
+        infoPanel.visible = false;
+        infoTimer.stop();
     }
 
     function nextFeed()
@@ -814,6 +1149,85 @@ FocusScope
         }
 
         return undefined;
+    }
+
+    function getTrainTimesURL()
+    {
+        var url = "https://railcam.uk/rcdata/RCData2_detail.php?r=S&hc={HEADCODE}&td={AREACODE}&vip=Y"; // getLink("railcam_times");
+
+        var headCode = ""
+        var areaCode = ""
+
+        if (player !== "RailCam" || railcamModel.trainList.count === 0)
+            return undefined;
+
+        if (trainListIndex < 0 || trainListIndex > railcamModel.trainList.count)
+            trainListIndex = 0;
+
+        headCode = railcamModel.trainList.get(trainListIndex).headcode;
+        areaCode = railcamModel.trainList.get(trainListIndex).buid.substring(0,2);
+
+        if (headCode === "" || areaCode === "")
+            return undefined;
+
+        url = url.replace("{HEADCODE}", headCode);
+        url = url.replace("{AREACODE}", areaCode);
+
+        return url;
+    }
+
+    function getTrainTimesHeadcode()
+    {
+        var headCode = ""
+
+        if (trainListIndex < 0 || trainListIndex > railcamModel.trainList.count)
+            trainListIndex = 0;
+
+        headCode = railcamModel.trainList.get(trainListIndex).headcode;
+
+        if (headCode === "")
+            return undefined;
+
+        return headCode;
+    }
+
+    function updateRailCamMiniDiagram(url)
+    {
+        railcamMiniDiagram.source = "";
+        railcamMiniDiagram.source = url;
+    }
+
+    function updateRailcamApproach()
+    {
+        if (infoPanel.visible || player !== "RailCam")
+        {
+            railcamApproaching.visible = false;
+            railcamMiniDiagram.visible = false;
+        }
+        else
+        {
+            railcamApproaching.hasData = (getLink("railcam_approach") !== undefined);
+            railcamMiniDiagram.hasDiagram = (getLink("railcam_minidiagram") !== undefined);
+
+            railcamApproaching.visible = showRailcamApproach;
+            railcamMiniDiagram.visible = showRailcamDiagram;
+        }
+    }
+
+    function nextTrain()
+    {
+        trainListIndex++;
+
+        if (trainListIndex > railcamModel.trainList.count)
+            trainListIndex = 0;
+    }
+
+    function previousTrain()
+    {
+        trainListIndex--;
+
+        if (trainListIndex < 0)
+            trainListIndex = railcamModel.trainList.count - 1;
     }
 }
 
