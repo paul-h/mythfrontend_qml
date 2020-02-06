@@ -100,14 +100,14 @@ BaseScreen
     Action
     {
         shortcut: "Down"
-        enabled: _actionsEnabled  && (playerLayout.activeItem.objectName !== "Chat Browser")
+        enabled: _actionsEnabled  && (playerLayout.activeItem.objectName !== "Browser")
         onTriggered: changeFocus("down");
     }
 
     Action
     {
         shortcut: "Up"
-        enabled: _actionsEnabled && (playerLayout.activeItem.objectName !== "Chat Browser")
+        enabled: _actionsEnabled && (playerLayout.activeItem.objectName !== "Browser")
         onTriggered: changeFocus("up");
     }
 
@@ -131,15 +131,16 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            if (playerLayout.activeItem.objectName === "Chat Browser")
+            if (playerLayout.activeItem.objectName === "Browser")
             {
-                getActivePlayer().nextTrain();
-                updateChat();
+                getActivePlayer().nextURL();
+                updateBrowser();
             }
             else
             {
                 getActivePlayer().previousFeed();
-                updateChat();
+                getActivePlayer().updateBrowserURLList();
+                updateBrowser();
                 feedChanged(getActivePlayer().feed.feedName, getActivePlayer().feed.currentFilter, getActivePlayer().feed.currentFeed);
             }
         }
@@ -151,15 +152,16 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            if (playerLayout.activeItem.objectName === "Chat Browser")
+            if (playerLayout.activeItem.objectName === "Browser")
             {
-                getActivePlayer().previousTrain();
-                updateChat();
+                getActivePlayer().previousURL();
+                updateBrowser();
             }
             else
             {
                 getActivePlayer().nextFeed();
-                updateChat();
+                getActivePlayer().updateBrowserURLList();
+                updateBrowser();
                 feedChanged(getActivePlayer().feed.feedName, getActivePlayer().feed.currentFilter, getActivePlayer().feed.currentFeed);
             }
         }
@@ -171,8 +173,9 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            playerLayout.showChat = !playerLayout.showChat;
-            updateChat();
+            playerLayout.showBrowser = !playerLayout.showBrowser;
+            getActivePlayer().updateBrowserURLList();
+            updateBrowser();
         }
     }
 
@@ -257,10 +260,8 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            if (playerLayout.activeItem.objectName === "Chat Browser")
-            showChatMenu();
-            else if (playerLayout.activeItem.objectName === "RailCam Browser")
-                showRailCamMenu();
+            if (playerLayout.activeItem.objectName === "Browser")
+                showBrowserMenu();
             else
                 showPlayerMenu();
         }
@@ -476,7 +477,7 @@ BaseScreen
         {
             if (playerLayout.showChat);
             {
-                updateChat();
+                updateBrowser();
             }
         }
     }
@@ -484,8 +485,7 @@ BaseScreen
     PlayerLayout
     {
         id: playerLayout
-        showChat: false
-        showRailCam: false
+        showBrowser: false
     }
 
     PopupMenu
@@ -582,31 +582,30 @@ BaseScreen
                     getActivePlayer().feed.switchToFeed(feedSource, filter, feedNo);
                     getActivePlayer().startPlayback();
                     getActivePlayer().showInfo(true);
-                    updateChat();
+                    getActivePlayer().updateBrowserURLList();
+                    updateBrowser();
                 }
             }
 
-            // chat options
-            else if (itemText == "Hide Chat")
-                playerLayout.showChat = false;
-            else if (itemText == "Reload" && itemData == "Chat")
-                playerLayout.chatBrowser.reload();
-            else if (itemText == "Zoom In" && itemData == "Chat")
-                { playerLayout.chatBrowser.zoomFactor += 0.1; playerLayout.chatBrowser.zoomFactor += 0.25 }
-            else if (itemText == "Zoom Out" && itemData == "Chat")
-                { playerLayout.chatBrowser.zoomFactor -= 0.1; playerLayout.chatBrowser.zoomFactor -= 0.25; }
+            // browser options
+            else if (itemText == "Hide Browser")
+                playerLayout.showBrowser = false;
+            else if (itemText == "Reload")
+                playerLayout.browser.reload();
+            else if (itemText == "Zoom In")
+                { playerLayout.browser.zoomFactor += 0.25;}
+            else if (itemText == "Zoom Out")
+                { playerLayout.browser.zoomFactor -= 0.25; }
+            else if (itemData.startsWith("browser_index="))
+            {
+                var index = parseInt(itemData.replace("browser_index=", ""));
 
-            // railcam options
-            else if (itemText == "Hide RailCam")
-                playerLayout.showRailCam = false;
-            else if (itemText == "Reload"  && itemData == "RailCam")
-                playerLayout.railcamBrowser.reload();
-            else if (itemText == "Zoom In" && itemData == "RailCam")
-                { playerLayout.railcamBrowser.zoomFactor += 0.1; playerLayout.railcamBrowser.zoomFactor += 0.25; }
-            else if (itemText == "Zoom Out" && itemData == "RailCam")
-                { playerLayout.railcamBrowser.zoomFactor -= 0.1; playerLayout.railcamBrowser.zoomFactor -= 0.25; }
-
-
+                if (index >= 0 && index < getActivePlayer().getBrowserURLList().count)
+                {
+                    getActivePlayer().getBrowserURLList().currentIndex = index;
+                    updateBrowser();
+                }
+            }
         }
 
         onCancelled:
@@ -639,44 +638,27 @@ BaseScreen
         } while (i !== undefined && i !== playerLayout.activeItem);
     }
 
-    function updateChat()
+    function updateBrowser()
     {
-        if (playerLayout.showChat)
+        var title;
+        var url;
+        var width;
+        var zoom;
+        var o = {title: "", url: "", width: "", zoom: ""};
+
+        if (getActivePlayer().getBrowserURL(o))
         {
-
-            var traintimesURL =  getActivePlayer().getTrainTimesURL();
-            var chatURL = getActivePlayer().getLink("youtube_chat");
-            var railcamURL = getActivePlayer().getLink("railcam_chat");
-
-            if (traintimesURL !== undefined)
-            {
-                if (traintimesURL != playerLayout.chatBrowser.url)
-                {
-                    playerLayout.chatTitle.text = "Train Times for " + getActivePlayer().getTrainTimesHeadcode();
-                    playerLayout.chatBrowser.url = traintimesURL;
-                }
-            }
-            else if (chatURL !== undefined)
-            {
-                if (chatURL != playerLayout.chatBrowser.url)
-                {
-                    playerLayout.chatTitle.text = "YouTube Chat";
-                    playerLayout.chatBrowser.url = chatURL;
-                }
-            }
-            else if (railcamURL !== undefined)
-            {
-                if (railcamURL != playerLayout.chatBrowser.url)
-                {
-                    playerLayout.chatTitle.text = "RailCam Chat";
-                    playerLayout.chatBrowser.url = railcamURL;
-                }
-            }
-            else
-            {
-                playerLayout.chatTitle.text = "No Chat Available";
-                playerLayout.chatBrowser.url = "about:blank";
-            }
+            playerLayout.browserTitle.text = o.title;
+            playerLayout.browser.url = o.url;
+            playerLayout.browserWidth = o.width
+            playerLayout.browserZoom = o.zoom
+        }
+        else
+        {
+            playerLayout.browserTitle.text = "No Web Pages Available";
+            playerLayout.browser.url = "about:blank";
+            playerLayout.browserWidth = 350
+            playerLayout.browserZoom = 1.0
         }
     }
 
@@ -727,29 +709,25 @@ BaseScreen
         popupMenu.show();
     }
 
-    function showChatMenu()
+    function showBrowserMenu()
     {
-        popupMenu.message = "Chat Options";
+        getActivePlayer().updateBrowserURLList();
+        var urlList = getActivePlayer().getBrowserURLList();
+
+        popupMenu.message = "Browser Options";
         popupMenu.clearMenuItems();
 
-        popupMenu.addMenuItem("", "Hide Chat");
-        popupMenu.addMenuItem("", "Reload", "Chat");
-        popupMenu.addMenuItem("", "Zoom In", "Chat");
-        popupMenu.addMenuItem("", "Zoom Out", "Chat");
+        popupMenu.addMenuItem("", "Change Page");
+        popupMenu.addMenuItem("", "Hide Browser");
+        popupMenu.addMenuItem("", "Reload");
+        popupMenu.addMenuItem("", "Zoom In");
+        popupMenu.addMenuItem("", "Zoom Out");
 
-        _actionsEnabled = false;
-        popupMenu.show();
-    }
-
-    function showRailCamMenu()
-    {
-        popupMenu.message = "RailCam Options";
-        popupMenu.clearMenuItems();
-
-        popupMenu.addMenuItem("", "Hide RailCam");
-        popupMenu.addMenuItem("", "Reload", "RailCam");
-        popupMenu.addMenuItem("", "Zoom In", "RailCam");
-        popupMenu.addMenuItem("", "Zoom Out", "RailCam");
+        // Change Page Sub Menu
+        for (var x = 0; x < urlList.count; x++)
+        {
+            popupMenu.addMenuItem("0", urlList.get(x).title, "browser_index=" + x);
+        }
 
         _actionsEnabled = false;
         popupMenu.show();
