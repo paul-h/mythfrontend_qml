@@ -27,7 +27,6 @@ FocusScope
     property bool muteAudio: false
     property bool showRailcamApproach: false
     property bool showRailcamDiagram: false
-    property int  trainListIndex: 0
 
     // private properties
     property bool _playbackStarted: false
@@ -229,6 +228,13 @@ FocusScope
         }
     }
 
+    ListModel
+    {
+        id: browserURLList
+
+        property int currentIndex: 0
+    }
+
     RailcamModel
     {
         id: railcamModel
@@ -293,9 +299,9 @@ FocusScope
 
         property bool hasData: true
 
-        x: 0
-        y: parent.height - _yscale(50)
-        width: parent.width
+        x: showBorder ? xscale(5) : 0
+        y: parent.height - _yscale(50) - (showBorder ? yscale(5) : 0)
+        width: parent.width - (showBorder ? xscale(10) : 0)
         height: _yscale(50)
         visible: false
 
@@ -408,6 +414,8 @@ FocusScope
                                     return "red"
                                 else if (status == "At Platform")
                                     return "black"
+                                else if (status == "Waiting")
+                                    return "Orange"
                                 else if (status == "Approaching")
                                 {
                                     if (approach_ind === "<1" || approach_ind === ">1")
@@ -433,6 +441,8 @@ FocusScope
                                     return "black"
                                 else if (status == "At Platform")
                                     return "white"
+                                else if (status == "Waiting")
+                                    return "Orange"
                                 else if (status == "Approaching")
                                     return "yellow"
                             }
@@ -456,6 +466,8 @@ FocusScope
                                 return "Yellow"
                             else if (status == "Passed")
                                 return "red"
+                            else if (status == "Waiting")
+                                return "Orange"
                             else
                                 return "white"
                         }
@@ -514,24 +526,24 @@ FocusScope
         focus: true
         color: "transparent"
         border.color: root.focus ? theme.lvBackgroundBorderColor : theme.bgBorderColor
-        border.width: root.showBorder ? _xscale(5) : 0
+        border.width: root.showBorder ? xscale(5) : 0
         radius: theme.bgRadius
     }
 
     Timer
     {
         id: infoTimer
-        interval: 6000; running: false; repeat: false
+        interval: settings.osdTimeoutMedium; running: false; repeat: false
         onTriggered: { infoPanel.visible = false; updateRailcamApproach(); }
     }
 
     BaseBackground
     {
         id: infoPanel
-        x: _xscale(10);
-        y: parent.height - _yscale(170);
+        x: xscale(10);
+        y: parent.height - _yscale(160) - yscale(10);
         opacity: 0.85
-        width: parent.width - _xscale(20);
+        width: parent.width - xscale(20);
         height: _yscale(160)
 
         visible: false
@@ -636,16 +648,12 @@ FocusScope
             greenText: "Next"
             yellowText:
             {
-                if (player === "RailCam")
-                    "RailCam Options";
-                else if (player === "YouTube" || player === "YouTubeTV")
-                    "YouTube Options";
-                else "";
+                "Show Web Pages";
             }
             blueText:
             {
                 if (player === "RailCam")
-                    "RailCam Diagrams";
+                    "Show RailCam Info";
                 else
                     "";
            }
@@ -1151,44 +1159,63 @@ FocusScope
         return undefined;
     }
 
-    function getTrainTimesURL()
+    function getBrowserURL(o)
     {
-        var url = "https://railcam.uk/rcdata/RCData2_detail.php?r=S&hc={HEADCODE}&td={AREACODE}&vip=Y"; // getLink("railcam_times");
+        if (browserURLList.count === 0)
+            return false;
+
+        o.title = browserURLList.get(browserURLList.currentIndex).title;
+        o.url = browserURLList.get(browserURLList.currentIndex).url;
+        o.width = browserURLList.get(browserURLList.currentIndex).width;
+        o.zoom = browserURLList.get(browserURLList.currentIndex).zoom;
+
+        return true;
+    }
+
+    function getBrowserURLList()
+    {
+        return browserURLList;
+    }
+
+    function updateBrowserURLList()
+    {
+        browserURLList.clear();
+
+        // add any RailCam Train Times
+        var url = "https://railcam.uk/rcdata/RCData2_detail.php?r=S&hc={HEADCODE}&td={AREACODE}&vip=Y";
 
         var headCode = ""
         var areaCode = ""
 
-        if (player !== "RailCam" || railcamModel.trainList.count === 0)
-            return undefined;
+        for (var x = 0; x < railcamModel.trainList.count; x++)
+        {
+            headCode = railcamModel.trainList.get(x).headcode;
+            areaCode = railcamModel.trainList.get(x).buid.substring(0,2);
 
-        if (trainListIndex < 0 || trainListIndex > railcamModel.trainList.count)
-            trainListIndex = 0;
+            if (headCode === "" || areaCode === "")
+                continue;
 
-        headCode = railcamModel.trainList.get(trainListIndex).headcode;
-        areaCode = railcamModel.trainList.get(trainListIndex).buid.substring(0,2);
+            var actualURL = url.replace("{HEADCODE}", headCode).replace("{AREACODE}", areaCode);
 
-        if (headCode === "" || areaCode === "")
-            return undefined;
+             browserURLList.append({"title": "Train Times for " + headCode, "url": actualURL, "width" : 515, "zoom": 0.75});
+        }
 
-        url = url.replace("{HEADCODE}", headCode);
-        url = url.replace("{AREACODE}", areaCode);
+        // add YouTube chat
+        url = getLink("youtube_chat");
+        if (url !== undefined)
+            browserURLList.append({"title": "YouTube Chat", "url": url, "width" : 350, "zoom": 1.0});
 
-        return url;
-    }
+        // add RailCam chat
+        url = getLink("railcam_chat");
+        if (url !== undefined)
+            browserURLList.append({"title": "RailCam Chat", "url": url, "width" : 400, "zoom": 1.0});
 
-    function getTrainTimesHeadcode()
-    {
-        var headCode = ""
+        // add website
+        url = getLink("website");
+        if (url !== undefined)
+            browserURLList.append({"title": "Website", "url": url, "width" : 500, "zoom": 0.8});
 
-        if (trainListIndex < 0 || trainListIndex > railcamModel.trainList.count)
-            trainListIndex = 0;
-
-        headCode = railcamModel.trainList.get(trainListIndex).headcode;
-
-        if (headCode === "")
-            return undefined;
-
-        return headCode;
+        // TODO add other web urls here
     }
 
     function updateRailCamMiniDiagram(url)
@@ -1214,20 +1241,20 @@ FocusScope
         }
     }
 
-    function nextTrain()
+    function nextURL()
     {
-        trainListIndex++;
+        browserURLList.currentIndex++
 
-        if (trainListIndex > railcamModel.trainList.count)
-            trainListIndex = 0;
+        if (browserURLList.currentIndex > browserURLList.count)
+            browserURLList.currentIndex = 0;
     }
 
-    function previousTrain()
+    function previousURL()
     {
-        trainListIndex--;
+        browserURLList.currentIndex--;
 
-        if (trainListIndex < 0)
-            trainListIndex = railcamModel.trainList.count - 1;
+        if (browserURLList.currentIndex < 0)
+            browserURLList.currentIndex = browserURLList.count - 1;
     }
 }
 
