@@ -1,6 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
 
-# This file is part of MythTV.
+# This file is part of MythQML.
 # Copyright 2017, Paul Harrison.
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -45,37 +46,37 @@ def openTelnet():
 
     if telnet == None:
         telnet = telnetlib.Telnet(HOST)
-        telnet.read_until("Welcome to TELNET.")
+        telnet.read_until(b"Welcome to TELNET.")
 
 def closeTelnet():
     global telnet
 
     if telnet != None:
-        telnet.write('\x1d')
-        telnet.write("exit\n")
+        telnet.write(b'\x1d')
+        telnet.write(b"exit\n")
 
 def getStatus():
     openTelnet()
 
-    telnet.write("INFO\n")
+    telnet.write(b"INFO\n")
 
-    result = telnet.read_until(">")
+    result = telnet.read_until(b">")
 
     power = ''
     outputA = ''
     outputB = ''
     mode = ''
 
-    lines = result.split('\r\n')
+    lines = result.split(b'\r\n')
     for line in lines:
-        if line.startswith("POWER STATUS: "):
-            power = line.replace("POWER STATUS: ", "")
-        if line.startswith("OUTPUT A: "):
-            outputA = line.replace("OUTPUT A: ", "")
-        if line.startswith("OUTPUT B: "):
-            outputB = line.replace("OUTPUT B: ", "")
-        if line.startswith("MATRIX MODE: "):
-            mode = line.replace("MATRIX MODE: ", "")
+        if line.startswith(b"POWER STATUS: "):
+            power = line.replace(b"POWER STATUS: ", b"")
+        if line.startswith(b"OUTPUT A: "):
+            outputA = line.replace(b"OUTPUT A: ", b"")
+        if line.startswith(b"OUTPUT B: "):
+            outputB = line.replace(b"OUTPUT B: ", b"")
+        if line.startswith(b"MATRIX MODE: "):
+            mode = line.replace(b"MATRIX MODE: ", b"")
 
     return (power, outputA, outputB, mode)
 
@@ -105,12 +106,12 @@ def setPowerState(state):
 
     if power != state:
         if state == "ON":
-            command = "P1\n"
+            command = b"P1\n"
         else:
-            command = "P0\n"
+            command = b"P0\n"
 
         telnet.write(command)
-        telnet.read_until(">")
+        telnet.read_until(b">")
 
     closeTelnet()
     sys.exit(0)
@@ -124,12 +125,12 @@ def setMatrixMode(newMode):
 
     if newMode != mode:
         if newMode == "MATRIX":
-            command = "MATRIXMODE 0\n"
+            command = b"MATRIXMODE 0\n"
         else:
-            command = "MATRIXMODE 1\n"
+            command = b"MATRIXMODE 1\n"
 
         telnet.write(command)
-        print(telnet.read_until(">"))
+        print(telnet.read_until(b">"))
 
     closeTelnet()
     sys.exit(0)
@@ -139,8 +140,8 @@ def setInput(input, output):
 
     openTelnet()
 
-    telnet.write(output + input + "\n")
-    print(telnet.read_until(">"))
+    telnet.write(str.encode(output) + str.encode(input) + b"\n")
+    print(telnet.read_until(b">"))
 
     closeTelnet()
     sys.exit(0)
