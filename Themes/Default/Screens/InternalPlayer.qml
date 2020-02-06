@@ -650,15 +650,15 @@ BaseScreen
         {
             playerLayout.browserTitle.text = o.title;
             playerLayout.browser.url = o.url;
-            playerLayout.browserWidth = o.width
-            playerLayout.browserZoom = o.zoom
+            playerLayout.browserWidth = xscale(o.width);
+            playerLayout.browserZoom = xscale(o.zoom);
         }
         else
         {
             playerLayout.browserTitle.text = "No Web Pages Available";
             playerLayout.browser.url = "about:blank";
-            playerLayout.browserWidth = 350
-            playerLayout.browserZoom = 1.0
+            playerLayout.browserWidth = xscale(350);
+            playerLayout.browserZoom = xscale(1.0);
         }
     }
 
