@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
 # Python script to download and process Rss Feeds and create a ticker.xml file for use by the scroller in mythfrontend_qml
@@ -9,11 +9,23 @@ from glob import glob
 import feedparser
 from lxml import etree
 
-if __name__ == '__main__':
+# https://stackoverflow.com/questions/57830019/python-3-7-feedparser-module-cannot-parse-bbc-weather-feed
+def _gen_georss_coords(value, swap=True, dims=2):
+    # A generator of (lon, lat) pairs from a string of encoded GeoRSS
+    # coordinates. Converts to floats and swaps order.
+    latlons = list(map(float, value.strip().replace(',', ' ').split()))
+    for i in range(0, len(latlons), 3):
+        t = [latlons[i], latlons[i+1]][::swap and -1 or 1]
+        if dims == 3:
+            t.append(latlons[i+2])
+        yield tuple(t)
 
+if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print "Missing output filename!"
+        print("Missing output filename!")
         sys.exit(1)
+
+    saveit, feedparser._gen_georss_coords = (feedparser._gen_georss_coords, _gen_georss_coords)
 
     outFile = sys.argv[1]
 
@@ -30,11 +42,11 @@ if __name__ == '__main__':
     # Iterate over the feed urls
     idNo = 1
     for title,url in feedurls:
-        print "Processing feed: " + title
+        print("Processing feed: " + title)
         item = etree.SubElement(tickeritems, "item")
         feed = feedparser.parse(url)
         etree.SubElement(item, "id").text = str(idNo)
-        etree.SubElement(item, "category").text = unicode(title, 'utf-8')
+        etree.SubElement(item, "category").text = str(title).encode('utf-8')
         tickerText = ''
         itemCount = 0
         for newsitem in feed['items']:
@@ -52,12 +64,14 @@ if __name__ == '__main__':
 
         idNo += 1
 
-    print "Saving xml file to %s" % outFile
+    print("Saving xml file to %s" % outFile)
 
     output = etree.tostring(tickeritems, encoding='UTF-8', pretty_print=True, xml_declaration=True)
 
     xmlFile = open(outFile, "w")
-    xmlFile.write(output)
+    xmlFile.write(output.decode())
     xmlFile.close()
+
+    feedparser._gen_georss_coords, _gen_georss_coords = (saveit, feedparser._gen_georss_coords)
 
     sys.exit(0)
