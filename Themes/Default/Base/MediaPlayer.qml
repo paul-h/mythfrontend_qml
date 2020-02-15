@@ -1211,9 +1211,24 @@ FocusScope
             browserURLList.append({"title": "RailCam Chat", "url": url, "width" : 400, "zoom": 1.0});
 
         // add website
-        url = getLink("website");
-        if (url !== undefined)
-            browserURLList.append({"title": "Website", "url": url, "width" : 500, "zoom": 0.8});
+        for (var y = 0; y < 10; y++)
+        {
+            url = getLink("website" + y);
+            if (url !== undefined)
+            {
+                var list = url.split("|");
+                if (list.length === 4)
+                {
+                    var title = list[0];
+                    var width = parseInt(list[1]);
+                    var zoom = parseFloat(list[2]);
+                    var actualurl = list[3];
+                    browserURLList.append({"title": title, "url": actualurl, "width" : width, "zoom": zoom});
+                }
+                else
+                    browserURLList.append({"title": "Website", "url": url, "width" : 500, "zoom": 0.8});
+            }
+        }
 
         // TODO add other web urls here
     }
