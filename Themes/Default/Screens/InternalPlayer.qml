@@ -133,7 +133,7 @@ BaseScreen
         {
             if (playerLayout.activeItem.objectName === "Browser")
             {
-                getActivePlayer().nextURL();
+                getActivePlayer().previousURL();
                 updateBrowser();
             }
             else
@@ -154,7 +154,7 @@ BaseScreen
         {
             if (playerLayout.activeItem.objectName === "Browser")
             {
-                getActivePlayer().previousURL();
+                getActivePlayer().nextURL();
                 updateBrowser();
             }
             else
