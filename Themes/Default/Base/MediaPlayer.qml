@@ -1230,6 +1230,13 @@ FocusScope
             }
         }
 
+        // if a RailCam feed add 'On The Camera Today/Tomorrow' webpages
+        if (player === "RailCam")
+        {
+            browserURLList.append({"title": "RailCam - On the cameras today", "url": "http://news.railcam.uk/index.php/category/today/", "width" : 500, "zoom": 1.0});
+            browserURLList.append({"title": "RailCam - On the cameras tomorrow", "url": "http://news.railcam.uk/index.php/category/tomorrow/", "width" : 500, "zoom": 1.0});
+        }
+
         // TODO add other web urls here
     }
 
