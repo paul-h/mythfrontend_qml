@@ -43,7 +43,7 @@ FocusScope
 
     function _yscale(y)
     {
-        return y * _wmult
+        return y * _hmult
     }
 
     FeedSource
@@ -331,7 +331,10 @@ FocusScope
                 x: _xscale(5)
                 y: _yscale(5)
                 width: _xscale(40)
-                height: _xscale(40) // we want this square
+                height: _yscale(40)
+                horizontalAlignment: Image.AlignHCenter
+                verticalAlignment: Image.AlignVCenter
+                fillMode: Image.PreserveAspectFit
                 source: railcamModel.approachLeftList.count === 0 ?  mythUtils.findThemeFile("images/grey_rewind.png") : mythUtils.findThemeFile("images/rewind.png")
             }
 
@@ -351,7 +354,10 @@ FocusScope
                 x: parent.width - _xscale(45)
                 y: _yscale(5)
                 width: _xscale(40)
-                height: _xscale(40) // we want this square
+                height: _yscale(40)
+                horizontalAlignment: Image.AlignHCenter
+                verticalAlignment: Image.AlignVCenter
+                fillMode: Image.PreserveAspectFit
                 source: railcamModel.approachRightList.count === 0 ?  mythUtils.findThemeFile("images/grey_fastforward.png") :mythUtils.findThemeFile("images/fastforward.png")
             }
 
@@ -542,7 +548,7 @@ FocusScope
         id: infoPanel
         x: xscale(10);
         y: parent.height - _yscale(160) - yscale(10);
-        opacity: 0.85
+        opacity: 0.75
         width: parent.width - xscale(20);
         height: _yscale(160)
 
@@ -555,7 +561,7 @@ FocusScope
             y: _yscale(5)
             width: parent.width - currFeed.width - _xscale(20)
             height: _yscale(50)
-            fontPixelSize: _xscale(24)
+            fontPixelSize: (_xscale(24) + _yscale(24)) / 2
             text:
             {
                 if (!feedSource.feedList.get(feedSource.currentFeed))
@@ -578,7 +584,7 @@ FocusScope
             y: _yscale(50)
             width: _xscale(400)
             height: _yscale(50)
-            fontPixelSize: _xscale(16)
+            fontPixelSize: (_xscale(16) + _yscale(16)) / 2
             text:
             {
                 if (getActivePlayer() === "VLC")
@@ -596,7 +602,7 @@ FocusScope
             x: parent.width - width - _xscale(15); y: _yscale(50)
             width: _xscale(240)
             height: _yscale(50)
-            fontPixelSize: _xscale(16)
+            fontPixelSize: (_xscale(16) + _yscale(16)) / 2
             text:
             {
                 if (getActivePlayer() === "VLC")
@@ -617,7 +623,7 @@ FocusScope
             y: _yscale(0)
             width: _xscale(240)
             height: _yscale(50)
-            fontPixelSize: _xscale(16)
+            fontPixelSize: (_xscale(16) + _yscale(16)) / 2
             text: feedSource.currentFeed + 1 + " of " + feedSource.feedCount + " (" + feedSource.feedName + ")"
 
             horizontalAlignment: Text.AlignRight
@@ -630,7 +636,7 @@ FocusScope
             y: _yscale(24)
             width: _xscale(240)
             height: _yscale(50)
-            fontPixelSize: _xscale(16)
+            fontPixelSize: (_xscale(16) + _yscale(16)) / 2
             text: getActivePlayer();
 
             horizontalAlignment: Text.AlignRight
@@ -639,10 +645,10 @@ FocusScope
         Footer
         {
             id: footer
-            x: _xscale(5)
-            y: parent.height - _yscale(42 - 5)
-            width: parent.width - (x * 2)
-            height: _yscale(32)
+            x: root._xscale(5)
+            y: parent.height - root._yscale(38)
+            width: parent.width - root._xscale(10)
+            height: root._yscale(32)
 
             redText: "Previous"
             greenText: "Next"
@@ -656,7 +662,9 @@ FocusScope
                     "Show RailCam Info";
                 else
                     "";
-           }
+            }
+
+            Tracer {}
        }
 
 
