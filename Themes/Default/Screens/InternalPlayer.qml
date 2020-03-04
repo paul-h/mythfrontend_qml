@@ -450,7 +450,7 @@ BaseScreen
     Action
     {
         shortcut: "PgUp" // skip back 10 minutes
-        enabled: _actionsEnabled
+        enabled: _actionsEnabled && playerLayout.activeItem.objectName.startsWith("Player")
         onTriggered:
         {
             getActivePlayer().skipBack(600000);
@@ -461,7 +461,7 @@ BaseScreen
     Action
     {
         shortcut: "PgDown" // skip forward 10 minutess
-        enabled: _actionsEnabled
+        enabled: _actionsEnabled && playerLayout.activeItem.objectName.startsWith("Player")
         onTriggered:
         {
             getActivePlayer().skipForward(600000);
