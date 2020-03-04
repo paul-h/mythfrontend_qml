@@ -3,11 +3,26 @@ import QtQuick 2.0
 Item
 {
     x: xscale(30); y: yscale(682); width: xscale(1280 - 60); height: yscale(32)
+    implicitWidth: 1280 - 60; implicitHeight: 32
 
     property alias redText: red.text
     property alias greenText: green.text
     property alias yellowText: yellow.text
     property alias blueText: blue.text
+
+    // private properties
+    property double _wmult: width / implicitWidth
+    property double _hmult: height / implicitHeight
+
+    function _xscale(x)
+    {
+        return x * _wmult
+    }
+
+    function _yscale(y)
+    {
+        return y * _hmult
+    }
 
     Item
     {
@@ -20,17 +35,24 @@ Item
         Image
         {
             id: redImage
-            x: 0; y: 0; width: xscale(32); height: yscale(32)
+            x: 0
+            y: 0
+            width: _xscale(32)
+            height: _yscale(32)
+            horizontalAlignment: Image.AlignHCenter
+            verticalAlignment: Image.AlignVCenter
+            fillMode: Image.PreserveAspectFit
             source: mythUtils.findThemeFile("images/red_bullet.png")
         }
 
         InfoText
         {
             id: red
-            x: redImage.x + redImage.width + xscale(5)
+            x: redImage.x + redImage.width + _xscale(5)
             y: 0;
-            width: parent.width - x - xscale(5)
+            width: parent.width - x - _xscale(5)
             height: parent.height
+            fontPixelSize: (_xscale(theme.infoFontPixelSize) + _yscale(theme.infoFontPixelSize)) / 2
             text: ""
         }
     }
@@ -48,18 +70,22 @@ Item
             id: greenImage
             x: 0
             y: 0
-            width: xscale(32)
-            height: yscale(32)
+            width: _xscale(32)
+            height: _yscale(32)
+            horizontalAlignment: Image.AlignHCenter
+            verticalAlignment: Image.AlignVCenter
+            fillMode: Image.PreserveAspectFit
             source: mythUtils.findThemeFile("images/green_bullet.png")
         }
 
         InfoText
         {
             id: green
-            x: greenImage.x + greenImage.width + xscale(5)
+            x: greenImage.x + greenImage.width + _xscale(5)
             y: 0
-            width: parent.width - x - xscale(5)
+            width: parent.width - x - _xscale(5)
             height: parent.height
+            fontPixelSize: (_xscale(theme.infoFontPixelSize) + _yscale(theme.infoFontPixelSize)) / 2
             text: ""
         }
     }
@@ -77,18 +103,22 @@ Item
             id: yellowImage
             x: 0
             y: 0
-            width: xscale(32)
-            height: yscale(32)
+            width: _xscale(32)
+            height: _yscale(32)
+            horizontalAlignment: Image.AlignHCenter
+            verticalAlignment: Image.AlignVCenter
+            fillMode: Image.PreserveAspectFit
             source: mythUtils.findThemeFile("images/yellow_bullet.png")
         }
 
         InfoText
         {
             id: yellow
-            x: yellowImage.x + yellowImage.width + xscale(5)
+            x: yellowImage.x + yellowImage.width + _xscale(5)
             y: 0
-            width: parent.width - x - xscale(5)
+            width: parent.width - x - _xscale(5)
             height: parent.height
+            fontPixelSize: (_xscale(theme.infoFontPixelSize) + _yscale(theme.infoFontPixelSize)) / 2
             text: ""
         }
     }
@@ -106,18 +136,22 @@ Item
             id: blueImage
             x: 0
             y: 0
-            width: xscale(32)
-            height: yscale(32)
+            width: _xscale(32)
+            height: _yscale(32)
+            horizontalAlignment: Image.AlignHCenter
+            verticalAlignment: Image.AlignVCenter
+            fillMode: Image.PreserveAspectFit
             source: mythUtils.findThemeFile("images/blue_bullet.png")
         }
 
         InfoText
         {
             id: blue
-            x: blueImage.x + blueImage.width + xscale(5)
+            x: blueImage.x + blueImage.width + _xscale(5)
             y: 0
-            width: parent.width - x - xscale(5)
+            width: parent.width - x - _xscale(5)
             height: parent.height
+            fontPixelSize: (_xscale(theme.infoFontPixelSize) + _yscale(theme.infoFontPixelSize)) / 2
             text: ""
         }
     }
