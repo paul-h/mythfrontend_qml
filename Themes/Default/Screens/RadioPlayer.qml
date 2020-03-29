@@ -1,7 +1,9 @@
 import QtQuick 2.0
 import QmlVlc 0.1
 import Base 1.0
+import SortFilterProxyModel 0.2
 import "../../../Util.js" as Util
+import mythqml.net 1.0
 
 BaseScreen
 {
@@ -13,6 +15,11 @@ BaseScreen
 
     // this is necessary because the VLCPlayer sends bad values for the mute changed signal
     property bool muted: false
+
+    property string filterBroadcaster
+    property string filterChannel
+    property string filterGenre
+    property string sorter: "broadcaster"
 
     Component.onCompleted:
     {
@@ -32,15 +39,74 @@ BaseScreen
         var a = trackArtistTitle.split(" - ");
         var title = a[0];
         var artist = a[1];
-        var broadcaster = streamList.model.data(streamList.model.index(streamList.currentIndex, 1));
-        var channel = streamList.model.data(streamList.model.index(streamList.currentIndex, 2));
-        var icon = streamList.model.data(streamList.model.index(streamList.currentIndex, 9));
+        var broadcaster = streamList.model.get(streamList.currentIndex).broadcaster;
+        var channel = streamList.model.get(streamList.currentIndex).channel;
+        var icon = streamList.model.get(streamList.currentIndex).logourl;
         if (trackArtistTitle != "")
             playedModel.insert(0, {"trackArtistTitle": trackArtistTitle, "title": title, "artist": artist, "broadcaster": broadcaster, "channel": channel, "icon": icon, "length": 0});
         playedList.currentIndex = 0;
         trackStart = streamPlayer.time;
         trackTitle.text = title !== undefined ? title : "";
         trackArtist.text = artist !== undefined ? artist : "";
+    }
+
+    property list<QtObject> broadcasterSorter:
+    [
+        RoleSorter { roleName: "broadcaster" },
+        RoleSorter { roleName: "channel" }
+    ]
+
+    property list<QtObject> genreSorter:
+    [
+        RoleSorter { roleName: "genre" },
+        RoleSorter { roleName: "broadcaster" },
+        RoleSorter { roleName: "channel" }
+    ]
+
+    property list<QtObject> countrySorter:
+    [
+        RoleSorter { roleName: "country" },
+        RoleSorter { roleName: "broadcaster" },
+        RoleSorter { roleName: "channel" }
+    ]
+
+    property list<QtObject> languageSorter:
+    [
+        RoleSorter { roleName: "language" },
+        RoleSorter { roleName: "broadcaster" },
+        RoleSorter { roleName: "channel" }
+    ]
+
+    SortFilterProxyModel
+    {
+        id: streamsProxyModel
+        sourceModel: radioStreamsModel
+
+        filters:
+        [
+            AllOf
+            {
+                RegExpFilter
+                {
+                    roleName: "broadcaster"
+                    pattern: filterBroadcaster
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+                RegExpFilter
+                {
+                    roleName: "channel"
+                    pattern: filterChannel
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+                RegExpFilter
+                {
+                    roleName: "genre"
+                    pattern: filterGenre
+                    caseSensitivity: Qt.CaseInsensitive
+                }
+            }
+        ]
+        //sorters: broadcasterSorter
     }
 
     VlcPlayer
@@ -54,22 +120,22 @@ BaseScreen
             // try to restore the last playing station
             var url = dbUtils.getSetting("RadioPlayerBookmark", settings.hostName)
 
-            for (var i = 0; i < radioStreamsModel.rowCount(); i++)
+            for (var i = 0; i < streamList.model.count; i++)
             {
-                var itemUrl = radioStreamsModel.data(radioStreamsModel.index(i, 4));
+                var itemUrl = streamList.model.get(streamList.currentIndex).url1;
 
                 if (itemUrl === url)
                 {
                     streamList.currentIndex = i;
 
-                    if (streamList.model.data(streamList.model.index(streamList.currentIndex, 1)) !== "")
-                        channel.text = streamList.model.data(streamList.model.index(streamList.currentIndex, 1)) + " - " + streamList.model.data(streamList.model.index(streamList.currentIndex, 2));
+                    if (streamList.model.get(streamList.currentIndex).broadcaster !== "")
+                        channel.text = streamList.model.get(streamList.currentIndex).broadcaster + " - " + streamList.model.get(streamList.currentIndex).channel;
                     else
-                        channel.text = streamList.model.data(streamList.model.index(streamList.currentIndex, 2));
+                        channel.text = streamList.model.get(streamList.currentIndex).channel;
 
                     urlText.text = url;
-                    visualizer.source = streamList.model.data(streamList.model.index(streamList.currentIndex, 9));
-                    streamIcon.source = streamList.model.data(streamList.model.index(streamList.currentIndex, 9));
+                    visualizer.source = streamList.model.get(streamList.currentIndex).logourl;
+                    streamIcon.source = streamList.model.get(streamList.currentIndex).logourl;;
                     break;
                 }
             }
@@ -88,6 +154,32 @@ BaseScreen
         Component.onDestruction:
         {
             dbUtils.setSetting("RadioPlayerBookmark", settings.hostName, mrl)
+        }
+
+        onStateChanged:
+        {
+            if (state === 0)
+                log.debug(Verbose.PLAYBACK, "RadioPlayer state: Nothing Special - " + mrl);
+            else if (state === 1)
+                log.debug(Verbose.PLAYBACK, "RadioPlayer state: Opening - " + mrl);
+            else if (state === 2)
+                log.debug(Verbose.PLAYBACK, "RadioPlayer state: Buffering - " + mrl);
+            else if (state === 3)
+            {
+                log.debug(Verbose.PLAYBACK, "RadioPlayer state: Playing - " + mrl);
+                unMute();
+            }
+            else if (state === 4)
+                log.debug(Verbose.PLAYBACK, "RadioPlayer state: Paused - " + mrl);
+            else if (state === 5)
+                log.debug(Verbose.PLAYBACK, "RadioPlayer state: Stopped - " + mrl);
+            else if (state === 6)
+                log.debug(Verbose.PLAYBACK, "RadioPlayer state: Ended - " + mrl);
+            else if (state === 7)
+            {
+                log.debug(Verbose.PLAYBACK, "RadioPlayer state: Error - " + mrl);
+                showNotification("Failed to play radio stream.\n" + mrl);
+            }
         }
     }
 
@@ -147,23 +239,23 @@ BaseScreen
         x: xscale(25); y: yscale(25); width: xscale(1225); height: yscale(250)
 
         clip: true
-        model: radioStreamsModel
+        model: streamsProxyModel
         delegate: streamRow
 
         Keys.onReturnPressed:
         {
             returnSound.play();
-            var url = model.data(model.index(currentIndex, 4));
+            var url = model.get(currentIndex).url1;
             streamPlayer.mrl = url;
             urlText.text = url
 
-            if (streamList.model.data(streamList.model.index(streamList.currentIndex, 1)) !== "")
-                channel.text = streamList.model.data(streamList.model.index(streamList.currentIndex, 1)) + " - " + streamList.model.data(streamList.model.index(streamList.currentIndex, 2));
+            if (model.get(currentIndex).broadcaster !== "")
+                channel.text = model.get(currentIndex).broadcaster + " - " + model.get(currentIndex).channel;
             else
-                channel.text = streamList.model.data(streamList.model.index(streamList.currentIndex, 2));
+                channel.text = model.get(currentIndex).channel;
 
-            visualizer.source = streamList.model.data(streamList.model.index(streamList.currentIndex, 9));
-            streamIcon.source = streamList.model.data(streamList.model.index(streamList.currentIndex, 9));
+            visualizer.source = model.get(currentIndex).logourl;
+            streamIcon.source = model.get(currentIndex).logourl;
             event.accepted = true;
         }
 
@@ -353,6 +445,7 @@ BaseScreen
     {
         root.muted = ! root.muted
         streamPlayer.audio.mute = root.muted;
+        log.debug(Verbose.PLAYBACK, "RadioPlayer: root.mute: " + root.muted + "streamPlayer.audio.mute:" + streamPlayer.audio.mute);
     }
 }
 
