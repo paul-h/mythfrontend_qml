@@ -82,7 +82,7 @@ BaseScreen
                 }
             }
         ]
-        sorters: broadcasterSorter
+        //sorters: broadcasterSorter
     }
 
     Keys.onPressed:
@@ -193,15 +193,15 @@ BaseScreen
             }
             ListText
             {
-                x: coverImage.width + xscale(605)
-                width: xscale(300); height: yscale(50)
+                x: coverImage.width + xscale(625)
+                width: xscale(250); height: yscale(50)
                 horizontalAlignment: Text.AlignRight
                 text: genre
             }
             ListText
             {
-                x: coverImage.width + xscale(910)
-                width: xscale(200); height: yscale(50)
+                x: coverImage.width + xscale(880)
+                width: xscale(300); height: yscale(50)
                 horizontalAlignment: Text.AlignRight
                 text: country + " - " + language
             }
@@ -238,15 +238,21 @@ BaseScreen
 
     TitleText
     {
-        x: xscale(30); y: yscale(480)
-        width: xscale(900); height: yscale(50)
-        text: streamList.model.get(streamList.currentIndex).broadcaster + " - " + streamList.model.get(streamList.currentIndex).channel
+        x: xscale(30); y: yscale(465)
+        width: xscale(1120); height: yscale(50)
+        text:
+        {
+            if (streamList.model.get(streamList.currentIndex).broadcaster !== "")
+                streamList.model.get(streamList.currentIndex).broadcaster + " - " + streamList.model.get(streamList.currentIndex).channel
+            else
+                streamList.model.get(streamList.currentIndex).channel
+        }
     }
 
     Image
     {
         id: streamImage
-        x: xscale(300); y: yscale(530); width: xscale(50); height: yscale(50)
+        x: xscale(1170); y: yscale(475); width: xscale(90); height: yscale(90)
         source:
         {
             if (streamList.model.get(streamList.currentIndex).logourl)
@@ -258,22 +264,35 @@ BaseScreen
 
     InfoText
     {
-        x: xscale(400); y: yscale(530)
-        width: xscale(900); height: yscale(50)
+        x: xscale(30); y: yscale(520)
+        width: xscale(340); height: yscale(50)
+        text: streamList.model.get(streamList.currentIndex).genre
+    }
+
+    Image
+    {
+        id: countryImage
+        x: xscale(370); y: yscale(520); width: xscale(50); height: yscale(50)
+        source:
+        {
+            if (streamList.model.get(streamList.currentIndex).country)
+                "http://www.radiosure.com/rsdbms/flags/" + streamList.model.get(streamList.currentIndex).country + ".png";
+            else
+                ""
+        }
+    }
+
+    InfoText
+    {
+        x: xscale(420); y: yscale(520)
+        width: xscale(730); height: yscale(50)
         text: streamList.model.get(streamList.currentIndex).country + " - " + streamList.model.get(streamList.currentIndex).language
     }
 
     InfoText
     {
-        x: xscale(30); y: yscale(530)
-        width: xscale(900); height: yscale(50)
-        text: streamList.model.get(streamList.currentIndex).genre
-    }
-
-    InfoText
-    {
-        x: xscale(30); y: yscale(580)
-        width: xscale(900); height: yscale(100)
+        x: xscale(30); y: yscale(570)
+        width: xscale(1200); height: yscale(100)
         text: streamList.model.get(streamList.currentIndex).description
         multiline: true
     }
