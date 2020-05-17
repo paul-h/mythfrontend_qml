@@ -221,6 +221,18 @@ void MythIncrementalModel::addDateTimeData(RowData* row, const QDomNode &node, c
     (*row)[m_roleMap[roleName]].setValue(data);
 }
 
+void MythIncrementalModel::addDateTimeData(RowData* row, const QDomNode &node, const QByteArray &roleName, Qt::DateFormat format)
+{
+    if (!m_roleMap.contains(roleName))
+    {
+        gContext->m_logger->warning(Verbose::MODEL, "MythIncrementalModel: addDateTimeData - roleName not found: " + roleName);
+        return;
+    }
+
+    QDateTime data = QDateTime::fromString(node.toElement().namedItem(roleName).toElement().text(),  format);
+    (*row)[m_roleMap[roleName]].setValue(data);
+}
+
 void MythIncrementalModel::addDateData(RowData* row, const QDomNode &node, const QByteArray &roleName, const QString &format)
 {
     if (!m_roleMap.contains(roleName))
@@ -301,7 +313,19 @@ void MythIncrementalModel::addDateTimeData(RowData* row, const QJsonValue &node,
         return;
     }
 
-    QDateTime data = QDateTime::fromString(node.toObject()[roleName].toString(),  format);
+    QDateTime data = QDateTime::fromString(node.toObject()[roleName].toString(), format);
+    (*row)[m_roleMap[roleName]].setValue(data);
+}
+
+void MythIncrementalModel::addDateTimeData(RowData* row, const QJsonValue &node, const QByteArray &roleName, Qt::DateFormat format)
+{
+    if (!m_roleMap.contains(roleName))
+    {
+        gContext->m_logger->warning(Verbose::MODEL, "MythIncrementalModel: addDateTimeData - roleName not found: " + roleName);
+        return;
+    }
+
+    QDateTime data = QDateTime::fromString(node.toObject()[roleName].toString(), format);
     (*row)[m_roleMap[roleName]].setValue(data);
 }
 
