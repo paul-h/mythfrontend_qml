@@ -64,6 +64,7 @@ protected:
     void addIntData(RowData *row, const QDomNode &node, const QByteArray &roleName);
     void addLongData(RowData* row, const QDomNode &node, const QByteArray &roleName);
     void addDateTimeData(RowData *row, const QDomNode &node, const QByteArray &roleName, const QString &format = "");
+    void addDateTimeData(RowData *row, const QDomNode &node, const QByteArray &roleName, Qt::DateFormat format);
     void addDoubleData(RowData *row, const QDomNode &node, const QByteArray &roleName);
     void addDateData(RowData *row, const QDomNode &node, const QByteArray &roleName, const QString &format = "");
     void addBoolData(RowData *row, const QDomNode &node, const QByteArray &roleName);
@@ -73,6 +74,7 @@ protected:
     void addIntData(RowData *row, const QJsonValue &node, const QByteArray &roleName);
     void addLongData(RowData* row, const QJsonValue &node, const QByteArray &roleName);
     void addDateTimeData(RowData *row, const QJsonValue &node, const QByteArray &roleName, const QString &format = "");
+    void addDateTimeData(RowData *row, const QJsonValue &node, const QByteArray &roleName, Qt::DateFormat format);
     void addDoubleData(RowData *row, const QJsonValue &node, const QByteArray &roleName);
     void addDateData(RowData *row, const QJsonValue &node, const QByteArray &roleName, const QString &format = "");
     void addBoolData(RowData *row, const QJsonValue &node, const QByteArray &roleName);

@@ -201,8 +201,8 @@ void RecordingsModel::processDownload(QByteArray buffer)
                 addStringData(data, programNode, "Title");
                 addStringData(data, programNode, "SubTitle");
                 addStringData(data, programNode, "Description");
-                addDateTimeData(data, programNode, "StartTime");
-                addDateTimeData(data, programNode, "EndTime");
+                addDateTimeData(data, programNode, "StartTime", Qt::ISODate);
+                addDateTimeData(data, programNode, "EndTime", Qt::ISODate);
                 addStringData(data, programNode, "Category");
                 addStringData(data, programNode, "CatType");
                 addBoolData(data, programNode, "Repeat");
