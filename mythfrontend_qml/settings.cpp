@@ -65,7 +65,7 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
 
     // default OSD timeouts TODO add user settings for these?
     setOsdTimeoutShort(4000);
-    setOsdTimeoutMedium(8000);
+    setOsdTimeoutMedium(6000);
     setOsdTimeoutLong(30000);
 
     // zoneminder settings
