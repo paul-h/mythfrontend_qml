@@ -1275,7 +1275,7 @@ FocusScope
     {
         browserURLList.currentIndex++
 
-        if (browserURLList.currentIndex > browserURLList.count)
+        if (browserURLList.currentIndex >= browserURLList.count)
             browserURLList.currentIndex = 0;
     }
 
