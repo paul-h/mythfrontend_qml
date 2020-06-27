@@ -111,7 +111,7 @@ Item
             PropertyChanges { target: browserPanel; width: browserWidth }
             PropertyChanges { target: videoTitle1; height: yscale(30) }
             PropertyChanges { target: playerArea; height: root.height - playerArea.y - yscale(5) }
-            StateChangeScript { script: doShowHeader(true); }
+            StateChangeScript { script: { doShowHeader(true); browser.focus = true; } }
         }
     ]
 
