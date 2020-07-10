@@ -896,6 +896,7 @@ FocusScope
         log.debug(Verbose.PLAYBACK, "MediaPlayer: switchURL -  " + newURL);
 
         activeFeedChanged();
+        showMessage("", 0);
 
         if (!feedSource.feedList.get(feedSource.currentFeed))
                 title.text = "";
