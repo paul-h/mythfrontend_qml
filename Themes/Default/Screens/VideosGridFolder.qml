@@ -4,6 +4,7 @@ import Qt.labs.folderlistmodel 2.1
 import Base 1.0
 import Process 1.0
 import Dialogs 1.0
+import "../../../Util.js" as Util
 
 BaseScreen
 {
@@ -107,9 +108,7 @@ BaseScreen
             if (videoList.model.get(videoList.currentIndex, "fileIsDir"))
                 return "";
             else
-            {
-                return mythUtils.findThemeFile(videoList.model.get(videoList.currentIndex, "filePath") + ".png");
-            }
+                return findCoverImage(videoList.model.get(videoList.currentIndex, "filePath"));
         }
     }
 
@@ -138,14 +137,7 @@ BaseScreen
                     if (fileIsDir)
                         mythUtils.findThemeFile("images/directory.png");
                     else
-                    {
-                        var result = mythUtils.findThemeFile(filePath + ".png");
-
-                        if (result === "")
-                            result = mythUtils.findThemeFile("images/grid_noimage.png");
-
-                        return result;
-                    }
+                        findCoverImage(filePath)
                 }
             }
             ListText
@@ -217,5 +209,24 @@ BaseScreen
         vlcPlayerProcess.start("/usr/bin/cvlc", ["--play-and-exit",  "--fullscreen",
                                                  "--key-quit", "Esc", "--key-leave-fullscreen", "Ctrl+F",
                                                  filename]);
+    }
+
+    function findCoverImage(path)
+    {
+        var result = mythUtils.findThemeFile(path + ".png");
+
+        if (result === "")
+            result = mythUtils.findThemeFile(path + ".jpg");
+
+        if (result === "")
+            result = mythUtils.findThemeFile(Util.removeExtension(path) + ".png");
+
+        if (result === "")
+            result = mythUtils.findThemeFile(Util.removeExtension(path) + ".jpg");
+
+        if (result === "")
+            result = mythUtils.findThemeFile("images/grid_noimage.png");
+
+        return result;
     }
 }

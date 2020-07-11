@@ -268,3 +268,16 @@ function compareVersion(v1, v2)
 
     return 0;
 }
+
+function basename(path)
+{
+    return (path.slice(path.lastIndexOf("/")+1))
+}
+
+function removeExtension(path)
+{
+    if (path && path.length > 1)
+        return path.replace(/\.[^/.]+$/, "")
+
+    return ""
+}
