@@ -52,7 +52,7 @@ BaseScreen
     ZMEventsModel
     {
         id: zmEventsModel
-        auth: playerSources.zmAuth
+        token: playerSources.zmToken
 
         onTotalAvailableChanged:
         {
@@ -78,9 +78,10 @@ BaseScreen
             remove(findEventIndex(eventID));
 
             var http = new XMLHttpRequest();
-            var url = "http://" + settings.zmIP + "/zm/api/events/" + eventID + ".json";
-            var params = playerSources.zmAuth;
+            var url = "http://" + settings.zmIP + "/zm/api/events/" + eventID + ".json?token=" + playerSources.zmToken;
+            var params = ""; //"token=" + playerSources.zmToken;
 
+            http.withCredentials = true;
             http.open("DELETE", url, true);
             http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
@@ -197,7 +198,7 @@ BaseScreen
         {
             Image
             {
-                source: if (Id !== undefined) "http://" + settings.zmIP + "/zm/index.php?view=image&fid=10&eid=" + Id + "&" + playerSources.zmAuth; else ""; //+ "&show=analyse&";
+                source: if (Id !== undefined) "http://" + settings.zmIP + "/zm/index.php?view=image&fid=10&eid=" + Id + "&token=" + playerSources.zmToken; else ""; //+ "&show=analyse&";
                 x: xscale(3)
                 y: yscale(3)
                 width: xscale(44)

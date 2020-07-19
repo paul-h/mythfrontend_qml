@@ -30,7 +30,7 @@ BaseScreen
     onCurrentEventChanged:
     {
         updateEventDetails();
-        frameImage.swapImage("http://" + settings.zmIP + "/zm/index.php?view=image&fid=" + _frameNo + "&eid=" + eventList.get(currentEvent).Id + "&show=capture");
+        frameImage.swapImage("http://" + settings.zmIP + "/zm/index.php?view=image&fid=" + _frameNo + "&eid=" + eventList.get(currentEvent).Id + "&show=capture&token=" + playerSources.zmToken);
         feedChanged(currentEvent);
     }
 
@@ -84,7 +84,7 @@ BaseScreen
 
             _paused = false;
             _frameNo = 1;
-            frameImage.swapImage("http://" + settings.zmIP + "/zm/index.php?view=image&fid=" + _frameNo + "&eid=" +eventList.get(currentEvent).Id + "&show=capture");
+            frameImage.swapImage("http://" + settings.zmIP + "/zm/index.php?view=image&fid=" + _frameNo + "&eid=" +eventList.get(currentEvent).Id + "&show=capture&token=" + playerSources.zmToken);
 
         }
         else if (event.key === Qt.Key_Left)
@@ -92,7 +92,7 @@ BaseScreen
             if (_frameNo > 1)
             {
                 _frameNo--;
-                frameImage.swapImage("http://" + settings.zmIP + "/zm/index.php?view=image&fid=" + _frameNo + "&eid=" +eventList.get(currentEvent).Id + "&show=capture");
+                frameImage.swapImage("http://" + settings.zmIP + "/zm/index.php?view=image&fid=" + _frameNo + "&eid=" +eventList.get(currentEvent).Id + "&show=capture&token=" + playerSources.zmToken);
             }
         }
         else if (event.key === Qt.Key_Right)
@@ -100,7 +100,7 @@ BaseScreen
             if (_frameNo < eventList.get(currentEvent).Frames)
             {
                 _frameNo++;
-                frameImage.swapImage("http://" + settings.zmIP + "/zm/index.php?view=image&fid=" + _frameNo + "&eid=" +eventList.get(currentEvent).Id + "&show=capture");
+                frameImage.swapImage("http://" + settings.zmIP + "/zm/index.php?view=image&fid=" + _frameNo + "&eid=" +eventList.get(currentEvent).Id + "&show=capture&token=" + playerSources.zmToken);
             }
         }
     }
@@ -114,7 +114,7 @@ BaseScreen
             if (_frameNo < eventList.get(currentEvent).Frames)
             {
                 _frameNo++;
-                frameImage.swapImage("http://" + settings.zmIP + "/zm/index.php?view=image&fid=" + _frameNo + "&eid=" +eventList.get(currentEvent).Id + "&show=capture");
+                frameImage.swapImage("http://" + settings.zmIP + "/zm/index.php?view=image&fid=" + _frameNo + "&eid=" +eventList.get(currentEvent).Id + "&show=capture&token=" + playerSources.zmToken);
             }
             else
                 _frameNo = 1;
@@ -174,7 +174,7 @@ BaseScreen
         height: yscale(500)
         doFade: false
         doScale: false
-        source: "http://" + settings.zmIP + "/zm/index.php?view=image&fid=" + _frameNo + "&eid=" +eventList.get(currentEvent).Id + "&show=capture"
+        source: "http://" + settings.zmIP + "/zm/index.php?view=image&fid=" + _frameNo + "&eid=" +eventList.get(currentEvent).Id + "&show=capture&token=" + playerSources.zmToken
     }
 
     Item

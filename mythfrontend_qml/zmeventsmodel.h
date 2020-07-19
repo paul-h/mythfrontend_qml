@@ -15,7 +15,7 @@ public:
     ZMEventsModel(void);
     ~ZMEventsModel(void) {}
 
-    Q_PROPERTY(QString auth READ auth WRITE setAuth NOTIFY authChanged)
+    Q_PROPERTY(QString token READ token WRITE setToken NOTIFY tokenChanged)
     Q_PROPERTY(QString monitorID READ monitorID WRITE setMonitorID NOTIFY monitorIDChanged)
     Q_PROPERTY(QDate date READ date WRITE setDate NOTIFY dateChanged)
     Q_PROPERTY(bool descending READ descending WRITE setDescending NOTIFY descendingChanged)
@@ -24,8 +24,8 @@ public:
     Q_PROPERTY(QVariantList dateList READ getDateList)
     Q_PROPERTY(QList<int> monitorList READ getMonitorList)
 
-    QString auth(void) { return m_auth; }
-    void setAuth(const QString &auth);
+    QString token(void) { return m_token; }
+    void setToken(const QString &token);
 
     QString monitorID(void) { return m_monitorID; }
     void setMonitorID(const QString &monitorID);
@@ -43,7 +43,7 @@ public:
     QList<int> getMonitorList(void) { return m_monitorList; }
 
  signals:
-    void authChanged(void);
+    void tokenChanged(void);
     void monitorIDChanged(void);
     void dateChanged(void);
     void descendingChanged(void);
@@ -54,7 +54,7 @@ public:
     virtual void processDownload(QByteArray buffer);
 
   private:
-    QString m_auth;
+    QString m_token;
     QString m_monitorID;
     QDate   m_date;
     bool    m_descending;

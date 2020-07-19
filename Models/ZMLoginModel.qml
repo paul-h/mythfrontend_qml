@@ -17,6 +17,8 @@ XmlListModel
     XmlRole { name: "append_password"; query: "append_password/string()" }
     XmlRole { name: "version"; query: "version/string()" }
     XmlRole { name: "apiversion"; query: "apiversion/string()" }
+    XmlRole { name: "access_token"; query: "access_token/string()" }
+
     onStatusChanged:
     {
         if (status == XmlListModel.Ready)
@@ -56,7 +58,8 @@ XmlListModel
                 }
                 else
                 {
-                    log.error(Verbose.MODEL, "ZMLoginModel: ERROR: getLogin() got status " + http.status)
+                    log.error(Verbose.MODEL, "ZMLoginModel: ERROR: getLogin() got status " + http.statusText);
+                    log.error(Verbose.MODEL, "ZMLoginModel: ERROR: getLogin() got response '" + http.responseText + "'")
                 }
             }
         }

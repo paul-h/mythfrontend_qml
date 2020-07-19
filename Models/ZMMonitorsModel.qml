@@ -7,11 +7,11 @@ XmlListModel
 {
     id: zmMonitorsModel
 
-    property string auth
+    property string token
 
     signal loaded();
 
-    source: if (auth !== "") "http://" + settings.zmIP + "/zm/api/monitors.xml?" + auth; else ""
+    source: if (token !== "") "http://" + settings.zmIP + "/zm/api/monitors.xml?token=" + token; else ""
 
     query: "/response/monitors"
     XmlRole { name: "id"; query: "Monitor/Id/number()"; isKey: true }

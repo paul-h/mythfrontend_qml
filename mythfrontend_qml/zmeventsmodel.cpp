@@ -51,9 +51,9 @@ ZMEventsModel::ZMEventsModel(void) : MythIncrementalModel()
     startDownload();
 }
 
-void ZMEventsModel::setAuth(const QString &auth)
+void ZMEventsModel::setToken(const QString &token)
 {
-    m_auth = auth;
+    m_token = token;
     reload();
 }
 
@@ -81,7 +81,7 @@ void ZMEventsModel::setSort(const QString &sort)
 // construct the download URL and start the download
 void ZMEventsModel::startDownload(void)
 {
-    if (m_auth.isEmpty() || m_pendingDownloads.isEmpty())
+    if (m_token.isEmpty() || m_pendingDownloads.isEmpty())
         return;
 
     // defaults
@@ -125,7 +125,7 @@ void ZMEventsModel::startDownload(void)
     if (!dateRange.isEmpty())
         sUrl += dateRange;
 
-    sUrl += QString(".json?page=%1&sort=StartTime&direction=%2&limit=%3&%4").arg(page).arg(descending).arg(count).arg(m_auth);
+    sUrl += QString(".json?page=%1&sort=StartTime&direction=%2&limit=%3&token=%4").arg(page).arg(descending).arg(count).arg(m_token);
 
     // start download of json from server
      QUrl url(sUrl);
@@ -162,7 +162,6 @@ void ZMEventsModel::processDownload(QByteArray buffer)
         if (!countNode.isNull())
         {
             int totalAvailable = countNode.toInt();
-            gContext->m_logger->warning(Verbose::MODEL, "ZMEventsModel: processDownload - TotalAvailable  found: " + QString(totalAvailable));
 
             if (totalAvailable == 0)
             {
@@ -174,6 +173,7 @@ void ZMEventsModel::processDownload(QByteArray buffer)
 
             if (m_totalAvailable < totalAvailable)
             {
+                gContext->m_logger->warning(Verbose::MODEL, "ZMEventsModel: processDownload - TotalAvailable  changed: " + QString::number(totalAvailable));
                 beginResetModel();
                 for (int x = 0; x < totalAvailable - m_totalAvailable; x++)
                 {
