@@ -216,7 +216,7 @@ BaseScreen
     {
         var http = new XMLHttpRequest();
         var url = "http://" + settings.zmIP + "/zm/api/states/change/stop.json";
-        var params = playerSources.zmAuth;
+        var params = "token=" + playerSources.zmToken;
 
         http.open("POST", url, true);
         http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -242,7 +242,7 @@ BaseScreen
     {
         var http = new XMLHttpRequest();
         var url = "http://" + settings.zmIP + "/zm/api/states/change/start.json?";
-        var params = playerSources.zmAuth;
+        var params = "token=" + playerSources.zmToken;
 
         http.open("POST", url, true);
         http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -267,8 +267,8 @@ BaseScreen
     function zmRestart()
     {
         var http = new XMLHttpRequest();
-        var url = "http://" + settings.zmIP + "/zm/api/states/change/restart.json?";
-        var params = playerSources.zmAuth;
+        var url = "http://" + settings.zmIP + "/zm/api/states/change/restart.json";
+        var params = "token=" + playerSources.zmToken;
 
         http.open("POST", url, true);
         http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -294,7 +294,7 @@ BaseScreen
     {
         var http = new XMLHttpRequest();
         var url = "http://" + settings.zmIP + "/zm/api/monitors/" + monitorID + ".json";
-        var params =  "Monitor[Function]=" + _function + "&Monitor[Enabled]=" + (enabled ? "1" : "0") + "&" + playerSources.zmAuth;
+        var params =  "Monitor[Function]=" + _function + "&Monitor[Enabled]=" + (enabled ? "1" : "0") + "&token=" + playerSources.zmToken;
 
         http.open("POST", url, true);
         http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

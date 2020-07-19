@@ -27,7 +27,7 @@ Item
     property var webvideoProxyModel: webvideoProxyModel
 
     // zoneminder
-    property alias zmAuth: zmLogin.auth
+    property alias zmToken: zmLogin.token
 
     /* ----------------------------------------------- Shared Sorters  --------------------------------------------------- */
     property list<QtObject> titleSorter:
@@ -197,14 +197,14 @@ Item
     {
         id: zmLogin
 
-        property string auth: ""
-
+        property string token: ""
         Component.onCompleted: getLogin()
 
         onLoaded:
         {
-            auth = get(0).credentials;
-            zmMonitorsModel.auth = auth;
+            token = get(0).access_token;
+            zmMonitorsModel.token = token;
+
         }
     }
 

@@ -12,7 +12,7 @@ XmlListModel
 
     signal loaded();
 
-    source: "http://" + settings.zmIP + "/zm/api/host/getLoad.xml?" + playerSources.zmAuth
+    source: "http://" + settings.zmIP + "/zm/api/host/getLoad.xml?token=" + playerSources.zmToken
     query: "/response"
     XmlRole { name: "load1"; query: "load[1]/string()" }
     XmlRole { name: "load5"; query: "load[2]/string()" }

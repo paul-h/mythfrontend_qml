@@ -10,7 +10,7 @@ XmlListModel
 
     signal loaded();
 
-    source: "http://" + settings.zmIP + "/zm/api/host/daemonCheck.xml?" + playerSources.zmAuth
+    source: "http://" + settings.zmIP + "/zm/api/host/daemonCheck.xml?token=" + playerSources.zmToken
     query: "/response"
     XmlRole { name: "running"; query: "xs:boolean(result)" }
 
