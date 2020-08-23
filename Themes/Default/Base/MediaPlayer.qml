@@ -828,7 +828,11 @@ FocusScope
             qtAVPlayer.visible = false;
 
             var url = feedSource.feedList.get(feedSource.currentFeed).url;
-            var pluginPath = settings.sharePath.replace("file://", "") + "qml/Streamlink/plugins/";
+
+            var pluginPath = settings.sharePath.replace("file://", "") + "qml/Streamlink/plugins/"
+            // also search for plugins in the streamlink directory in the same location as the webcams list file
+            pluginPath += "," + Util.getPath(settings.webcamListFile.replace("file://", "")) + "/streamlink";
+
             var command = "streamlink"
             var parameters = ["--plugin-dirs", pluginPath, "--player-external-http", "--player-external-http-port", streamlinkPort, url, "best"]
 
