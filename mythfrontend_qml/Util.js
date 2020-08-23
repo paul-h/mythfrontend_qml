@@ -269,6 +269,11 @@ function compareVersion(v1, v2)
     return 0;
 }
 
+function getPath(filePath)
+{
+    return filePath.substring(0, filePath.lastIndexOf("/"));
+}
+
 function basename(path)
 {
     return (path.slice(path.lastIndexOf("/")+1))
