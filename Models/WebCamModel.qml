@@ -198,4 +198,9 @@ Item
         var id = webcamList.get(webcamListIndex).id;
         dbUtils.setSetting("WebcamFavorites_" + id, settings.hostName, setting);
     }
+
+    function reload()
+    {
+        webcamModel.reload();
+    }
 }
