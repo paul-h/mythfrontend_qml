@@ -64,6 +64,7 @@ BaseScreen
             popupMenu.clearMenuItems();
 
             popupMenu.addMenuItem("", "Switch WebCam List");
+            popupMenu.addMenuItem("", "Reload");
             for (var x = 0; x < playerSources.webcamList.webcamList.count; x++)
                 popupMenu.addMenuItem("0", playerSources.webcamList.webcamList.get(x).title, x, (playerSources.webcamList.webcamListIndex == x ? true : false));
 
@@ -108,7 +109,7 @@ BaseScreen
         }
         else if (event.key === Qt.Key_F5)
         {
-            playerSources.webcamList.webcamList.reload();
+            playerSources.webcamList.reload();
         }
         else if (event.key === Qt.Key_R)
         {
@@ -305,7 +306,11 @@ BaseScreen
         {
             webcamGrid.focus = true;
 
-            if (itemData !== "")
+            if (itemText == "Reload")
+            {
+                playerSources.webcamList.reload();
+            }
+            else if (itemData !== "")
             {
                 playerSources.webcamList.saveFavorites();
                 playerSources.webcamList.webcamListIndex = itemData;
