@@ -30,9 +30,19 @@ public:
         QProcess::terminate();
     }
 
-    Q_INVOKABLE QByteArray readAll()
+    Q_INVOKABLE QString readAll()
     {
         return QProcess::readAll();
+    }
+
+    Q_INVOKABLE QString readAllStandardError()
+    {
+        return QProcess::readAllStandardError();
+    }
+
+    Q_INVOKABLE QString readAllStandardOutput()
+    {
+        return QProcess::readAllStandardOutput();
     }
 
     Q_INVOKABLE int getState()
