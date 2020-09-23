@@ -67,6 +67,7 @@ XmlListModel
     XmlRole { name: "title"; query: "concat(ChanNum/string(), xs:string(' - '), ChannelName/string())" }
     XmlRole { name: "player"; query: "xs:string('VLC')" }
     XmlRole { name: "url"; query: "concat(xs:string('myth://type=livetv:server=" + _ip + "'), xs:string(':encoder=1:channum='), ChanNum/string(), xs:string(':pin=" + _pin + "'))" }
+    XmlRole { name: "icon"; query: "concat(xs:string('" + settings.masterBackend + "'), xs:string('Guide/GetChannelIcon?ChanId='), ChanId/string())" }
 
     onStatusChanged:
     {
