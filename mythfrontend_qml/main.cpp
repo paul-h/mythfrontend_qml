@@ -29,6 +29,8 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
+    QtWebEngine::initialize();
+
     QCoreApplication::setApplicationName("mythfrontend_qml");
     QCoreApplication::setApplicationVersion(APP_VERSION);
 
