@@ -18,6 +18,7 @@ Item
 
     // webcam
     property string webcamFilterCategory
+    property string webcamFilterFavorite: "Any"
     property bool webcamTitleSorterActive: true
     property var webcamProxyModel: webcamProxyModel
 
@@ -116,6 +117,13 @@ Item
                     roleName: "categories"
                     pattern: webcamFilterCategory
                     caseSensitivity: Qt.CaseInsensitive
+                }
+
+                ValueFilter
+                {
+                    enabled: (webcamFilterFavorite !== "Any")
+                    roleName: "favorite"
+                    value: (webcamFilterFavorite === "Yes")
                 }
 
                 AnyOf
