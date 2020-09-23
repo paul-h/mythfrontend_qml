@@ -743,6 +743,7 @@ FocusScope
             id: messageText
             anchors.fill: parent
             horizontalAlignment: Text.AlignHCenter
+            fontPixelSize: (_xscale(20) + _yscale(20)) / 2
         }
     }
 
