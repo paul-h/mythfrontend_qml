@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtGraphicalEffects 1.0
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
@@ -475,6 +476,39 @@ BaseScreen
 
         onItemClicked: log.debug(Verbose.GENERAL, "TestPage1: selector item clicked: " + index + " (" + model.get(index).itemText + ")");
         onItemSelected: log.debug(Verbose.GENERAL, "TestPage1:selector item selected: " + index + " (" + model.get(index).itemText + ")");
+    }
+
+    LabelText
+    {
+        id: text
+        //font.pointSize: 16
+        x: 500
+        y:300
+        width: 300
+        height: 100
+        text: "Very .... Very ..... Very ..... Long Hello World!"
+        visible: false
+    }
+    Rectangle
+    {
+        anchors.fill: text
+        color: "transparent"
+        border.color: "red"
+    }
+
+    LinearGradient
+    {
+        anchors.fill: text
+        source: text
+        start: Qt.point(0, 50)
+        end: Qt.point(text.width, 50)
+        gradient: Gradient
+        {
+
+            GradientStop { position: 0; color: "red" }
+            GradientStop { position: 0.7; color: "red" }
+            GradientStop { position: 1; color: "#00ff0000" }
+        }
     }
 
     OkCancelDialog
