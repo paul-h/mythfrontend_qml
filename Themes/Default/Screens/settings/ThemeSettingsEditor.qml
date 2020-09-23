@@ -93,6 +93,21 @@ BaseScreen
         x: xscale(400); y: yscale(150)
         checked: settings.startFullscreen
         KeyNavigation.up: themeSelector
+        KeyNavigation.down: skyQLayoutCheck
+    }
+
+    LabelText
+    {
+        x: xscale(50); y: yscale(200)
+        text: "Use SkyQ Menu Layout:"
+    }
+
+    BaseCheckBox
+    {
+        id: skyQLayoutCheck
+        x: xscale(400); y: yscale(200)
+        checked: settings.skyQLayout
+        KeyNavigation.up: startFullscreenCheck
         KeyNavigation.down: saveButton
     }
 
@@ -107,9 +122,11 @@ BaseScreen
         {
             dbUtils.setSetting("Theme",           settings.hostName, themeModel.get(themeSelector.currentIndex).itemText);
             dbUtils.setSetting("StartFullScreen", settings.hostName, startFullscreenCheck.checked);
+            dbUtils.setSetting("SkyQLayout",      settings.hostName, skyQLayoutCheck.checked);
 
             settings.themeName       = themeModel.get(themeSelector.currentIndex).itemText;
             settings.startFullscreen = startFullscreenCheck.checked;
+            settings.skyQLayout = skyQLayoutCheck.checked;
 
             // update the theme path and reload the theme
             settings.qmlPath = settings.sharePath + "qml/Themes/" + settings.themeName + "/";

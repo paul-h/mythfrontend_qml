@@ -31,6 +31,7 @@ class Settings : public QObject
     Q_PROPERTY(QString picturePath READ picturePath WRITE setPicturePath NOTIFY picturePathChanged)
     Q_PROPERTY(QString sdChannels READ sdChannels WRITE setSdChannels NOTIFY sdChannelsChanged)
     Q_PROPERTY(bool    startFullscreen READ startFullscreen WRITE setStartFullscreen NOTIFY startFullscreenChanged)
+    Q_PROPERTY(bool    skyQLayout READ skyQLayout WRITE setSkyQLayout NOTIFY skyQLayoutChanged)
     Q_PROPERTY(QString webcamListFile READ webcamListFile WRITE setWebcamListFile NOTIFY webcamListFileChanged)
     Q_PROPERTY(QString webvideoListFile READ webvideoListFile WRITE setWebvideoListFile NOTIFY webvideoListFileChanged)
 
@@ -88,6 +89,7 @@ class Settings : public QObject
      void hdmiEncoderChanged(void);
      void showTextBorderChanged(void);
      void startFullscreenChanged(void);
+     void skyQLayoutChanged(void);
      void webcamListFileChanged(void);
      void webvideoListFileChanged(void);
      void osdTimeoutShortChanged(void);
@@ -180,6 +182,9 @@ class Settings : public QObject
     bool    startFullscreen(void);
     void    setStartFullscreen(const bool startFullscreen);
 
+    bool    skyQLayout(void);
+    void    setSkyQLayout(const bool skyQLayout);
+
     QString webcamListFile(void);
     void    setWebcamListFile(const QString &webcamListFile);
 
@@ -252,6 +257,7 @@ class Settings : public QObject
 
     bool    m_showTextBorder;
     bool    m_startFullscreen;
+    bool    m_skyQLayout;
 
     int     m_osdTimeoutShort;
     int     m_osdTimeoutMedium;
