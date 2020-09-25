@@ -226,7 +226,17 @@ BaseScreen
 
     Action
     {
-        shortcut: "F6" // toggle show screen header
+        shortcut: "F6" // toggle online
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            getActivePlayer().toggleOnline();
+        }
+    }
+
+    Action
+    {
+        shortcut: "F7" // toggle show screen header
         enabled: _actionsEnabled
         onTriggered:
         {

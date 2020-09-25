@@ -1011,6 +1011,18 @@ FocusScope
             youtubePlayer.togglePaused();
     }
 
+    function toggleOnline()
+    {
+        if (feedSource.feedName === "Webcams")
+        {
+            var id = feedSource.feedList.get(feedSource.currentFeed).id;
+            var index = playerSources.webcamList.findById(id);
+
+            if (index != -1)
+                playerSources.webcamList.model.get(index).offline = !playerSources.webcamList.model.get(index).offline;
+        }
+    }
+
     function toggleMute()
     {
         root.muteAudio = !root.muteAudio;

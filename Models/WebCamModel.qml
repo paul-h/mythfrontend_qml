@@ -122,7 +122,7 @@ Item
                 listModel.append({"id": get(x).id, "title": get(x).title, "description": get(x).description, "icon": get(x).icon,
                                   "website": get(x).website, "zoom": get(x).zoom, "dateadded": get(x).dateadded, "datemodified": get(x).datemodified,
                                   "status": get(x).status, "categories": get(x).categories, "links": get(x).links, "player": get(x).player,
-                                  "url": get(x).url, "favorite": false});
+                                  "url": get(x).url, "favorite": false, "offline": false});
 
                 category = get(x).categories;
 
