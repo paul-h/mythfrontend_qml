@@ -93,7 +93,7 @@ BaseScreen
 
             if (index != -1)
                 playerSources.webcamList.model.get(index).favorite = !playerSources.webcamList.model.get(index).favorite;
-         }
+        }
         else if (event.key === Qt.Key_F4)
         {
             //BLUE
@@ -110,6 +110,14 @@ BaseScreen
         else if (event.key === Qt.Key_F5)
         {
             playerSources.webcamList.reload();
+        }
+        else if (event.key === Qt.Key_F6)
+        {
+            var id = webcamGrid.model.get(webcamGrid.currentIndex).id;
+            var index = playerSources.webcamList.findById(id);
+
+            if (index != -1)
+                playerSources.webcamList.model.get(index).offline = !playerSources.webcamList.model.get(index).offline;
         }
         else if (event.key === Qt.Key_R)
         {
@@ -166,8 +174,8 @@ BaseScreen
                     x: 5;
                     y: webcamGrid.cellHeight - yscale(40)
                     width: webcamGrid.cellWidth - xscale(10)
-                    visible: (status === "Temporarily Offline" || status === "Not Working")
-                    text: status
+                    visible: (offline || status === "Temporarily Offline" || status === "Not Working")
+                    text: offline ? "OFFLINE" : status
                     horizontalAlignment: Text.AlignHCenter;
                     fontPixelSize: xscale(14)
                 }
