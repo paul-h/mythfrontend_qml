@@ -14,6 +14,8 @@ Item
     property alias showBusyIndicator: busyIndicator.running
     property bool  muteAudio: videoPlayer.muteAudio
 
+    property bool  screenSaverMode: false
+
     onMuteAudioChanged: videoPlayer.setMute(muteAudio);
 
     function setTitle (show, newTitle)
@@ -108,6 +110,7 @@ Item
         text: title
         width: xscale(900)
         visible : true
+        opacity: screenSaverMode ? 0 : 1
     }
 
     // time/date text
@@ -117,6 +120,7 @@ Item
         x: xscale(750); y: yscale(0); width: xscale(500); height: yscale(50)
         format: "ddd MMM dd, HH:mm:ss"
         visible: true
+        opacity: screenSaverMode ? 0 : 1
     }
 
     Scroller
@@ -124,6 +128,7 @@ Item
         id: ticker
         x: xscale(0); y: window.height - yscale(40); width: window.width; height: yscale(40)
         visible: false
+        opacity: screenSaverMode ? 0 : 1
     }
 
     BusyIndicator
@@ -131,11 +136,12 @@ Item
         id: busyIndicator
         x: xscale(500); y: yscale(5); z:99
         running: false
+        opacity: screenSaverMode ? 0 : 1
     }
 
     Component.onCompleted:
     {
-        if (showVideo)
+        if (showVideo && theme.backgroundVideo != undefined && theme.backgroundVideo != "")
             videoPlayer.source = "file://" + settings.configPath + "Themes/Videos/" + theme.backgroundVideo;
     }
 }
