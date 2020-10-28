@@ -305,6 +305,8 @@ Window
             initialItem: ThemedMenu {model: mainMenuLoader.item}
             focus: true
 
+            opacity: screenBackground.screenSaverMode ? 0 : 1
+
             onCurrentItemChanged:
             {
                 if (currentItem)
@@ -315,7 +317,11 @@ Window
 
             Keys.onPressed:
             {
-                if (event.key === Qt.Key_F)
+                if (event.key === Qt.Key_F1)
+                {
+                    screenBackground.screenSaverMode = !screenBackground.screenSaverMode;
+                }
+                else if (event.key === Qt.Key_F)
                 {
                     if (visibility == 5)
                         visibility = 2
