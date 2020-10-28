@@ -321,6 +321,10 @@ Window
                 {
                     screenBackground.screenSaverMode = !screenBackground.screenSaverMode;
                 }
+                else if (event.key === Qt.Key_F2)
+                {
+                    screenBackground.muteAudio = !screenBackground.muteAudio;
+                }
                 else if (event.key === Qt.Key_F)
                 {
                     if (visibility == 5)
