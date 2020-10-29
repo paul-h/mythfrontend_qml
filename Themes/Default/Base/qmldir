@@ -30,6 +30,7 @@ ListText 1.0 ListText.qml
 MainWindow 1.0 MainWindow.qml
 MediaPlayer 1.0 MediaPlayer.qml
 MenuButton 1.0 MenuButton.qml
+MultiHorizButtonList 1.0 MultiHorizButtonList.qml
 OkCancelDialog 1.0 OkCancelDialog.qml
 PlayerLayout 1.0 PlayerLayout.qml
 PopupMenu 1.0 PopupMenu.qml
