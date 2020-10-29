@@ -86,7 +86,7 @@ QtObject
     property color lvRowTextFocusedSelected: "#ff00aa00"; // selected and focused
 
     property real  lvBackgroundOpacity:      1.0;
-    property color lvBackgroundBorderColor:  "red";
+    property color lvBackgroundBorderColor:  "yellow";
     property int   lvBackgroundBorderWidth:  2;
     property int   lvBackgroundBorderRadius: 10;
 
