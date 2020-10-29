@@ -274,6 +274,7 @@ BaseScreen
     Footer
     {
         id: footer
+        width: parent.width
         redText: "Delete Event"
         greenText: "Sort (Oldest First)"
         yellowText: "Play Event"

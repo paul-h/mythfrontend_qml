@@ -25,7 +25,7 @@ BaseScreen
     {
         id: ipEdit
         x: xscale(400); y: yscale(100)
-        width: xscale(700)
+        width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.masterIP
         KeyNavigation.up: saveButton
@@ -42,7 +42,7 @@ BaseScreen
     {
         id: portEdit
         x: xscale(400); y: yscale(150)
-        width: xscale(700)
+        width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.masterPort
         KeyNavigation.up: ipEdit
@@ -60,7 +60,7 @@ BaseScreen
     {
         id: pinEdit
         x: xscale(400); y: yscale(200)
-        width: xscale(700)
+        width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.securityPin
         KeyNavigation.up: portEdit
@@ -78,7 +78,7 @@ BaseScreen
     {
         id: mysqlIPEdit
         x: xscale(400); y: yscale(270)
-        width: xscale(700)
+        width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.mysqlIP
         KeyNavigation.up: pinEdit
@@ -95,7 +95,7 @@ BaseScreen
     {
         id: mysqlPortEdit
         x: xscale(400); y: yscale(320)
-        width: xscale(700)
+        width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.mysqlPort
         KeyNavigation.up: mysqlIPEdit
@@ -112,7 +112,7 @@ BaseScreen
     {
         id: mysqlUserEdit
         x: xscale(400); y: yscale(370)
-        width: xscale(700)
+        width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.mysqlUser
         KeyNavigation.up: mysqlPortEdit
@@ -129,7 +129,7 @@ BaseScreen
     {
         id: mysqlPasswordEdit
         x: xscale(400); y: yscale(420)
-        width: xscale(700)
+        width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.mysqlPassword
         KeyNavigation.up: mysqlUserEdit
@@ -146,7 +146,7 @@ BaseScreen
     {
         id: mysqlDBNameEdit
         x: xscale(400); y: yscale(470)
-        width: xscale(700)
+        width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.mysqlDBName
         KeyNavigation.up: mysqlPasswordEdit
@@ -156,7 +156,7 @@ BaseScreen
     BaseButton
     {
         id: saveButton;
-        x: xscale(900); y: yscale(630);
+        x: parent.width - xscale(380); y: yscale(630);
         text: "Save";
         KeyNavigation.up: mysqlDBNameEdit
         KeyNavigation.down: ipEdit

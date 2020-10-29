@@ -2,7 +2,7 @@ import QtQuick 2.0
 
 Item
 {
-    x: xscale(30); y: yscale(682); width: xscale(1280 - 60); height: yscale(32)
+    x: xscale(30); y: yscale(682); width: parent.width - xscale(60); height: yscale(32)
     implicitWidth: 1280 - 60; implicitHeight: 32
 
     property alias redText: red.text

@@ -10,6 +10,8 @@ import mythqml.net 1.0
 
 BaseScreen
 {
+    id: root
+
     defaultFocusItem: channelGrid
 
     property int filterSourceID: -1
@@ -172,7 +174,7 @@ BaseScreen
 
     InfoText
     {
-        x: xscale(900); y: yscale(0); width: xscale(120);
+        x: _xscale(900); y: yscale(0); width: _xscale(120);
         text: (channelGrid.currentIndex + 1) + " of " + channelGrid.model.count;
     }
 
@@ -181,9 +183,9 @@ BaseScreen
         id: channelGrid
         x: xscale(22)
         y: yscale(55)
-        width: xscale(1280) - xscale(44)
+        width: parent.width - xscale(44)
         height: yscale(390)
-        cellWidth: xscale(206)
+        cellWidth: width / (root.isPanel ? 4 : 5);
         cellHeight: yscale(130)
 
         Component
@@ -235,7 +237,7 @@ BaseScreen
     {
         id: title
         x: xscale(30); y: yscale(470)
-        width: xscale(900); height: yscale(35)
+        width: parent.width - _xscale(1280 - 900); height: yscale(35)
         verticalAlignment: Text.AlignTop
         multiline: true
     }
@@ -243,7 +245,7 @@ BaseScreen
     Image
     {
         id: channelIcon
-        x: xscale(970); y: yscale(480); width: xscale(266); height: yscale(150)
+        x: parent.width - _xscale(1280 - 950); y: yscale(480); width: _xscale(266); height: _yscale(150)
         asynchronous: true
         visible: !videoPlayer.visible
         onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/grid_noimage.png")
@@ -252,7 +254,7 @@ BaseScreen
     VideoPlayerQmlVLC
     {
         id: videoPlayer
-        x: xscale(970); y: yscale(480); width: xscale(266); height: yscale(150)
+        x: _xscale(970); y: _yscale(480); width: _xscale(266); height: _yscale(150)
         visible: false
     }
 
@@ -261,7 +263,7 @@ BaseScreen
         id: programTitle
         x: xscale(30)
         y: yscale(500)
-        width: xscale(700)
+        width: _xscale(700)
         label: "Now: "
     }
 
@@ -269,7 +271,7 @@ BaseScreen
     {
         id: programDesc
         x: xscale(30); y: yscale(545)
-        width: xscale(910); height: yscale(75)
+        width: _xscale(910); height: yscale(75)
         verticalAlignment: Text.AlignTop
         multiline: true
     }
@@ -277,7 +279,7 @@ BaseScreen
     InfoText
     {
         id: programStatus
-        x: xscale(970); y: yscale(630); width: xscale(266)
+        x: _xscale(970); y: yscale(630); width: _xscale(266)
         horizontalAlignment: Text.AlignHCenter
         fontColor: if (text === "Recording") "red"; else theme.infoFontColor;
     }
@@ -285,14 +287,14 @@ BaseScreen
     InfoText
     {
         id: programCategory
-        x: xscale(20); y: yscale(630); width: xscale(220)
+        x: xscale(20); y: yscale(630); width: _xscale(220)
         fontColor: "grey"
     }
 
     InfoText
     {
         id: programEpisode
-        x: xscale(315); y: yscale(630); width: xscale(320)
+        x: _xscale(315); y: yscale(630); width: _xscale(320)
         horizontalAlignment: Text.AlignHCenter
         fontColor: "grey"
     }
@@ -300,7 +302,7 @@ BaseScreen
     InfoText
     {
         id: programFirstAired
-        x: xscale(720); y: yscale(630); width: xscale(220)
+        x: _xscale(720); y: yscale(630); width: _xscale(220)
         fontColor: "grey"
         horizontalAlignment: Text.AlignRight
     }
@@ -308,7 +310,7 @@ BaseScreen
     InfoText
     {
         id: programLength
-        x: xscale(850); y: yscale(500); width: xscale(90)
+        x: _xscale(850); y: yscale(500); width: _xscale(90)
         fontColor: "grey"
         horizontalAlignment: Text.AlignRight
     }
@@ -318,7 +320,7 @@ BaseScreen
         id: programNext
         x: xscale(30)
         y: yscale(606)
-        width: xscale(910)
+        width: _xscale(910)
         label: "Next: "
     }
 
@@ -329,9 +331,9 @@ BaseScreen
         property int position: 0
         property int length: 100
 
-        x: xscale(740)
+        x: _xscale(740)
         y: yscale(522)
-        width: xscale(100)
+        width: _xscale(100)
         height: yscale(8)
 
         Rectangle
@@ -351,7 +353,7 @@ BaseScreen
     Image
     {
         id: recordingIcon
-        x: xscale(900); y: yscale(630); width: xscale(32); height: yscale(32)
+        x: _xscale(900); y: yscale(630); width: xscale(32); height: yscale(32)
         source: mythUtils.findThemeFile("images/recording.png")
         visible: guideModel.get(0).RecordingStatus === "Recording"
     }

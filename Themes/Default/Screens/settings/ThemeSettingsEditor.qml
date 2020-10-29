@@ -73,7 +73,7 @@ BaseScreen
     {
         id: themeSelector
         x: xscale(400); y: yscale(100)
-        width: xscale(700)
+        width: parent.width - x - xscale(20)
         height: yscale(50)
         showBackground: true
         pageCount: 5
@@ -118,7 +118,7 @@ BaseScreen
     BaseButton
     {
         id: saveButton;
-        x: xscale(900); y: yscale(630);
+        x: parent.width - xscale(380); y: yscale(630);
         text: "Save";
         KeyNavigation.up: startFullscreenCheck
         KeyNavigation.down: themeSelector

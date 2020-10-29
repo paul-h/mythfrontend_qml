@@ -23,7 +23,7 @@ BaseScreen
     {
         id: videoPathEdit
         x: xscale(400); y: yscale(100)
-        width: xscale(700)
+        width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.videoPath
         KeyNavigation.up: saveButton
@@ -35,7 +35,7 @@ BaseScreen
     {
         id: videoPathButton;
         x: xscale(1120); y: yscale(100);
-        width: xscale(50); height: yscale(50)
+        width: parent.width - x - xscale(20)
         text: "X";
         KeyNavigation.up: saveButton
         KeyNavigation.left: videoPathEdit
@@ -57,7 +57,7 @@ BaseScreen
     {
         id: picturePathEdit
         x: xscale(400); y: yscale(150)
-        width: xscale(700)
+        width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.picturePath
         KeyNavigation.up: videoPathEdit
@@ -90,7 +90,7 @@ BaseScreen
     {
         id: sdChannelsEdit
         x: xscale(400); y: yscale(200)
-        width: xscale(700)
+        width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.sdChannels
         KeyNavigation.up: picturePathEdit
@@ -101,7 +101,7 @@ BaseScreen
     BaseButton
     {
         id: sdChannelsButton;
-        x: xscale(1120); y: yscale(200);
+        x: parent.width - xscale(380); y: yscale(200);
         width: xscale(50); height: yscale(50)
         text: "X";
         KeyNavigation.up: picturePathEdit
