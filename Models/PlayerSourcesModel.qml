@@ -30,6 +30,12 @@ Item
     // zoneminder
     property alias zmToken: zmLogin.token
 
+    Component.onCompleted:
+    {
+        webcamFilterCategory = dbUtils.getSetting("LastWebcamCategory", settings.hostName);
+        playerSources.webcamList.webcamListIndex = dbUtils.getSetting("WebcamListIndex", settings.hostName, "0");
+    }
+
     /* ----------------------------------------------- Shared Sorters  --------------------------------------------------- */
     property list<QtObject> titleSorter:
     [
