@@ -99,7 +99,8 @@ Item
         if (isPanel)
         {
             screenTitle.visible = show
-            screenTitle.text = newTitle;
+            if (newTitle)
+                screenTitle.text = newTitle;
         }
         else
             screenBackground.setTitle(show, newTitle);
