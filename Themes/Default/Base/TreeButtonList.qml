@@ -74,16 +74,32 @@ FocusScope
         id: listItem
         ListItem
         {
+            Image
+            {
+                id: iconImage
+                x: xscale(5)
+                y: yscale(4)
+                width: (source == "") ? 0 : parent.height - yscale(8)
+                height: width
+                source:
+                {
+                    if (model.icon)
+                        mythUtils.findThemeFile("images/no_image.png")
+                    else
+                        ""
+                }
+            }
+
             ListText
             {
-                x: xscale(20); y: 0
-                width: parent.width - xscale(60)
+                x: iconImage.width + xscale(10); y: 0
+                width: parent.width - iconImage.width - xscale(60)
                 text: model.itemTitle
             }
 
             Image
             {
-                id: channelImage
+                id: arrowImage
                 x: parent.width - xscale(30)
                 y: (parent.height - yscale(20)) / 2
                 width: xscale(20); height: yscale(20)
@@ -178,11 +194,11 @@ FocusScope
         return list;
     }
 
-    function addNode(path, title, data, checked)
+    function addNode(path, title, data, checked, icon)
     {
         if (path === "")
         {
-            objRoot.model.append({"itemTitle": title, "itemData": data, "checked": checked, "subNodes": []})
+            objRoot.model.append({"itemTitle": title, "itemData": data, "checked": checked, "icon": icon, "subNodes": []})
         }
         else
         {
@@ -209,7 +225,7 @@ FocusScope
             if (node.subNodes === undefined)
                 node.subNodes = [];
 
-            node.subNodes.append({"itemTitle": title, "itemData": data, "checked": checked,  "subNodes": []})
+            node.subNodes.append({"itemTitle": title, "itemData": data, "checked": checked, "icon": icon, "subNodes": []})
         }
     }
 

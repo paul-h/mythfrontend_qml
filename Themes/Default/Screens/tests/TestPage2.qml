@@ -15,12 +15,14 @@ BaseScreen
         showTicker(false);
         muteAudio(true);
 
-        treeView.addNode("", "All");
-        treeView.addNode("", "Title");
-        treeView.addNode("", "Type");
-        treeView.addNode("", "Category");
-        treeView.addNode("", "Year");
-        treeView.addNode("", "Rating");
+        var icon = mythUtils.findThemeFile("images/no_image.png");
+
+        treeView.addNode("", "All", undefined, false, icon);
+        treeView.addNode("", "Title", undefined, false,icon);
+        treeView.addNode("", "Type", undefined, false, icon);
+        treeView.addNode("", "Category", undefined, false, icon);
+        treeView.addNode("", "Year", undefined, false, icon);
+        treeView.addNode("", "Rating", undefined, false, icon);
 
         // All
         treeView.addNode("0", "Title 1");
@@ -234,26 +236,26 @@ BaseScreen
 
     BaseBackground
     {
-        x: xscale(50)
+        x: xscale(20)
         y: yscale(100)
-        width: xscale(1180)
+        width: parent.width - xscale(40)
         height: yscale(600)
     }
 
     InfoText
     {
         id: breadCrumb
-        x: xscale(70)
+        x: xscale(30)
         y: yscale(60)
-        width: xscale(1140)
+        width: parent.width - xscale(60)
     }
 
     TreeButtonList
     {
         id: treeView
-        x: xscale(70)
+        x: xscale(30)
         y: xscale(120)
-        width: xscale(1140)
+        width: parent.width - xscale(60)
         height: yscale(560)
         columns: 4
         spacing: xscale(10)
