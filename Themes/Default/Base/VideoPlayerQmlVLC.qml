@@ -10,6 +10,7 @@ FocusScope
     property bool playbackStarted: false
     property bool muteAudio: false
 
+    signal stateChanged(int state)
     signal playbackEnded()
     signal showMessage(string message, int timeOut)
 
@@ -40,6 +41,8 @@ FocusScope
                 {
                     playbackStarted = true;
                 }
+
+                root.stateChanged(state);
             }
 
             onMediaPlayerSeekableChanged: mediaplayer.seekable = seekable
