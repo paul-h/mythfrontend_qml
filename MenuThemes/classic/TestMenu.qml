@@ -32,6 +32,12 @@ ListModel
     }
     ListElement
     {
+        menutext: "Nested Lists Test"
+        loaderSource: "tests/TestPage5.qml"
+        waterMark: "watermark/setup.png"
+    }
+    ListElement
+    {
         menutext:"QtAV Player Test"
         loaderSource: "tests/TestQtAv.qml"
         waterMark: "watermark/setup.png"
