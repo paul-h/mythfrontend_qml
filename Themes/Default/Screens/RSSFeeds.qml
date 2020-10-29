@@ -96,7 +96,7 @@ BaseScreen
             feedModel.reload()
         }
 
-        KeyNavigation.left: articleList;
+        KeyNavigation.left: previousFocusItem ? previousFocusItem : articleList;
         KeyNavigation.right: articleList;
     }
 
@@ -165,7 +165,11 @@ BaseScreen
         Keys.onReturnPressed:
         {
             returnSound.play();
-            stack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: feedModel.get(articleList.currentIndex).link, zoomFactor: xscale(1.0)}});
+            defaultFocusItem = articleList;
+            if (isPanel)
+                panelStack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: feedModel.get(articleList.currentIndex).link, zoomFactor: xscale(1.0)}});
+            else
+                stack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: feedModel.get(articleList.currentIndex).link, zoomFactor: xscale(1.0)}});
         }
 
         onCurrentIndexChanged:

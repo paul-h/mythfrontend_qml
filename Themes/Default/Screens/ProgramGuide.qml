@@ -263,7 +263,7 @@ BaseScreen
             }
         }
 
-        KeyNavigation.left: programList;
+        KeyNavigation.left: if (isPanel)  previousFocusItem; else programList;
         KeyNavigation.right: programList;
 
         onItemSelected:

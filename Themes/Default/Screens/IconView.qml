@@ -79,10 +79,20 @@ BaseScreen
 
         Keys.onReturnPressed:
         {
-            if (model.get(currentIndex, "fileIsDir"))
-                stack.push({item: Qt.resolvedUrl("IconView.qml"), properties:{folder: model.get(currentIndex, "filePath")}});
+            if (isPanel)
+            {
+                if (model.get(currentIndex, "fileIsDir"))
+                    panelStack.push({item: Qt.resolvedUrl("IconView.qml"), properties:{folder: model.get(currentIndex, "filePath")}});
+                else
+                    panelStack.push({item: Qt.resolvedUrl("ImageView.qml"), properties:{folder: model.get(currentIndex, "filePath"), currentIndex: currentIndex, folderModel: model}});
+            }
             else
-                stack.push({item: Qt.resolvedUrl("ImageView.qml"), properties:{folder: model.get(currentIndex, "filePath"), currentIndex: currentIndex, folderModel: model}});
+            {
+                if (model.get(currentIndex, "fileIsDir"))
+                    stack.push({item: Qt.resolvedUrl("IconView.qml"), properties:{folder: model.get(currentIndex, "filePath")}});
+                else
+                    stack.push({item: Qt.resolvedUrl("ImageView.qml"), properties:{folder: model.get(currentIndex, "filePath"), currentIndex: currentIndex, folderModel: model}});
+            }
 
             event.accepted = true;
             returnSound.play();

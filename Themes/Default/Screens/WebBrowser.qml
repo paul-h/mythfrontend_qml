@@ -40,7 +40,20 @@ BaseScreen
             if (browser.canGoBack)
                 browser.goBack();
             else
-                if (stack.depth > 1) {stack.pop(); escapeSound.play();}
+            {
+                if (!isPanel)
+                {
+                    if (stack.depth > 1)
+                    {
+                        stack.pop();
+                        escapeSound.play();
+                    }
+                }
+                else
+                {
+                    handleEscape();
+                }
+            }
         }
     }
 
@@ -79,6 +92,15 @@ BaseScreen
         enabled: browser.focus
     }
 
+    Rectangle
+    {
+        x: root.fullscreen ? 0 : xscale(10);
+        y: root.fullscreen ? 0 : yscale(50);
+        width: root.fullscreen ? parent.width : parent.width - xscale(20);
+        height: root.fullscreen ? parent.height : parent.height - yscale(60)
+        color: "white"
+    }
+
     WebEngineView
     {
         id: browser
@@ -98,7 +120,10 @@ BaseScreen
         {
             var website = request.requestedUrl.toString();
             var zoom = zoomFactor;
-            stack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: website, zoomFactor: zoom}});
+            if (isPanel)
+                panelStack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: website, zoomFactor: zoom}});
+            else
+                stack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: website, zoomFactor: zoom}});
         }
         onFullScreenRequested: request.accept();
         onNavigationRequested: request.action = WebEngineNavigationRequest.AcceptRequest;

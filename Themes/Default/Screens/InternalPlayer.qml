@@ -16,12 +16,15 @@ BaseScreen
     defaultFocusItem: playerLayout.mediaPlayer1
 
     property alias layout: playerLayout.playerLayout
+    property alias mediaPlayer1: playerLayout.mediaPlayer1
 
     property string defaultFeedSource: ""
     property string defaultFilter: "-1"
     property int    defaultCurrentFeed: -1
 
-    property bool _actionsEnabled: true
+    property bool isFullScreen: width === window.width
+
+    property bool _actionsEnabled: playerLayout.browser.focus || playerLayout.mediaPlayer1.focus || playerLayout.mediaPlayer2.focus || playerLayout.mediaPlayer3.focus || playerLayout.mediaPlayer4.focus;
 
     signal feedChanged(string feedSource, string filter, int index)
 
@@ -34,32 +37,10 @@ BaseScreen
 
         playerLayout.mediaPlayer1.feed.switchToFeed(defaultFeedSource === "" ? "Live TV" : defaultFeedSource, defaultFilter, defaultCurrentFeed === -1 ? 0 : defaultCurrentFeed);
 
-        if (defaultFeedSource === "" || defaultFeedSource === "Adhoc")
-        {
-            playerLayout.mediaPlayer2.feed.switchToFeed("Live TV" , -1, 1);
-            playerLayout.mediaPlayer3.feed.switchToFeed("Live TV" , -1, 2);
-            playerLayout.mediaPlayer4.feed.switchToFeed("Live TV" , -1, 3);
-        }
-        else
-        {
-            playerLayout.mediaPlayer2.feed.switchToFeed(defaultFeedSource, defaultFilter, defaultCurrentFeed === -1 ? 1 : defaultCurrentFeed + 1);
-            playerLayout.mediaPlayer3.feed.switchToFeed(defaultFeedSource, defaultFilter, defaultCurrentFeed === -1 ? 2 : defaultCurrentFeed + 2);
-            playerLayout.mediaPlayer4.feed.switchToFeed(defaultFeedSource, defaultFilter, defaultCurrentFeed === -1 ? 3 : defaultCurrentFeed + 3);
-        }
-
         setLayout(layout);
 
         // FIXME why aren't the players starting on layout changes at first show?
         playerLayout.mediaPlayer1.startPlayback();
-
-        if (layout >= 2)
-            playerLayout.mediaPlayer2.startPlayback();
-
-        if (layout >= 5)
-            playerLayout.mediaPlayer3.startPlayback();
-
-        if (layout === 6)
-            playerLayout.mediaPlayer4.startPlayback();
 
         // set the default volume
         var volume = dbUtils.getSetting("VideoPlayerVolume", settings.hostName, "100");
@@ -85,7 +66,11 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            if (stack.depth > 1)
+            if (isPanel)
+            {
+                root.handleEscape();
+            }
+            else if (stack.depth > 1)
             {
                 playerLayout.mediaPlayer1.stop();
                 playerLayout.mediaPlayer2.stop();
@@ -122,7 +107,27 @@ BaseScreen
     {
         shortcut: "Right"
         enabled: _actionsEnabled
-        onTriggered: changeFocus("right");
+        onTriggered:
+        {
+            if (layout === 1)
+            {
+                if (isPanel)
+                {
+                    playerLayout.mediaPlayer1.focus = false;
+                    playerLayout.mediaPlayer2.focus = false;
+                    playerLayout.mediaPlayer3.focus = false;
+                    playerLayout.mediaPlayer4.focus = false;
+                    playerLayout.browser.focus = false;
+                    root.previousFocusItem.focus = true;
+                }
+                else
+                {
+                    changeFocus("right");
+                }
+            }
+            else
+                changeFocus("right");
+        }
     }
 
     Action
@@ -185,7 +190,11 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            if (getActivePlayer().showRailcamApproach && getActivePlayer().showRailcamDiagram)
+            if (playerLayout.activeItem.objectName === "Browser")
+            {
+                mythUtils.sendKeyEvent(window, Qt.Key_Tab);
+            }
+            else if (getActivePlayer().showRailcamApproach && getActivePlayer().showRailcamDiagram)
             {
                 getActivePlayer().showRailcamApproach = false;
                 getActivePlayer().showRailcamDiagram = false;
@@ -260,7 +269,7 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            getActivePlayer().showInfo(false);
+            getActivePlayer().toggleInfo();
         }
     }
 
@@ -485,7 +494,7 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            if (playerLayout.showChat);
+            if (playerLayout.showChat)
             {
                 updateBrowser();
             }
@@ -658,6 +667,9 @@ BaseScreen
 
         if (getActivePlayer().getBrowserURL(o))
         {
+            if (playerLayout.browser.url == o.url)
+                return;
+
             playerLayout.browserTitle.text = o.title;
             playerLayout.browser.url = o.url;
             playerLayout.browserWidth = xscale(o.width);
@@ -674,6 +686,52 @@ BaseScreen
 
     function setLayout(newLayout)
     {
+        if (newLayout == 2 || newLayout == 3 || newLayout == 4)
+        {
+            // we need 2 players for these layouts
+            if (playerLayout.mediaPlayer2.feed.feedName === "" || playerLayout.mediaPlayer2.feed.currentFeed == -1)
+            {
+                playerLayout.mediaPlayer2.feed.switchToFeed(playerLayout.mediaPlayer1.feed.feedName, playerLayout.mediaPlayer1.feed.currentFilter, playerLayout.mediaPlayer1.feed.currentFeed + 1);
+                playerLayout.mediaPlayer2.startPlayback();
+            }
+        }
+        else if (newLayout == 5)
+        {
+            // we need 3 players for this layout
+            if (playerLayout.mediaPlayer2.feed.feedName === "" || playerLayout.mediaPlayer2.feed.currentFeed == -1)
+            {
+                playerLayout.mediaPlayer2.feed.switchToFeed(playerLayout.mediaPlayer1.feed.feedName, playerLayout.mediaPlayer1.feed.currentFilter, playerLayout.mediaPlayer1.feed.currentFeed + 1);
+                playerLayout.mediaPlayer2.startPlayback();
+            }
+
+            if (playerLayout.mediaPlayer3.feed.feedName === "" || playerLayout.mediaPlayer3.feed.currentFeed == -1)
+            {
+                playerLayout.mediaPlayer3.feed.switchToFeed(playerLayout.mediaPlayer2.feed.feedName, playerLayout.mediaPlayer2.feed.currentFilter, playerLayout.mediaPlayer2.feed.currentFeed + 1);
+                playerLayout.mediaPlayer3.startPlayback();
+            }
+        }
+        else if (newLayout == 6)
+        {
+            // we need 4 players for this layout
+            if (playerLayout.mediaPlayer2.feed.feedName === "" || playerLayout.mediaPlayer2.feed.currentFeed == -1)
+            {
+                playerLayout.mediaPlayer2.feed.switchToFeed(playerLayout.mediaPlayer1.feed.feedName, playerLayout.mediaPlayer1.feed.currentFilter, playerLayout.mediaPlayer1.feed.currentFeed + 1);
+                playerLayout.mediaPlayer2.startPlayback();
+            }
+
+            if (playerLayout.mediaPlayer3.feed.feedName === "" || playerLayout.mediaPlayer3.feed.currentFeed == -1)
+            {
+                playerLayout.mediaPlayer3.feed.switchToFeed(playerLayout.mediaPlayer2.feed.feedName, playerLayout.mediaPlayer2.feed.currentFilter, playerLayout.mediaPlayer2.feed.currentFeed + 1);
+                playerLayout.mediaPlayer3.startPlayback();
+            }
+
+            if (playerLayout.mediaPlayer4.feed.feedName === "" || playerLayout.mediaPlayer4.feed.currentFeed == -1)
+            {
+                playerLayout.mediaPlayer4.feed.switchToFeed(playerLayout.mediaPlayer3.feed.feedName, playerLayout.mediaPlayer3.feed.currentFilter, playerLayout.mediaPlayer3.feed.currentFeed + 1);
+                playerLayout.mediaPlayer4.startPlayback();
+            }
+        }
+
         root.layout = newLayout;
     }
 

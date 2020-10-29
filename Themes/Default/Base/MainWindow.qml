@@ -302,10 +302,16 @@ Window
         {
             id: stack
             width: parent.width; height: parent.height
-            initialItem: ThemedMenu {model: mainMenuLoader.item}
             focus: true
-
             opacity: screenBackground.screenSaverMode ? 0 : 1
+
+            initialItem:
+            {
+                if (!settings.mythQLayout)
+                    createThemedPanel();
+                else
+                    createThemedMenu();
+            }
 
             onCurrentItemChanged:
             {
@@ -325,7 +331,7 @@ Window
                 {
                     screenBackground.muteAudio = !screenBackground.muteAudio;
                 }
-                else if (event.key === Qt.Key_F)
+                else if (event.key === Qt.Key_F || event.key === Qt.Key_F8)
                 {
                     if (visibility == 5)
                         visibility = 2
@@ -340,10 +346,56 @@ Window
                 {
                     takeSnapshot();
                 }
-
                 else if (event.key === Qt.Key_F10)
                 {
                     if (stack.depth > 1) {stack.pop(); escapeSound.play();} else quit();
+                }
+            }
+
+            function createThemedMenu()
+            {
+                var component = Qt.createComponent(mythUtils.findThemeFile("Screens/ThemedMenu.qml"));
+
+                if (component.status === Component.Error)
+                {
+                    log.error(Verbose.GUI, "createThemedMenu: componant creation failed with error: " + component.errorString());
+                    Qt.quit();
+                }
+
+                if (component.status === Component.Ready)
+                {
+                    var object =component.createObject(stack, {model: mainMenuLoader.item});
+                    object.parent = stack;
+                    return object;
+                }
+                else
+                {
+                    log.error(Verbose.GUI, "createThemedMenu: component not ready");
+                    Qt.quit();
+                }
+            }
+
+            function createThemedPanel()
+            {
+                var component = Qt.createComponent(mythUtils.findThemeFile("Screens/ThemedPanel.qml"));
+
+                if (component.status === Component.Error)
+                {
+                    log.error(Verbose.GUI, "createThemedPanel: componant creation failed with error: " + component.errorString());
+                    Qt.quit();
+                }
+
+
+                if (component.status === Component.Ready)
+                {
+                    var object = component.createObject(stack, {});
+                    object.parent = stack;
+                    return object;
+                }
+                else
+                {
+                    log.error(Verbose.GUI, "createThemedPanel: component not ready");
+                    Qt.quit();
                 }
             }
         }
@@ -369,7 +421,7 @@ Window
         }
     }
 
-    function loadTheme()
+     function loadTheme()
     {
         log.info(Verbose.GUI, "loading theme from: " + settings.qmlPath + "Theme.qml");
 
@@ -391,7 +443,7 @@ Window
                 return null
             }
 
-            if (theme.backgroundVideo != "")
+            if (theme.backgroundVideo === undefined || theme.backgroundVideo != "")
             {
                 if (!mythUtils.fileExists(settings.configPath + "Themes/Videos/" + theme.backgroundVideo))
                 {
