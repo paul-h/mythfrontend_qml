@@ -136,7 +136,7 @@ BaseScreen
 
     InfoText
     {
-        x: xscale(1050); y: yscale(5); width: xscale(200);
+        x: parent.width - xscale(210); y: yscale(5); width: xscale(200);
         text: (webcamGrid.currentIndex + 1) + " of " + webcamGrid.model.count;
         horizontalAlignment: Text.AlignRight
     }
@@ -146,20 +146,20 @@ BaseScreen
         id: webcamGrid
         x: xscale(22)
         y: yscale(55)
-        width: xscale(1280) - xscale(44)
+        width: parent.width - xscale(44)
         height: yscale(390)
-        cellWidth: xscale(206)
-        cellHeight: yscale(130)
+        cellWidth:  width / (root.isPanel ? 4 : 5);
+        cellHeight: height / 3;
 
         Component
         {
             id: webcamDelegate
             Item
             {
-                x: 0;
-                y: 0;
-                width: webcamGrid.cellWidth;
-                height: webcamGrid.cellHeight;
+                x: 0
+                y: 0
+                width: webcamGrid.cellWidth
+                height: webcamGrid.cellHeight
                 Image
                 {
                     opacity: 0.80
@@ -221,7 +221,7 @@ BaseScreen
     {
         id: title
         x: xscale(30); y: yscale(470)
-        width: xscale(900); height: yscale(75)
+        width: parent.width - _xscale(1280 - 900); height: yscale(75)
         verticalAlignment: Text.AlignTop
         multiline: true
     }
@@ -246,14 +246,14 @@ BaseScreen
     InfoText
     {
         id: category
-        x: xscale(30); y: yscale(630); width: xscale(900)
+        x: xscale(30); y: yscale(630); width: _xscale(900)
         fontColor: "grey"
     }
 
     Image
     {
         id: websiteIcon
-        x: xscale(900); y: yscale(630); width: xscale(32); height: yscale(32)
+        x: _xscale(900); y: yscale(630); width: xscale(32); height: yscale(32)
         source: mythUtils.findThemeFile("images/website.png")
     }
 

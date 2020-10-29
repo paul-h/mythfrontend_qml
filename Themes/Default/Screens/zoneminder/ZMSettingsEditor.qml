@@ -23,7 +23,7 @@ BaseScreen
     {
         id: zmIPEdit
         x: xscale(400); y: yscale(100)
-        width: xscale(700)
+        width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.zmIP
         KeyNavigation.up: saveButton
@@ -40,7 +40,7 @@ BaseScreen
     {
         id: zmUserNameEdit
         x: xscale(400); y: yscale(150)
-        width: xscale(700)
+        width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.zmUserName
         KeyNavigation.up: zmIPEdit;
@@ -57,7 +57,7 @@ BaseScreen
     {
         id: zmPasswordEdit
         x: xscale(400); y: yscale(200)
-        width: xscale(700)
+        width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.zmPassword
         KeyNavigation.up: zmUserNameEdit;
@@ -67,7 +67,7 @@ BaseScreen
     BaseButton
     {
         id: saveButton;
-        x: xscale(900); y: yscale(630);
+        x: parent.width - xscale(180); y: yscale(630);
         text: "Save";
         KeyNavigation.up: zmPasswordEdit
         KeyNavigation.down: zmIPEdit

@@ -17,21 +17,21 @@ BaseScreen
 
     BaseBackground
     {
-        x: xscale(15); y: yscale(50); width: xscale(1250); height: yscale(655)
+        x: xscale(15); y: yscale(50); width: parent.width - xscale(30); height: yscale(655)
     }
 
     TitleText
     {
         id: title
         text: folderModel.folder
-        width: xscale(1100)
+        width: _xscale(1100)
         visible : true
         elide: Text.ElideLeft
     }
 
     InfoText
     {
-        x: xscale(1150); y: yscale(5); width: xscale(100);
+        x: _xscale(1150); y: yscale(5); width: _xscale(100);
         text: (imageList.currentIndex + 1) + " of " + imageList.model.count;
         horizontalAlignment: Text.AlignRight
     }
@@ -63,7 +63,7 @@ BaseScreen
     ButtonList
     {
         id: imageList
-        x: xscale(25); y: yscale(65); width: xscale(1230); height: yscale(620)
+        x: xscale(25); y: yscale(65); width: parent.width - xscale(50); height: yscale(620)
 
         clip: true
 

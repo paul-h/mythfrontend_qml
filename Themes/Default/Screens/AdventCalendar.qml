@@ -82,11 +82,11 @@ BaseScreen
     GridView
     {
         id: calendarGrid
-        x: xscale(50)
+        x: xscale(20)
         y: yscale(50)
-        width: xscale(1280) - xscale(96)
+        width: parent.width - xscale(40)
         height: yscale(720) - yscale(100)
-        cellWidth: xscale(197)
+        cellWidth: (parent.width - xscale(40)) / 6
         cellHeight: yscale(155)
 
         Component
@@ -132,6 +132,12 @@ BaseScreen
             else if (event.key === Qt.Key_F2)
             {
                 showSwitchAdventMenu();
+            }
+            else if (event.key === Qt.Key_Left && ((currentIndex % 6) === 0 && previousFocusItem))
+            {
+                event.accepted = true;
+                escapeSound.play();
+                previousFocusItem.focus = true;
             }
             else
             {

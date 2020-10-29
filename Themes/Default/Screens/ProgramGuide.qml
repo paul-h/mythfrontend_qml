@@ -165,7 +165,7 @@ BaseScreen
     BaseSelector
     {
         id: timeSelector
-        x: xscale(100); y: yscale(224); width: xscale(390)
+        x: channelList.x + xscale(10); y: yscale(224); width: channelList.width - xscale(20)
         showBackground: false
 
         model: timeModel
@@ -246,7 +246,7 @@ BaseScreen
     ButtonList
     {
         id: channelList
-        x: xscale(20); y: yscale(270); width: xscale(520); height: yscale(400)
+        x: xscale(20); y: yscale(270); width: (parent.width / 2) - xscale(50); height: yscale(400)
 
         model: channelsModel
         delegate: channelRow
@@ -280,7 +280,7 @@ BaseScreen
     BaseSelector
     {
         id: channelSelector
-        x: xscale(710); y: yscale(224); width: xscale(380)
+        x: programList.x + xscale(10); y: yscale(224); width: programList.width - xscale(20)
         showBackground: false
 
         model: channelModel
@@ -328,7 +328,7 @@ BaseScreen
     ButtonList
     {
         id: programList
-        x: xscale(550); y: yscale(270); width: xscale(710); height: yscale(400)
+        x: (parent.width / 2) + xscale(20); y: yscale(270); width: (parent.width / 2) - xscale(50); height: yscale(400)
 
         model: guideModel
         delegate: programRow

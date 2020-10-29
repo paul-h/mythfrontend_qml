@@ -24,7 +24,7 @@ BaseScreen
     {
         id: frontendIdleTimeEdit
         x: xscale(400); y: yscale(100)
-        width: xscale(700)
+        width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.frontendIdleTime
         KeyNavigation.up: saveButton
@@ -42,7 +42,7 @@ BaseScreen
     {
         id: launcherIdleTimeEdit
         x: xscale(400); y: yscale(150)
-        width: xscale(700)
+        width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.launcherIdleTime
         KeyNavigation.up: frontendIdleTimeEdit
@@ -60,7 +60,7 @@ BaseScreen
     {
         id: rebootCmdEdit
         x: xscale(400); y: yscale(200)
-        width: xscale(700)
+        width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.rebootCommand
         KeyNavigation.up: launcherIdleTimeEdit
@@ -78,7 +78,7 @@ BaseScreen
     {
         id: shutdownCmdEdit
         x: xscale(400); y: yscale(250)
-        width: xscale(700)
+        width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.shutdownCommand
         KeyNavigation.up: rebootCmdEdit
@@ -88,7 +88,7 @@ BaseScreen
     BaseButton
     {
         id: saveButton;
-        x: xscale(900); y: yscale(630);
+        x: parent.width - xscale(380); y: yscale(630);
         text: "Save";
         KeyNavigation.up: shutdownCmdEdit
         KeyNavigation.down: frontendIdleTimeEdit

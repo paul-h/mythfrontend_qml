@@ -97,32 +97,32 @@ BaseScreen
 
     BaseBackground
     {
-        x: xscale(40); y: yscale(95); width: xscale(1200); height: yscale(100)
+        x: xscale(20); y: yscale(95); width: parent.width - xscale(40); height: yscale(100)
     }
 
     // running status
-    LabelText { x: xscale(440); y: yscale(95); width: xscale(400); height: yscale(40); fontColor: "yellow"; horizontalAlignment: Text.AlignHCenter;  text: "ZoneMinder Server Status" }
-    InfoText { id: status; x: xscale(440); y: yscale(120); width: xscale(400); height: yscale(40); horizontalAlignment: Text.AlignHCenter; text: "?"}
+    LabelText { x: _xscale(340); y: yscale(95); width: _xscale(600); height: yscale(40); fontColor: "yellow"; horizontalAlignment: Text.AlignHCenter;  text: "ZoneMinder Server Status" }
+    InfoText { id: status; x: _xscale(340); y: yscale(120); width: _xscale(600); height: yscale(40); horizontalAlignment: Text.AlignHCenter; text: "?"}
 
     // load
     RichText { id: load;  x: xscale(60); y: yscale(155); width: xscale(400); height: yscale(40); label: "Load: "; info: "?, ?, ?" }
 
     // total no. of events
-    RichText { id: totalEvents;  x: xscale(440); y: yscale(155); width: xscale(400); height: yscale(40); horizontalAlignment: Text.AlignHCenter; label: "Events: "; info: "?" }
+    RichText { id: totalEvents;  x: _xscale(440); y: yscale(155); width: _xscale(400); height: yscale(40); horizontalAlignment: Text.AlignHCenter; label: "Events: "; info: "?" }
 
     // disk usage
-    RichText { id: diskused; x: xscale(920); y: yscale(155); width: xscale(300); height: yscale(40); horizontalAlignment: Text.AlignRight ;label: "Disk Used: "; info: "?" }
+    RichText { id: diskused; x: _xscale(920); y: yscale(155); width: _xscale(300); height: yscale(40); horizontalAlignment: Text.AlignRight ;label: "Disk Used: "; info: "?" }
 
     BaseBackground
     {
-        x: xscale(40); y: yscale(250); width: xscale(1200); height: yscale(400)
+        x: xscale(20); y: yscale(250); width: parent.width - xscale(40); height: yscale(400)
     }
 
-    LabelText { x: xscale(55); y: yscale(220); width: xscale(130); height: yscale(30); text: "Camera" }
-    LabelText { x: xscale(265); y: yscale(220); width: xscale(130); height: yscale(30); text: "Function" }
-    LabelText { x: xscale(410); y: yscale(220); width: xscale(130); height: yscale(30); text: "Source" }
-    LabelText { x: xscale(930); y: yscale(220); width: xscale(130); height: yscale(30); horizontalAlignment: Text.AlignRight; text: "Events" }
-    LabelText { x: xscale(1090); y: yscale(220); width: xscale(130); height: yscale(30); horizontalAlignment: Text.AlignRight; text: "Used" }
+    LabelText { x: _xscale(55); y: yscale(220); width: _xscale(130); height: yscale(30); text: "Camera" }
+    LabelText { x: _xscale(265); y: yscale(220); width: _xscale(130); height: yscale(30); text: "Function" }
+    LabelText { x: _xscale(410); y: yscale(220); width: _xscale(130); height: yscale(30); text: "Source" }
+    LabelText { x: _xscale(930); y: yscale(220); width: _xscale(130); height: yscale(30); horizontalAlignment: Text.AlignRight; text: "Events" }
+    LabelText { x: _xscale(1090); y: yscale(220); width: _xscale(130); height: yscale(30); horizontalAlignment: Text.AlignRight; text: "Used" }
 
     Component
     {
@@ -133,38 +133,38 @@ BaseScreen
             ListText
             {
                 x: xscale(5)
-                width: xscale(210); height: yscale(50)
+                width: _xscale(210); height: yscale(50)
                 text: name
             }
             BaseCheckBox
             {
-                x: xscale(220); y: yscale(15)
+                x: _xscale(220); y: yscale(15)
                 width: xscale(20); height: yscale(20)
                 checked: monenabled
             }
             ListText
             {
-                x: xscale(245)
-                width: xscale(170); height: yscale(50)
+                x: _xscale(245)
+                width: _xscale(170); height: yscale(50)
                 text: monfunction
             }
             ListText
             {
-                x: xscale(360)
-                width: xscale(560); height: yscale(50)
+                x: _xscale(360)
+                width: _xscale(560); height: yscale(50)
                 text: if (host !== "") host; else device + " (" + channel + ")";
             }
             ListText
             {
-                x: xscale(920)
-                width: xscale(90); height: yscale(50)
+                x: _xscale(920)
+                width: _xscale(90); height: yscale(50)
                 text: totalevents
                 horizontalAlignment: Text.AlignRight
             }
             ListText
             {
-                x: xscale(1025)
-                width: xscale(150); height: yscale(50)
+                x: _xscale(1025)
+                width: _xscale(150); height: yscale(50)
                 text: if (totalevents > 0) Util.formatFileSize(totaleventsdiskspace, false); else "0B"
                 horizontalAlignment: Text.AlignRight
             }
@@ -174,7 +174,7 @@ BaseScreen
     ButtonList
     {
         id: monitorList
-        x: xscale(50); y: yscale(270); width: xscale(1180); height: yscale(380)
+        x: xscale(30); y: yscale(270); width: parent.width - xscale(60); height: yscale(380)
 
         model: playerSources.zmCameraList
         clip: true
@@ -184,11 +184,24 @@ BaseScreen
         {
             returnSound.play();
         }
+
+        Keys.onPressed:
+        {
+            if (event.key === Qt.Key_Left && previousFocusItem)
+            {
+                event.accepted = true;
+                escapeSound.play();
+                previousFocusItem.focus = true;
+            }
+            else
+                event.accepted = false;
+        }
     }
 
     Footer
     {
         id: footer
+        width: parent.width
         redText: "Edit Camera"
         greenText: "Restart ZoneMinder"
         yellowText: zmDaemonCheckModel.running ? "Stop Zoneminder" : "Start Zoneminder"

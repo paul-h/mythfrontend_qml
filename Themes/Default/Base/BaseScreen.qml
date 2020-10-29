@@ -1,9 +1,11 @@
 import QtQuick 2.0
 import Base 1.0
+import mythqml.net 1.0
 
 Item
 {
     property var    defaultFocusItem: undefined
+    property var    previousFocusItem: undefined
 
     property bool   oldShowTitle: false
     property string oldTitle: ""
@@ -14,32 +16,93 @@ Item
     property bool   oldShowImage: false
     property bool   oldMuteAudio: false
 
+    property bool   isPanel: (parent.objectName == "panelstack" || parent.objectName == "themedpanel")
+
+    // private properties
+    property double _wmult: width / 1280
+    property double _hmult: height / 720
+
+    function _xscale(x)
+    {
+        return x * _wmult
+    }
+
+    function _yscale(y)
+    {
+        return y * _hmult
+    }
+
     signal stateSaved()
 
     x: 0; y: 0; width: parent.width; height: parent.height
 
+    // screen title
+    TitleText
+    {
+        id: screenTitle
+        text: title
+        x: 20
+        width: parent.width - xscale(200)
+        visible : true
+    }
+
     Keys.onEscapePressed:
     {
-        if (stack.depth > 1)
+        event.accepted = handleEscape();
+    }
+
+    Keys.onLeftPressed:
+    {
+        if (isPanel && previousFocusItem)
+            previousFocusItem.focus = true
+    }
+
+    function handleEscape()
+    {
+        var res = true;
+
+        if (!isPanel)
         {
-            escapeSound.play();
-            stack.pop();
+            if (stack.depth > 1)
+            {
+                escapeSound.play();
+                stack.pop();
+            }
+            else
+            {
+                if (exitOnEscape)
+                {
+                    escapeSound.play();
+                    quit();
+                }
+                else
+                    errorSound.play();
+            }
         }
         else
         {
-            if (exitOnEscape)
+            if (previousFocusItem)
             {
+                res = true;
                 escapeSound.play();
-                quit();
+                previousFocusItem.focus = true;
             }
             else
-                errorSound.play();
+                res = false;
         }
+
+        return res;
     }
 
-    function showTitle (show, newTitle)
+    function showTitle(show, newTitle)
     {
-        screenBackground.setTitle(show, newTitle);
+        if (isPanel)
+        {
+            screenTitle.visible = show
+            screenTitle.text = newTitle;
+        }
+        else
+            screenBackground.setTitle(show, newTitle);
     }
 
     function showTicker(show)
@@ -54,7 +117,7 @@ Item
 
     function showVideo(show)
     {
-        screenBackground.showVideo = show;
+        screenBackground.showVideo = show && theme.backgroundVideo != "";
     }
 
     function showImage(show)

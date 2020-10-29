@@ -142,6 +142,7 @@ BaseScreen
     Footer
     {
         id: footer
+        width: parent.width
         redText: "Previous News"
         greenText: "Next News"
         yellowText: "Zoom In"

@@ -201,6 +201,7 @@ BaseScreen
     Footer
     {
         id: footer
+        width: parent.width
         redText: "Previous"
         greenText: "Next"
         yellowText: "Pause"

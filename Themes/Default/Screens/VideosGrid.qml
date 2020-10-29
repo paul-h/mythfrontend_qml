@@ -60,12 +60,12 @@ BaseScreen
 
     BaseBackground
     {
-        x: xscale(15); y: yscale(50); width: xscale(1250); height: yscale(655)
+        x: xscale(15); y: yscale(50); width: parent.width - xscale(30); height: yscale(655)
     }
 
     InfoText
     {
-        x: xscale(1050); y: yscale(5); width: xscale(200);
+        x: parent.width - xscale(230); y: yscale(5); width: xscale(200);
         text: (videoList.currentIndex + 1) + " of " + videosProxyModel.count;
         horizontalAlignment: Text.AlignRight
     }
@@ -112,7 +112,7 @@ BaseScreen
     ButtonList
     {
         id: videoList
-        x: xscale(25); y: yscale(65); width: xscale(1230); height: yscale(620)
+        x: xscale(25); y: yscale(65); width: parent.width - xscale(50); height: yscale(620)
 
         clip: true
         model: videosProxyModel

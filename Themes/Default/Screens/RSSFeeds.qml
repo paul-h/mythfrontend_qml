@@ -41,7 +41,7 @@ BaseScreen
 
     BaseBackground
     {
-        x: xscale(20); y: yscale(50); width: xscale(1240); height: yscale(440)
+        x: xscale(20); y: yscale(50); width: parent.width - xscale(40); height: yscale(440)
     }
 
     Component
@@ -76,7 +76,7 @@ BaseScreen
     ButtonList
     {
         id: feedList
-        x: xscale(30); y: yscale(60); width: xscale(550); height: yscale((8 * 50) + (7 * 3))
+        x: xscale(30); y: yscale(60); width: parent.width / 2 - xscale(40); height: yscale((8 * 50) + (7 * 3))
         spacing: 3
         clip: true
         model: rssFeedsModel
@@ -153,7 +153,7 @@ BaseScreen
         id: articleList
         property int itemWidth: 190
 
-        x: xscale(600); y: yscale(60); width: xscale(650); height: yscale(421)
+        x: parent.width / 2 + xscale(10); y: yscale(60); width: parent.width / 2- xscale(40); height: yscale(421)
         model: feedModel
         clip: true
         delegate: articleDelegate
@@ -184,7 +184,7 @@ BaseScreen
 
     BaseBackground
     {
-        x: xscale(20); y: yscale(495); width: xscale(1240); height: yscale(205)
+        x: xscale(20); y: yscale(495); width: parent.width - xscale(40); height: yscale(205)
     }
 
     Image
@@ -198,7 +198,7 @@ BaseScreen
     TitleText
     {
         id: titleText
-        x: xscale(230); y: yscale(505); width: xscale(1020); height: yscale(70)
+        x: xscale(230); y: yscale(505); width: parent.width - x - xscale(30); height: yscale(70)
         verticalAlignment: Text.AlignTop
         multiline: true
         text: feedModel.get(articleList.currentIndex) ? mythUtils.replaceHtmlChar(feedModel.get(articleList.currentIndex).title) : ""
@@ -207,7 +207,7 @@ BaseScreen
     InfoText
     {
         id: descText
-        x: xscale(230); y: yscale(575); width: xscale(1020); height: yscale(115)
+        x: xscale(230); y: yscale(575); width: parent.width - x - xscale(30); height: yscale(115)
         verticalAlignment: Text.AlignTop
         //textFormat: Text.RichText
         multiline: true
