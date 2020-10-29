@@ -167,7 +167,7 @@ BaseScreen
                     anchors.fill: parent
                     anchors.margins: xscale(5)
                     source: getIconURL(icon);
-                    onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/webcam_noimage.png");
+                    onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/no_image.png");
                 }
                 LabelText
                 {
@@ -229,16 +229,16 @@ BaseScreen
     Image
     {
         id: webcamIcon
-        x: xscale(950); y: yscale(480); width: xscale(300); height: yscale(178)
+        x: parent.width - _xscale(1280 - 950); y: yscale(480); width: _xscale(300); height: _xscale(178)
         asynchronous: true
-        onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/webcam_noimage.png")
+        onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/no_image.png")
     }
 
     InfoText
     {
         id: description
         x: xscale(30); y: yscale(540)
-        width: xscale(900); height: yscale(100)
+        width: parent.width - _xscale(1280 - 900); height: yscale(100)
         verticalAlignment: Text.AlignTop
         multiline: true
     }
@@ -554,7 +554,7 @@ BaseScreen
                     x: xscale(3); y: yscale(3); width: xscale(144); height: yscale(80)
                     visible: (heading === "no")
                     source: getIconURL(icon);
-                    onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/webcam_noimage.png")
+                    onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/no_image.png")
                 }
                 ListText
                 {
