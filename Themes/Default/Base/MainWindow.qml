@@ -32,7 +32,7 @@ Window
     property double soundEffectsVolume: 1.0
     property double backgroundVideoVolume: 1.0
 
-    property alias playerSources: playerSourcesLoader.item;
+    property alias playerSources: playerSourcesModel;
 
     Component.onCompleted:
     {
@@ -60,6 +60,11 @@ Window
                  mouseArea.oldY =mouseArea.mouseY;
             }
         }
+    }
+
+    PlayerSourcesModel
+    {
+        id: playerSourcesModel
     }
 
     // theme background video downloader
@@ -169,13 +174,6 @@ Window
         }
 
         active: true
-    }
-
-    // feeds loader
-    Loader
-    {
-        id: playerSourcesLoader
-        source: settings.sharePath + "qml/Models/PlayerSourcesModel.qml"
     }
 
     function xscale(x)
