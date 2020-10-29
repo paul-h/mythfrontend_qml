@@ -49,6 +49,10 @@ BaseScreen
         }
         ListElement
         {
+            itemText: "MythCenterFIREPLACE"
+        }
+        ListElement
+        {
             itemText: "MythCenterFIREWORKS"
         }
         ListElement
