@@ -218,9 +218,29 @@ BaseScreen
             videoPlayer.stop();
             showPreview = false;
             returnSound.play();
-            var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Live TV", defaultFilter:  filterSourceID, defaultCurrentFeed: channelGrid.currentIndex}});
-            item.feedChanged.connect(feedChanged);
-            event.accepted = true;
+
+            if (root.isPanel)
+            {
+                feedSelected("Live TV", filterSourceID, channelGrid.currentIndex);
+            }
+            else
+            {
+                var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Live TV", defaultFilter:  filterSourceID, defaultCurrentFeed: channelGrid.currentIndex}});
+                item.feedChanged.connect(feedChanged);
+            }
+                event.accepted = true;
+        }
+
+        Keys.onPressed:
+        {
+            if (event.key === Qt.Key_Left && ((currentIndex % 4) === 0 && previousFocusItem))
+            {
+                event.accepted = true;
+                escapeSound.play();
+                previousFocusItem.focus = true;
+            }
+            else
+                event.accepted = false;
         }
 
         onCurrentIndexChanged:

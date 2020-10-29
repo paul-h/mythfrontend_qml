@@ -23,8 +23,23 @@ BaseScreen
         enabled: browser.focus
         onTriggered:
         {
-            escapeSound.play();
-            stack.pop();
+            if (browser.canGoBack)
+                browser.goBack();
+            else
+            {
+                if (!isPanel)
+                {
+                    if (stack.depth > 1)
+                    {
+                        stack.pop();
+                        escapeSound.play();
+                    }
+                }
+                else
+                {
+                    handleEscape();
+                }
+            }
         }
     }
 

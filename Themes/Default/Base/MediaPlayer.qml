@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.0
-import QtWebEngine 1.3
+import QtWebEngine 1.5
 import Base 1.0
 import Process 1.0
 import Models 1.0
@@ -124,10 +124,23 @@ FocusScope
         url: ""
         settings.pluginsEnabled: true
         settings.javascriptEnabled: true
+        settings.javascriptCanOpenWindows: true
         audioMuted: false;
+        //userScripts: [earthcamScript]
 
         Component.onCompleted: settings.playbackRequiresUserGesture = false;
 
+        onNewViewRequested:
+        {
+            var website = request.requestedUrl.toString();
+            var zoom = zoomFactor;
+            if (isPanel)
+                panelStack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: website, zoomFactor: zoom}});
+            else
+                stack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: website, zoomFactor: zoom}});
+        }
+        onFullScreenRequested: request.accept();
+        onNavigationRequested: request.action = WebEngineNavigationRequest.AcceptRequest;
         profile: youtubeWebProfile
 
         onLoadingChanged:
@@ -175,15 +188,9 @@ FocusScope
         anchors.fill: parent
         anchors.margins: playerBorder.border.width
 
-        onPlaybackEnded:
-        {
-            root.playbackEnded()
-        }
+        onPlaybackEnded: root.playbackEnded()
 
-        onShowMessage:
-        {
-            root.showMessage(message, timeOut);
-        }
+        onShowMessage: root.showMessage(message, timeOut)
     }
 
     VideoPlayerQmlVLC
@@ -195,15 +202,9 @@ FocusScope
         anchors.fill: parent
         anchors.margins: playerBorder.border.width
 
-        onPlaybackEnded:
-        {
-            root.playbackEnded()
-        }
+        onPlaybackEnded: root.playbackEnded()
 
-        onShowMessage:
-        {
-            root.showMessage(message, timeOut);
-        }
+        onShowMessage: root.showMessage(message, timeOut);
     }
 
     VideoPlayerQtAV
@@ -217,15 +218,9 @@ FocusScope
 
         fillMode: VideoOutput.Stretch
 
-        onPlaybackEnded:
-        {
-            root.playbackEnded()
-        }
+        onPlaybackEnded: root.playbackEnded()
 
-        onShowMessage:
-        {
-            root.showMessage(message, timeOut);
-        }
+        onShowMessage: root.showMessage(message, timeOut)
     }
 
     ListModel
@@ -554,25 +549,25 @@ FocusScope
 
         visible: false
 
+        Image
+        {
+            id: icon
+            x: _xscale(10)
+            y: _yscale(10)
+            width: _xscale(100)
+            height: _yscale(100)
+
+            onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/grid_noimage.png")
+        }
+
         TitleText
         {
             id: title
-            x: _xscale(10)
+            x: icon.width + _xscale(15)
             y: _yscale(5)
-            width: parent.width - currFeed.width - _xscale(20)
+            width: parent.width - currFeed.width - icon.width - _xscale(25)
             height: _yscale(50)
             fontPixelSize: (_xscale(24) + _yscale(24)) / 2
-            text:
-            {
-                if (!feedSource.feedList.get(feedSource.currentFeed))
-                   return "";
-                else if (feedSource.feedList.get(feedSource.currentFeed).title !== undefined)
-                    return feedSource.feedList.get(feedSource.currentFeed).title
-                else if (feedSource.feedList.get(feedSource.currentFeed).url !== undefined)
-                    return feedSource.feedList.get(feedSource.currentFeed).url
-                else
-                    return ""
-            }
 
             verticalAlignment: Text.AlignTop
         }
@@ -580,7 +575,7 @@ FocusScope
         InfoText
         {
             id: pos
-            x: _xscale(50)
+            x: _xscale(55) + icon.width
             y: _yscale(50)
             width: _xscale(400)
             height: _yscale(50)
@@ -599,7 +594,8 @@ FocusScope
         InfoText
         {
             id: timeLeft
-            x: parent.width - width - _xscale(15); y: _yscale(50)
+            x: parent.width - width - _xscale(15);
+            y: _yscale(50)
             width: _xscale(240)
             height: _yscale(50)
             fontPixelSize: (_xscale(16) + _yscale(16)) / 2
@@ -673,9 +669,9 @@ FocusScope
             id: toolbar
             opacity: .55
             spacing: _xscale(10)
-            x: _xscale(10)
+            x: _xscale(15) + icon.width
             y: _yscale(70)
-            width: parent.width - _xscale(20)
+            width: parent.width - _xscale(25) - icon.width
             height: _yscale(50)
             anchors.bottomMargin: spacing
             anchors.leftMargin: spacing * _xscale(1.5)
@@ -747,6 +743,11 @@ FocusScope
         }
     }
 
+    function isPlaying()
+    {
+        return _playbackStarted;
+    }
+
     function showMessage(message, timeOut)
     {
         if (!timeOut)
@@ -797,6 +798,9 @@ FocusScope
 
     function startPlayback()
     {
+        if (_playbackStarted)
+            return;
+
         if (feedSource.feedList === undefined ||
                 feedSource.feedList.get(feedSource.currentFeed).player === undefined ||
                 feedSource.feedList.get(feedSource.currentFeed).url === undefined)
@@ -805,8 +809,13 @@ FocusScope
         var newPlayer = feedSource.feedList.get(feedSource.currentFeed).player;
         switchPlayer(newPlayer);
 
-        var newURL = feedSource.feedList.get(feedSource.currentFeed).url;
-        switchURL(newURL);
+        if (newPlayer !== "StreamLink" && newPlayer !== "StreamBuffer")
+        {
+            var newURL = feedSource.feedList.get(feedSource.currentFeed).url;
+            switchURL(newURL);
+        }
+
+        updateOSD();
     }
 
     function switchPlayer(newPlayer)
@@ -900,9 +909,6 @@ FocusScope
     {
         log.debug(Verbose.PLAYBACK, "MediaPlayer: switchURL -  " + newURL);
 
-        activeFeedChanged();
-        showMessage("", 0);
-
         if (!feedSource.feedList.get(feedSource.currentFeed))
                 title.text = "";
         else if (feedSource.feedList.get(feedSource.currentFeed).title !== undefined)
@@ -945,9 +951,10 @@ FocusScope
 
             youtubePlayer.source = videoID;
         }
-        else if (root.player === "StreamLink")
+        else if (root.player === "StreamLink" || root.player === "StreamBuffer")
         {
             qtAVPlayer.source = newURL;
+            qtAVPlayer.play();
         }
         else
         {
@@ -1108,8 +1115,17 @@ FocusScope
             qtAVPlayer.toggleInterlacer();
     }
 
+    function toggleInfo()
+    {
+        showInfo(false);
+    }
+
     function showInfo(restart)
     {
+        // don't show the info panel if it's to small to see
+        if (infoPanel.width < 400)
+            return;
+
         if (restart)
         {
             // restart the timer
@@ -1136,6 +1152,18 @@ FocusScope
         infoTimer.stop();
     }
 
+    function showFeedBrowser()
+    {
+        hideInfo();
+
+        browsePanel.visible = true;
+    }
+
+    function hideFeedBrowser()
+    {
+        browsePanel.visible = false;
+    }
+
     function nextFeed()
     {
         if (feedSource.feedName === "Advent Calendar")
@@ -1149,6 +1177,8 @@ FocusScope
             feedSource.currentFeed++;
 
         startPlayback();
+
+        updateOSD();
 
         showInfo(true);
     }
@@ -1167,11 +1197,16 @@ FocusScope
 
         startPlayback();
 
+        updateOSD();
+
         showInfo(true);
     }
 
     function getLink(linktype)
     {
+        if (feedSource.feedList.get(feedSource.currentFeed).links === "")
+            return undefined;
+
         var links = feedSource.feedList.get(feedSource.currentFeed).links.split("\n");
 
         for (var x = 0; x < links.length; x++)
@@ -1304,5 +1339,42 @@ FocusScope
         if (browserURLList.currentIndex < 0)
             browserURLList.currentIndex = browserURLList.count - 1;
     }
-}
 
+    function updateOSD()
+    {
+        // update title
+        if (!feedSource.feedList.get(feedSource.currentFeed))
+            title.text = "";
+        else if (feedSource.feedList.get(feedSource.currentFeed).title !== undefined)
+            title.text =  feedSource.feedList.get(feedSource.currentFeed).title
+        else if (feedSource.feedList.get(feedSource.currentFeed).url !== undefined)
+            title.text = feedSource.feedList.get(feedSource.currentFeed).url
+        else
+            title.text = ""
+
+        // update icon
+        if (!feedSource.feedList.get(feedSource.currentFeed))
+            icon.source = mythUtils.findThemeFile("images/grid_noimage.png");
+        else
+            icon.source = getIconURL(feedSource.feedList.get(feedSource.currentFeed).icon);
+    }
+
+    function getIconURL(iconURL)
+    {
+        if (iconURL && iconURL !== "")
+        {
+            if (iconURL.startsWith("file://") || iconURL.startsWith("http://") || iconURL.startsWith("https://"))
+                return iconURL;
+            else
+            {
+                // try to get the icon from the same URL the webcam list was loaded from
+                var url = playerSources.webcamList.webcamList.get(playerSources.webcamList.webcamListIndex).url
+                var r = /[^\/]*$/;
+                url = url.replace(r, '');
+                return url + iconURL;
+            }
+        }
+
+        return ""
+    }
+}

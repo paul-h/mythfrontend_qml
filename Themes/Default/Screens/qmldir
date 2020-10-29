@@ -1,6 +1,7 @@
 module Screens
 AdventCalendar 1.0 AdventCalendar.qml
 ComingSoon 1.0 ComingSoon.qml
+Home 1.0 Home.qml
 IconView 1.0 IconView.qml
 IdleScreen 1.0 IdleScreen.qml
 ImageView 1.0 ImageView.qml
@@ -13,6 +14,7 @@ RSSFeeds 1.0 RSSFeeds.qml
 SettingEditor 1.0 SettingEditor.qml
 SearchRadioStreams 1.0 SearchRadioStreams.qml
 ThemedMenu 1.0 ThemedMenu.qml
+ThemedPanel 1.0 ThemedPanel.qml
 VideoMetadataEditor 1.0 VideoMetadataEditor.qml
 VideosGrid 1.0 VideosGrid.qml
 VideosGridFolder 1.0 VideosGridFolder

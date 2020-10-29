@@ -12,6 +12,8 @@ BaseScreen
 
     defaultFocusItem: webcamGrid
 
+    signal feedSelected(string feedSource, string filter, int index)
+
     Component.onCompleted:
     {
         showTime(false);
@@ -209,9 +211,30 @@ BaseScreen
         Keys.onReturnPressed:
         {
             returnSound.play();
-            var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Webcams", defaultFilter:  playerSources.webcamFilterCategory, defaultCurrentFeed: webcamGrid.currentIndex}});
-            item.feedChanged.connect(feedChanged);
+            if (!root.isPanel)
+            {
+                var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Webcams", defaultFilter:  playerSources.webcamFilterCategory, defaultCurrentFeed: webcamGrid.currentIndex}});
+                item.feedChanged.connect(feedChanged);
+
+            }
+            else
+            {
+                feedSelected("Webcams", playerSources.webcamFilterCategory, webcamGrid.currentIndex);
+            }
+
             event.accepted = true;
+        }
+
+        Keys.onPressed:
+        {
+            if (event.key === Qt.Key_Left && ((currentIndex % 4) === 0 && previousFocusItem))
+            {
+                event.accepted = true;
+                escapeSound.play();
+                previousFocusItem.focus = true;
+            }
+            else
+                event.accepted = false;
         }
 
         onCurrentIndexChanged: updateWebcamDetails();
@@ -333,6 +356,45 @@ BaseScreen
         onCancelled:
         {
             webcamGrid.focus = true;
+        }
+    }
+
+     function createMenu(menu)
+    {
+        menu.clear();
+
+        menu.append({"menutext": "All", "loaderSource": "WebCamViewer.qml", "menuSource": ""});
+        menu.append({"menutext": "Favourite", "loaderSource": "WebCamViewer.qml", "menuSource": ""});
+        menu.append({"menutext": "New", "loaderSource": "WebCamViewer.qml", "menuSource": ""});
+        menu.append({"menutext": "---", "loaderSource": "WebCamViewer.qml", "loaderSource": "", "menuSource": ""});
+
+        for (var x = 0; x < playerSources.webcamList.categoryList.count; x++)
+        {
+            menu.append({"menutext": playerSources.webcamList.categoryList.get(x).item, "loaderSource": "WebCamViewer.qml", "menuSource": ""});
+        }
+    }
+
+    function setFilter(filter)
+    {
+        if (filter === "All" || filter === "<All Webcams>")
+        {
+            feedChanged("Webcams", "", 0);
+            playerSources.webcamFilterFavorite ="Any";
+        }
+        else if (filter === "Favourite")
+        {
+            feedChanged("Webcams", "", 0);
+            playerSources.webcamFilterFavorite ="Yes";
+        }
+        else if (filter === "New")
+        {
+            feedChanged("Webcams", "New", 0)
+            playerSources.webcamFilterFavorite ="Any";
+        }
+        else if (filter != "---" )
+        {
+            feedChanged("Webcams", filter, 0);
+            playerSources.webcamFilterFavorite ="Any";
         }
     }
 

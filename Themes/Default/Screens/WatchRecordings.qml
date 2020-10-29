@@ -361,6 +361,12 @@ BaseScreen
             returnSound.play();
         }
 
+        Keys.onLeftPressed:
+        {
+            if (root.previousFocusItem)
+                root.previousFocusItem.focus = true;
+        }
+
         onCurrentIndexChanged: updateProgramDetails();
     }
 
