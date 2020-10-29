@@ -50,7 +50,7 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     setStartFullscreen((gContext->m_databaseUtils->getSetting("StartFullScreen", hostName) == "true"));
 
     // use alternate menu layout
-    setSkyQLayout((gContext->m_databaseUtils->getSetting("SkyQLayout", hostName) == "true"));
+    setMythQLayout((gContext->m_databaseUtils->getSetting("MythQLayout", hostName) == "true"));
 
     // vbox
     setVboxFreeviewIP(gContext->m_databaseUtils->getSetting("VboxFreeviewIP", hostName));
@@ -159,10 +159,10 @@ void Settings::setDefaultSettings(const QString &hostName)
     }
 
     // use alternate menu layout
-    if (gContext->m_databaseUtils->getSetting("SkyQLayout", hostName) == "")
+    if (gContext->m_databaseUtils->getSetting("MythQLayout", hostName) == "")
     {
-        setSkyQLayout(false);
-        gContext->m_databaseUtils->setSetting("SkyQLayout", hostName, "false");
+        setMythQLayout(false);
+        gContext->m_databaseUtils->setSetting("MythQLayout", hostName, "false");
     }
 
     // shutdown settings
@@ -464,15 +464,15 @@ void Settings::setStartFullscreen(const bool startFullscreen)
     emit startFullscreenChanged();
 }
 
-bool Settings::skyQLayout(void)
+bool Settings::mythQLayout(void)
 {
-    return m_skyQLayout;
+    return m_mythQLayout;
 }
 
-void Settings::setSkyQLayout(const bool skyQLayout)
+void Settings::setMythQLayout(const bool mythQLayout)
 {
-    m_skyQLayout = skyQLayout;
-    emit skyQLayoutChanged();
+    m_mythQLayout = mythQLayout;
+    emit mythQLayoutChanged();
 }
 
 QString Settings::webcamListFile(void)
