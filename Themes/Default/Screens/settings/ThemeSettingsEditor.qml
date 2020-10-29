@@ -97,20 +97,20 @@ BaseScreen
         x: xscale(400); y: yscale(150)
         checked: settings.startFullscreen
         KeyNavigation.up: themeSelector
-        KeyNavigation.down: skyQLayoutCheck
+        KeyNavigation.down: mythQLayoutCheck
     }
 
     LabelText
     {
         x: xscale(50); y: yscale(200)
-        text: "Use SkyQ Menu Layout:"
+        text: "Use MythQ Menu Layout:"
     }
 
     BaseCheckBox
     {
-        id: skyQLayoutCheck
+        id: mythQLayoutCheck
         x: xscale(400); y: yscale(200)
-        checked: settings.skyQLayout
+        checked: settings.mythQLayout
         KeyNavigation.up: startFullscreenCheck
         KeyNavigation.down: saveButton
     }
@@ -126,11 +126,11 @@ BaseScreen
         {
             dbUtils.setSetting("Theme",           settings.hostName, themeModel.get(themeSelector.currentIndex).itemText);
             dbUtils.setSetting("StartFullScreen", settings.hostName, startFullscreenCheck.checked);
-            dbUtils.setSetting("SkyQLayout",      settings.hostName, skyQLayoutCheck.checked);
+            dbUtils.setSetting("MythQLayout",      settings.hostName, mythQLayoutCheck.checked);
 
             settings.themeName       = themeModel.get(themeSelector.currentIndex).itemText;
             settings.startFullscreen = startFullscreenCheck.checked;
-            settings.skyQLayout = skyQLayoutCheck.checked;
+            settings.mythQLayout = mythQLayoutCheck.checked;
 
             // update the theme path and reload the theme
             settings.qmlPath = settings.sharePath + "qml/Themes/" + settings.themeName + "/";
@@ -140,8 +140,8 @@ BaseScreen
 
             // force the stack to reload the main menu
             stack.clear();
-            stack.initialItem = null
-            stack.push({item: mythUtils.findThemeFile("Screens/ThemedMenu.qml"), properties:{model: mainMenuLoader.item}});
+            //stack.initialItem = null
+            //stack.push({item: mythUtils.findThemeFile("Screens/ThemedMenu.qml"), properties:{model: mainMenuLoader.item}});
 
             returnSound.play();
             stack.pop();
