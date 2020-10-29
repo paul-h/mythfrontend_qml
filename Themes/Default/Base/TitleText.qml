@@ -15,7 +15,7 @@ Item
     property int    shadowXOffset: theme.titleShadowXOffset
     property int    shadowYOffset: theme.titleShadowYOffset
     property bool   multiline: false
-    property int    elide:Text.ElideRight
+    property int    elide: Text.ElideRight
 
     x: xscale(50); y : 0; width: xscale(300); height: yscale(50)
 
