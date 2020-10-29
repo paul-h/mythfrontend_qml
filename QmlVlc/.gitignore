@@ -1,0 +1,3 @@
+libQmlVlcPlugin.so
+moc_*
+*.o
