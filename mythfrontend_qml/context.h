@@ -24,6 +24,7 @@ public:
 signals:
 
 public slots:
+    void cleanUp();
 
 public:
     void init(void);

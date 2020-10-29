@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
-    QGuiApplication app(argc, argv);
+    QGuiApplication *app = new QGuiApplication(argc, argv);
 
     QtWebEngine::initialize();
 
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
     parser.addOption(verboseOption);
 
     // Process the command line arguments given by the user
-    parser.process(app);
+    parser.process(*app);
 
     QString logLevel = parser.value(logLevelOption);
     QString verbose = parser.value(verboseOption);
@@ -116,5 +116,9 @@ int main(int argc, char *argv[])
     // load the main screen
     gContext->m_engine->load(QUrl(QString(SHAREPATH) + "qml/main.qml"));
 
-    return app.exec();
+    QObject::connect(app, &QCoreApplication::aboutToQuit, gContext, &Context::cleanUp);
+    int res = app->exec();
+
+    delete app;
+    return res;
 }

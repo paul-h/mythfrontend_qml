@@ -58,13 +58,7 @@ Context::Context(const QString &appName, const QString &logLevel, const QString 
 
 Context::~Context(void)
 {
-    delete m_engine;
-    delete m_settings;
-    delete m_databaseUtils;
-    delete m_mythUtils;
-    delete m_eventListener;
-    delete m_urlInterceptor;
-    delete m_logger;
+    cleanUp();
 }
 
 void Context::init()
@@ -150,6 +144,17 @@ void Context::init()
 
     m_engine->addImportPath(QString(SHAREPATH) + "qml/Themes/Default");
     m_engine->addImportPath(QString(SHAREPATH) + "qml");
+}
+
+void Context::cleanUp(void)
+{
+    delete m_engine;
+    delete m_settings;
+    delete m_databaseUtils;
+    delete m_mythUtils;
+    delete m_eventListener;
+    delete m_urlInterceptor;
+    delete m_logger;
 }
 
 bool Context::initMythDB(void)
