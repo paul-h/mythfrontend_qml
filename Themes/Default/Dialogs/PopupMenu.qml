@@ -34,11 +34,18 @@ BaseDialog
 
     Keys.onPressed:
     {
+        event.accepted = true;
+
         if (event.key === Qt.Key_M)
         {
             popupMenu.state = "";
             popupMenu.cancelled();
-            event.accepted = true;
+        }
+        else
+        {
+            // eat all key presses except these
+            if (event.key === Qt.Key_Up || event.key === Qt.Key_Down || event.key === Qt.Key_PageUp || event.key === Qt.Key_PageDown || event.key === Qt.Key_Enter)
+                event.accepted = false
         }
     }
 
