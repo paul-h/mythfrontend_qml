@@ -128,23 +128,10 @@ BaseScreen
             dbUtils.setSetting("StartFullScreen", settings.hostName, startFullscreenCheck.checked);
             dbUtils.setSetting("MythQLayout",      settings.hostName, mythQLayoutCheck.checked);
 
-            settings.themeName       = themeModel.get(themeSelector.currentIndex).itemText;
-            settings.startFullscreen = startFullscreenCheck.checked;
-            settings.mythQLayout = mythQLayoutCheck.checked;
+            screenBackground.pauseVideo(true);
 
-            // update the theme path and reload the theme
-            settings.qmlPath = settings.sharePath + "qml/Themes/" + settings.themeName + "/";
-
-            window.theme = loadTheme();
-            screenBackground.setVideo("file://" + settings.configPath + "Themes/Videos/" + theme.backgroundVideo);
-
-            // force the stack to reload the main menu
-            stack.clear();
-            //stack.initialItem = null
-            //stack.push({item: mythUtils.findThemeFile("Screens/ThemedMenu.qml"), properties:{model: mainMenuLoader.item}});
-
-            returnSound.play();
-            stack.pop();
+            // force a full restart of the app
+            Qt.exit(1000);
         }
     }
 }
