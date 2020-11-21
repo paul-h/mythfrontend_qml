@@ -10,6 +10,7 @@ XmlListModel
     property string token
 
     signal loaded();
+    signal loadingStatus(int status);
 
     source: if (token !== "") "http://" + settings.zmIP + "/zm/api/monitors.xml?token=" + token; else ""
 
@@ -42,13 +43,20 @@ XmlListModel
 
             if (status === XmlListModel.Loading)
             {
-                log.debug(Verbose.MODEL, "ZMMonitorsModel: LOADING - " + source.toString());
+                log.debug(Verbose.MODEL, "ZMMonitorsModel: LOADING - " + source);
             }
 
             if (status === XmlListModel.Error)
             {
-                log.error(Verbose.MODEL, "ZMMonitorsModel: ERROR: " + errorString() + " - " + source.toString());
+                log.error(Verbose.MODEL, "ZMMonitorsModel: ERROR: " + errorString() + " - " + source);
             }
+
+            if (status === XmlListModel.Null)
+            {
+                log.debug(Verbose.MODEL, "ZMMonitorsModel: NULL - " + source);
+            }
+
+            loadingStatus(status);
     }
 
     function lookupMonitorName(id)
