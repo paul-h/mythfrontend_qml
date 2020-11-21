@@ -18,6 +18,7 @@ XmlListModel
     property string _pin: settings.securityPin;
 
     signal loaded();
+    signal loadingStatus(int status);
 
     onSourceIdChanged: updateSource()
     onChannelGroupIdChanged: updateSource()
@@ -27,6 +28,8 @@ XmlListModel
     onOnlyVisibleChanged: updateSource()
     onOrderByNameChanged: updateSource()
     onGroupByCallsignChanged: updateSource()
+
+    Component.onCompleted: updateSource()
 
     function updateSource()
     {
@@ -47,7 +50,7 @@ XmlListModel
         if (orderByName)
             url += "&OrderByName=true"
 
-        if (groupByCallsign || sourceId == -1)
+        if (groupByCallsign)
             url += "&GroupByCallsign=true"
 
         source = url;
@@ -63,6 +66,7 @@ XmlListModel
     XmlRole { name: "SourceId"; query: "SourceId/number()" }
     XmlRole { name: "XMLTVID"; query: "XMLTVID/string()" }
     XmlRole { name: "MplexId"; query: "MplexId/number()" }
+    XmlRole { name: "ChannelGroups"; query: "ChannelGroups/string()" }
 
     XmlRole { name: "title"; query: "concat(ChanNum/string(), xs:string(' - '), ChannelName/string())" }
     XmlRole { name: "player"; query: "xs:string('VLC')" }
@@ -71,7 +75,7 @@ XmlListModel
 
     onStatusChanged:
     {
-        if (status == XmlListModel.Ready)
+        if (status === XmlListModel.Ready)
         {
             log.debug(Verbose.MODEL, "ChannelsModel: Found " + count + " channels");
             loaded();
@@ -79,13 +83,20 @@ XmlListModel
 
         if (status === XmlListModel.Loading)
         {
-            log.debug(Verbose.MODEL, "ChannelsModel: LOADING - " + source.toString());
+            log.debug(Verbose.MODEL, "ChannelsModel: LOADING - " + source);
         }
 
         if (status === XmlListModel.Error)
         {
-            log.error(Verbose.MODEL, "ChannelsModel: ERROR: " + errorString() + " - " + source.toString());
+            log.error(Verbose.MODEL, "ChannelsModel: ERROR: " + errorString() + " - " + source);
         }
+
+        if (status === XmlListModel.Null)
+        {
+            log.debug(Verbose.MODEL, "ChannelsModel: NULL - " + source);
+        }
+
+        loadingStatus(status);
     }
 
     function extractIP(host)
