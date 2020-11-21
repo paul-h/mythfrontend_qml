@@ -24,10 +24,4 @@ ListModel
         loaderSource:"WebVideoViewer.qml"
         waterMark: "watermark/video.png"
     }
-    ListElement
-    {
-        menutext: "Categories"
-        loaderSource: "settings/FeedSettingsEditor.qml"
-        waterMark: "watermark/keys.png"
-    }
 }

@@ -8,13 +8,6 @@ ListModel
 
     ListElement
     {
-        menutext: "Watch TV"
-        loaderSource: "MythTVChannelViewer.qml"
-        waterMark: "watermark/tv.png"
-        feedSource: "Live TV"
-    }
-    ListElement
-    {
         menutext:"Watch Recordings"
         loaderSource: "WatchRecordings.qml"
         waterMark: "watermark/play.png"
