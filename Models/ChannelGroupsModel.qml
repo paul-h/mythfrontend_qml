@@ -15,7 +15,7 @@ XmlListModel
 
     onStatusChanged:
     {
-        if (status == XmlListModel.Ready)
+        if (status === XmlListModel.Ready)
         {
             log.debug(Verbose.MODEL, "ChannelGroupsModel: - Found " + count + " channelgroups");
         }
@@ -29,6 +29,28 @@ XmlListModel
         {
             log.error(Verbose.MODEL, "ChannelGroups - ERROR: " + errorString() + " - " + source.toString());
         }
+    }
+
+    function findById(Id)
+    {
+        for (var x = 0; x < count; x++)
+        {
+            if (get(x).GroupId == Id)
+                return x;
+        }
+
+        return -1;
+    }
+
+    function findByName(Name)
+    {
+        for (var x = 0; x < count; x++)
+        {
+            if (get(x).Name == Name)
+                return x;
+        }
+
+        return -1;
     }
 
     function addChannelToGroup(chanId, groupId)
