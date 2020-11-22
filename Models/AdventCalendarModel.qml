@@ -50,12 +50,12 @@ Item
 
             if (status === XmlListModel.Loading)
             {
-                log.debug(Verbose.MODEL, "AdventCalendarsModel: LOADING - " + source.toString());
+                log.debug(Verbose.MODEL, "AdventCalendarsModel: LOADING - " + source);
             }
 
             if (status === XmlListModel.Error)
             {
-                log.error(Verbose.MODEL, "AdventCalendarsModel: ERROR: " + errorString() + " - " + source.toString());
+                log.error(Verbose.MODEL, "AdventCalendarsModel: ERROR: " + errorString() + " - " + source);
             }
         }
     }

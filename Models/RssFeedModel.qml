@@ -33,12 +33,12 @@ XmlListModel
 
         if (status === XmlListModel.Loading)
         {
-            log.debug(Verbose.MODEL, "RssFeedModel: LOADING - " + source.toString());
+            log.debug(Verbose.MODEL, "RssFeedModel: LOADING - " + source);
         }
 
         if (status === XmlListModel.Error)
         {
-            log.error(Verbose.MODEL, "RssFeedModel: ERROR: " + errorString() + " - " + source.toString());
+            log.error(Verbose.MODEL, "RssFeedModel: ERROR: " + errorString() + " - " + source);
         }
     }
 }

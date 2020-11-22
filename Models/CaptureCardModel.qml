@@ -24,12 +24,12 @@ XmlListModel
 
         if (status === XmlListModel.Loading)
         {
-            log.debug(Verbose.MODEL, "CaptureCardModel: LOADING - " + captureCardModel.source.toString());
+            log.debug(Verbose.MODEL, "CaptureCardModel: LOADING - " + captureCardModel.source);
         }
 
         if (status === XmlListModel.Error)
         {
-            log.debug(Verbose.MODEL, "CaptureCardModel: ERROR: " + errorString() + " - " + captureCardModel.source.toString());
+            log.debug(Verbose.MODEL, "CaptureCardModel: ERROR: " + errorString() + " - " + captureCardModel.source);
         }
     }
 }

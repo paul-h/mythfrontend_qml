@@ -30,12 +30,12 @@ Item
 
             if (status === XmlListModel.Loading)
             {
-                log.debug(Verbose.MODEL, "WebcamListModel: LOADING - " + source.toString());
+                log.debug(Verbose.MODEL, "WebcamListModel: LOADING - " + source);
             }
 
             if (status === XmlListModel.Error)
             {
-                log.error(Verbose.MODEL, "WebcamListModel: ERROR: " + errorString() + " - " + source.toString());
+                log.error(Verbose.MODEL, "WebcamListModel: ERROR: " + errorString() + " - " + source);
             }
         }
 
@@ -158,12 +158,12 @@ Item
 
                     if (status === XmlListModel.Loading)
                     {
-                        log.debug(Verbose.MODEL, "WebCamModel: LOADING - " + source.toString());
+                        log.debug(Verbose.MODEL, "WebCamModel: LOADING - " + source);
                     }
 
                     if (status === XmlListModel.Error)
                     {
-                        log.error(Verbose.MODEL, "WebCamModel: ERROR: " + errorString() + " - " + source.toString());
+                        log.error(Verbose.MODEL, "WebCamModel: ERROR: " + errorString() + " - " + source);
                     }
 
                     model.loadingStatus(status);

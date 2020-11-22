@@ -27,12 +27,12 @@ XmlListModel
 
         if (status === XmlListModel.Loading)
         {
-            log.debug(Verbose.MODEL, "EncodersModel: LOADING - " + source.toString());
+            log.debug(Verbose.MODEL, "EncodersModel: LOADING - " + source);
         }
 
         if (status === XmlListModel.Error)
         {
-            log.error(Verbose.MODEL, "EncodersModel: ERROR - " + errorString() + " - " + source.toString());
+            log.error(Verbose.MODEL, "EncodersModel: ERROR - " + errorString() + " - " + source);
         }
     }
 }

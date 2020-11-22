@@ -24,12 +24,12 @@ XmlListModel
 
         if (status === XmlListModel.Loading)
         {
-            log.debug(Verbose.MODEL, "ZMDaemonCheckModel: LOADING - " + source.toString());
+            log.debug(Verbose.MODEL, "ZMDaemonCheckModel: LOADING - " + source);
         }
 
         if (status === XmlListModel.Error)
         {
-            log.error(Verbose.MODEL, "ZMDaemonCheckModel: ERROR - " + errorString() + " - " + source.toString());
+            log.error(Verbose.MODEL, "ZMDaemonCheckModel: ERROR - " + errorString() + " - " + source);
         }
     }
 }

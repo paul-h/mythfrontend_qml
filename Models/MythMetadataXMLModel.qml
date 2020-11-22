@@ -26,12 +26,12 @@ XmlListModel
 
         if (status === XmlListModel.Loading)
         {
-            log.debug(Verbose.MODEL, "MythMetadataXMLModel: LOADING - " + mxmlModel.source.toString())
+            log.debug(Verbose.MODEL, "MythMetadataXMLModel: LOADING - " + mxmlModel.source)
         }
 
         if (status === XmlListModel.Error)
         {
-            log.error(Verbose.MODEL, "MythMetadataXMLModel: ERROR - " + errorString() + " - " + source.toString());
+            log.error(Verbose.MODEL, "MythMetadataXMLModel: ERROR - " + errorString() + " - " + source);
         }
     }
 }

@@ -18,12 +18,12 @@ XmlListModel
 
         if (status === XmlListModel.Loading)
         {
-            log.debug(Verbose.MODEL, "RecGroupModel: LOADING - " + source.toString());
+            log.debug(Verbose.MODEL, "RecGroupModel: LOADING - " + source);
         }
 
         if (status === XmlListModel.Error)
         {
-            log.debug(Verbose.MODEL, "RecGroupModel: ERROR: " + errorString() + " - " + source.toString());
+            log.debug(Verbose.MODEL, "RecGroupModel: ERROR: " + errorString() + " - " + source);
         }
     }
 }
