@@ -19,7 +19,10 @@ BaseScreen
 
         while (stack.busy) {};
 
-        playerSources.webvideoFilterCategory = dbUtils.getSetting("LastWebvideoCategory", settings.hostName)
+        if (isPanel)
+            playerSources.webvideoFilterCategory = "<All Web Videos>";
+        else
+            playerSources.webvideoFilterCategory = dbUtils.getSetting("LastWebvideoCategory", settings.hostName);
 
         if (playerSources.webvideoFilterCategory == "<All Web Videos>" || playerSources.webvideoFilterCategory == "")
             footer.greenText = "Show (All Web Videos)"
@@ -334,6 +337,45 @@ BaseScreen
             webvideoGrid.focus = true;
         }
     }
+
+    function createMenu(menu)
+   {
+       menu.clear();
+
+       menu.append({"menutext": "All", "loaderSource": "WebVideoViewer.qml", "menuSource": ""});
+       menu.append({"menutext": "Favourite", "loaderSource": "WebVideoViewer.qml", "menuSource": ""});
+       menu.append({"menutext": "New", "loaderSource": "WebVideoViewer.qml", "menuSource": ""});
+       menu.append({"menutext": "---", "loaderSource": "WebVideoViewer.qml", "loaderSource": "", "menuSource": ""});
+
+       for (var x = 0; x < playerSources.webvideoList.categoryList.count; x++)
+       {
+           menu.append({"menutext": playerSources.webvideoList.categoryList.get(x).item, "loaderSource": "WebVideoViewer.qml", "menuSource": ""});
+       }
+   }
+
+   function setFilter(filter)
+   {
+       if (filter === "All" || filter === "<All Web Videos>")
+       {
+           feedChanged("Web Videos", "", 0);
+           playerSources.webvideoFilterFavorite ="Any";
+       }
+       else if (filter === "Favourite")
+       {
+           feedChanged("Web Videos", "", 0);
+           playerSources.webvideoFilterFavorite ="Yes";
+       }
+       else if (filter === "New")
+       {
+           feedChanged("Web Videos", "New", 0)
+           playerSources.webvideoFilterFavorite ="Any";
+       }
+       else if (filter != "---" )
+       {
+           feedChanged("Web Videos", filter, 0);
+           playerSources.webvideoFilterFavorite ="Any";
+       }
+   }
 
     function feedChanged(feedSource, filter, index)
     {

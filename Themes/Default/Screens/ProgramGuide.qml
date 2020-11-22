@@ -120,6 +120,7 @@ BaseScreen
         else if (event.key === Qt.Key_F1)
         {
             // RED
+            event.accepted = true;
         }
         else if (event.key === Qt.Key_F2)
         {
@@ -152,11 +153,11 @@ BaseScreen
         }
         else if (event.key === Qt.Key_A)
         {
-            channelGroupsModel.addChannelToGroup(channelList.model.get(channelList.currentIndex).ChanId, 1)
+            playerSources.channelGroups.addChannelToGroup(channelList.model.get(channelList.currentIndex).ChanId, 1)
         }
         else if (event.key === Qt.Key_R)
         {
-            channelGroupsModel.removeChannelFromGroup(channelList.model.get(channelList.currentIndex).ChanId, 1)
+            playerSources.channelGroups.removeChannelFromGroup(channelList.model.get(channelList.currentIndex).ChanId, 1)
         }
     }
 
@@ -411,20 +412,6 @@ BaseScreen
         }
     }
 
-    ChannelGroupsModel
-    {
-        id: channelGroupsModel
-        onStatusChanged:
-        {
-            if (status == XmlListModel.Ready)
-            {
-                groupMenu.addMenuItem("", "All Channels", -1);
-                for (var x = 0; x < count; x++)
-                    groupMenu.addMenuItem("", get(x).Name, get(x).GroupId);
-            }
-        }
-    }
-
     PopupMenu
     {
         id: groupMenu
@@ -446,5 +433,29 @@ BaseScreen
         {
             channelList.focus = true;
         }
+
+        Component.onCompleted:
+        {
+            addMenuItem("", "All Channels", -1);
+            for (var x = 0; x < playerSources.channelGroups.count; x++)
+                addMenuItem("", playerSources.channelGroups.get(x).Name, playerSources.channelGroups.get(x).GroupId);
+        }
     }
+
+    function createMenu(menu)
+    {
+         menu.clear();
+
+        menu.append({"menutext": "All", "loaderSource": "MythTVChannelViewer.qml", "menuSource": "", "filter": -1});
+
+        for (var x = 0; x < playerSources.channelGroups.count; x++)
+            menu.append({"menutext": playerSources.channelGroups.get(x).Name, "loaderSource": "MythTVChannelViewer.qml", "menuSource": "", "filter": playerSources.channelGroups.get(x).GroupId});
+    }
+
+   function setFilter(groupName, groupId)
+   {
+       footer.greenText = "Show (" + groupName +")";
+
+       channelsModel.channelGroupId = groupId;
+   }
 }

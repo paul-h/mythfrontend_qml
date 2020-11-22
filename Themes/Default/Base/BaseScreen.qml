@@ -40,7 +40,6 @@ Item
     TitleText
     {
         id: screenTitle
-        text: title
         x: 20
         width: parent.width - xscale(200)
         visible : true
@@ -81,14 +80,7 @@ Item
         }
         else
         {
-            if (previousFocusItem)
-            {
-                res = true;
-                escapeSound.play();
-                previousFocusItem.focus = true;
-            }
-            else
-                res = false;
+            themedPanel.handleEscape();
         }
 
         return res;
@@ -134,6 +126,18 @@ Item
     function pauseVideo(pause)
     {
         screenBackground.pauseVideo(pause);
+    }
+
+    function handleCommand(command)
+    {
+        log.debug(Verbose.GUI, "BaseScreen: handle command - " + command);
+        return false;
+    }
+
+    function handleSearch(message)
+    {
+        log.debug(Verbose.GUI, "BaseScreen: handle search - " + message);
+        return false;
     }
 
     Component.onCompleted:
