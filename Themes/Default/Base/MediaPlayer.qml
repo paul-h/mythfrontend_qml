@@ -18,15 +18,16 @@ FocusScope
     property alias feed: feedSource
 
     property int streamlinkPort: Util.randomIntFromRange(4000, 65536)
-    property string streamlinkLog
+    property string commandlog
 
-    // one of VLC, FFMPEG, WebBrowser, YouTube, YouTubeTV, RailCam, StreamLink, Internal
+    // one of VLC, FFMPEG, WebBrowser, YouTube, YouTubeTV, RailCam, StreamLink, StreamBuffer, Internal
     property string player: ""
 
     property bool showBorder: true
     property bool muteAudio: false
     property bool showRailcamApproach: false
     property bool showRailcamDiagram: false
+    property bool showFeedBrowser: false
 
     // private properties
     property bool _playbackStarted: false
@@ -49,6 +50,7 @@ FocusScope
     FeedSource
     {
         id: feedSource
+        objectName: parent.objectName
     }
 
     Process
@@ -69,18 +71,42 @@ FocusScope
         interval: 1000; running: false; repeat: true
         onTriggered:
         {
-            streamlinkLog = streamLinkProcess.readAll();
-
-            if (streamlinkLog.includes("No playable streams found on this URL"))
+            if (player === "StreamLink")
             {
-                showMessage("No playable streams found!", settings.osdTimeoutMedium);
-                checkProcessTimer.stop();
+                commandlog = streamLinkProcess.readAllStandardOutput();
+                if (commandlog.includes("No playable streams found on this URL"))
+                {
+                    showMessage("No playable streams found!", settings.osdTimeoutMedium);
+                    checkProcessTimer.stop();
+                }
+                else if (commandlog.includes("Starting server, access with one of:"))
+                {
+                    checkProcessTimer.stop();
+                    qtAVPlayer.visible = true;
+                    switchURL("http://127.0.1.1:" + streamlinkPort + "/");
+                }
             }
-            else if (streamlinkLog.includes("Starting server, access with one of:"))
+            else
             {
-                checkProcessTimer.stop();
-                qtAVPlayer.visible = true;
-                switchURL("http://127.0.1.1:" + streamlinkPort + "/");
+                // player must be StreamBuffer
+
+                commandlog = streamLinkProcess.readAllStandardError();
+                if (commandlog.includes("Invalid data found when processing input"))
+                {
+                    showMessage("No playable streams found!", settings.osdTimeoutMedium);
+                    checkProcessTimer.stop();
+                }
+                else if (commandlog.includes("Press [q] to stop, [?] for help"))
+                {
+                    checkProcessTimer.stop();
+                    qtAVPlayer.visible = true;
+                    delay(5000, playStream);
+                }
+            }
+
+            function playStream()
+            {
+                switchURL(settings.configPath + "stream.ts")
             }
         }
     }
@@ -126,7 +152,6 @@ FocusScope
         settings.javascriptEnabled: true
         settings.javascriptCanOpenWindows: true
         audioMuted: false;
-        //userScripts: [earthcamScript]
 
         Component.onCompleted: settings.playbackRequiresUserGesture = false;
 
@@ -721,6 +746,95 @@ FocusScope
         }
     }
 
+    BaseBackground
+    {
+        id: browsePanel
+        x: xscale(10);
+        y: parent.height - _yscale(160) - yscale(10);
+        opacity: 0.75
+        width: parent.width - xscale(20);
+        height: _yscale(160)
+
+        visible: false
+
+        Image
+        {
+            id: b_icon
+            x: _xscale(10)
+            y: _yscale(10)
+            width: _xscale(100)
+            height: _yscale(100)
+            source:
+            {
+                if (!feedSource.feedList.get(feedSource.currentFeed))
+                   return mythUtils.findThemeFile("images/grid_noimage.png");
+                else
+                    getIconURL(feedSource.feedList.get(feedSource.currentFeed).icon);
+            }
+
+            onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/grid_noimage.png")
+        }
+
+        TitleText
+        {
+            id: b_title
+            x: b_icon.width + _xscale(15)
+            y: _yscale(5)
+            width: parent.width - currFeed.width - b_icon.width - _xscale(25)
+            height: _yscale(50)
+            fontPixelSize: (_xscale(24) + _yscale(24)) / 2
+            text:
+            {
+                if (!feedSource.feedList.get(feedSource.currentFeed))
+                   return "";
+                else if (feedSource.feedList.get(feedSource.currentFeed).title !== undefined)
+                    return feedSource.feedList.get(feedSource.currentFeed).title
+                else if (feedSource.feedList.get(feedSource.currentFeed).url !== undefined)
+                    return feedSource.feedList.get(feedSource.currentFeed).url
+                else
+                    return ""
+            }
+
+            verticalAlignment: Text.AlignTop
+        }
+
+        InfoText
+        {
+            id: b_currFeed
+            x: parent.width - width - _xscale(15)
+            y: _yscale(0)
+            width: _xscale(240)
+            height: _yscale(50)
+            fontPixelSize: (_xscale(16) + _yscale(16)) / 2
+            text: feedSource.currentFeed + 1 + " of " + feedSource.feedCount + " (" + feedSource.feedName + ")"
+
+            horizontalAlignment: Text.AlignRight
+        }
+
+        Footer
+        {
+            id: b_footer
+            x: root._xscale(5)
+            y: parent.height - root._yscale(38)
+            width: parent.width - root._xscale(10)
+            height: root._yscale(32)
+
+            redText: "Previous"
+            greenText: "Next"
+            yellowText:
+            {
+                "Show Web Pages";
+            }
+            blueText:
+            {
+                if (player === "RailCam")
+                    "Show RailCam Info";
+                else
+                    "";
+            }
+        }
+    }
+
     Timer
     {
         id: messageTimer
@@ -829,25 +943,49 @@ FocusScope
         qtAVPlayer.stop();
         webPlayer.url = "about:blank";
 
-        // we always need to restart the StreamLink process even if it is already running
-        if (newPlayer === "StreamLink")
+        activeFeedChanged();
+        showMessage("", 0);
+
+        // we always need to restart the StreamLink/StreamBuffer process even if it is already running
+        if (newPlayer === "StreamLink" || newPlayer === "StreamBuffer")
         {
             youtubePlayer.visible = false;
             webPlayer.visible = false;
             vlcPlayer.visible = false;
             qtAVPlayer.visible = false;
 
+            commandlog = "";
+
             var url = feedSource.feedList.get(feedSource.currentFeed).url;
+            var command = "";
+            var parameters = ""
+            if (newPlayer === "StreamLink")
+            {
+                var pluginPath = settings.sharePath.replace("file://", "") + "qml/Streamlink/plugins/"
+                // also search for plugins in the streamlink directory in the same location as the webcams list file
+                pluginPath += "," + Util.getPath(settings.webcamListFile.replace("file://", "")) + "/streamlink";
 
-            var pluginPath = settings.sharePath.replace("file://", "") + "qml/Streamlink/plugins/"
-            // also search for plugins in the streamlink directory in the same location as the webcams list file
-            pluginPath += "," + Util.getPath(settings.webcamListFile.replace("file://", "")) + "/streamlink";
+                command = "streamlink"
+                parameters = ["--plugin-dirs", pluginPath, "--player-external-http", "--player-external-http-port", streamlinkPort, url, "best"]
 
-            var command = "streamlink"
-            var parameters = ["--plugin-dirs", pluginPath, "--player-external-http", "--player-external-http-port", streamlinkPort, url, "best"]
 
+            }
+            else
+            {
+                // player is "StreamBuffer"
+                var outputFilename = settings.configPath + "stream.ts";
+
+                // delete any old stream.ts file
+                mythUtils.removeFile(outputFilename);
+
+                command = "ffmpeg"
+                parameters = ["-re", "-t", "7200", "-i", url, "-c", "copy", outputFilename];
+            }
+
+            // run the command
             streamLinkProcess.start(command, parameters);
 
+            // start the timer to check the log
             checkProcessTimer.running = true;
 
             root.player = newPlayer;
@@ -1022,11 +1160,11 @@ FocusScope
     {
         if (feedSource.feedName === "Webcams")
         {
-            var id = feedSource.feedList.get(feedSource.currentFeed).id;
-            var index = playerSources.webcamList.findById(id);
+            var id = feedSource.feedList.sourceModel.get(feedSource.currentFeed).id;
+            var index = feedSource.feedList.sourceModel.findById(id);
 
             if (index != -1)
-                playerSources.webcamList.model.get(index).offline = !playerSources.webcamList.model.get(index).offline;
+                feedSource.feedList.sourceModel.get(index).offline = !feedSource.feedList.sourceModel.get(index).offline;
         }
     }
 
@@ -1204,7 +1342,7 @@ FocusScope
 
     function getLink(linktype)
     {
-        if (feedSource.feedList.get(feedSource.currentFeed).links === "")
+        if (!feedSource.feedList.get(feedSource.currentFeed).links || feedSource.feedList.get(feedSource.currentFeed).links === "")
             return undefined;
 
         var links = feedSource.feedList.get(feedSource.currentFeed).links.split("\n");

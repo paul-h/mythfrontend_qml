@@ -89,6 +89,7 @@ BaseScreen
     ChannelsModel
     {
         id: channelsModel
+        sourceId: -1
         groupByCallsign: false;
         onlyVisible: true;
     }
@@ -199,7 +200,8 @@ BaseScreen
 
             if (filterSourceIndex >= videoSourceModel.count)
             {
-                filterSourceIndex = -1;
+                filterSourceIndex = 0;
+                sourceValue.value = -1;
                 channelsProxyModel.filters = [];
                 footer.greenText = "Show (All Video Sources)"
             }
@@ -239,7 +241,7 @@ BaseScreen
 
     InfoText
     {
-        x: xscale(1050); y: yscale(5); width: xscale(200);
+        x: parent.width - xscale(215); y: yscale(5); width: xscale(200);
         text: (channelList.currentIndex + 1) + " of " + channelList.model.count;
         horizontalAlignment: Text.AlignRight
     }
@@ -298,7 +300,7 @@ BaseScreen
     ButtonList
     {
         id: channelList
-        x: xscale(20); y: yscale(60); width: xscale(1240); height: yscale(200)
+        x: xscale(20); y: yscale(60); width: parent.width - xscale(40); height: yscale(200)
 
         model: channelsProxyModel
         delegate: listRow
@@ -437,7 +439,7 @@ BaseScreen
     {
         var index = videoMultiplexModel.findById(channelList.model.get(channelList.currentIndex).MplexId);
 
-        if (index > 0 && index < videoMultiplexModel.count)
+        if (index >= 0 && index < videoMultiplexModel.count)
         {
             detailsModel.setProperty(7, "info", videoMultiplexModel.get(index).TransportId.toString());
             detailsModel.setProperty(8, "info", videoMultiplexModel.get(index).NetworkId.toString());
@@ -461,6 +463,31 @@ BaseScreen
             detailsModel.setProperty(26, "info", videoMultiplexModel.get(index).ServiceVersion);
             detailsModel.setProperty(27, "info", videoMultiplexModel.get(index).UpdateTimeStamp);
             detailsModel.setProperty(28, "info", videoMultiplexModel.get(index).DefaultAuthority);
+        }
+        else
+        {
+            detailsModel.setProperty(7, "info", "");
+            detailsModel.setProperty(8, "info", "");
+            detailsModel.setProperty(9, "info", "");
+            detailsModel.setProperty(10, "info", "");
+            detailsModel.setProperty(11, "info", "");
+            detailsModel.setProperty(12, "info", "");
+            detailsModel.setProperty(13, "info", "");
+            detailsModel.setProperty(14, "info", "");
+            detailsModel.setProperty(15, "info", "");
+            detailsModel.setProperty(16, "info", "");
+            detailsModel.setProperty(17, "info", "");
+            detailsModel.setProperty(18, "info", "");
+            detailsModel.setProperty(19, "info", "");
+            detailsModel.setProperty(20, "info", "");
+            detailsModel.setProperty(21, "info", "");
+            detailsModel.setProperty(22, "info", "");
+            detailsModel.setProperty(23, "info", "");
+            detailsModel.setProperty(24, "info", "");
+            detailsModel.setProperty(25, "info", "");
+            detailsModel.setProperty(26, "info", "");
+            detailsModel.setProperty(27, "info", "");
+            detailsModel.setProperty(28, "info", "");
         }
     }
 

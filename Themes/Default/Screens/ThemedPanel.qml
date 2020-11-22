@@ -8,7 +8,7 @@ import mythqml.net 1.0
 
 BaseScreen
 {
-    id: root
+    id: themedPanel
     objectName: "themedpanel"
 
     defaultFocusItem: buttonList
@@ -25,19 +25,34 @@ BaseScreen
         showTicker(false);
         muteAudio(true);
 
-        // FIXME: should load the last shown feed here
-        mediaModel.get(0).title = "Film4";
-        mediaModel.get(0).url = "http://192.168.1.110:55555/Film4";
+        internalPlayer.mediaPlayer1.feed.feedModelLoaded.connect(playerReady);
+        internalPlayer.feedChanged.connect(feedChanged);
 
-        playerSources.adhocList = mediaModel;
-        internalPlayer.mediaPlayer1.feed.switchToFeed("Adhoc" , "", 0);
-        internalPlayer.mediaPlayer1.startPlayback();
+        // load the last shown feed
+        feedSource = dbUtils.getSetting("LastFeedSource", settings.hostName, "Live TV")
+        feedFilter = dbUtils.getSetting("LastFeedFilter", settings.hostName, "-1,-1")
+        feedIndex = dbUtils.getSetting("LastFeedIndex", settings.hostName, 0)
+
+        delay(2000, delayedInit());
 
         internalPlayer.previousFocusItem = buttonList
 
-        videoTitle.text = mediaModel.get(0).title;
-
         focus = true;
+    }
+
+    function delayedInit()
+    {
+        internalPlayer.mediaPlayer1.feed.switchToFeed(feedSource , feedFilter, feedIndex);
+    }
+
+    Component.onDestruction:
+    {
+        if (feedSource === "Live TV")
+        {
+            dbUtils.setSetting("LastFeedSource", settings.hostName, feedSource);
+            dbUtils.setSetting("LastFeedFilter", settings.hostName, feedFilter);
+            dbUtils.setSetting("LastFeedIndex", settings.hostName, feedIndex);
+        }
     }
 
     Keys.onPressed:
@@ -234,6 +249,11 @@ BaseScreen
             {
                 panel3Title.text = model.get(currentIndex).menutext;
                 panel2.width = (focus ? xscale(300) : 0);
+
+                if (focus && videoPlayerFullscreen)
+                {
+                    toggleFullscreenPlayer();
+                }
             }
 
             model: panel2Loader.item
@@ -366,7 +386,7 @@ BaseScreen
                     return;
 
                 if (typeof panelStack.currentItem.setFilter === "function")
-                    panelStack.currentItem.setFilter(model.get(currentIndex).menutext);
+                    panelStack.currentItem.setFilter(model.get(currentIndex).menutext, model.get(currentIndex).filter);
                 else
                 {
                     var themeFile = mythUtils.findThemeFile("Screens/" + buttonList3.model.get(buttonList3.currentIndex).loaderSource);
@@ -379,7 +399,7 @@ BaseScreen
                     }
 
                     if (typeof panelStack.currentItem.setFilter === "function")
-                        panelStack.currentItem.setFilter(model.get(currentIndex).menutext);
+                        panelStack.currentItem.setFilter(model.get(currentIndex).menutext, model.get(currentIndex).filter);
                 }
             }
         }
@@ -430,29 +450,47 @@ BaseScreen
         }
     }
 
+    // from InernalPlayer feedChanged signal
+    function feedChanged(source, filter, index)
+    {
+        themedPanel.feedSource = source;
+        themedPanel.feedFilter = filter;
+        themedPanel.feedIndex = index;
+        videoTitle.text = internalPlayer.mediaPlayer1.feed.feedList.get(internalPlayer.mediaPlayer1.feed.currentFeed).title;
+
+        if (panelStack.currentItem.feedChanged)
+            panelStack.currentItem.feedChanged(source, filter, index);
+    }
+
     function play(feedSource, filter, index)
     {
         feedSelected(feedSource, filter, index);
     }
 
-    function feedSelected(feedSource, filter, index)
+    function feedSelected(source, filter, index)
     {
         if (videoPlayerFullscreen)
             return;
 
-        if (root.feedSource == feedSource && root.feedFilter == filter && root.feedIndex == index)
+        if (themedPanel.feedSource == source && themedPanel.feedFilter == filter && themedPanel.feedIndex == index)
         {
             toggleFullscreenPlayer();
             return;
         }
 
-        root.feedSource = feedSource;
-        root.feedFilter = filter;
-        root.feedIndex = index;
+        themedPanel.feedSource = source;
+        themedPanel.feedFilter = filter;
+        themedPanel.feedIndex = index;
 
-        internalPlayer.mediaPlayer1.feed.switchToFeed(feedSource , filter, index);
+        internalPlayer.mediaPlayer1.feed.switchToFeed(source , filter, index);
         internalPlayer.mediaPlayer1.startPlayback();
 
+        videoTitle.text = internalPlayer.mediaPlayer1.feed.feedList.get(internalPlayer.mediaPlayer1.feed.currentFeed).title;
+    }
+
+    function playerReady()
+    {
+        internalPlayer.mediaPlayer1.startPlayback();
         videoTitle.text = internalPlayer.mediaPlayer1.feed.feedList.get(internalPlayer.mediaPlayer1.feed.currentFeed).title;
     }
 
@@ -483,67 +521,26 @@ BaseScreen
             buttonList.focus = true;
     }
 
-    function handleShowMenu(buttonList, loader)
-    {
-        if (buttonList.model.get(buttonList.currentIndex).loaderSource === "ThemedMenu.qml")
-        {
-            loader.source = settings.sharePath + "qml/MenuThemes/panel/" + buttonList.model.get(buttonList.currentIndex).menuSource;
-        }
-        else if (buttonList.model.get(buttonList.currentIndex).loaderSource === "WebBrowser.qml")
-        {
-            var url = buttonList.model.get(currentIndex).url
-            var zoom = xscale(buttonList.model.get(currentIndex).zoom)
-            var fullscreen = buttonList.model.get(currentIndex).fullscreen
-            panelStack.push({item: mythUtils.findThemeFile("Panels/WebBrowser.qml"), properties:{url: url, fullscreen: fullscreen, zoomFactor: zoom}});
-        }
-        else if (buttonList.model.get(currentIndex).loaderSource === "InternalPlayer.qml")
-        {
-            var layout = buttonList.model.get(currentIndex).layout
-            var feedSource = buttonList.model.get(currentIndex).feedSource
-            stack.push({item: mythUtils.findThemeFile("Panels/InternalPlayer.qml"), properties:{layout: layout, defaultFeedSource: feedSource, defaultCurrentFeed: 0}});
-        }
-        else if (buttonList.model.get(currentIndex).loaderSource === "External Program")
-        {
-            var message = buttonList.model.get(currentIndex).menutext + " will start shortly.\nPlease Wait.....";
-            var timeOut = 10000;
-            showBusyDialog(message, timeOut);
-            var command = buttonList.model.get(currentIndex).exec
-            externalProcess.start(command, []);
-        }
-        else if (buttonList.model.get(currentIndex).loaderSource === "reboot")
-        {
-            reboot();
-        }
-        else if (buttonList.model.get(currentIndex).loaderSource === "shutdown")
-        {
-            shutdown();
-        }
-        else if (buttonList.model.get(currentIndex).loaderSource === "quit")
-        {
-            quit();
-        }
-        else
-        {
-            if (mythUtils.findThemeFile("Panels/" + buttonList.model.get(currentIndex).loaderSource) !== "")
-                stack.push({item: mythUtils.findThemeFile("Panels/" + buttonList.model.get(currentIndex).loaderSource)});
-            else
-                stack.push({item: mythUtils.findThemeFile("Screens/" + buttonList.model.get(currentIndex).loaderSource)});
-        }
-    }
-
-    ListModel
+    Component
     {
         id: emptyList
+        ListModel {}
     }
 
     function handleSelected(button_list, loader)
     {
         // add any menu items from the menuLoader if specified
         if (button_list.model.get(button_list.currentIndex).menuSource !== undefined)
+        {
+            loader.sourceComponent = undefined;
             loader.source = settings.sharePath + "qml/MenuThemes/panel/" + button_list.model.get(button_list.currentIndex).menuSource;
+        }
         else
-            loader.source = settings.sharePath + "qml/MenuThemes/panel/EmptyMenu.qml";
+        {
+            loader.sourceComponent = emptyList; //settings.sharePath + "qml/MenuThemes/panel/EmptyMenu.qml";
+        }
 
+        // wait for the loader
         while (loader.status == Loader.Loading) {}
 
         if (button_list.model.get(button_list.currentIndex).loaderSource === "WebBrowser.qml")
@@ -551,12 +548,14 @@ BaseScreen
             var url = button_list.model.get(button_list.currentIndex).url
             var zoom = xscale(button_list.model.get(button_list.currentIndex).zoom)
             var fullscreen = button_list.model.get(button_list.currentIndex).fullscreen
+            panelStack.pop();
             panelStack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: url, fullscreen: fullscreen, zoomFactor: zoom}});
         }
         else if (button_list.model.get(button_list.currentIndex).loaderSource === "InternalPlayer.qml")
         {
             var layout = button_list.model.get(button_list.currentIndex).layout
             var feedSource = button_list.model.get(button_list.currentIndex).feedSource
+            panelStack.pop();
             panelStack.push({item: mythUtils.findThemeFile("Screens/InternalPlayer.qml"), properties:{layout: layout, defaultFeedSource: feedSource, defaultCurrentFeed: 0}});
         }
         else if (button_list.model.get(button_list.currentIndex).loaderSource === "External Program")
@@ -593,9 +592,10 @@ BaseScreen
                     if (item.feedSelected)
                         item.feedSelected.connect(feedSelected);
 
-                    // FIXME need to update the correct buttonlist
                     if (item.createMenu)
                         item.createMenu(loader.item);
+
+                    buttonList3.currentIndex = 0;
                 }
             }
         }
@@ -612,6 +612,7 @@ BaseScreen
 
         if (videoPlayerFullscreen)
         {
+            internalPlayer.previousFocusItem = panelStack.currentItem.previousFocusItem;
             internalPlayer.x = 0;
             internalPlayer.y = 0;
             internalPlayer.width = window.width;
@@ -624,7 +625,12 @@ BaseScreen
             internalPlayer.y = yscale(300);
             internalPlayer.width = panel1.width - xscale(3);
             internalPlayer.height = (panel1.width - xscale(3)) / 1.77777777;
-            panelStack.focus = true; //FIXME should we focus the last focus item here?
+
+            if (internalPlayer.previousFocusItem)
+            {
+                panelStack.focus = true;
+                internalPlayer.previousFocusItem.focus = true;
+            }
         }
     }
 }

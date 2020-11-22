@@ -32,7 +32,7 @@ Window
     property double soundEffectsVolume: 1.0
     property double backgroundVideoVolume: 1.0
 
-    property alias playerSources: playerSourcesModel;
+    property alias playerSources: playerSourcesModel
 
     Component.onCompleted:
     {
@@ -356,7 +356,7 @@ Window
 
             initialItem:
             {
-                if (!settings.mythQLayout)
+                if (settings.mythQLayout)
                     createThemedPanel();
                 else
                     createThemedMenu();
@@ -692,6 +692,19 @@ Window
     WhatsNewModel
     {
         id: whatsNewModel
+    }
+
+    Timer
+    {
+        id: delayTimer
+    }
+
+    function delay(delayTime, cb)
+    {
+        delayTimer.interval = delayTime;
+        delayTimer.repeat = false;
+        delayTimer.triggered.connect(cb);
+        delayTimer.start();
     }
 
     function checkWhatsNew()

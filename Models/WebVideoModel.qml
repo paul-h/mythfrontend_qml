@@ -9,8 +9,10 @@ Item
     property int webvideoListIndex: 0
     property var model: listModel
     property var categoryList: ListModel{}
+    property alias status: webvideoModel.status
 
     signal loaded();
+    signal loadingStatus(int status);
 
     onWebvideoListIndexChanged:
     {
@@ -48,13 +50,20 @@ Item
 
             if (status === XmlListModel.Loading)
             {
-                log.debug(Verbose.MODEL, "WebvideoListModel: LOADING - " + source.toString());
+                log.debug(Verbose.MODEL, "WebvideoListModel: LOADING - " + source);
             }
 
             if (status === XmlListModel.Error)
             {
-                log.error(Verbose.MODEL, "WebvideoListModel: ERROR: " + errorString() + " - " + source.toString());
+                log.error(Verbose.MODEL, "WebvideoListModel: ERROR: " + errorString() + " - " + source);
             }
+
+            if (status === XmlListModel.Null)
+            {
+                log.debug(Verbose.MODEL, "WebvideoListModel: NULL - " + source);
+            }
+
+            loadingStatus(status);
         }
 
         Component.onCompleted:

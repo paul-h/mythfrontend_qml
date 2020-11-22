@@ -39,7 +39,7 @@ Item
     onShowBrowserChanged: changeState()
     onShowHeaderChanged: changeState()
     onPlayerLayoutChanged: changePlayerLayout()
-    onBrowserZoomChanged:  {browser.zoomFactor = browserZoom - 0.001; browser.zoomFactor = browserZoom;}
+    onBrowserZoomChanged:  { browser.zoomFactor = browserZoom - 0.001; browser.zoomFactor = browserZoom; }
 
     function initState()
     {
@@ -130,9 +130,6 @@ Item
         width: parent.width - x - xscale(10)
         height: parent.height
 
-        Behavior on height { NumberAnimation { easing.type: Easing.InOutQuad; duration: 1000 }}
-        Behavior on width  { NumberAnimation { easing.type: Easing.InOutQuad; duration: 1000 }}
-
         states:
         [
             State
@@ -156,7 +153,7 @@ Item
                                   KeyNavigation.up: browser;
                                   KeyNavigation.down: browser;
                                 }
-                StateChangeScript { script: player1.startPlayback() }
+                StateChangeScript { script: if ( !player1.isPlaying()) player1.startPlayback() }
 
                 StateChangeScript { script: player2.stop() }
                 PropertyChanges { target: videoTitle2; width: 0 }
@@ -200,7 +197,7 @@ Item
                                   KeyNavigation.up: player2;
                                   KeyNavigation.down: player2;
                                 }
-                StateChangeScript { script: player1.startPlayback() }
+                StateChangeScript { script: if ( !player1.isPlaying()) player1.startPlayback() }
 
                 PropertyChanges { target: videoTitle2;
                                   x: playerArea.width - (playerArea.width / 3) - xscale(50);
@@ -218,13 +215,13 @@ Item
                                   KeyNavigation.up: player1;
                                   KeyNavigation.down: player1;
                                  }
-                StateChangeScript { script: player2.startPlayback() }
+                StateChangeScript { script: if ( !player2.isPlaying()) player2.startPlayback() }
 
                 StateChangeScript { script: player3.stop() }
                 PropertyChanges { target: videoTitle3; width: 0 }
                 PropertyChanges { target: player3; width: 0 }
 
-                StateChangeScript { script: player4.startPlayback() }
+                StateChangeScript { script: player4.stop() }
                 PropertyChanges { target: videoTitle4; width: 0 }
                 PropertyChanges { target: player4; width: 0 }
 
@@ -256,7 +253,7 @@ Item
                                   KeyNavigation.up: player2;
                                   KeyNavigation.down: player2;
                                 }
-                StateChangeScript { script: player1.startPlayback() }
+                StateChangeScript { script: if ( !player1.isPlaying()) player1.startPlayback() }
 
                 PropertyChanges { target: videoTitle2;
                                   x: videoTitle1.x + videoTitle1.width;
@@ -275,7 +272,7 @@ Item
                                   KeyNavigation.up: player1;
                                   KeyNavigation.down: player1;
                                 }
-                StateChangeScript { script: player2.startPlayback() }
+                StateChangeScript { script: if ( !player2.isPlaying()) player2.startPlayback() }
 
                 StateChangeScript { script: player3.stop() }
                 PropertyChanges { target: videoTitle3; width: 0 }
@@ -314,7 +311,7 @@ Item
                                   KeyNavigation.up: player2;
                                   KeyNavigation.down: player2;
                                 }
-                StateChangeScript { script: player1.startPlayback() }
+                StateChangeScript { script: if ( !player1.isPlaying()) player1.startPlayback() }
 
                 PropertyChanges { target: videoTitle2;
                                   x: playerArea.width - player2.width;
@@ -334,7 +331,7 @@ Item
                                   KeyNavigation.up: player2;
                                   KeyNavigation.down: browser;
                                 }
-                StateChangeScript { script: player2.startPlayback() }
+                StateChangeScript { script: if ( !player2.isPlaying()) player2.startPlayback() }
 
                 StateChangeScript { script: player3.stop() }
                 PropertyChanges { target: videoTitle3; width: 0 }
@@ -374,7 +371,7 @@ Item
                                   KeyNavigation.up: browser;
                                   KeyNavigation.down: browser;
                                 }
-                StateChangeScript { script: player1.startPlayback() }
+                StateChangeScript { script: if ( !player1.isPlaying()) player1.startPlayback() }
 
                 PropertyChanges { target: videoTitle2;
                                   x: playerArea.width - videoTitle2.width;
@@ -393,7 +390,7 @@ Item
                                   KeyNavigation.up: browser;
                                   KeyNavigation.down: player3;
                                 }
-                StateChangeScript { script: player2.startPlayback() }
+                StateChangeScript { script: if ( !player2.isPlaying()) player2.startPlayback() }
 
                 PropertyChanges { target: videoTitle3;
                                   x: videoTitle2.x;
@@ -412,7 +409,7 @@ Item
                                   KeyNavigation.up: player2;
                                   KeyNavigation.down: browser;
                                 }
-                StateChangeScript { script: player3.startPlayback() }
+                StateChangeScript { script: if ( !player3.isPlaying()) player3.startPlayback() }
 
                 StateChangeScript { script: player4.stop() }
                 PropertyChanges { target: videoTitle4; width: 0 }
@@ -446,7 +443,7 @@ Item
                                   KeyNavigation.up: browser;
                                   KeyNavigation.down: player3;
                                 }
-                StateChangeScript { script: player1.startPlayback() }
+                StateChangeScript { script: if ( !player1.isPlaying()) player1.startPlayback() }
 
                 PropertyChanges { target: videoTitle2;
                                   x: playerArea.width / 2;
@@ -465,7 +462,7 @@ Item
                                   KeyNavigation.up: browser;
                                   KeyNavigation.down: player4;
                                 }
-                StateChangeScript { script: player2.startPlayback() }
+                StateChangeScript { script: if ( !player2.isPlaying()) player2.startPlayback() }
 
                 PropertyChanges { target: videoTitle3;
                                   x: 0;
@@ -485,7 +482,7 @@ Item
                                   KeyNavigation.up: player1;
                                   KeyNavigation.down: browser;
                                 }
-                StateChangeScript { script: player3.startPlayback() }
+                StateChangeScript { script: if ( !player3.isPlaying()) player3.startPlayback() }
 
                 PropertyChanges { target: videoTitle4;
                                   x: playerArea.width / 2;
@@ -505,7 +502,7 @@ Item
                                   KeyNavigation.up: player2;
                                   KeyNavigation.down: browser;
                                 }
-                StateChangeScript { script: player4.startPlayback() }
+                StateChangeScript { script: if ( !player4.isPlaying()) player4.startPlayback() }
 
                 PropertyChanges { target: chatBrowser;
                                   KeyNavigation.left: player2;
@@ -516,21 +513,6 @@ Item
 
                 PropertyChanges { target: root; showHeader: false; }
             }
-        ]
-
-        transitions:
-        [
-            Transition
-            {
-                from: "*"; to: "*"
-                NumberAnimation
-                {
-                    properties: "x,y,width,height";
-                    easing.type: Easing.InOutQuad;
-                    duration: 1000;
-                }
-            }
-
         ]
 
         LabelText
@@ -784,7 +766,6 @@ Item
             text: "No Web Pages Available For This Channel"
             visible: (browser.url == "about:blank")
             multiline: true
-
         }
     }
 }

@@ -20,4 +20,18 @@ BaseScreen
         id: themedMenu
         showWatermark: false;
     }
+
+    function handleCommand(command)
+    {
+        var handled = true;
+        log.debug(Verbose.GUI, "ThemedMenu: handle command - " + command);
+
+        if (command == "showmenu")
+            themedMenu.showMenu()
+        else
+            handled = false;
+
+        if (!handled)
+            BaseScreen.handleCommand(command);
+    }
 }

@@ -11,6 +11,7 @@ BaseScreen
     id: root
 
     defaultFocusItem: webcamGrid
+    previousFocusItem: webcamGrid
 
     signal feedSelected(string feedSource, string filter, int index)
 
@@ -21,46 +22,53 @@ BaseScreen
 
         while (stack.busy) {};
 
-        playerSources.webcamFilterCategory = dbUtils.getSetting("LastWebcamCategory", settings.hostName)
+        if (isPanel)
+            feedSource.category = "";
+        else
+            feedSource.category = dbUtils.getSetting("LastWebcamCategory", settings.hostName);
 
-        if (playerSources.webcamFilterCategory == "<All Webcams>" || playerSources.webcamFilterCategory == "")
+        if (feedSource.category == "<All Webcams>" || feedSource.category == "")
             footer.greenText = "Show (All Webcams)"
         else
-            footer.greenText = "Show (" + playerSources.webcamFilterCategory + ")"
+            footer.greenText = "Show (" + feedSource.category + ")"
 
         var index = dbUtils.getSetting("WebcamListIndex", settings.hostName, "");
 
         if (index !== "")
-            playerSources.webcamList.webcamListIndex = index;
+            feedSource.webcamListIndex = index;
 
-        showTitle(true, "WebCam Viewer - " + playerSources.webcamList.webcamList.get(playerSources.webcamList.webcamListIndex).title);
+        showTitle(true, "WebCam Viewer - " + playerSources.webcamList.webcamList.get(feedSource.webcamListIndex).title);
 
-        playerSources.webcamList.loaded.connect(function() { webcamGrid.currentIndex = 0; });
+        var filter = feedSource.webcamListIndex + "," + feedSource.category + "," + "title";
+        feedSource.switchToFeed("Webcams", filter, 0);
+
+        feedSource.feedModelLoaded.connect(function() { webcamGrid.currentIndex = 0; });
+
+        webcamGrid.currentIndex = 0;
 
         updateWebcamDetails();
 
-        delay(1500, checkForUpdates);
+        if (!isPanel)
+            delay(1500, checkForUpdates);
     }
 
     Component.onDestruction:
     {
-        dbUtils.setSetting("WebcamListIndex", settings.hostName, playerSources.webcamList.webcamListIndex);
-        dbUtils.setSetting("LastWebcamCategory", settings.hostName, playerSources.webcamFilterCategory)
-        playerSources.webcamList.saveFavorites();
+        dbUtils.setSetting("WebcamListIndex", settings.hostName, feedSource.webcamListIndex);
+        dbUtils.setSetting("LastWebcamCategory", settings.hostName, feedSource.category)
+        playerSources.webcamList.models[feedSource.webcamListIndex].model.saveFavorites();
     }
 
-    property list<QtObject> titleSorter:
-    [
-        RoleSorter { roleName: "title"; ascendingOrder: true}
-    ]
-
-    property list<QtObject> idSorter:
-    [
-        RoleSorter { roleName: "id" }
-    ]
+    FeedSource
+    {
+        id: feedSource
+        objectName: "WebCamViewer"
+    }
 
     Keys.onPressed:
     {
+        event.accepted = true;
+
         if (event.key === Qt.Key_M)
         {
             popupMenu.clearMenuItems();
@@ -68,33 +76,43 @@ BaseScreen
             popupMenu.addMenuItem("", "Switch WebCam List");
             popupMenu.addMenuItem("", "Reload");
             for (var x = 0; x < playerSources.webcamList.webcamList.count; x++)
-                popupMenu.addMenuItem("0", playerSources.webcamList.webcamList.get(x).title, x, (playerSources.webcamList.webcamListIndex == x ? true : false));
+                popupMenu.addMenuItem("0", playerSources.webcamList.webcamList.get(x).title, x, (feedSource.webcamListIndex == x ? true : false));
 
             popupMenu.show();
         }
         else if (event.key === Qt.Key_F1)
         {
-            playerSources.webcamTitleSorterActive = !playerSources.webcamTitleSorterActive;
+            var id = webcamGrid.model.get(webcamGrid.currentIndex).id;
 
-            if (playerSources.webcamTitleSorterActive)
+            if (feedSource.sort === "id")
+            {
+                feedSource.sort = "title";
                 footer.redText = "Sort (Name)";
+            }
             else
+            {
+                feedSource.sort = "id";
                 footer.redText = "Sort (No.)";
+            }
+
+            var index = feedSource.findById(id);
+
+            webcamGrid.currentIndex = (index != -1 ? index : 0);
         }
         else if (event.key === Qt.Key_F2)
         {
             // GREEN
-            searchDialog.model = playerSources.webcamList.categoryList
+            searchDialog.model = playerSources.webcamList.models[feedSource.webcamListIndex].categoryList
             searchDialog.show();
         }
         else if (event.key === Qt.Key_F3)
         {
             // YELLOW
             var id = webcamGrid.model.get(webcamGrid.currentIndex).id;
-            var index = playerSources.webcamList.findById(id);
+            var index = playerSources.webcamList.models[feedSource.webcamListIndex].model.findById(id);
 
             if (index != -1)
-                playerSources.webcamList.model.get(index).favorite = !playerSources.webcamList.model.get(index).favorite;
+                playerSources.webcamList.models[feedSource.webcamListIndex].model.get(index).favorite = !playerSources.webcamList.models[feedSource.webcamListIndex].model.get(index).favorite;
         }
         else if (event.key === Qt.Key_F4)
         {
@@ -106,7 +124,6 @@ BaseScreen
                 stack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: website, zoomFactor: zoom}});
             }
 
-            event.accepted = true;
             returnSound.play();
         }
         else if (event.key === Qt.Key_F5)
@@ -116,16 +133,18 @@ BaseScreen
         else if (event.key === Qt.Key_F6)
         {
             var id = webcamGrid.model.get(webcamGrid.currentIndex).id;
-            var index = playerSources.webcamList.findById(id);
+            var index = feedSource.feedList.sourceModel.findById(id)
 
             if (index != -1)
-                playerSources.webcamList.model.get(index).offline = !playerSources.webcamList.model.get(index).offline;
+                feedSource.feedList.sourceModel.get(index).offline = !feedSource.feedList.sourceModel.get(index).offline;
         }
         else if (event.key === Qt.Key_R)
         {
             // for testing reset the last checked to now -4 weeks
             dbUtils.setSetting("LastWebcamCheck", settings.hostName, Util.addDays(Date(Date.now()), -28));
         }
+        else
+            event.accepted = false;
     }
 
     BaseBackground
@@ -204,7 +223,7 @@ BaseScreen
             }
         }
 
-        model: playerSources.webcamProxyModel
+        model: feedSource.feedList
         delegate: webcamDelegate
         focus: true
 
@@ -213,13 +232,16 @@ BaseScreen
             returnSound.play();
             if (!root.isPanel)
             {
-                var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Webcams", defaultFilter:  playerSources.webcamFilterCategory, defaultCurrentFeed: webcamGrid.currentIndex}});
+                var filter = feedSource.webcamListIndex + "," + feedSource.category + "," + feedSource.sort;
+                var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Webcams", defaultFilter:  filter, defaultCurrentFeed: webcamGrid.currentIndex}});
                 item.feedChanged.connect(feedChanged);
 
             }
             else
             {
-                feedSelected("Webcams", playerSources.webcamFilterCategory, webcamGrid.currentIndex);
+                var filter = feedSource.webcamListIndex + "," + feedSource.category + "," + feedSource.sort;
+                previousFocusItem = webcamGrid;
+                feedSelected("Webcams", filter, webcamGrid.currentIndex);
             }
 
             event.accepted = true;
@@ -310,14 +332,14 @@ BaseScreen
         {
             if (itemText != "<All Webcams>")
             {
-                playerSources.webcamFilterCategory = itemText;
+                feedSource.category = ""; // this is needed to get the ExpressionFilter to re-evaluate
+                feedSource.category = itemText;
                 footer.greenText = "Show (" + itemText + ")"
             }
             else
             {
-                playerSources.webcamFilterCategory = "";
+                feedSource.category = "";
                 footer.greenText = "Show (All Webcams)"
-
             }
 
             webcamGrid.focus = true;
@@ -339,16 +361,16 @@ BaseScreen
 
             if (itemText == "Reload")
             {
-                playerSources.webcamList.reload();
+                playerSources.webcamList.models[feedSource.webcamListIndex].model.reload();
             }
             else if (itemData !== "")
             {
-                playerSources.webcamList.saveFavorites();
-                playerSources.webcamList.webcamListIndex = itemData;
+                playerSources.webcamList.models[feedSource.webcamListIndex].model.saveFavorites();
+                feedSource.webcamListIndex = itemData;
 
-                showTitle(true, "WebCam Viewer - " + playerSources.webcamList.webcamList.get(playerSources.webcamList.webcamListIndex).title);
+                showTitle(true, "WebCam Viewer - " + playerSources.webcamList.webcamList.get(feedSource.webcamListIndex).title);
 
-                playerSources.webcamFilterCategory = "";
+                feedSource.category = "";
                 footer.greenText = "Show (All Webcams)"
             }
         }
@@ -368,56 +390,76 @@ BaseScreen
         menu.append({"menutext": "New", "loaderSource": "WebCamViewer.qml", "menuSource": ""});
         menu.append({"menutext": "---", "loaderSource": "WebCamViewer.qml", "loaderSource": "", "menuSource": ""});
 
-        for (var x = 0; x < playerSources.webcamList.categoryList.count; x++)
+        for (var x = 0; x < playerSources.webcamList.models[feedSource.webcamListIndex].categoryList.count; x++)
         {
-            menu.append({"menutext": playerSources.webcamList.categoryList.get(x).item, "loaderSource": "WebCamViewer.qml", "menuSource": ""});
+            menu.append({"menutext": playerSources.webcamList.models[feedSource.webcamListIndex].categoryList.get(x).item, "loaderSource": "WebCamViewer.qml", "menuSource": ""});
         }
     }
 
     function setFilter(filter)
     {
+        var filterList;
         if (filter === "All" || filter === "<All Webcams>")
         {
-            feedChanged("Webcams", "", 0);
-            playerSources.webcamFilterFavorite ="Any";
+            filterList = feedSource.webcamListIndex + ",," + feedSource.sort;
+            feedChanged("Webcams", filterList, 0);
+            feedSource.webcamFilterFavorite ="Any";
         }
         else if (filter === "Favourite")
         {
-            feedChanged("Webcams", "", 0);
-            playerSources.webcamFilterFavorite ="Yes";
+            filterList = feedSource.webcamListIndex + ",," + feedSource.sort;
+            feedChanged("Webcams", filterList, 0);
+            feedSource.webcamFilterFavorite ="Yes";
         }
         else if (filter === "New")
         {
-            feedChanged("Webcams", "New", 0)
-            playerSources.webcamFilterFavorite ="Any";
+            filterList = feedSource.webcamListIndex + ",New," + feedSource.sort;
+            feedChanged("Webcams", filterList, 0)
+            feedSource.webcamFilterFavorite ="Any";
         }
         else if (filter != "---" )
         {
-            feedChanged("Webcams", filter, 0);
-            playerSources.webcamFilterFavorite ="Any";
+            filterList = feedSource.webcamListIndex + "," + filter + "," + feedSource.sort;
+            feedChanged("Webcams", filterList, 0);
+            feedSource.webcamFilterFavorite ="Any";
         }
     }
 
-    function feedChanged(feedSource, filter, index)
+    function feedChanged(feed, filterList, currentIndex)
     {
-        if (feedSource !== "Webcams")
+        console.log("feedSource: " + feed + ",filterList: " + filterList + ", currentIndex: " + currentIndex);
+
+        if (feed !== "Webcams")
             return;
 
-        if (filter !== playerSources.webcamFilterCategory)
+        var list = filterList.split(",");
+        var index = 0;
+        var category = "";
+        var sort = "title";
+
+        if (list.length === 3)
         {
-            if (filter === "")
+            index = list[0];
+            category = list[1];
+            sort = list[2];
+        }
+        if (category !== feedSource.category)
+        {
+            feedSource.category = ""; // this is needed to get the ExpressionFilter to re-evaluate
+
+            if (category === "")
             {
-                playerSources.webcamFilterCategory = filter;
+                feedSource.category = category;
                 footer.greenText = "Show (All Webcams)"
             }
             else
             {
-                playerSources.webcamFilterCategory = filter;
-                footer.greenText = "Show (" + filter + ")"
+                feedSource.category = category;
+                footer.greenText = "Show (" + category + ")"
             }
         }
 
-        webcamGrid.currentIndex = index;
+        webcamGrid.currentIndex = currentIndex;
     }
 
     function getIconURL(iconURL)
@@ -429,7 +471,7 @@ BaseScreen
             else
             {
                 // try to get the icon from the same URL the webcam list was loaded from
-                var url = playerSources.webcamList.webcamList.get(playerSources.webcamList.webcamListIndex).url
+                var url = playerSources.webcamList.webcamList.get(feedSource.webcamListIndex).url
                 var r = /[^\/]*$/;
                 url = url.replace(r, '');
                 return url + iconURL;
@@ -441,6 +483,9 @@ BaseScreen
 
     function updateWebcamDetails()
     {
+        if (webcamGrid.currentIndex === -1)
+            return;
+
         title.text = webcamGrid.model.get(webcamGrid.currentIndex).title;
 
         // description
@@ -480,9 +525,9 @@ BaseScreen
         updatesModel.clear();
 
         // add new webcams
-        for (x = 0; x < playerSources.webcamList.model.count; x++)
+        for (x = 0; x < playerSources.webcamList.models[feedSource.webcamListIndex].model.count; x++)
         {
-            var webcamAdded = Date.parse(playerSources.webcamList.model.get(x).dateadded);
+            var webcamAdded = Date.parse(playerSources.webcamList.models[feedSource.webcamListIndex].model.get(x).dateadded);
 
             if (lastChecked < webcamAdded)
             {
@@ -492,16 +537,16 @@ BaseScreen
                     firstAdded = false;
                 }
 
-                updatesModel.append({"heading": "no", "title": playerSources.webcamList.model.get(x).title, "icon": playerSources.webcamList.model.get(x).icon});
+                updatesModel.append({"heading": "no", "title": playerSources.webcamList.models[feedSource.webcamListIndex].model.get(x).title, "icon": playerSources.webcamList.models[feedSource.webcamListIndex].model.get(x).icon});
             }
         }
 
         // add modified webcams
-        for (x = 0; x < playerSources.webcamList.model.count; x++)
+        for (x = 0; x < playerSources.webcamList.models[feedSource.webcamListIndex].model.count; x++)
         {
-            var webcamModified = Date.parse(playerSources.webcamList.model.get(x).datemodified);
-            var webcamAdded = Date.parse(playerSources.webcamList.model.get(x).dateadded);
-            var status = playerSources.webcamList.model.get(x).status
+            var webcamModified = Date.parse(playerSources.webcamList.models[feedSource.webcamListIndex].model.get(x).datemodified);
+            var webcamAdded = Date.parse(playerSources.webcamList.models[feedSource.webcamListIndex].model.get(x).dateadded);
+            var status = playerSources.webcamList.models[feedSource.webcamListIndex].model.get(x).status
 
             if (lastChecked < webcamModified && !(lastChecked < webcamAdded) && status !== "Temporarily Offline" && status !== "Not Working")
             {
@@ -511,16 +556,16 @@ BaseScreen
                     firstModified = false;
                 }
 
-                updatesModel.append({"heading": "no", "title": playerSources.webcamList.model.get(x).title, "icon": playerSources.webcamList.model.get(x).icon});
+                updatesModel.append({"heading": "no", "title": playerSources.webcamList.models[feedSource.webcamListIndex].model.get(x).title, "icon": playerSources.webcamList.models[feedSource.webcamListIndex].model.get(x).icon});
             }
         }
 
         // add temporarily offline webcams
-        for (x = 0; x < playerSources.webcamList.model.count; x++)
+        for (x = 0; x < playerSources.webcamList.models[feedSource.webcamListIndex].model.count; x++)
         {
-            var webcamModified = Date.parse(playerSources.webcamList.model.get(x).datemodified);
-            var webcamAdded = Date.parse(playerSources.webcamList.model.get(x).dateadded);
-            var status = playerSources.webcamList.model.get(x).status
+            var webcamModified = Date.parse(playerSources.webcamList.models[feedSource.webcamListIndex].model.get(x).datemodified);
+            var webcamAdded = Date.parse(playerSources.webcamList.models[feedSource.webcamListIndex].model.get(x).dateadded);
+            var status = playerSources.webcamList.models[feedSource.webcamListIndex].model.get(x).status
 
             if (lastChecked < webcamModified && !(lastChecked < webcamAdded) && status === "Temporarily Offline")
             {
@@ -530,16 +575,16 @@ BaseScreen
                     firstOffline = false;
                 }
 
-                updatesModel.append({"heading": "no", "title": playerSources.webcamList.model.get(x).title, "icon": playerSources.webcamList.model.get(x).icon});
+                updatesModel.append({"heading": "no", "title": playerSources.webcamList.models[feedSource.webcamListIndex].model.get(x).title, "icon": playerSources.webcamList.models[feedSource.webcamListIndex].model.get(x).icon});
             }
         }
 
         // add not working webcams
-        for (x = 0; x < playerSources.webcamList.model.count; x++)
+        for (x = 0; x < playerSources.webcamList.models[feedSource.webcamListIndex].model.count; x++)
         {
-            var webcamModified = Date.parse(playerSources.webcamList.model.get(x).datemodified);
-            var webcamAdded = Date.parse(playerSources.webcamList.model.get(x).dateadded);
-            var status = playerSources.webcamList.model.get(x).status
+            var webcamModified = Date.parse(playerSources.webcamList.models[feedSource.webcamListIndex].model.get(x).datemodified);
+            var webcamAdded = Date.parse(playerSources.webcamList.models[feedSource.webcamListIndex].model.get(x).dateadded);
+            var status = playerSources.webcamList.models[feedSource.webcamListIndex].model.get(x).status
 
             if (lastChecked < webcamModified && !(lastChecked < webcamAdded) && status === "Not Working")
             {
@@ -549,7 +594,7 @@ BaseScreen
                     firstNotWorking = false;
                 }
 
-                updatesModel.append({"heading": "no", "title": playerSources.webcamList.model.get(x).title, "icon": playerSources.webcamList.model.get(x).icon});
+                updatesModel.append({"heading": "no", "title": playerSources.webcamList.models[feedSource.webcamListIndex].model.get(x).title, "icon": playerSources.webcamList.models[feedSource.webcamListIndex].model.get(x).icon});
             }
         }
 
@@ -670,5 +715,19 @@ BaseScreen
                 }
             }
         ]
+    }
+
+    function handleCommand(command)
+    {
+        log.debug(Verbose.GUI, "WebCamViewer: handle command - " + command);
+        return true;
+    }
+
+    function handleSearch(message)
+    {
+        log.debug(Verbose.GUI, "WebCamViewer: handle seach - " + message);
+
+
+        return true;
     }
 }

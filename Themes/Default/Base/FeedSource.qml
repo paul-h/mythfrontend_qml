@@ -1,36 +1,120 @@
 import QtQuick 2.0
+import QtQuick.XmlListModel 2.0
 import SortFilterProxyModel 0.2
 import mythqml.net 1.0
+import Models 1.0
 
 Item
 {
     id: root
 
-    property string feedName:  "Live TV"
+    property string feedName:  ""
     property string currentFilter: ""
-    property int currentFeed: 0
+    property int currentFeed: -1
     property int feedCount: feedProxyModel.count
     property alias feedList: feedProxyModel
     property alias filters: feedProxyModel.filters
     property alias sorters: feedProxyModel.sorters
 
-    property list<QtObject> sourceIDFilter:
-    [
-        ValueFilter
+    // Live TV
+    property alias sourceId: channelsModel.sourceId
+    property alias channelGroupId: channelsModel.channelGroupId
+
+    // Webcams/WebVideos
+    property int webcamListIndex: 0
+    property string category: ""
+    property string sort: "title"
+    property string  webcamFilterFavorite: "Any"
+
+    // private
+    property bool _switchingFeed: false
+
+    signal feedModelLoaded()
+    signal feedModelLoading()
+    signal feedModelError()
+
+    onCategoryChanged: { categoryFilter.category = category; }
+
+    onWebcamListIndexChanged:
+    {
+        if (!_switchingFeed)
         {
-            id: sourceFilter
-            roleName: "SourceId"
+            var filter = webcamListIndex + "," + category + "," + sort;
+            switchToFeed(feedName, filter, currentFeed);
+        }
+    }
+
+    onSortChanged:
+    {
+        if (!_switchingFeed)
+        {
+            var filter = webcamListIndex + "," + category + "," + sort;
+            switchToFeed(feedName, filter, currentFeed);
+        }
+    }
+
+    property list<QtObject> channelFilter:
+    [
+        AllOf
+        {
+            ValueFilter
+            {
+                id: sourceFilter
+                roleName: "SourceId"
+                enabled: (value != "-1")
+            }
+
+            ValueFilter
+            {
+                id: channelGroupFilter
+                roleName: "ChannelGroups"
+            }
         }
     ]
 
-    property list<QtObject> categoryFilter:
+    property list<QtObject> webcamFilter:
     [
-        RegExpFilter
+        AllOf
         {
-            id: categoryFilter
-            roleName: "categories"
-            pattern: ""
-            caseSensitivity: Qt.CaseInsensitive
+            ExpressionFilter
+            {
+                id: categoryFilter
+                property string category: ""
+                expression:
+                {
+                    var catList = categories.split(",");
+                    for (var x = 0; x < catList.length; x++)
+                    {
+                        if (catList[x].trim() == root.category)
+                            return true;
+                    }
+
+                    return false;
+                }
+                enabled: root.category !== ""
+            }
+
+            ValueFilter
+            {
+                enabled: (webcamFilterFavorite !== "Any")
+                roleName: "favorite"
+                value: (webcamFilterFavorite === "Yes")
+            }
+
+            AnyOf
+            {
+                ValueFilter
+                {
+                    roleName: "status"
+                    value: "Working"
+                }
+
+                ValueFilter
+                {
+                    roleName: "status"
+                    value: "Temporarily Offline"
+                }
+            }
         }
     ]
 
@@ -93,6 +177,12 @@ Item
         RoleSorter { roleName: "Episode" }
     ]
 
+    ChannelsModel
+    {
+        id: channelsModel
+        groupByCallsign: true;
+    }
+
     SortFilterProxyModel
     {
         id: feedProxyModel
@@ -100,6 +190,8 @@ Item
 
     function switchToFeed(feed, filter, currFeed)
     {
+        _switchingFeed = true;
+
         if (feed === "Live TV")
             switchToLiveTV(filter, currFeed);
         else if (feed === "Webcams")
@@ -118,53 +210,84 @@ Item
             switchToAdventCalendar(filter, currFeed);
         else
             log.error(Verbose.PLAYBACK, "FeedSource: switchToFeed Error - unknown feed: " + feed);
+
+        _switchingFeed = false;
     }
 
-    function switchToLiveTV(sourceId, currFeed)
+    function switchToLiveTV(filterList, currFeed)
     {
-        log.debug(Verbose.PLAYBACK, "FeedSource: switchToLiveTV - sourceId: " + sourceId + ", currFeed: " + currFeed )
+        log.debug(Verbose.PLAYBACK, "FeedSource: switchToLiveTV - filterList: " + filterList + ", currFeed: " + currFeed )
 
         feedName = "Live TV";
         currentFeed = currFeed;
+        currentFilter = filterList;
 
-        if (sourceId == -1) // Don't change == to ===
+        var list = filterList.split(",");
+        var channelGroupId = -1;
+        var sourceId = -1;
+
+        if (list.length === 2)
         {
-            sourceFilter.enabled = false;
-            currentFilter = "-1";
-        }
-        else
-        {
-            sourceFilter.value = sourceId;
-            sourceFilter.enabled = true;
-            currentFilter = sourceFilter.value;
+            sourceId = list[0];
+            channelGroupId = list[1];
         }
 
-        filters = sourceIDFilter;
-        sorters = chanNumSorter;
-        feedList.sourceModel = playerSources.channelList;
+        channelsModel.sourceId = parseInt(sourceId, 10);
+        channelsModel.channelGroupId = parseInt(channelGroupId, 10);
+
+        filters = [];
+        sorters = [];
+
+        if (feedList.sourceModel !== channelsModel)
+        {
+            if (feedList.sourceModel && feedList.sourceModel.loadingStatus)
+                feedList.sourceModel.loadingStatus.disconnect(handleModelStatusChange);
+
+            feedList.sourceModel = channelsModel;
+            channelsModel.loadingStatus.connect(handleModelStatusChange);
+        }
     }
 
     function switchToRecordings(category, currFeed)
     {
         // FIXME:
-//        feedName = "Web Videos";
-//        currentFeed = currFeed;
-//        currentFilter = category;
-//        categoryFilter.pattern = category;
-//        filters = categoryFilter;
-//        sorters = titleSorter;
-//        feedList.sourceModel = playerSources.webvideoList;
     }
 
-    function switchToWebcams(category, currFeed)
+    function switchToWebcams(filterList, currFeed)
     {
         feedName = "Webcams";
         currentFeed = currFeed;
-        categoryFilter.pattern = category;
-        currentFilter = category;
-        filters = [];
-        sorters = [];
-        feedList.sourceModel = playerSources.webcamProxyModel;
+        currentFilter = filterList;
+
+        var list = filterList.split(",");
+        var index = 0;
+        var _category = "";
+        var _sort = "title";
+
+        if (list.length === 3)
+        {
+            index = list[0];
+            _category = list[1];
+            _sort = list[2];
+        }
+
+        webcamListIndex = index;
+        category = _category;
+        filters = webcamFilter;
+        sorters = _sort === "title" ? titleSorter : [];
+
+        if (feedList.sourceModel !== playerSources.webcamList.models[webcamListIndex].model)
+        {
+            if (feedList.sourceModel)
+                feedList.sourceModel.loadingStatus.disconnect(handleModelStatusChange);
+
+            feedList.sourceModel = playerSources.webcamList.models[webcamListIndex].model;
+
+            if (feedList.sourceModel.status === XmlListModel.Ready)
+                handleModelStatusChange(XmlListModel.Ready);
+            else
+                feedList.sourceModel.loadingStatus.connect(handleModelStatusChange);
+        }
     }
 
     function switchToWebvideos(category, currFeed)
@@ -172,10 +295,22 @@ Item
         feedName = "Web Videos";
         currentFeed = currFeed;
         currentFilter = category;
-        categoryFilter.pattern = category;
-        filters = [];
-        sorters = [];
-        feedList.sourceModel = playerSources.webvideoProxyModel;;
+        categoryFilter.category = category;
+        filters = categoryFilter;
+        sorters = titleSorter;
+
+        if (feedList.sourceModel !== playerSources.webvideoList.model)
+        {
+            if (feedList.sourceModel)
+                feedList.sourceModel.loadingStatus.disconnect(handleModelStatusChange);
+
+            feedList.sourceModel = playerSources.webvideoList.model;
+
+            if (playerSources.webvideoList.status === XmlListModel.Ready)
+                handleModelStatusChange(XmlListModel.Ready);
+            else
+                playerSources.webvideoList.loadingStatus.connect(handleModelStatusChange);
+        }
     }
 
     function switchToZMCameras(category, currFeed)
@@ -185,7 +320,19 @@ Item
         currentFilter = category;
         filters = enabledFilter;
         sorters = [];
-        feedList.sourceModel = playerSources.zmCameraList;
+
+        if (feedList.sourceModel !== playerSources.zmCameraList)
+        {
+            if (feedList.sourceModel)
+                feedList.sourceModel.loadingStatus.disconnect(handleModelStatusChange);
+
+            feedList.sourceModel = playerSources.zmCameraList;
+
+            if (playerSources.zmCameraList.status === XmlListModel.Ready)
+                handleModelStatusChange(XmlListModel.Ready);
+            else
+                playerSources.zmCameraList.loadingStatus.connect(handleModelStatusChange);
+        }
     }
 
     function switchToVideos(filterList, currFeed)
@@ -205,7 +352,15 @@ Item
 
         filters = videoFilter;
         sorters = videoSorter;
-        feedList.sourceModel = playerSources.videoList;
+
+        if (feedList.sourceModel !== playerSources.videoList)
+        {
+            if (feedList.sourceModel)
+                feedList.sourceModel.loadingStatus.disconnect(handleModelStatusChange);
+
+            feedList.sourceModel = playerSources.videoList;
+            playerSources.videoList.loadingStatus.connect(handleModelStatusChange);
+        }
     }
 
     function switchToAdventCalendar(day, currFeed)
@@ -215,7 +370,15 @@ Item
         currentFilter = day;
         filters = [];
         sorters = [];
-        feedList.sourceModel = playerSources.adhocList;;
+
+        if (feedList.sourceModel !== playerSources.adhocList)
+        {
+            if (feedList.sourceModel)
+                feedList.sourceModel.loadingStatus.disconnect(handleModelStatusChange);
+
+            feedList.sourceModel = playerSources.adhocList;
+            playerSources.adhocList.loadingStatus.connect(handleModelStatusChange);
+        }
     }
 
     function switchToAdhoc(filter, currFeed)
@@ -225,6 +388,37 @@ Item
         currentFilter = filter;
         filters = [];
         sorters = [];
-        feedList.sourceModel = playerSources.adhocList;
+
+        if (feedList.sourceModel !== playerSources.adhocList)
+        {
+            if (feedList.sourceModel && feedList.sourceModel.loadingStatus)
+                feedList.sourceModel.loadingStatus.disconnect(handleModelStatusChange);
+
+            feedList.sourceModel = playerSources.adhocList;
+            //playerSources.adhocList.loadingStatus.connect(handleModelStatusChange);
+        }
+    }
+
+    function handleModelStatusChange(status)
+    {
+        if (status == XmlListModel.Ready)
+            feedModelLoaded();
+        else if (status == XmlListModel.Loading)
+            feedModelLoading();
+        else if (status == XmlListModel.Error)
+            feedModelError();
+        else if (status == XmlListModel.Null)
+            feedModelError();
+    }
+
+    function findById(Id)
+    {
+        for (var x = 0; x < feedList.count; x++)
+        {
+            if (feedList.get(x).id == Id)
+                return x;
+        }
+
+        return -1;
     }
 }

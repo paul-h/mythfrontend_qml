@@ -4,7 +4,6 @@ import QtQuick.XmlListModel 2.0
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
-import SortFilterProxyModel 0.2
 import "../../../Util.js" as Util
 import mythqml.net 1.0
 
@@ -14,59 +13,46 @@ BaseScreen
 
     defaultFocusItem: channelGrid
 
-    property int filterSourceID: -1
-    property bool chanNameSorterActive: true
+    property alias sourceId: feedSource.sourceId
+    property alias channelGroupId: feedSource.channelGroupId
     property bool showPreview: false
 
-    onFilterSourceIDChanged: playerSources.channelList.sourceId = filterSourceID
+    signal feedSelected(string feedSource, string filter, int index)
 
     Component.onCompleted:
     {
         showTitle(true, "LiveTV Channel Viewer");
-        showTime(true);
+        showTime(false);
         showTicker(false);
 
         while (stack.busy) {};
 
-        filterSourceID = dbUtils.getSetting("LastChannelSourceID", settings.hostName, 0)
+        sourceId = -1;
 
-        if (filterSourceID == -1)
-            footer.greenText = "Show (All Sources)"
+        if (isPanel)
+            channelGroupId =  -1;
+        else
+            channelGroupId = dbUtils.getSetting("LastChannelGroupId", settings.hostName, -1);
+
+        if (channelGroupId == -1)
+            footer.greenText = "Show (All Categories)"
         else
         {
-            var index = playerSources.videoSourceList.findById(filterSourceID);
+            var index = playerSources.channelGroups.findById(channelGroupId);
             if (index !== -1)
-                footer.greenText = "Show (" + playerSources.videoSourceList.get(index).SourceName + ")"
+                footer.greenText = "Show (" + playerSources.channelGroups.get(index).Name + ")"
             else
-                footer.greenText = "Show (All Sources)";
+                footer.greenText = "Show (All Categories)";
         }
 
-        updateChannelDetails();
-
-        playerSources.channelList.loaded.connect(updateChannelDetails);
+        var filter = sourceId + "," + channelGroupId;
+        feedSource.feedModelLoaded.connect(updateChannelDetails);
+        feedSource.switchToFeed("Live TV", filter, channelGrid.currentIndex);
     }
 
     Component.onDestruction:
     {
-        dbUtils.setSetting("LastChannelSourceID", settings.hostName, filterSourceID)
-    }
-
-    property list<QtObject> chanNameSorter:
-    [
-        RoleSorter { roleName: "ChanName"; ascendingOrder: true}
-    ]
-
-    property list<QtObject> chanNumSorter:
-    [
-        RoleSorter { roleName: "ChanNo" }
-    ]
-
-    SortFilterProxyModel
-    {
-        id: channelProxyModel
-        sourceModel: playerSources.channelList
-        filters: []
-        sorters: chanNameSorter
+        dbUtils.setSetting("LastChannelGroupId", settings.hostName, feedSource.channelGroupId)
     }
 
     Timer
@@ -115,37 +101,34 @@ BaseScreen
         onStatusChanged: if (status == XmlListModel.Ready) updateNowNext()
     }
 
+    FeedSource
+    {
+        id: feedSource
+    }
+
     Keys.onPressed:
     {
+        event.accepted = true;
+
         if (event.key === Qt.Key_M)
         {
         }
         else if (event.key === Qt.Key_F1)
         {
             // RED
-            if (chanNameSorterActive)
-            {
-                channelProxyModel.sorters = chanNumSorter;
-                footer.redText = "Sort (Channel No.)";
-            }
-            else
-            {
-                channelProxyModel.sorters = chanNameSorter;
-                footer.redText = "Sort (Channel Name)";
-            }
-
-            chanNameSorterActive = !chanNameSorterActive;
+            // FIXME
+            //channelsModel.orderByName = !channelsModel.orderByName;
+            //footer.redText = "Sort " + (channelsModel.orderByName ? "(Channel Name)" : "(Channel Number)")
         }
         else if (event.key === Qt.Key_F2)
         {
             // GREEN
-            searchDialog.model = playerSources.videoSourceList.sourceList;
-            searchDialog.show();
+            groupMenu.show();
         }
         else if (event.key === Qt.Key_F3)
         {
             // YELLOW
-
+            sourceMenu.show();
         }
         else if (event.key === Qt.Key_F4)
         {
@@ -162,6 +145,8 @@ BaseScreen
                 updatePlayer();
             }
         }
+        else
+            event.accepted = false;
     }
 
     BaseBackground
@@ -176,6 +161,18 @@ BaseScreen
     {
         x: _xscale(900); y: yscale(0); width: _xscale(120);
         text: (channelGrid.currentIndex + 1) + " of " + channelGrid.model.count;
+    }
+
+   LabelText
+    {
+        id: noMatches
+        x: xscale(22)
+        y: yscale(55)
+        width: parent.width - xscale(44)
+        height: yscale(390)
+        verticalAlignment: Text.AlignVCenter
+        horizontalAlignment: Text.AlignHCenter
+        text: "No Matching Channels Found"
     }
 
     ButtonGrid
@@ -209,23 +206,32 @@ BaseScreen
             }
         }
 
-        model: channelProxyModel
+        model: feedSource.feedList
         delegate: channelDelegate
         focus: true
 
         Keys.onReturnPressed:
         {
+            if (channelGrid.model.count === 0)
+            {
+                errorSound.play();
+                return;
+            }
+
             videoPlayer.stop();
             showPreview = false;
             returnSound.play();
 
+            var filter = sourceId + "," + channelGroupId;
+
             if (root.isPanel)
             {
-                feedSelected("Live TV", filterSourceID, channelGrid.currentIndex);
+                themedPanel.previousFocusItem = channelGrid;
+                feedSelected("Live TV", filter, channelGrid.currentIndex);
             }
             else
             {
-                var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Live TV", defaultFilter:  filterSourceID, defaultCurrentFeed: channelGrid.currentIndex}});
+                var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Live TV", defaultFilter: filter, defaultCurrentFeed: channelGrid.currentIndex}});
                 item.feedChanged.connect(feedChanged);
             }
                 event.accepted = true;
@@ -322,7 +328,7 @@ BaseScreen
     InfoText
     {
         id: programFirstAired
-        x: _xscale(720); y: yscale(630); width: _xscale(220)
+        x: _xscale(650); y: yscale(630); width: _xscale(280)
         fontColor: "grey"
         horizontalAlignment: Text.AlignRight
     }
@@ -381,93 +387,110 @@ BaseScreen
     Footer
     {
         id: footer
-        redText: "Sort (Channel Name)"
-        greenText: "Show (All Sources)"
-        yellowText: ""
+        redText: "Sort (Channel Number)"
+        greenText: "Show (All Categories)"
+        yellowText: "Show (All Sources)"
         blueText: "Toggle Preview"
     }
 
-    SearchListDialog
+    PopupMenu
     {
-        id: searchDialog
+        id: groupMenu
 
-        title: "Choose a source"
-        message: ""
+        title: "Channel Group"
+        message: "Only show channels in the selected group"
+        width: xscale(500); height: yscale(600)
 
-        onAccepted:
+        restoreSelected: true;
+
+        onItemSelected:
         {
             channelGrid.focus = true;
-
+            footer.greenText = "Show (" + itemText +")";
+            feedSource.channelGroupId = itemData;
+            feedSource.switchToLiveTV(channelGroupId, sourceId);
         }
         onCancelled:
         {
             channelGrid.focus = true;
         }
 
+        Component.onCompleted:
+        {
+            addMenuItem("", "All Categories", -1);
+            for (var x = 0; x < playerSources.channelGroups.count; x++)
+                addMenuItem("", playerSources.channelGroups.get(x).Name, playerSources.channelGroups.get(x).GroupId);
+        }
+    }
+
+    PopupMenu
+    {
+        id: sourceMenu
+
+        title: "Channel Source"
+        message: "Only show channels from the selected source"
+        width: xscale(500); height: yscale(600)
+
+        restoreSelected: true;
+
         onItemSelected:
         {
-            var index = playerSources.videoSourceList.findByName(itemText);
-
-            if (index !== -1)
-            {
-                filterSourceID = playerSources.videoSourceList.get(index).Id;
-                footer.greenText = "Show (" + playerSources.videoSourceList.get(index).SourceName + ")"
-            }
-            else
-            {
-                filterSourceID = -1;
-                footer.greenText = "Show (All Sources)";
-            }
-
             channelGrid.focus = true;
-
-            updateChannelDetails()
+            footer.yellowText = "Show (" + itemText +")";
+            feedSource.sourceId = itemData;
         }
-    }
-
-    function feedChanged(feedSource, filter, index)
-    {
-        if (feedSource !== "Live TV")
-            return;
-
-        if (filter != filterSourceID)
+        onCancelled:
         {
-            filterSourceID = filter;
-
-            if (filterSourceID == -1)
-                footer.greenText = "Show (All Sources)"
-            else
-            {
-                var i = playerSources.videoSourceList.findById(filterSourceID);
-                if (i !== -1)
-                    footer.greenText = "Show (" + playerSources.videoSourceList.get(i).SourceName + ")"
-                else
-                    footer.greenText = "Show (All Sources)";
-            }
+            channelGrid.focus = true;
         }
 
-        channelGrid.currentIndex = index;
+        Component.onCompleted:
+        {
+            addMenuItem("", "All Sources", -1);
+            for (var x = 0; x < playerSources.videoSourceList.count; x++)
+                addMenuItem("", playerSources.videoSourceList.get(x).SourceName, playerSources.videoSourceList.get(x).Id);
+        }
     }
 
-   function updateChannelDetails()
+    function updateChannelDetails()
     {
-       var currentItem = channelGrid.model.get(channelGrid.currentIndex);
+        if (channelGrid.model.count === 0)
+        {
+            title.text = "No guide data available for this channel";
+            timeIndictor.position = 0;
+            timeIndictor.length = 100;
+            programTitle.info = "";
+            programLength.text = "";
+            programDesc.text = "N/A";
+            programStatus.text = "N/A";
+            programCategory.text = "";
+            channelIcon.source = "";
+            programFirstAired.text = ""
+            programNext.info = ""
+            programEpisode.text = ""
+            noMatches.visible = true;
+        }
+        else
+        {
+            var currentItem = channelGrid.model.get(channelGrid.currentIndex);
 
-       if (!currentItem)
-           return;
+            if (!currentItem)
+                return;
 
-        title.text = currentItem.title;
+            title.text = currentItem.title;
 
-        // icon
-        channelIcon.source = currentItem.IconURL ? settings.masterBackend + "Guide/GetChannelIcon?ChanId=" + currentItem.ChanId : mythUtils.findThemeFile("images/grid_noimage.png");
+            // icon
+            channelIcon.source = currentItem.IconURL ? settings.masterBackend + "Guide/GetChannelIcon?ChanId=" + currentItem.ChanId : mythUtils.findThemeFile("images/grid_noimage.png");
 
-        getNowNext();
+            getNowNext();
 
-       if (videoPlayer.visible)
-       {
+            if (videoPlayer.visible)
+            {
+                previewTimer.start();
+            }
 
-           previewTimer.start();
-       }
+            noMatches.visible = false;
+        }
     }
 
     function getNowNext()
@@ -593,4 +616,67 @@ BaseScreen
         videoPlayer.visible = true;
         videoPlayer.source = "myth://type=livetv:server=" + ip + ":pin=" + pin + ":encoder=" + encoderNum + ":channum=" + chanNum
     }
+
+    function createMenu(menu)
+    {
+        menu.clear();
+
+        menu.append({"menutext": "All", "loaderSource": "MythTVChannelViewer.qml", "menuSource": "", "filter": -1});
+
+        for (var x = 0; x < playerSources.channelGroups.count; x++)
+            menu.append({"menutext": playerSources.channelGroups.get(x).Name, "loaderSource": "MythTVChannelViewer.qml", "menuSource": "", "filter": playerSources.channelGroups.get(x).GroupId});
+    }
+
+   function setFilter(groupName, groupId)
+   {
+       footer.greenText = "Show (" + groupName +")";
+
+       feedSource.channelGroupId = groupId;
+   }
+
+   function feedChanged(feedSource, filter, index)
+   {
+        if (feedSource !== "Live TV")
+            return;
+
+        var list = filter.split(",");
+        var channelGroupId = -1;
+        var sourceId = -1;
+        var i;
+        if (list.length === 2)
+        {
+            sourceId = parseInt(list[0], 10);
+            channelGroupId = parseInt(list[1], 10);
+        }
+
+        if (channelGroupId != root.channelGroupId || sourceId != root.sourceId)
+        {
+            root.sourceId = sourceId;
+            root.channelGroupId = channelGroupId
+
+            if (channelGroupId == -1)
+                footer.greenText = "Show (All Categories)"
+            else
+            {
+                var i = playerSources.channelGroups.findById(channelGroupId);
+                if (i !== -1)
+                    footer.greenText = "Show (" + playerSources.channelGroups.get(index).Name + ")"
+                else
+                    footer.greenText = "Show (All Categories)";
+            }
+
+            if (sourceId == -1)
+                footer.Text = "Show (All Sources)"
+            else
+            {
+                var i = playerSources.videoSourceList.findById(sourceId);
+                if (i !== -1)
+                    footer.yellowText = "Show (" + playerSources.videoSourceList.get(i).SourceName + ")"
+                else
+                    footer.yellowText = "Show (All Sources)";
+            }
+        }
+
+        channelGrid.currentIndex = index;
+   }
 }

@@ -18,9 +18,9 @@ BaseScreen
     property alias layout: playerLayout.playerLayout
     property alias mediaPlayer1: playerLayout.mediaPlayer1
 
-    property string defaultFeedSource: ""
-    property string defaultFilter: "-1"
-    property int    defaultCurrentFeed: -1
+    property string defaultFeedSource: "Live TV"
+    property string defaultFilter: ""
+    property int    defaultCurrentFeed: 0
 
     property bool isFullScreen: width === window.width
 
@@ -35,12 +35,10 @@ BaseScreen
         showTicker(false);
         muteAudio(true);
 
-        playerLayout.mediaPlayer1.feed.switchToFeed(defaultFeedSource === "" ? "Live TV" : defaultFeedSource, defaultFilter, defaultCurrentFeed === -1 ? 0 : defaultCurrentFeed);
+        playerLayout.mediaPlayer1.feed.feedModelLoaded.connect(feedSourceLoaded);
+        playerLayout.mediaPlayer1.feed.switchToFeed(defaultFeedSource, defaultFilter, defaultCurrentFeed);
 
         setLayout(layout);
-
-        // FIXME why aren't the players starting on layout changes at first show?
-        playerLayout.mediaPlayer1.startPlayback();
 
         // set the default volume
         var volume = dbUtils.getSetting("VideoPlayerVolume", settings.hostName, "100");
@@ -566,7 +564,9 @@ BaseScreen
             }
             else if (itemText == "Webcams")
             {
-                getActivePlayer().feed.switchToFeed("Webcams", "", 0);
+                var index = dbUtils.getSetting("WebcamListIndex", settings.hostName, "");
+                var filter = index + ",," + "title";
+                getActivePlayer().feed.switchToFeed("Webcams", filter, 0);
                 getActivePlayer().startPlayback();
             }
             else if (itemText == "Web Videos")
@@ -766,7 +766,7 @@ BaseScreen
         popupMenu.addMenuItem("1", "ZoneMinder Cameras");
 
         popupMenu.addMenuItem("", getActivePlayer().feed.feedName);
-        playerSources.addFeedMenu(popupMenu, getActivePlayer().feed.feedName, "2", 1);
+        playerSources.addFeedMenu(popupMenu, getActivePlayer().feed, "2", 1);
 
         popupMenu.addMenuItem("", "Toggle Mute");
 
@@ -806,5 +806,10 @@ BaseScreen
         getActivePlayer().changeVolume(amount);
         var volume = getActivePlayer().getVolume();
         dbUtils.setSetting("VideoPlayerVolume", settings.hostName, volume)
+    }
+
+    function feedSourceLoaded()
+    {
+        playerLayout.mediaPlayer1.startPlayback();
     }
 }

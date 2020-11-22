@@ -7,29 +7,12 @@ Item
     id: root
 
     property var webcamList: webcamListModel
-    property int webcamListIndex: 0
-    property var model: listModel
-    property var categoryList: ListModel{}
-
-    signal loaded();
-
-    onWebcamListIndexChanged:
-    {
-        // sanity check index
-        if (webcamListIndex >= 0 && webcamListIndex < webcamListModel.count)
-            webcamModel.source = webcamListModel.get(webcamListIndex).url
-    }
-
-    ListModel
-    {
-        id: listModel
-    }
+    property var models: []
+    property int status: XmlListModel.Null
 
     XmlListModel
     {
         id: webcamListModel
-
-        signal loaded();
 
         query: "/items/item"
         XmlRole { name: "id"; query: "id/number()" }
@@ -42,9 +25,7 @@ Item
             if (status == XmlListModel.Ready)
             {
                 log.debug(Verbose.MODEL, "WebcamListModel: READY - Found " + count + " webcam lists");
-                loaded();
-
-                webcamModel.source = webcamListModel.get(root.webcamListIndex).url
+                loadModels();
             }
 
             if (status === XmlListModel.Loading)
@@ -68,139 +49,186 @@ Item
         }
     }
 
-    XmlListModel
+    Component
     {
-        id: webcamModel
+        id: listModelTemplate
 
-        source: ""
-        query: "/webcams/webcam"
-        XmlRole { name: "id"; query: "id/number()"; isKey: true }
-        XmlRole { name: "title"; query: "title/string()" }
-        XmlRole { name: "description"; query: "description/string()" }
-        XmlRole { name: "icon"; query: "icon/string()" }
-        XmlRole { name: "website"; query: "website/string()" }
-        XmlRole { name: "zoom"; query: "zoom/number()" }
-        XmlRole { name: "dateadded"; query: "xs:dateTime(dateadded)" }
-        XmlRole { name: "datemodified"; query: "xs:dateTime(datemodified)" }
-        XmlRole { name: "status"; query: "status/string()" }
-        XmlRole { name: "categories"; query: "string-join(categories/category/@name, ', ')" }
-        XmlRole { name: "links"; query: "string-join(links/link/(concat(@type, '=', @name)), '\n')" }
-
-        XmlRole { name: "player"; query: "player/string()" }
-        XmlRole { name: "url"; query: "url/string()" }
-
-        onStatusChanged:
+        Item
         {
-            if (status == XmlListModel.Ready)
+            id: listModel
+            property int id: -1
+            property alias url: webcamModel.source
+            property alias model: model
+
+            property var categoryList: ListModel{}
+
+            signal loaded();
+            signal loadingStatus(int status);
+
+            ListModel
             {
-                log.debug(Verbose.MODEL, "WebCamModel: READY - Found " + count + " webcams");
-                doLoad();
-            }
+                id: model
 
-            if (status === XmlListModel.Loading)
-            {
-                log.debug(Verbose.MODEL, "WebCamModel: LOADING - " + source.toString());
-            }
+                property alias status: webcamModel.status
 
-            if (status === XmlListModel.Error)
-            {
-                log.error(Verbose.MODEL, "WebCamModel: ERROR: " + errorString() + " - " + source.toString());
-            }
-        }
+                signal loaded();
+                signal loadingStatus(int status);
 
-        // copy the XmlListModel model to our ListModel so we can modify it
-        function doLoad()
-        {
-            var category;
-            var categories = [];
-
-            categoryList.clear();
-            listModel.clear();
-
-            for (var x = 0; x < count; x++)
-            {
-                listModel.append({"id": get(x).id, "title": get(x).title, "description": get(x).description, "icon": get(x).icon,
-                                  "website": get(x).website, "zoom": get(x).zoom, "dateadded": get(x).dateadded, "datemodified": get(x).datemodified,
-                                  "status": get(x).status, "categories": get(x).categories, "links": get(x).links, "player": get(x).player,
-                                  "url": get(x).url, "favorite": false, "offline": false});
-
-                category = get(x).categories;
-
-                var splitCategories = category.split(",");
-
-                for (var y = 0; y < splitCategories.length; y++)
+                function findById(Id)
                 {
-                    category = splitCategories[y].trim();
+                    for (var x = 0; x < count; x++)
+                    {
+                        if (get(x).id == Id)
+                            return x;
+                    }
 
-                    if (categories.indexOf(category) < 0)
-                        categories.push(category);
+                    return -1;
+                }
+
+                function loadFavorites()
+                {
+                    var favorites = dbUtils.getSetting("WebcamFavorites_" + listModel.id, settings.hostName, "");
+
+                    if (favorites.length)
+                    {
+                        var splitFavorites = favorites.split(",");
+
+                        for (var y = 0; y < splitFavorites.length; y++)
+                        {
+                            var favorite = parseInt(splitFavorites[y].trim());
+                            var id = findById(favorite);
+                            if (id != -1)
+                                get(id).favorite = true;
+                        }
+                    }
+                }
+
+                function saveFavorites()
+                {
+                    var setting = "";
+
+                    for (var x = 0; x < count; x++)
+                    {
+                        if (get(x).favorite === true)
+                        {
+                            if (setting === "")
+                                setting = get(x).id;
+                            else
+                                setting += "," + get(x).id;
+                        }
+                    }
+
+                    dbUtils.setSetting("WebcamFavorites_" + listModel.id, settings.hostName, setting);
+                }
+
+                function reload()
+                {
+                    webcamModel.reload();
                 }
             }
 
-            categories.sort();
-            categoryList.append({"item": "<All Webcams>"});
-
-            for (var x = 0; x < categories.length; x++)
-                categoryList.append({"item": categories[x]});
-
-            loadFavorites();
-
-            // send loaded signal
-            loaded();
-        }
-    }
-
-    function findById(Id)
-    {
-        for (var x = 0; x < listModel.count; x++)
-        {
-            if (listModel.get(x).id == Id)
-                return x;
-        }
-
-        return -1;
-    }
-
-    function loadFavorites()
-    {
-        var id = webcamList.get(webcamListIndex).id;
-        var favorites = dbUtils.getSetting("WebcamFavorites_" + id, settings.hostName, "");
-
-        if (favorites.length)
-        {
-            var splitFavorites = favorites.split(",");
-
-            for (var y = 0; y < splitFavorites.length; y++)
+            XmlListModel
             {
-                var favorite = parseInt(splitFavorites[y].trim());
-                var index = findById(favorite);
-                if (index != -1)
-                    listModel.get(index).favorite = true;
+                id: webcamModel
+
+                source: ""
+                query: "/webcams/webcam"
+                XmlRole { name: "id"; query: "id/number()"; isKey: true }
+                XmlRole { name: "title"; query: "title/string()" }
+                XmlRole { name: "description"; query: "description/string()" }
+                XmlRole { name: "icon"; query: "icon/string()" }
+                XmlRole { name: "website"; query: "website/string()" }
+                XmlRole { name: "zoom"; query: "zoom/number()" }
+                XmlRole { name: "dateadded"; query: "xs:dateTime(dateadded)" }
+                XmlRole { name: "datemodified"; query: "xs:dateTime(datemodified)" }
+                XmlRole { name: "status"; query: "status/string()" }
+                XmlRole { name: "categories"; query: "string-join(categories/category/@name, ', ')" }
+                XmlRole { name: "links"; query: "string-join(links/link/(concat(@type, '=', @name)), '\n')" }
+
+                XmlRole { name: "player"; query: "player/string()" }
+                XmlRole { name: "url"; query: "url/string()" }
+
+                onStatusChanged:
+                {
+                    if (status == XmlListModel.Ready)
+                    {
+                        log.debug(Verbose.MODEL, "WebCamModel: READY - Found " + count + " webcams");
+                        doLoad();
+                    }
+
+                    if (status === XmlListModel.Loading)
+                    {
+                        log.debug(Verbose.MODEL, "WebCamModel: LOADING - " + source.toString());
+                    }
+
+                    if (status === XmlListModel.Error)
+                    {
+                        log.error(Verbose.MODEL, "WebCamModel: ERROR: " + errorString() + " - " + source.toString());
+                    }
+
+                    model.loadingStatus(status);
+                }
+
+                // copy the XmlListModel model to our ListModel so we can modify it
+                function doLoad()
+                {
+                    var category;
+                    var categories = [];
+
+                    listModel.categoryList.clear();
+                    model.clear();
+
+                    for (var x = 0; x < count; x++)
+                    {
+                        model.append({"id": get(x).id, "title": get(x).title, "description": get(x).description, "icon": get(x).icon,
+                                             "website": get(x).website, "zoom": get(x).zoom, "dateadded": get(x).dateadded, "datemodified": get(x).datemodified,
+                                             "status": get(x).status, "categories": get(x).categories, "links": get(x).links, "player": get(x).player,
+                                             "url": get(x).url, "favorite": false, "offline": false});
+
+                        category = get(x).categories;
+
+                        var splitCategories = category.split(",");
+
+                        for (var y = 0; y < splitCategories.length; y++)
+                        {
+                            category = splitCategories[y].trim();
+
+                            if (categories.indexOf(category) < 0)
+                                categories.push(category);
+                        }
+                    }
+
+                    categories.sort();
+                    listModel.categoryList.append({"item": "<All Webcams>"});
+
+                    for (var x = 0; x < categories.length; x++)
+                        listModel.categoryList.append({"item": categories[x]});
+
+                    model.loadFavorites();
+
+                    listModel.loaded();
+                }
             }
         }
-}
-
-    function saveFavorites()
-    {
-        var setting = "";
-
-        for (var x = 0; x < listModel.count; x++)
-        {
-            if (listModel.get(x).favorite === true)
-            {
-                if (setting === "")
-                    setting = listModel.get(x).id;
-                else
-                    setting += "," + listModel.get(x).id;
-            }
-        }
-
-        var id = webcamList.get(webcamListIndex).id;
-        dbUtils.setSetting("WebcamFavorites_" + id, settings.hostName, setting);
     }
 
-    function reload()
+    function loadModels()
     {
-        webcamModel.reload();
+        root.status = XmlListModel.Loading;
+
+        for (var x = 0; x < webcamListModel.count; x++)
+        {
+            var id = webcamListModel.get(x).id;
+            var url = webcamListModel.get(x).url;
+            var model = listModelTemplate.createObject(root, {id: id, url: url})
+            root.models.push(model);
+        }
+
+        root.status = XmlListModel.Ready;
+    }
+
+    function updateModel(index)
+    {
+        models[index].reload();
     }
 }

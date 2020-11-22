@@ -16,25 +16,17 @@ Item
     // live tv
     property var videoSourceList: videoSourceModel
 
-    // webcam
-    property string webcamFilterCategory
-    property string webcamFilterFavorite: "Any"
-    property bool webcamTitleSorterActive: true
-    property var webcamProxyModel: webcamProxyModel
+    // program guide
+    property alias channelGroups: channelGroupsModel
 
     // webvideo
     property string webvideoFilterCategory
+    property string webvideoFilterFavorite: "Any"
     property bool webvideoTitleSorterActive: true
     property var webvideoProxyModel: webvideoProxyModel
 
     // zoneminder
     property alias zmToken: zmLogin.token
-
-    Component.onCompleted:
-    {
-        webcamFilterCategory = dbUtils.getSetting("LastWebcamCategory", settings.hostName);
-        playerSources.webcamList.webcamListIndex = dbUtils.getSetting("WebcamListIndex", settings.hostName, "0");
-    }
 
     /* ----------------------------------------------- Shared Sorters  --------------------------------------------------- */
     property list<QtObject> titleSorter:
@@ -80,6 +72,11 @@ Item
         id: encodersModel
     }
 
+    ChannelGroupsModel
+    {
+        id: channelGroupsModel
+    }
+
     ChannelsModel
     {
         id: channelsModel
@@ -91,64 +88,9 @@ Item
         id: videoSourceModel
     }
 
-    /* --------------------------------------------------- WebCams --------------------------------------------------- */
     WebCamModel
     {
         id: webcamModel
-    }
-
-    onWebcamTitleSorterActiveChanged:
-    {
-        if (webcamTitleSorterActive)
-        {
-            webcamProxyModel.sorters = titleSorter;
-        }
-        else
-        {
-            webcamProxyModel.sorters = idSorter;
-        }
-    }
-
-    SortFilterProxyModel
-    {
-        id: webcamProxyModel
-
-        sourceModel: webcamModel.model
-        filters:
-        [
-            AllOf
-            {
-                RegExpFilter
-                {
-                    roleName: "categories"
-                    pattern: webcamFilterCategory
-                    caseSensitivity: Qt.CaseInsensitive
-                }
-
-                ValueFilter
-                {
-                    enabled: (webcamFilterFavorite !== "Any")
-                    roleName: "favorite"
-                    value: (webcamFilterFavorite === "Yes")
-                }
-
-                AnyOf
-                {
-                    ValueFilter
-                    {
-                        roleName: "status"
-                        value: "Working"
-                    }
-
-                    ValueFilter
-                    {
-                        roleName: "status"
-                        value: "Temporarily Offline"
-                    }
-                }
-            }
-        ]
-        sorters: titleSorter
     }
 
     /* --------------------------------------------------- WebVideo --------------------------------------------------- */
@@ -184,6 +126,13 @@ Item
                     roleName: "categories"
                     pattern: webvideoFilterCategory
                     caseSensitivity: Qt.CaseInsensitive
+                }
+
+                ValueFilter
+                {
+                    enabled: (webvideoFilterFavorite !== "Any")
+                    roleName: "favorite"
+                    value: (webvideoFilterFavorite === "Yes")
                 }
 
                 AnyOf
@@ -274,25 +223,25 @@ Item
         return -1;
     }
 
-    function addFeedMenu(popupMenu, feedSource, path, player)
+    function addFeedMenu(popupMenu, feed, path, player)
     {
-        if (feedSource === "Live TV")
-            addChannelMenu(popupMenu, path, player);
-        else if (feedSource === "Webcams")
-            addWebcamMenu(popupMenu, path, player);
-        else if (feedSource === "Web Videos")
-            addWebvideoMenu(popupMenu, path, player);
-        else if (feedSource === "Videos")
-            addVideoMenu(popupMenu, path, player);
-        else if (feedSource === "Recordings")
-            addRecordingMenu(popupMenu, path, player);
-        else if (feedSource === "ZoneMinder Cameras")
-            addZMCameraMenu(popupMenu, path, player);
-        else if (feedSource === "Advent Calendar")
-            addAdventCalendarMenu(popupMenu, path, player);
+        if (feed.feedName === "Live TV")
+            addChannelMenu(popupMenu, feed, path, player);
+        else if (feed.feedName === "Webcams")
+            addWebcamMenu(popupMenu, feed, path, player);
+        else if (feed.feedName === "Web Videos")
+            addWebvideoMenu(popupMenu, feed, path, player);
+        else if (feed.feedName === "Videos")
+            addVideoMenu(popupMenu, feed, path, player);
+        else if (feed.feedName === "Recordings")
+            addRecordingMenu(popupMenu, feed, path, player);
+        else if (feed.feedName === "ZoneMinder Cameras")
+            addZMCameraMenu(popupMenu, feed, path, player);
+        else if (feed.feedName === "Advent Calendar")
+            addAdventCalendarMenu(popupMenu, feed, path, player);
     }
 
-    function addChannelMenu(popupMenu, path, player)
+    function addChannelMenu(popupMenu, feed, path, player)
     {
         for (var x = 0; x < captureCardModel.count; x++)
         {
@@ -322,27 +271,27 @@ Item
         return 0;
     }
 
-    function addWebcamMenu(popupMenu, path, player)
+    function addWebcamMenu(popupMenu, feed, path, player)
     {
-        var oldWebcamFilterCategory = webcamFilterCategory;
+        var oldWebcamFilterCategory = feed.category;
 
-        for (var x = 0; x < webcamModel.categoryList.count; x++)
+        for (var x = 0; x < webcamModel.models[feed.webcamListIndex].categoryList.count; x++)
         {
-            var category = webcamModel.categoryList.get(x).item;
+            var category = webcamModel.models[feed.webcamListIndex].categoryList.get(x).item;
             popupMenu.addMenuItem(path, category)
 
             // add the webcams for this category
-            webcamFilterCategory = category === "<All Webcams>" ? "" : category
+            feed.category = category === "<All Webcams>" ? "" : category
 
-            for (var y = 0; y < webcamProxyModel.count; y++)
+            for (var y = 0; y < feed.feedList.count; y++)
             {
-                var title = webcamProxyModel.get(y).title;
-                var data = "player=" + player + "\nWebcams\n" + webcamFilterCategory  + "\n" + y;//webcamProxyModel.get(y).id;
+                var title = feed.feedList.get(y).title;
+                var data = "player=" + player + "\nWebcams\n" + category  + "\n" + y;
                 popupMenu.addMenuItem(path + "," + x , title, data);
             }
         }
 
-        webcamFilterCategory = oldWebcamFilterCategory;
+        feed.category = oldWebcamFilterCategory;
     }
 
     function findWebvideoIndex(id)
@@ -356,7 +305,7 @@ Item
         return 0;
     }
 
-    function addWebvideoMenu(popupMenu, path, player)
+    function addWebvideoMenu(popupMenu, feed, path, player)
     {
         var oldWebvideoFilterCategory = webvideoFilterCategory;
 
@@ -379,7 +328,7 @@ Item
         webvideoFilterCategory = oldWebvideoFilterCategory;
     }
 
-    function addVideoMenu(popupMenu, path, player)
+    function addVideoMenu(popupMenu, feed, path, player)
     {
         for (var x = 0; x < videosModel.count; x++)
         {
@@ -389,12 +338,12 @@ Item
         }
     }
 
-    function addRecordingMenu(popupMenu, path, player)
+    function addRecordingMenu(popupMenu, feed, path, player)
     {
 
     }
 
-    function addZMCameraMenu(popupMenu, path, player)
+    function addZMCameraMenu(popupMenu, feed, path, player)
     {
         for (var x = 0; x < zmMonitorsModel.count; x++)
         {
@@ -404,7 +353,7 @@ Item
         }
     }
 
-    function addAdventCalendarMenu(popupMenu, path, player)
+    function addAdventCalendarMenu(popupMenu, feed, path, player)
     {
         popupMenu.addMenuItem(path, "<NONE>", "");
     }

@@ -9,10 +9,10 @@ BaseScreen
 
     Component.onCompleted:
     {
-        showTitle(true, model.title);
+        showTitle(true, model ? model.title : "");
         showTime(true);
         showTicker(true);
-        title.source = mythUtils.findThemeFile(model.logo)
+        title.source = model ? mythUtils.findThemeFile(model.logo) : ""
     }
 
     BaseThemedMenu
