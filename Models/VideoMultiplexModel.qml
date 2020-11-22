@@ -48,12 +48,12 @@ XmlListModel
 
         if (status === XmlListModel.Loading)
         {
-            log.debug(Verbose.MODEL, "VideoMultiplexModel: LOADING - " + source.toString());
+            log.debug(Verbose.MODEL, "VideoMultiplexModel: LOADING - " + source);
         }
 
         if (status === XmlListModel.Error)
         {
-            log.error(Verbose.MODEL, "VideoMultiplexModel: ERROR: " + errorString() + " - " + source.toString());
+            log.error(Verbose.MODEL, "VideoMultiplexModel: ERROR: " + errorString() + " - " + source);
         }
     }
 

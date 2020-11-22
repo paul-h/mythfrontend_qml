@@ -45,14 +45,14 @@ XmlListModel
 
         if (status === XmlListModel.Loading)
         {
-            log.debug(Verbose.MODEL, "MusicTracksModel: LOADING - " + source.toString());
+            log.debug(Verbose.MODEL, "MusicTracksModel: LOADING - " + source);
             screenBackground.showBusyIndicator = true
         }
 
         if (status === XmlListModel.Error)
         {
             screenBackground.showBusyIndicator = false
-            log.error(Verbose.MODEL, "MusicTracksModel: Error: " + errorString() + " - " + source.toString());
+            log.error(Verbose.MODEL, "MusicTracksModel: Error: " + errorString() + " - " + source);
         }
     }
 

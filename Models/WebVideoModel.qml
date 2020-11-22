@@ -106,12 +106,12 @@ Item
 
             if (status === XmlListModel.Loading)
             {
-                log.debug(Verbose.MODEL, "WebVideoModel: LOADING - " + source.toString());
+                log.debug(Verbose.MODEL, "WebVideoModel: LOADING - " + source);
             }
 
             if (status === XmlListModel.Error)
             {
-                log.error(Verbose.MODEL, "WebVideoModel: ERROR: " + errorString() + " - " + source.toString());
+                log.error(Verbose.MODEL, "WebVideoModel: ERROR: " + errorString() + " - " + source);
             }
         }
 

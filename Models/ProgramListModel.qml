@@ -41,12 +41,12 @@ XmlListModel
 
         if (status === XmlListModel.Loading)
         {
-            log.debug(Verbose.MODEL, "ProgramListModel: LOADING - " + source.toString());
+            log.debug(Verbose.MODEL, "ProgramListModel: LOADING - " + source);
         }
 
         if (status === XmlListModel.Error)
         {
-            log.error(Verbose.MODEL,  "ProgramListModel: ERROR - " + errorString() + " - " + source.toString());
+            log.error(Verbose.MODEL,  "ProgramListModel: ERROR - " + errorString() + " - " + source);
         }
     }
 
@@ -90,7 +90,7 @@ XmlListModel
         if (sort != "")
            res += "Sort=" + sort;
 
-        log.debug(Verbose.MODEL, "ProgramListModel: url - " + res.toString());
+        log.debug(Verbose.MODEL, "ProgramListModel: url - " + res);
 
         source = res;
     }

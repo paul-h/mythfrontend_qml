@@ -44,14 +44,14 @@ XmlListModel
 
         if (status === XmlListModel.Loading)
         {
-            log.debug(Verbose.MODEL, "RadioStreamModel:- LOADING" + source.toString());
+            log.debug(Verbose.MODEL, "RadioStreamModel:- LOADING" + source);
             screenBackground.showBusyIndicator = true
         }
 
         if (status === XmlListModel.Error)
         {
             screenBackground.showBusyIndicator = false
-            log.debug(Verbose.MODEL, "RadioStreamModel: ERROR - " + errorString() + " - " + source.toString());
+            log.debug(Verbose.MODEL, "RadioStreamModel: ERROR - " + errorString() + " - " + source);
         }
     }
 

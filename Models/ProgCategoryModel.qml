@@ -18,12 +18,12 @@ XmlListModel
 
         if (status === XmlListModel.Loading)
         {
-            log.debug(Verbose.MODEL, "ProgCategoryModel: LOADING - " + source.toString());
+            log.debug(Verbose.MODEL, "ProgCategoryModel: LOADING - " + source);
         }
 
         if (status === XmlListModel.Error)
         {
-            log.error(Verbose.MODEL, "ProgCategoryModel: ERROR - " + errorString() + " - " + source.toString());
+            log.error(Verbose.MODEL, "ProgCategoryModel: ERROR - " + errorString() + " - " + source);
         }
     }
 }

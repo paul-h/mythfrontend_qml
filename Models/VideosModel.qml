@@ -66,14 +66,14 @@ XmlListModel
 
         if (status === XmlListModel.Loading)
         {
-            log.debug(Verbose.MODEL, "VideosModel: LOADING - " + source.toString());
+            log.debug(Verbose.MODEL, "VideosModel: LOADING - " + source);
             screenBackground.showBusyIndicator = true;
         }
 
         if (status === XmlListModel.Error)
         {
             screenBackground.showBusyIndicator = false;
-            log.error(Verbose.MODEL, "VideosModel: ERROR: " + errorString() + " - " + source.toString());
+            log.error(Verbose.MODEL, "VideosModel: ERROR: " + errorString() + " - " + source);
         }
     }
 

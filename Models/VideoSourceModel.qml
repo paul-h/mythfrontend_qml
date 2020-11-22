@@ -31,12 +31,12 @@ XmlListModel
 
         if (status === XmlListModel.Loading)
         {
-            log.debug(Verbose.MODEL, "VideoSourceModel: LOADING - " + source.toString());
+            log.debug(Verbose.MODEL, "VideoSourceModel: LOADING - " + source);
         }
 
         if (status === XmlListModel.Error)
         {
-            log.error(Verbose.MODEL, "VideoSourceModel: ERROR: " + errorString() + " - " + source.toString());
+            log.error(Verbose.MODEL, "VideoSourceModel: ERROR: " + errorString() + " - " + source);
         }
     }
 

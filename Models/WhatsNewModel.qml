@@ -27,12 +27,12 @@ XmlListModel
 
         if (status === XmlListModel.Loading)
         {
-            log.debug(Verbose.MODEL, "WhatsNewModel: LOADING - " + source.toString());
+            log.debug(Verbose.MODEL, "WhatsNewModel: LOADING - " + source);
         }
 
         if (status === XmlListModel.Error)
         {
-            log.error(Verbose.MODEL, "WhatsNewModel: ERROR: " + errorString() + " - " + source.toString());
+            log.error(Verbose.MODEL, "WhatsNewModel: ERROR: " + errorString() + " - " + source);
         }
     }
 }

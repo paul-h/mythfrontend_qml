@@ -22,12 +22,12 @@ XmlListModel
 
         if (status === XmlListModel.Loading)
         {
-            log.debug(Verbose.MODEL, "TickerModel: LOADING - " + source.toString());
+            log.debug(Verbose.MODEL, "TickerModel: LOADING - " + source);
         }
 
         if (status === XmlListModel.Error)
         {
-            log.error(Verbose.MODEL, "TickerModel: ERROR: " + errorString() + " - " + source.toString());
+            log.error(Verbose.MODEL, "TickerModel: ERROR: " + errorString() + " - " + source);
         }
     }
 }
