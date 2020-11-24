@@ -100,15 +100,10 @@ FocusScope
                 {
                     checkProcessTimer.stop();
                     qtAVPlayer.visible = true;
-                    delay(5000, playStream);
+                    delay(5000, root.playStream);
                 }
             }
-
-            function playStream()
-            {
-                switchURL(settings.configPath + "stream.ts")
-            }
-        }
+         }
     }
 
     Rectangle
@@ -1514,5 +1509,11 @@ FocusScope
         }
 
         return ""
+    }
+
+    // delayed callback function
+    function playStream()
+    {
+        switchURL(settings.configPath + "stream.ts")
     }
 }
