@@ -498,6 +498,10 @@ BaseScreen
             {
                 updateBrowser();
             }
+            else if (isPanel)
+            {
+                parent.toggleFullscreenPlayer();
+            }
         }
     }
 
