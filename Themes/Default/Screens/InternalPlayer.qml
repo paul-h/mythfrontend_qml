@@ -13,6 +13,8 @@ BaseScreen
 {
     id: root
 
+    objectName: "internalplayer"
+
     defaultFocusItem: playerLayout.mediaPlayer1
 
     property alias layout: playerLayout.playerLayout

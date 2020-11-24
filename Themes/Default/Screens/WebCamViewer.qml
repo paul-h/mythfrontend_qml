@@ -11,7 +11,6 @@ BaseScreen
     id: root
 
     defaultFocusItem: webcamGrid
-    previousFocusItem: webcamGrid
 
     signal feedSelected(string feedSource, string filter, int index)
 
@@ -229,18 +228,18 @@ BaseScreen
 
         Keys.onReturnPressed:
         {
+            var filter = feedSource.webcamListIndex + "," + feedSource.category + "," + feedSource.sort;
+
             returnSound.play();
+
             if (!root.isPanel)
             {
-                var filter = feedSource.webcamListIndex + "," + feedSource.category + "," + feedSource.sort;
                 var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Webcams", defaultFilter:  filter, defaultCurrentFeed: webcamGrid.currentIndex}});
                 item.feedChanged.connect(feedChanged);
-
             }
             else
             {
-                var filter = feedSource.webcamListIndex + "," + feedSource.category + "," + feedSource.sort;
-                previousFocusItem = webcamGrid;
+                internalPlayer.previousFocusItem = webcamGrid;
                 feedSelected("Webcams", filter, webcamGrid.currentIndex);
             }
 
@@ -427,8 +426,6 @@ BaseScreen
 
     function feedChanged(feed, filterList, currentIndex)
     {
-        console.log("feedSource: " + feed + ",filterList: " + filterList + ", currentIndex: " + currentIndex);
-
         if (feed !== "Webcams")
             return;
 
