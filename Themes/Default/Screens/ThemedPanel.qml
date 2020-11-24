@@ -33,7 +33,7 @@ BaseScreen
         feedFilter = dbUtils.getSetting("LastFeedFilter", settings.hostName, "-1,-1")
         feedIndex = dbUtils.getSetting("LastFeedIndex", settings.hostName, 0)
 
-        delay(2000, delayedInit());
+        delay(2000, delayedInit);
 
         internalPlayer.previousFocusItem = buttonList
 
@@ -86,6 +86,8 @@ BaseScreen
     InternalPlayer
     {
         id: internalPlayer
+        objectName: "panelplayer"
+
         x: 0
         y: yscale(300)
         z: 100
@@ -271,7 +273,6 @@ BaseScreen
                     escapeSound.play();
                     showVideo(false);
                     panelStack.pop(null);
-                    //stack.pop();
                     quit();
                 }
                 else
@@ -537,7 +538,7 @@ BaseScreen
         }
         else
         {
-            loader.sourceComponent = emptyList; //settings.sharePath + "qml/MenuThemes/panel/EmptyMenu.qml";
+            loader.sourceComponent = emptyList;
         }
 
         // wait for the loader
@@ -612,7 +613,6 @@ BaseScreen
 
         if (videoPlayerFullscreen)
         {
-            internalPlayer.previousFocusItem = panelStack.currentItem.previousFocusItem;
             internalPlayer.x = 0;
             internalPlayer.y = 0;
             internalPlayer.width = window.width;

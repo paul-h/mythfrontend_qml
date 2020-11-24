@@ -226,7 +226,7 @@ BaseScreen
 
             if (root.isPanel)
             {
-                themedPanel.previousFocusItem = channelGrid;
+                internalPlayer.previousFocusItem = channelGrid;
                 feedSelected("Live TV", filter, channelGrid.currentIndex);
             }
             else
