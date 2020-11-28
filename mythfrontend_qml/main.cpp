@@ -32,9 +32,9 @@ int main(int argc, char *argv[])
         QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
         QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
-        QtWebEngine::initialize();
-
         QGuiApplication *app = new QGuiApplication(argc, argv);
+
+        QtWebEngine::initialize();
 
         QCoreApplication::setApplicationName("mythfrontend_qml");
         QCoreApplication::setApplicationVersion(APP_VERSION);
