@@ -115,6 +115,8 @@ BaseScreen
 
         Keys.onPressed:
         {
+            event.accepted = true;
+
             if (event.key === Qt.Key_M)
             {
                 showMenu();
