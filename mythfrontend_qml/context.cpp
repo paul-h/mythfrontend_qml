@@ -135,6 +135,10 @@ void Context::init()
     if (!d.exists(m_settings->configPath() + "Themes/Videos"))
         d.mkpath(m_settings->configPath() + "Themes/Videos");
 
+    // create the background slideshow dir
+    if (!d.exists(m_settings->configPath() + "Themes/Pictures"))
+        d.mkpath(m_settings->configPath() + "Themes/Pictures");
+
     // create the myth utils
     m_mythUtils = new MythUtils(m_engine);
     m_engine->rootContext()->setContextProperty("mythUtils", m_mythUtils);

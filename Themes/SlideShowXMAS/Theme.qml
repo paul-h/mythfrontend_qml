@@ -9,7 +9,7 @@ QtObject
     // screen background
     property string   backgroundImage:     "background.png"
     property string   backgroundVideo:     ""
-    property string   backgroundSlideShow: "Christmas"
+    property string   backgroundSlideShow: "Christmas.tar.gz"
     
     // main menu font
     property string menuFontFamily:     "Liberation Sans"

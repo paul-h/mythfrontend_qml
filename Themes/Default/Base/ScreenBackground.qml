@@ -57,6 +57,11 @@ Item
         }
     }
 
+    function setSlideShow(path)
+    {
+        slideShow.folder = path;
+    }
+
     x: 0; y : 0; width: window.width; height: window.height
 
     // background image
@@ -74,7 +79,6 @@ Item
         id: slideShow
         anchors.fill: parent
         visible:  false
-        folder: settings.configPath + "Themes/Pictures/" + theme.backgroundSlideShow
     }
 
     // background video
