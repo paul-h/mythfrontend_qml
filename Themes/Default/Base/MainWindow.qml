@@ -73,17 +73,68 @@ Window
         id: themeDLProcess
         onFinished:
         {
-            if (exitStatus === Process.NormalExit && themeDLProcess.exitCode() === 0)
+            var source;
+            var dest;
+
+            if (theme.backgroundVideo)
             {
-                showNotification("");
-                screenBackground.showVideo = true;
-                screenBackground.setVideo("file://" + settings.configPath + "Themes/Videos/" + theme.backgroundVideo);
-                screenBackground.showImage = false;
+                source = "https://mythqml.net/downloads/themes/" + settings.themeName + "/" + theme.backgroundVideo;
+                dest = settings.configPath + "Themes/Videos/" + theme.backgroundVideo;
+
+                if (exitStatus === Process.NormalExit && themeDLProcess.exitCode() === 0)
+                {
+                    showNotification("");
+                    screenBackground.showVideo = true;
+                    screenBackground.setVideo("file://" + settings.configPath + "Themes/Videos/" + theme.backgroundVideo);
+                    screenBackground.showImage = false;
+                }
+                else
+                {
+                    mythUtils.removeFile(dest);
+                    showNotification("Downloading of the background video failed!");
+                    log.error(Verbose.GUI, "MainWindow: Error - failed to download background video from: " + source);
+                    log.error(Verbose.GUI, "MainWindow: Error - exit code was: " + themeDLProcess.exitCode());
+                }
             }
             else
             {
-                var source = "https://mythqml.net/downloads/themes/" + settings.themeName + "/" + theme.backgroundVideo;
-                var dest = settings.configPath + "Themes/Videos/" + theme.backgroundVideo;
+                source = settings.configPath + "Themes/Pictures/" + settings.themeName + "/" + theme.backgroundSlideShow;
+                dest = settings.configPath + "Themes/Pictures/" + settings.themeName + "/";
+
+                if (exitStatus === Process.NormalExit && themeDLProcess.exitCode() === 0)
+                {
+                    // extract the slideshow pictures from the compressed tar.gz file
+                    unTarProcess.start("tar", ['--overwrite', '-x', '-C', dest, '-f', source]);
+                }
+                else
+                {
+                    source = "https://mythqml.net/downloads/themes/" + settings.themeName + "/" + theme.backgroundSlideShow;
+                    mythUtils.removeFile(dest);
+                    showNotification("Downloading of the background slideshow failed!");
+                    log.error(Verbose.GUI, "MainWindow: Error - failed to download background slideshow from: " + source);
+                    log.error(Verbose.GUI, "MainWindow: Error - exit code was: " + themeDLProcess.exitCode());
+                }
+            }
+        }
+    }
+
+    Process
+    {
+        id: unTarProcess
+        onFinished:
+        {
+            if (exitStatus === Process.NormalExit && themeDLProcess.exitCode() === 0)
+            {
+                showNotification("");
+                screenBackground.showVideo = false;
+                screenBackground.setSlideShow(settings.configPath + "Themes/Pictures/" + settings.themeName);
+                screenBackground.showImage = false;
+                screenBackground.showSlideShow = true;
+            }
+            else
+            {
+                var source = "https://mythqml.net/downloads/themes/" + settings.themeName + "/" + theme.backgroundSlideShow;
+                var dest = settings.configPath + "Themes/Pictures/" + settings.themeName + "/" + theme.backgroundSlideShow;
                 mythUtils.removeFile(dest);
                 showNotification("Downloading of the background video failed!");
                 log.error(Verbose.GUI, "MainWindow: Error - failed to download background video from: " + source);
@@ -467,9 +518,31 @@ Window
             }
             else if (theme.backgroundSlideShow != "")
             {
-                screenBackground.showVideo = false;
-                screenBackground.showImage = false;
-                screenBackground.showSlideShow = true;
+                if (!mythUtils.fileExists(settings.configPath + "Themes/Pictures/" + settings.themeName + "/" +theme.backgroundSlideShow))
+                {
+                    var source = "https://mythqml.net/downloads/themes/" + settings.themeName + "/" + theme.backgroundSlideShow;
+                    var dest = settings.configPath + "Themes/Pictures/" + settings.themeName + "/" + theme.backgroundSlideShow;
+
+                    mythUtils.mkPath(settings.configPath + "Themes/Pictures/" + settings.themeName);
+
+                    screenBackground.showVideo = false;
+                    screenBackground.showImage = true;
+                    screenBackground.showSlideShow = false;
+
+                    log.info(Verbose.GUI, "MainWindow: Downloading theme background slideshow from - " + source);
+                    log.info(Verbose.GUI, "to - " + dest);
+
+                    showNotification("Downloading the background slideshow.<br>Please Wait....", 1000 * 60 * 60);
+
+                    themeDLProcess.start("wget", ['-O', dest, source]);
+                }
+                else
+                {
+                    screenBackground.setSlideShow(settings.configPath + "Themes/Pictures/" + settings.themeName);
+                    screenBackground.showVideo = false;
+                    screenBackground.showImage = false;
+                    screenBackground.showSlideShow = true;
+                }
             }
             else
             {

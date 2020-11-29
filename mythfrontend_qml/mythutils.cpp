@@ -79,6 +79,13 @@ bool MythUtils::removeFile(const QString& fileName)
     return QFile::remove(fileName);
 }
 
+bool MythUtils::mkPath(const QString &path)
+{
+    QDir d;
+
+    return d.mkpath(path);
+}
+
 QDateTime MythUtils::addMinutes(const QDateTime& dateTime, int minutes)
 {
     return dateTime.addSecs(minutes * 60);
