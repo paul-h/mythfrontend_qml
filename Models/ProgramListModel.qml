@@ -30,7 +30,7 @@ XmlListModel
     XmlRole { name: "Episode"; query: "Episode/string()" }
     XmlRole { name: "TotalEpisodes"; query: "TotalEpisodes/string()" }
     XmlRole { name: "RecordingStatus"; query: "Recording/Status/string()" }
-    XmlRole { name: "AirDate"; query: "xs:date(Airdate)" }
+    XmlRole { name: "AirDate"; query: "Airdate/string()" }
 
     onStatusChanged:
     {
