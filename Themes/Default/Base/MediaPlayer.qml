@@ -1501,7 +1501,7 @@ FocusScope
             else
             {
                 // try to get the icon from the same URL the webcam list was loaded from
-                var url = playerSources.webcamList.webcamList.get(playerSources.webcamList.webcamListIndex).url
+                var url = playerSources.webcamList.webcamList.get(feedSource.webcamListIndex).url
                 var r = /[^\/]*$/;
                 url = url.replace(r, '');
                 return url + iconURL;
