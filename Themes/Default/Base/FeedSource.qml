@@ -1,4 +1,4 @@
-import QtQuick 2.0
+﻿import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
 import SortFilterProxyModel 0.2
 import mythqml.net 1.0
@@ -22,9 +22,11 @@ Item
 
     // Webcams/WebVideos
     property int webcamListIndex: 0
+    property int webvideoListIndex: 0
     property string category: ""
     property string sort: "title"
     property string  webcamFilterFavorite: "Any"
+    property string  webvideoFilterFavorite: "Any"
 
     // private
     property bool _switchingFeed: false
@@ -33,7 +35,7 @@ Item
     signal feedModelLoading()
     signal feedModelError()
 
-    onCategoryChanged: { categoryFilter.category = category; }
+    onCategoryChanged: { categoryFilter.category = category; vidCategoryFilter.category = category;}
 
     onWebcamListIndexChanged:
     {
@@ -96,9 +98,55 @@ Item
 
             ValueFilter
             {
-                enabled: (webcamFilterFavorite !== "Any")
+                enabled: (webvideoFilterFavorite !== "Any")
                 roleName: "favorite"
-                value: (webcamFilterFavorite === "Yes")
+                value: (webvideoFilterFavorite === "Yes")
+            }
+
+            AnyOf
+            {
+                ValueFilter
+                {
+                    roleName: "status"
+                    value: "Working"
+                }
+
+                ValueFilter
+                {
+                    roleName: "status"
+                    value: "Temporarily Offline"
+                }
+            }
+        }
+    ]
+
+    property list<QtObject> webvideoFilter:
+    [
+        AllOf
+        {
+            ExpressionFilter
+            {
+                id: vidCategoryFilter
+                property string category: ""
+                expression:
+                {
+                    var catList = categories.split(",");
+                    for (var x = 0; x < catList.length; x++)
+                    {
+                        if (catList[x].trim() == root.category)
+                            return true;
+                    }
+
+                    return false;
+                }
+                enabled: root.category !== ""
+            }
+
+            ValueFilter
+            {
+                enabled: (webvideoFilterFavorite !== "Any")
+                roleName: "favorite"
+                value: (webvideoFilterFavorite === "Yes")
             }
 
             AnyOf
@@ -290,26 +338,40 @@ Item
         }
     }
 
-    function switchToWebvideos(category, currFeed)
+    function switchToWebvideos(filterList, currFeed)
     {
         feedName = "Web Videos";
         currentFeed = currFeed;
-        currentFilter = category;
-        categoryFilter.category = category;
-        filters = categoryFilter;
-        sorters = titleSorter;
+        currentFilter = filterList;
 
-        if (feedList.sourceModel !== playerSources.webvideoList.model)
+        var list = filterList.split(",");
+        var index = 0;
+        var _category = "";
+        var _sort = "title";
+
+        if (list.length === 3)
+        {
+            index = list[0];
+            _category = list[1];
+            _sort = list[2];
+        }
+
+        webvideoListIndex = index;
+        category = _category;
+        filters = webvideoFilter;
+        sorters = _sort === "title" ? titleSorter : [];
+
+        if (feedList.sourceModel !== playerSources.webvideoList.models[webvideoListIndex].model)
         {
             if (feedList.sourceModel)
                 feedList.sourceModel.loadingStatus.disconnect(handleModelStatusChange);
 
-            feedList.sourceModel = playerSources.webvideoList.model;
+            feedList.sourceModel = playerSources.webvideoList.models[webvideoListIndex].model;
 
-            if (playerSources.webvideoList.status === XmlListModel.Ready)
+            if (feedList.sourceModel.status === XmlListModel.Ready)
                 handleModelStatusChange(XmlListModel.Ready);
             else
-                playerSources.webvideoList.loadingStatus.connect(handleModelStatusChange);
+                feedList.sourceModel.loadingStatus.connect(handleModelStatusChange);
         }
     }
 
@@ -373,11 +435,11 @@ Item
 
         if (feedList.sourceModel !== playerSources.adhocList)
         {
-            if (feedList.sourceModel)
+            if (feedList.sourceModel && feedList.sourceModel.loadingStatus)
                 feedList.sourceModel.loadingStatus.disconnect(handleModelStatusChange);
 
             feedList.sourceModel = playerSources.adhocList;
-            playerSources.adhocList.loadingStatus.connect(handleModelStatusChange);
+            handleModelStatusChange(XmlListModel.Ready);
         }
     }
 
@@ -395,7 +457,7 @@ Item
                 feedList.sourceModel.loadingStatus.disconnect(handleModelStatusChange);
 
             feedList.sourceModel = playerSources.adhocList;
-            //playerSources.adhocList.loadingStatus.connect(handleModelStatusChange);
+            handleModelStatusChange(XmlListModel.Ready);
         }
     }
 
