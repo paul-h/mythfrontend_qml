@@ -8,6 +8,8 @@ import "../../../Util.js" as Util
 
 BaseScreen
 {
+    id: root
+
     defaultFocusItem: videoList
     property alias folder: folderModel.folder
 
@@ -178,7 +180,12 @@ BaseScreen
                     playDVD(model.get(currentIndex, "filePath"))
                 }
                 else
-                    stack.push({item: Qt.resolvedUrl("VideosGridFolder.qml"), properties:{folder: model.get(currentIndex, "filePath")}});
+                {
+                    if (root.isPanel)
+                        panelStack.push({item: Qt.resolvedUrl("VideosGridFolder.qml"), properties:{folder: model.get(currentIndex, "filePath")}});
+                    else
+                        stack.push({item: Qt.resolvedUrl("VideosGridFolder.qml"), properties:{folder: model.get(currentIndex, "filePath")}});
+                }
             }
             else
             {
@@ -188,8 +195,17 @@ BaseScreen
                 }
                 else
                 {
-                    playerSources.adhocList = mediaModel;
-                    var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0}});
+                    if (root.isPanel)
+                    {
+                        internalPlayer.previousFocusItem = videoList;
+                        playerSources.adhocList = mediaModel;
+                        feedSelected("Adhoc", "", 0);
+                    }
+                    else
+                    {
+                        playerSources.adhocList = mediaModel;
+                        var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0}});
+                    }
                 }
             }
 
