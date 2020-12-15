@@ -354,12 +354,12 @@ Window
             focus: true
             opacity: screenBackground.screenSaverMode ? 0 : 1
 
-            initialItem:
+            Component.onCompleted:
             {
                 if (settings.mythQLayout)
-                    createThemedPanel();
+                    stack.push(createThemedPanel());
                 else
-                    createThemedMenu();
+                    stack.push(createThemedMenu());
             }
 
             onCurrentItemChanged:
@@ -413,8 +413,7 @@ Window
 
                 if (component.status === Component.Ready)
                 {
-                    var object =component.createObject(stack, {model: mainMenuLoader.item});
-                    object.parent = stack;
+                    var object =component.createObject(window, {model: mainMenuLoader.item});
                     return object;
                 }
                 else
@@ -438,7 +437,6 @@ Window
                 if (component.status === Component.Ready)
                 {
                     var object = component.createObject(stack, {});
-                    object.parent = stack;
                     return object;
                 }
                 else
