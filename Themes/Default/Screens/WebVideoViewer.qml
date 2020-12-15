@@ -20,81 +20,95 @@ BaseScreen
         while (stack.busy) {};
 
         if (isPanel)
-            playerSources.webvideoFilterCategory = "<All Web Videos>";
+            feedSource.category = "<All Web Videos>";
         else
-            playerSources.webvideoFilterCategory = dbUtils.getSetting("LastWebvideoCategory", settings.hostName);
+            feedSource.category = dbUtils.getSetting("LastWebvideoCategory", settings.hostName);
 
-        if (playerSources.webvideoFilterCategory == "<All Web Videos>" || playerSources.webvideoFilterCategory == "")
+        if (feedSource.category == "<All Web Videos>" || feedSource.category == "")
             footer.greenText = "Show (All Web Videos)"
         else
-            footer.greenText = "Show (" + playerSources.webvideoFilterCategory + ")"
+            footer.greenText = "Show (" + feedSource.category + ")"
 
         var index = dbUtils.getSetting("WebvideoListIndex", settings.hostName, "");
 
         if (index !== "")
-            playerSources.webvideoList.webvideoListIndex = index;
+            feedSource.webvideoListIndex = index;
 
-        showTitle(true, "Web Video Viewer - " + playerSources.webvideoList.webvideoList.get(playerSources.webvideoList.webvideoListIndex).title);
+        showTitle(true, "Web Video Viewer - " + playerSources.webvideoList.webvideoList.get(feedSource.webvideoListIndex).title);
 
-        playerSources.webvideoList.loaded.connect(function() { webvideoGrid.currentIndex = 0; });
+        var filter = feedSource.webvideoListIndex + "," + feedSource.category + "," + "title";
+        feedSource.switchToFeed("Web Videos", filter, 0);
+
+        feedSource.feedModelLoaded.connect(function() { webvideoGrid.currentIndex = 0; });
+
+        webvideoGrid.currentIndex = 0;
 
         updateWebvideoDetails();
 
-        delay(1500, checkForUpdates);
+        if (!isPanel)
+            delay(1500, checkForUpdates);
     }
 
     Component.onDestruction:
     {
-        dbUtils.setSetting("WebvideoListIndex", settings.hostName, playerSources.webvideoList.webvideoListIndex);
-        dbUtils.setSetting("LastWebvideoCategory", settings.hostName, playerSources.webvideoFilterCategory)
-        playerSources.webvideoList.saveFavorites();
+        dbUtils.setSetting("WebvideoListIndex", settings.hostName, feedSource.webvideoListIndex);
+        dbUtils.setSetting("LastWebvideoCategory", settings.hostName, feedSource.category)
+        playerSources.webvideoList.models[feedSource.webvideoListIndex].model.saveFavorites();
     }
 
-    property list<QtObject> titleSorter:
-    [
-        RoleSorter { roleName: "title"; ascendingOrder: true}
-    ]
-
-    property list<QtObject> idSorter:
-    [
-        RoleSorter { roleName: "id" }
-    ]
+    FeedSource
+    {
+        id: feedSource
+        objectName: "WebVideoViewer"
+    }
 
     Keys.onPressed:
     {
+        event.accepted = true;
+
         if (event.key === Qt.Key_M)
         {
             popupMenu.clearMenuItems();
 
             popupMenu.addMenuItem("", "Switch Web Video List");
             for (var x = 0; x < playerSources.webvideoList.webvideoList.count; x++)
-                popupMenu.addMenuItem("0", playerSources.webvideoList.webvideoList.get(x).title, x);
+                popupMenu.addMenuItem("0", playerSources.webvideoList.webvideoList.get(x).title, x(feedSource.webvideoListIndex == x ? true : false));
 
             popupMenu.show();
         }
         else if (event.key === Qt.Key_F1)
         {
-            playerSources.webvideoTitleSorterActive = !playerSources.webvideoTitleSorterActive;
+            var id = webvideoGrid.model.get(webvideoGrid.currentIndex).id;
 
-            if (playerSources.webvideoTitleSorterActive)
+            if (feedSource.sort === "id")
+            {
+                feedSource.sort = "title";
                 footer.redText = "Sort (Name)";
+            }
             else
+            {
+                feedSource.sort = "id";
                 footer.redText = "Sort (No.)";
+            }
+
+            var index = feedSource.findById(id);
+
+            webvideoGrid.currentIndex = (index != -1 ? index : 0);
         }
         else if (event.key === Qt.Key_F2)
         {
             // GREEN
-            searchDialog.model = playerSources.webvideoList.categoryList
+            searchDialog.model = playerSources.webvideoList.models[feedSource.webvideoListIndex].categoryList
             searchDialog.show();
         }
         else if (event.key === Qt.Key_F3)
         {
             // YELLOW
             var id = webvideoGrid.model.get(webvideoGrid.currentIndex).id;
-            var index = playerSources.webvideoList.findById(id);
+            var index = playerSources.webvideoList.models[feedSource.webvideoListIndex].model.findById(id);
 
             if (index != -1)
-                playerSources.webvideoList.model.get(index).favorite = !playerSources.webvideoList.model.get(index).favorite;
+                playerSources.webvideoList.models[feedSource.webvideoListIndex].model.get(index).favorite = !playerSources.webvideoList.models[feedSource.webvideoListIndex].model.get(index).favorite;
          }
         else if (event.key === Qt.Key_F4)
         {
@@ -106,18 +120,19 @@ BaseScreen
                 stack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: website, zoomFactor: zoom}});
             }
 
-            event.accepted = true;
             returnSound.play();
         }
         else if (event.key === Qt.Key_F5)
         {
-            playerSources.webvideoList.webvideoList.reload();
+            playerSources.webvideoList.reload();
         }
         else if (event.key === Qt.Key_R)
         {
             // for testing reset the last checked to now -4 weeks
             dbUtils.setSetting("LastWebvideoCheck", settings.hostName, Util.addDays(Date(Date.now()), -28));
         }
+        else
+            event.accepted = false;
     }
 
     BaseBackground
@@ -196,15 +211,27 @@ BaseScreen
             }
         }
 
-        model: playerSources.webvideoProxyModel
+        model: feedSource.feedList
         delegate: webvideoDelegate
         focus: true
 
         Keys.onReturnPressed:
         {
+            var filter = feedSource.webvideoListIndex + "," + feedSource.category + "," + feedSource.sort;
+
             returnSound.play();
-            var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Web Videos", defaultFilter:  playerSources.webvideoFilterCategory, defaultCurrentFeed: webvideoGrid.currentIndex}});
-            item.feedChanged.connect(feedChanged);
+
+            if (!root.isPanel)
+            {
+                var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Web Videos", defaultFilter:  filter, defaultCurrentFeed: webvideoGrid.currentIndex}});
+                item.feedChanged.connect(feedChanged);
+            }
+            else
+            {
+                internalPlayer.previousFocusItem = webvideoGrid;
+                feedSelected("Web Videos", filter, webvideoGrid.currentIndex);
+            }
+
             event.accepted = true;
         }
 
@@ -293,12 +320,13 @@ BaseScreen
         {
             if (itemText != "<All Web Videos>")
             {
-                playerSources.webvideoFilterCategory = itemText;
+                feedSource.category = ""; // this is needed to get the ExpressionFilter to re-evaluate
+                feedSource.category = itemText;
                 footer.greenText = "Show (" + itemText + ")"
             }
             else
             {
-                playerSources.webvideoFilterCategory = "";
+                feedSource.category = "";
                 footer.greenText = "Show (All Web Videos)"
 
             }
@@ -320,14 +348,18 @@ BaseScreen
         {
             webvideoGrid.focus = true;
 
-            if (itemData !== "")
+            if (itemText == "Reload")
             {
-                playerSources.webvideoList.saveFavorites();
-                playerSources.webvideoList.webvideoListIndex = itemData;
+                playerSources.webvideoList.models[feedSource.webvideoListIndex].model.reload();
+            }
+            else if (itemData !== "")
+            {
+                playerSources.webvideoList.models[feedSource.webvideoListIndex].model.saveFavorites();
+                feedSource.webvideoListIndex = itemData;
 
-                showTitle(true, "Web Video Viewer - " + playerSources.webvideoList.webvideoList.get(playerSources.webvideoList.webvideoListIndex).title);
+                showTitle(true, "Web Video Viewer - " + playerSources.webvideoList.webvideoList.get(feedSource.webvideoListIndex).title);
 
-                playerSources.webvideoFilterCategory = "";
+                feedSource.category = "";
                 footer.greenText = "Show (All Web Videos)"
             }
         }
@@ -347,57 +379,75 @@ BaseScreen
        menu.append({"menutext": "New", "loaderSource": "WebVideoViewer.qml", "menuSource": ""});
        menu.append({"menutext": "---", "loaderSource": "WebVideoViewer.qml", "loaderSource": "", "menuSource": ""});
 
-       for (var x = 0; x < playerSources.webvideoList.categoryList.count; x++)
+       for (var x = 0; x < playerSources.webvideoList.models[feedSource.webvideoListIndex].categoryList.count; x++)
        {
-           menu.append({"menutext": playerSources.webvideoList.categoryList.get(x).item, "loaderSource": "WebVideoViewer.qml", "menuSource": ""});
+           menu.append({"menutext": playerSources.webvideoList.models[feedSource.webvideoListIndex].categoryList.get(x).item, "loaderSource": "WebVideoViewer.qml", "menuSource": ""});
        }
    }
 
    function setFilter(filter)
    {
+       var filterList;
        if (filter === "All" || filter === "<All Web Videos>")
        {
-           feedChanged("Web Videos", "", 0);
-           playerSources.webvideoFilterFavorite ="Any";
+           filterList = feedSource.webvideoListIndex + ",," + feedSource.sort;
+           feedChanged("Web Videos", filterList, 0);
+           feedSource.webvideoFilterFavorite ="Any";
        }
        else if (filter === "Favourite")
        {
-           feedChanged("Web Videos", "", 0);
-           playerSources.webvideoFilterFavorite ="Yes";
+           filterList = feedSource.webvideoListIndex + ",," + feedSource.sort;
+           feedChanged("Web Videos", filterList, 0);
+           feedSource.webvideoFilterFavorite ="Yes";
        }
        else if (filter === "New")
        {
-           feedChanged("Web Videos", "New", 0)
-           playerSources.webvideoFilterFavorite ="Any";
+           filterList = feedSource.webvideoListIndex + ",New," + feedSource.sort;
+           feedChanged("Web Videos", filterList, 0)
+           feedSource.webvideoFilterFavorite ="Any";
        }
        else if (filter != "---" )
        {
-           feedChanged("Web Videos", filter, 0);
-           playerSources.webvideoFilterFavorite ="Any";
+           filterList = feedSource.webvideoListIndex + "," + filter + "," + feedSource.sort;
+           feedChanged("Web Videos", filterList, 0);
+           feedSource.webvideoFilterFavorite ="Any";
        }
    }
 
-    function feedChanged(feedSource, filter, index)
-    {
-        if (feedSource !== "Web Videos")
-            return;
+   function feedChanged(feed, filterList, currentIndex)
+   {
+       if (feed !== "Web Videos")
+           return;
 
-        if (filter !== playerSources.webvideoFilterCategory)
-        {
-            if (filter === "")
-            {
-                playerSources.webvideoFilterCategory = filter;
-                footer.greenText = "Show (All Web Videos)"
-            }
-            else
-            {
-                playerSources.webvideoFilterCategory = filter;
-                footer.greenText = "Show (" + filter + ")"
-            }
-        }
+       var list = filterList.split(",");
+       var index = 0;
+       var category = "";
+       var sort = "title";
 
-        webvideoGrid.currentIndex = index;
-    }
+       if (list.length === 3)
+       {
+           index = list[0];
+           category = list[1];
+           sort = list[2];
+       }
+       if (category !== feedSource.category)
+       {
+           feedSource.category = ""; // this is needed to get the ExpressionFilter to re-evaluate
+
+           if (category === "")
+           {
+               feedSource.category = category;
+               footer.greenText = "Show (All Web Videos )"
+           }
+           else
+           {
+               feedSource.category = category;
+               footer.greenText = "Show (" + category + ")"
+           }
+       }
+
+       webvideoGrid.currentIndex = currentIndex;
+   }
 
     function getIconURL(iconURL)
     {
@@ -408,7 +458,7 @@ BaseScreen
             else
             {
                 // try to get the icon from the same URL the webvideo list was loaded from
-                var url = playerSources.webvideoList.webvideoList.get(playerSources.webvideoList.webvideoListIndex).url
+                var url = playerSources.webvideoList.webvideoList.get(feedSource.webvideoListIndex).url
                 var r = /[^\/]*$/;
                 url = url.replace(r, '');
                 return url + iconURL;
@@ -420,6 +470,9 @@ BaseScreen
 
     function updateWebvideoDetails()
     {
+        if (webvideoGrid.currentIndex === -1)
+            return;
+
         title.text = webvideoGrid.model.get(webvideoGrid.currentIndex).title;
 
         // description
@@ -451,9 +504,9 @@ BaseScreen
         updatesModel.clear();
 
         // add new webvideos
-        for (x = 0; x < playerSources.webvideoList.count; x++)
+        for (x = 0; x < playerSources.webvideoList.models[feedSource.webvideoListIndex].model.count; x++)
         {
-            var webvideoAdded = Date.parse(playerSources.webvideoList.get(x).dateadded);
+            var webvideoAdded = Date.parse(playerSources.webvideoList.models[feedSource.webvideoListIndex].model.get(x).dateadded);
 
             if (lastChecked < webvideoAdded)
             {
@@ -463,16 +516,16 @@ BaseScreen
                     firstAdded = false;
                 }
 
-                updatesModel.append({"heading": "no", "title": playerSources.webvideoList.get(x).title, "icon": playerSources.webvideoList.get(x).icon});
+                updatesModel.append({"heading": "no", "title": playerSources.webvideoList.models[feedSource.webvideoListIndex].model.get(x).title, "icon": playerSources.webvideoList.models[feedSource.webvideoListIndex].model.get(x).icon});
             }
         }
 
         // add modified webvideos
-        for (x = 0; x < playerSources.webvideoList.count; x++)
+        for (x = 0; x < playerSources.webvideoList.models[feedSource.webvideoListIndex].model.count; x++)
         {
-            var webvideoModified = Date.parse(playerSources.webvideoList.get(x).datemodified);
-            var webvideoAdded = Date.parse(playerSources.webvideoList.get(x).dateadded);
-            var status = playerSources.webvideoList.get(x).status
+            var webvideoModified = Date.parse(playerSources.webvideoList.models[feedSource.webvideoListIndex].model.get(x).datemodified);
+            var webvideoAdded = Date.parse(playerSources.webvideoList.models[feedSource.webvideoListIndex].model.get(x).dateadded);
+            var status = playerSources.webvideoList.models[feedSource.webvideoListIndex].model.get(x).status
 
             if (lastChecked < webvideoModified && !(lastChecked < webvideoAdded) && status !== "Temporarily Offline" && status !== "Not Working")
             {
@@ -482,16 +535,16 @@ BaseScreen
                     firstModified = false;
                 }
 
-                updatesModel.append({"heading": "no", "title": playerSources.webvideoList.get(x).title, "icon": playerSources.webvideoList.get(x).icon});
+                updatesModel.append({"heading": "no", "title": playerSources.webvideoList.models[feedSource.webvideoListIndex].model.get(x).title, "icon": playerSources.webvideoList.models[feedSource.webvideoListIndex].model.get(x).icon});
             }
         }
 
         // add temporarily offline webvideos
-        for (x = 0; x < playerSources.webvideoList.count; x++)
+        for (x = 0; x < playerSources.webvideoList.models[feedSource.webvideoListIndex].model.count; x++)
         {
-            var webvideoModified = Date.parse(playerSources.webvideoList.get(x).datemodified);
-            var webvideoAdded = Date.parse(playerSources.webvideoList.get(x).dateadded);
-            var status = playerSources.webvideoList.get(x).status
+            var webvideoModified = Date.parse(playerSources.webvideoList.models[feedSource.webvideoListIndex].model.get(x).datemodified);
+            var webvideoAdded = Date.parse(playerSources.webvideoList.models[feedSource.webvideoListIndex].model.get(x).dateadded);
+            var status = playerSources.webvideoList.models[feedSource.webvideoListIndex].model.get(x).status
 
             if (lastChecked < webvideoModified && !(lastChecked < webvideoAdded) && status === "Temporarily Offline")
             {
@@ -501,16 +554,16 @@ BaseScreen
                     firstOffline = false;
                 }
 
-                updatesModel.append({"heading": "no", "title": playerSources.webvideoList.get(x).title, "icon": playerSources.webvideoList.get(x).icon});
+                updatesModel.append({"heading": "no", "title": playerSources.webvideoList.models[feedSource.webvideoListIndex].model.get(x).title, "icon": playerSources.webvideoList.models[feedSource.webvideoListIndex].model.get(x).icon});
             }
         }
 
         // add not working webvideos
-        for (x = 0; x < playerSources.webvideoList.count; x++)
+        for (x = 0; x < playerSources.webvideoList.models[feedSource.webvideoListIndex].model.count; x++)
         {
-            var webvideoModified = Date.parse(playerSources.webvideoList.get(x).datemodified);
-            var webvideoAdded = Date.parse(playerSources.webvideoList.get(x).dateadded);
-            var status = playerSources.webvideoList.get(x).status
+            var webvideoModified = Date.parse(playerSources.webvideoList.models[feedSource.webvideoListIndex].model.get(x).datemodified);
+            var webvideoAdded = Date.parse(playerSources.webvideoList.models[feedSource.webvideoListIndex].model.get(x).dateadded);
+            var status = playerSources.webvideoList.models[feedSource.webvideoListIndex].model.get(x).status
 
             if (lastChecked < webvideoModified && !(lastChecked < webvideoAdded) && status === "Not Working")
             {
@@ -520,7 +573,7 @@ BaseScreen
                     firstNotWorking = false;
                 }
 
-                updatesModel.append({"heading": "no", "title": playerSources.webvideoList.get(x).title, "icon": playerSources.webvideoList.get(x).icon});
+                updatesModel.append({"heading": "no", "title": playerSources.webvideoList.models[feedSource.webvideoListIndex].model.get(x).title, "icon": playerSources.webvideoList.models[feedSource.webvideoListIndex].model.get(x).icon});
             }
         }
 
@@ -641,5 +694,19 @@ BaseScreen
                 }
             }
         ]
+    }
+
+    function handleCommand(command)
+    {
+        log.debug(Verbose.GUI, "WebVideoViewer: handle command - " + command);
+        return true;
+    }
+
+    function handleSearch(message)
+    {
+        log.debug(Verbose.GUI, "WebVideoViewer: handle seach - " + message);
+
+
+        return true;
     }
 }
