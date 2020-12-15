@@ -396,7 +396,7 @@ BaseScreen
 
             programEpisode.text = res;
 
-            if (programList.model.get(programList.currentIndex).AirDate !== undefined)
+            if (programList.model.get(programList.currentIndex).AirDate !== undefined && programList.model.get(programList.currentIndex).AirDate !== "")
                 programFirstAired.text = "First Aired: " + Qt.formatDateTime(programList.model.get(programList.currentIndex).AirDate, "dd/MM/yyyy");
             else
                 programFirstAired.text = ""
