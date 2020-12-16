@@ -1,5 +1,6 @@
 #app version
-VERSION = 0.0.8.alpha
+VERSION = 0.0.9.alpha
+BRANCH = master
 
 PREFIX = /usr
 
@@ -7,7 +8,7 @@ include(../QmlVlc/QmlVlc.pri)
 include(../SortFilterProxyModel/SortFilterProxyModel.pri)
 
 
-DEFINES += APP_VERSION=\\\"$$VERSION\\\"
+DEFINES += APP_VERSION=\\\"$$VERSION\\\" GIT_BRANCH=\\\"$$BRANCH\\\"
 
 INCLUDEPATH += .. ../QmlVlc ../mythfrontend_qml
 

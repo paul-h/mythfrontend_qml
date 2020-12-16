@@ -51,7 +51,7 @@ Context::Context(const QString &appName, const QString &logLevel, const QString 
     // create the logger
     m_logger = new Logger();
     m_logger->setFilename(QString("%1/%2.log").arg(logPath).arg(m_appName));
-    m_logger->info(Verbose::GENERAL, QString("Starting ") + m_appName + ": version " + APP_VERSION);
+    m_logger->info(Verbose::GENERAL, QString("Starting ") + m_appName + ": version " + APP_VERSION + " (" GIT_BRANCH + ")");
     m_logger->setLogLevel(logLevel);
     m_logger->setVerbose(verbose);
 }
@@ -98,6 +98,9 @@ void Context::init()
 
     // create version property
     m_engine->rootContext()->setContextProperty("version", QString(APP_VERSION));
+
+    // create branch property
+    m_engine->rootContext()->setContextProperty("branch", QString(GIT_BRANCH));
 
     // create the Qt version property
     m_engine->rootContext()->setContextProperty("qtversion", QString(qVersion()));
