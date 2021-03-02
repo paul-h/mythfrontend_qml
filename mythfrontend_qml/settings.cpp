@@ -41,6 +41,7 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     setSdChannels(gContext->m_databaseUtils->getSetting("SdChannels", hostName));
     setWebcamListFile(gContext->m_databaseUtils->getSetting("WebcamListFile", hostName));
     setWebvideoListFile(gContext->m_databaseUtils->getSetting("WebvideoListFile", hostName));
+    setYoutubeSubListFile(gContext->m_databaseUtils->getSetting("YoutubeSubListFile", hostName));
 
     // set the websocket url using the master backend as a starting point
     QUrl url(QString("ws://%1:%2").arg(masterIP()).arg(masterPort() + 5));
@@ -149,6 +150,12 @@ void Settings::setDefaultSettings(const QString &hostName)
     {
         setWebvideoListFile("https://mythqml.net/download.php?f=webvideos_list.xml");
         gContext->m_databaseUtils->setSetting("WebvideoListFile", hostName, "https://mythqml.net/download.php?f=webvideos_list.xml");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("YoutubeSubListFile", hostName) == "")
+    {
+        setYoutubeSubListFile("https://mythqml.net/download.php?f=youtube_sub_list.xml");
+        gContext->m_databaseUtils->setSetting("YoutubeSubListFile", hostName, "https://mythqml.net/download.php?f=youtube_sub_list.xml");
     }
 
     // start fullscreen
@@ -495,6 +502,17 @@ void Settings::setWebvideoListFile(const QString &webvideoListFile)
 {
     m_webvideoListFile = webvideoListFile;
     emit webvideoListFileChanged();
+}
+
+QString Settings::youtubeSubListFile(void)
+{
+    return m_youtubeSubListFile;
+}
+
+void Settings::setYoutubeSubListFile(const QString &youtubeSubListFile)
+{
+    m_youtubeSubListFile = youtubeSubListFile;
+    emit youtubeSubListFileChanged();
 }
 
 int Settings::osdTimeoutShort(void)
