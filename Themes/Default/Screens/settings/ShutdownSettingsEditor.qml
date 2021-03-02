@@ -15,7 +15,7 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(100)
+        x: xscale(30); y: yscale(100)
         width: xscale(340)
         text: "Frontend Idle Time (minutes):"
     }
@@ -23,7 +23,7 @@ BaseScreen
     BaseEdit
     {
         id: frontendIdleTimeEdit
-        x: xscale(400); y: yscale(100)
+        x: xscale(300); y: yscale(100)
         width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.frontendIdleTime
@@ -33,7 +33,7 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(150)
+        x: xscale(30); y: yscale(150)
         width: xscale(340)
         text: "Launcher Idle Time (minutes):"
     }
@@ -41,7 +41,7 @@ BaseScreen
     BaseEdit
     {
         id: launcherIdleTimeEdit
-        x: xscale(400); y: yscale(150)
+        x: xscale(300); y: yscale(150)
         width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.launcherIdleTime
@@ -51,7 +51,7 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(200)
+        x: xscale(30); y: yscale(200)
         width: xscale(340)
         text: "Reboot Command:"
     }
@@ -59,7 +59,7 @@ BaseScreen
     BaseEdit
     {
         id: rebootCmdEdit
-        x: xscale(400); y: yscale(200)
+        x: xscale(300); y: yscale(200)
         width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.rebootCommand
@@ -69,7 +69,7 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(250)
+        x: xscale(30); y: yscale(250)
         width: xscale(340)
         text: "Shutdown Command:"
     }
@@ -77,7 +77,7 @@ BaseScreen
     BaseEdit
     {
         id: shutdownCmdEdit
-        x: xscale(400); y: yscale(250)
+        x: xscale(300); y: yscale(250)
         width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.shutdownCommand
@@ -88,7 +88,7 @@ BaseScreen
     BaseButton
     {
         id: saveButton;
-        x: parent.width - xscale(380); y: yscale(630);
+        x: parent.width - width - xscale(50); y: yscale(630);
         text: "Save";
         KeyNavigation.up: shutdownCmdEdit
         KeyNavigation.down: frontendIdleTimeEdit

@@ -15,7 +15,7 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(100)
+        x: xscale(30); y: yscale(100)
         text: "Theme:"
     }
 
@@ -87,7 +87,7 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(150)
+        x: xscale(30); y: yscale(150)
         text: "Start Full screen:"
     }
 
@@ -102,7 +102,7 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(200)
+        x: xscale(30); y: yscale(200)
         text: "Use MythQ Menu Layout:"
     }
 
@@ -118,7 +118,7 @@ BaseScreen
     BaseButton
     {
         id: saveButton;
-        x: parent.width - xscale(380); y: yscale(630);
+        x: parent.width - width - xscale(50); y: yscale(630);
         text: "Save";
         KeyNavigation.up: startFullscreenCheck
         KeyNavigation.down: themeSelector
