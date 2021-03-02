@@ -34,6 +34,7 @@ class Settings : public QObject
     Q_PROPERTY(bool    mythQLayout READ mythQLayout WRITE setMythQLayout NOTIFY mythQLayoutChanged)
     Q_PROPERTY(QString webcamListFile READ webcamListFile WRITE setWebcamListFile NOTIFY webcamListFileChanged)
     Q_PROPERTY(QString webvideoListFile READ webvideoListFile WRITE setWebvideoListFile NOTIFY webvideoListFileChanged)
+    Q_PROPERTY(QString youtubeSubListFile READ youtubeSubListFile WRITE setYoutubeSubListFile NOTIFY youtubeSubListFileChanged)
 
     // vbox
     Q_PROPERTY(QString vboxFreeviewIP READ vboxFreeviewIP WRITE setVboxFreeviewIP NOTIFY vboxFreeviewIPChanged)
@@ -92,6 +93,7 @@ class Settings : public QObject
      void mythQLayoutChanged(void);
      void webcamListFileChanged(void);
      void webvideoListFileChanged(void);
+     void youtubeSubListFileChanged(void);
      void osdTimeoutShortChanged(void);
      void osdTimeoutMediumChanged(void);
      void osdTimeoutLongChanged(void);
@@ -191,6 +193,9 @@ class Settings : public QObject
     QString webvideoListFile(void);
     void    setWebvideoListFile(const QString &webvideoListFile);
 
+    QString youtubeSubListFile(void);
+    void    setYoutubeSubListFile(const QString &youtubeSubListFile);
+
     int     osdTimeoutShort(void);
     void    setOsdTimeoutShort(const int osdTimeoutShort);
 
@@ -244,6 +249,7 @@ class Settings : public QObject
     QString m_menuPath;
     QString m_webcamListFile;
     QString m_webvideoListFile;
+    QString m_youtubeSubListFile;
 
     QString m_webSocketUrl;
     QString m_videoPath;

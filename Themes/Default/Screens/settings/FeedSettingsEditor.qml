@@ -15,15 +15,15 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(100)
+        x: xscale(30); y: yscale(100)
         text: "Video Path:"
     }
 
     BaseEdit
     {
         id: videoPathEdit
-        x: xscale(400); y: yscale(100)
-        width: parent.width - x - xscale(20)
+        x: xscale(300); y: yscale(100)
+        width: parent.width - x - xscale(80)
         height: yscale(50)
         text: settings.videoPath
         KeyNavigation.up: saveButton
@@ -34,8 +34,8 @@ BaseScreen
     BaseButton
     {
         id: videoPathButton;
-        x: xscale(1120); y: yscale(100);
-        width: parent.width - x - xscale(20)
+        x: parent.width - xscale(70); y: yscale(100);
+        width: yscale(50); height: yscale(50)
         text: "X";
         KeyNavigation.up: saveButton
         KeyNavigation.left: videoPathEdit
@@ -49,15 +49,15 @@ BaseScreen
     //
     LabelText
     {
-        x: xscale(50); y: yscale(150)
+        x: xscale(30); y: yscale(150)
         text: "Picture Path:"
     }
 
     BaseEdit
     {
         id: picturePathEdit
-        x: xscale(400); y: yscale(150)
-        width: parent.width - x - xscale(20)
+        x: xscale(300); y: yscale(150)
+        width: parent.width - x - xscale(80)
         height: yscale(50)
         text: settings.picturePath
         KeyNavigation.up: videoPathEdit
@@ -68,7 +68,7 @@ BaseScreen
     BaseButton
     {
         id: picturePathButton;
-        x: xscale(1120); y: yscale(150);
+        x: parent.width - xscale(70); y: yscale(150);
         width: xscale(50); height: yscale(50)
         text: "X";
         KeyNavigation.up: videoPathEdit
@@ -82,15 +82,15 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(200)
+        x: xscale(30); y: yscale(200)
         text: "SD Channels File:"
     }
 
     BaseEdit
     {
         id: sdChannelsEdit
-        x: xscale(400); y: yscale(200)
-        width: parent.width - x - xscale(20)
+        x: xscale(300); y: yscale(200)
+        width: parent.width - x - xscale(80)
         height: yscale(50)
         text: settings.sdChannels
         KeyNavigation.up: picturePathEdit
@@ -101,7 +101,7 @@ BaseScreen
     BaseButton
     {
         id: sdChannelsButton;
-        x: parent.width - xscale(380); y: yscale(200);
+        x: parent.width - xscale(70); y: yscale(200);
         width: xscale(50); height: yscale(50)
         text: "X";
         KeyNavigation.up: picturePathEdit
@@ -115,15 +115,15 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(250)
+        x: xscale(30); y: yscale(250)
         text: "VBox Freeview IP:"
     }
 
     BaseEdit
     {
         id: vboxFreeviewIPEdit
-        x: xscale(400); y: yscale(250)
-        width: xscale(700)
+        x: xscale(300); y: yscale(250)
+        width: parent.width - x - xscale(80)
         height: yscale(50)
         text: settings.vboxFreeviewIP
         KeyNavigation.up: sdChannelsEdit
@@ -132,15 +132,15 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(300)
+        x: xscale(30); y: yscale(300)
         text: "VBox Freesat IP:"
     }
 
     BaseEdit
     {
         id: vboxFreesatIPEdit
-        x: xscale(400); y: yscale(300)
-        width: xscale(700)
+        x: xscale(300); y: yscale(300)
+        width: parent.width - x - xscale(80)
         height: yscale(50)
         text: settings.vboxFreesatIP
         KeyNavigation.up: vboxFreeviewIPEdit
@@ -149,15 +149,15 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(350)
+        x: xscale(30); y: yscale(350)
         text: "HDMI Encoder:"
     }
 
     BaseEdit
     {
         id: hdmiEncoderEdit
-        x: xscale(400); y: yscale(350)
-        width: xscale(700)
+        x: xscale(300); y: yscale(350)
+        width: parent.width - x - xscale(80)
         height: yscale(50)
         text: settings.hdmiEncoder
         KeyNavigation.up: vboxFreesatIPEdit
@@ -166,15 +166,15 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(400)
+        x: xscale(30); y: yscale(400)
         text: "Webcam List File:"
     }
 
     BaseEdit
     {
         id: webcamListFileEdit
-        x: xscale(400); y: yscale(400)
-        width: xscale(700)
+        x: xscale(300); y: yscale(400)
+        width: parent.width - x - xscale(80)
         height: yscale(50)
         text: settings.webcamListFile
         KeyNavigation.up: hdmiEncoderEdit
@@ -185,9 +185,9 @@ BaseScreen
     BaseButton
     {
         id: webcamListFileButton;
-        x: xscale(1120); y: yscale(400);
+        x: parent.width - xscale(70); y: yscale(400);
         width: xscale(50); height: yscale(50)
-        text: "";
+        text: "X";
         KeyNavigation.up: hdmiEncoderEdit
         KeyNavigation.left: webcamListFileEdit
         KeyNavigation.down: webvideoListFileButton
@@ -199,28 +199,61 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(450)
+        x: xscale(30); y: yscale(450)
         text: "Webvideo List File:"
     }
 
     BaseEdit
     {
         id: webvideoListFileEdit
-        x: xscale(400); y: yscale(450)
-        width: xscale(700)
+        x: xscale(300); y: yscale(450)
+        width: parent.width - x - xscale(80)
         height: yscale(50)
         text: settings.webvideoListFile
         KeyNavigation.up: webcamListFileEdit
         KeyNavigation.right: webvideoListFileButton
-        KeyNavigation.down: saveButton
+        KeyNavigation.down: youtubeSubListFileEdit
     }
 
     BaseButton
     {
         id: webvideoListFileButton;
-        x: xscale(1120); y: yscale(450);
+        x: parent.width - xscale(70); y: yscale(450);
         width: xscale(50); height: yscale(50)
-        text: "";
+        text: "X";
+        KeyNavigation.up: webcamListFileButton
+        KeyNavigation.left: webvideoListFileEdit
+        KeyNavigation.down: youtubeSubListFileButton
+        onClicked:
+        {
+            // TODO show directory finder popup
+        }
+    }
+
+    LabelText
+    {
+        x: xscale(30); y: yscale(500)
+        text: "YouTube Subscripitions List:"
+    }
+
+    BaseEdit
+    {
+        id: youtubeSubListFileEdit
+        x: xscale(300); y: yscale(500)
+        width: parent.width - x - xscale(80)
+        height: yscale(50)
+        text: settings.youtubeSubListFile
+        KeyNavigation.up: webvideoListFileEdit
+        KeyNavigation.right: youtubeSubListFileButton
+        KeyNavigation.down: saveButton
+    }
+
+    BaseButton
+    {
+        id: youtubeSubListFileButton;
+        x: parent.width - xscale(70); y: yscale(500);
+        width: xscale(50); height: yscale(50)
+        text: "X";
         KeyNavigation.up: webcamListFileButton
         KeyNavigation.left: webvideoListFileEdit
         KeyNavigation.down: saveButton
@@ -233,29 +266,31 @@ BaseScreen
     BaseButton
     {
         id: saveButton;
-        x: xscale(900); y: yscale(630);
+        x: parent.width - width - xscale(50); y: yscale(630);
         text: "Save";
-        KeyNavigation.up: webvideoListFileEdit
+        KeyNavigation.up: youtubeSubListFileEdit
         KeyNavigation.down: videoPathEdit
         onClicked:
         {
-            dbUtils.setSetting("VideoPath",        settings.hostName, videoPathEdit.text);
-            dbUtils.setSetting("PicturePath",      settings.hostName, picturePathEdit.text);
-            dbUtils.setSetting("SdChannels",       settings.hostName, sdChannelsEdit.text);
-            dbUtils.setSetting("VboxFreeviewIP",   settings.hostName, vboxFreeviewIPEdit.text);
-            dbUtils.setSetting("VboxFreesatIP",    settings.hostName, vboxFreesatIPEdit.text);
-            dbUtils.setSetting("HdmiEncoder",      settings.hostName, hdmiEncoderEdit.text);
-            dbUtils.setSetting("WebcamListFile",   settings.hostName, webcamListFileEdit.text);
-            dbUtils.setSetting("WebvideoListFile", settings.hostName, webvideoListFileEdit.text);
+            dbUtils.setSetting("VideoPath",          settings.hostName, videoPathEdit.text);
+            dbUtils.setSetting("PicturePath",        settings.hostName, picturePathEdit.text);
+            dbUtils.setSetting("SdChannels",         settings.hostName, sdChannelsEdit.text);
+            dbUtils.setSetting("VboxFreeviewIP",     settings.hostName, vboxFreeviewIPEdit.text);
+            dbUtils.setSetting("VboxFreesatIP",      settings.hostName, vboxFreesatIPEdit.text);
+            dbUtils.setSetting("HdmiEncoder",        settings.hostName, hdmiEncoderEdit.text);
+            dbUtils.setSetting("WebcamListFile",     settings.hostName, webcamListFileEdit.text);
+            dbUtils.setSetting("WebvideoListFile",   settings.hostName, webvideoListFileEdit.text);
+            dbUtils.setSetting("YoutubeSubListFile", settings.hostName, youtubeSubListFileEdit.text);
 
-            settings.videoPath        = videoPathEdit.text;
-            settings.picturePath      = picturePathEdit.text;
-            settings.sdChannels       = sdChannelsEdit.text;
-            settings.vboxFreeviewIP   = vboxFreeviewIPEdit.text;
-            settings.vboxFreesatIP    = vboxFreesatIPEdit.text;
-            settings.hdmiEncoder      = hdmiEncoderEdit.text;
-            settings.webcamListFile   = webcamListFileEdit.text;
-            settings.webvideoListFile = webvideoListFileEdit.text;
+            settings.videoPath          = videoPathEdit.text;
+            settings.picturePath        = picturePathEdit.text;
+            settings.sdChannels         = sdChannelsEdit.text;
+            settings.vboxFreeviewIP     = vboxFreeviewIPEdit.text;
+            settings.vboxFreesatIP      = vboxFreesatIPEdit.text;
+            settings.hdmiEncoder        = hdmiEncoderEdit.text;
+            settings.webcamListFile     = webcamListFileEdit.text;
+            settings.webvideoListFile   = webvideoListFileEdit.text;
+            settings.youtubeSubListFile = youtubeSubListFileEdit.text;
 
             returnSound.play();
             stack.pop();
