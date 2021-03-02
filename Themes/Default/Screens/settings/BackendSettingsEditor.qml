@@ -17,14 +17,14 @@ BaseScreen
     // MythTV Backend Settings
     LabelText
     {
-        x: xscale(50); y: yscale(100)
+        x: xscale(30); y: yscale(100)
         text: "MythTV Master Backend IP:"
     }
 
     BaseEdit
     {
         id: ipEdit
-        x: xscale(400); y: yscale(100)
+        x: xscale(300); y: yscale(100)
         width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.masterIP
@@ -34,14 +34,14 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(150)
+        x: xscale(30); y: yscale(150)
         text: "MythTV Master Backend Port:"
     }
 
     BaseEdit
     {
         id: portEdit
-        x: xscale(400); y: yscale(150)
+        x: xscale(300); y: yscale(150)
         width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.masterPort
@@ -52,14 +52,14 @@ BaseScreen
     //
     LabelText
     {
-        x: xscale(50); y: yscale(200)
+        x: xscale(30); y: yscale(200)
         text: "MythTV Security Pin:"
     }
 
     BaseEdit
     {
         id: pinEdit
-        x: xscale(400); y: yscale(200)
+        x: xscale(300); y: yscale(200)
         width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.securityPin
@@ -70,14 +70,14 @@ BaseScreen
     // Mysql Database Settings
     LabelText
     {
-        x: xscale(50); y: yscale(270)
+        x: xscale(30); y: yscale(270)
         text: "Mysql Database IP:"
     }
 
     BaseEdit
     {
         id: mysqlIPEdit
-        x: xscale(400); y: yscale(270)
+        x: xscale(300); y: yscale(270)
         width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.mysqlIP
@@ -87,14 +87,14 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(320)
+        x: xscale(30); y: yscale(320)
         text: "Mysql Port:"
     }
 
     BaseEdit
     {
         id: mysqlPortEdit
-        x: xscale(400); y: yscale(320)
+        x: xscale(300); y: yscale(320)
         width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.mysqlPort
@@ -104,14 +104,14 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(370)
+        x: xscale(30); y: yscale(370)
         text: "Mysql User Name:"
     }
 
     BaseEdit
     {
         id: mysqlUserEdit
-        x: xscale(400); y: yscale(370)
+        x: xscale(300); y: yscale(370)
         width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.mysqlUser
@@ -121,14 +121,14 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(420)
+        x: xscale(30); y: yscale(420)
         text: "Mysql Password:"
     }
 
     BaseEdit
     {
         id: mysqlPasswordEdit
-        x: xscale(400); y: yscale(420)
+        x: xscale(300); y: yscale(420)
         width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.mysqlPassword
@@ -138,14 +138,14 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(470)
+        x: xscale(30); y: yscale(470)
         text: "Mysql Database Name:"
     }
 
     BaseEdit
     {
         id: mysqlDBNameEdit
-        x: xscale(400); y: yscale(470)
+        x: xscale(300); y: yscale(470)
         width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.mysqlDBName
@@ -156,7 +156,7 @@ BaseScreen
     BaseButton
     {
         id: saveButton;
-        x: parent.width - xscale(380); y: yscale(630);
+        x: parent.width - width - xscale(50); y: yscale(630);
         text: "Save";
         KeyNavigation.up: mysqlDBNameEdit
         KeyNavigation.down: ipEdit

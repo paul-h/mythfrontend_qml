@@ -15,14 +15,14 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(100)
+        x: xscale(30); y: yscale(100)
         text: "ZoneMinder Server IP:"
     }
 
     BaseEdit
     {
         id: zmIPEdit
-        x: xscale(400); y: yscale(100)
+        x: xscale(300); y: yscale(100)
         width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.zmIP
@@ -32,14 +32,14 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(150)
+        x: xscale(30); y: yscale(150)
         text: "ZoneMinder User Name:"
     }
 
     BaseEdit
     {
         id: zmUserNameEdit
-        x: xscale(400); y: yscale(150)
+        x: xscale(300); y: yscale(150)
         width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.zmUserName
@@ -49,14 +49,14 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(50); y: yscale(200)
+        x: xscale(30); y: yscale(200)
         text: "ZoneMinder Password:"
     }
 
     BaseEdit
     {
         id: zmPasswordEdit
-        x: xscale(400); y: yscale(200)
+        x: xscale(300); y: yscale(200)
         width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.zmPassword
@@ -67,7 +67,7 @@ BaseScreen
     BaseButton
     {
         id: saveButton;
-        x: parent.width - xscale(180); y: yscale(630);
+        x: parent.width - width - xscale(50); y: yscale(630);
         text: "Save";
         KeyNavigation.up: zmPasswordEdit
         KeyNavigation.down: zmIPEdit
