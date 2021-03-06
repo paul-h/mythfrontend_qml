@@ -6,6 +6,8 @@ XmlListModel
 {
     id: feedModel
 
+    signal loaded();
+
     source: ""
     query: "/rss/channel/item"
     namespaceDeclarations: "declare namespace media = 'http://search.yahoo.com/mrss/'; " +
@@ -29,6 +31,7 @@ XmlListModel
         if (status == XmlListModel.Ready)
         {
             log.debug(Verbose.MODEL, "RssFeedModel: READY - Found " + count + " RSS feeds");
+            loaded();
         }
 
         if (status === XmlListModel.Loading)

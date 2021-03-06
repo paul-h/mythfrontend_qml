@@ -104,6 +104,7 @@ BaseScreen
     {
         id: feedModel
         source: root.currentFeed
+        onLoaded: updateArticleDetails()
     }
 
     Component
@@ -174,15 +175,7 @@ BaseScreen
 
         onCurrentIndexChanged:
         {
-            //log.debug(Verbose.GENERAL, "RSSFeeds: Current articleList index is -" + currentIndex)
-            //log.debug(Verbose.GENERAL, "RSSFeeds: image - " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).image : ""))
-            //log.debug(Verbose.GENERAL, "RSSFeeds: mediaContentUrl - " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).mediaContentUrl : ""))
-            //log.debug(Verbose.GENERAL, "RSSFeeds: mediaContentUrl2 - " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).mediaContentUrl2 : ""))
-            //log.debug(Verbose.GENERAL, "RSSFeeds: enclosureURL - " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).enclosureUrl : ""))
-            //log.debug(Verbose.GENERAL, "RSSFeeds: enclosureType - " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).enclosureType : ""))
-            //log.debug(Verbose.GENERAL, "RSSFeeds: link - " + (feedModel.get(articleList.currentIndex) ? feedModel.get(articleList.currentIndex).link : ""))
-
-            articleImage.source = findArticleImage(articleList.currentIndex);
+            updateArticleDetails();
         }
     }
 
@@ -195,7 +188,6 @@ BaseScreen
     {
         id: articleImage
         x: xscale(30); y: yscale(505); width: xscale(185); height: yscale(185)
-        source: findArticleImage(articleList.currentIndex)
         onStatusChanged:  if (status == Image.Error) source = mythUtils.findThemeFile("images/grid_noimage.png")
     }
 
@@ -205,7 +197,6 @@ BaseScreen
         x: xscale(230); y: yscale(505); width: parent.width - x - xscale(30); height: yscale(70)
         verticalAlignment: Text.AlignTop
         multiline: true
-        text: feedModel.get(articleList.currentIndex) ? mythUtils.replaceHtmlChar(feedModel.get(articleList.currentIndex).title) : ""
     }
 
     InfoText
@@ -213,9 +204,7 @@ BaseScreen
         id: descText
         x: xscale(230); y: yscale(575); width: parent.width - x - xscale(30); height: yscale(115)
         verticalAlignment: Text.AlignTop
-        //textFormat: Text.RichText
         multiline: true
-        text: feedModel.get(articleList.currentIndex) ? mythUtils.replaceHtmlChar(feedModel.get(articleList.currentIndex).description) : ""
     }
 
     function findArticleImage(index)
@@ -232,5 +221,19 @@ BaseScreen
             return rssFeedsModel.data(rssFeedsModel.index(feedList.currentIndex, 2))
         else
             return mythUtils.findThemeFile("images/grid_noimage.png");
+    }
+
+    function updateArticleDetails()
+    {
+        if (articleList.currentIndex === -1)
+            return;
+
+        titleText.text = feedModel.get(articleList.currentIndex) ? mythUtils.replaceHtmlChar(feedModel.get(articleList.currentIndex).title) : "";
+
+        // description
+        descText.text = feedModel.get(articleList.currentIndex) ? mythUtils.replaceHtmlChar(feedModel.get(articleList.currentIndex).description) : "";
+
+        // icon
+        articleImage.source = findArticleImage(articleList.currentIndex)
     }
 }
