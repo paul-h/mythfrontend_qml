@@ -196,6 +196,12 @@ FocusScope
 
     function addNode(path, title, data, checked, icon)
     {
+        if (!checked)
+            checked = false;
+
+        if (!icon)
+            icon = "";
+
         if (path === "")
         {
             objRoot.model.append({"itemTitle": title, "itemData": data, "checked": checked, "icon": icon, "subNodes": []})
