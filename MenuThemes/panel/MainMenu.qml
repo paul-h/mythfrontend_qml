@@ -43,8 +43,20 @@ ListModel
     }
     ListElement
     {
+        menutext: "YouTube TV"
+        loaderSource:"YouTube.qml"
+        waterMark: "watermark/youtube.png"
+    }
+    ListElement
+    {
+        menutext: "YouTube Subscriptions"
+        loaderSource:"YouTubeFeeds.qml"
+        waterMark: "watermark/youtube.png"
+    }
+    ListElement
+    {
         menutext: "Videos"
-        loaderSource: "VideosGridFolder.qml"
+        loaderSource: "VideosGrid.qml.qml"
         waterMark: "watermark/stream.png"
         menuSource: "InternetVideoMenu.qml"
     }
