@@ -33,8 +33,6 @@ BaseScreen
         feedFilter = dbUtils.getSetting("LastFeedFilter", settings.hostName, "-1,-1")
         feedIndex = dbUtils.getSetting("LastFeedIndex", settings.hostName, 0)
 
-        delay(2000, delayedInit);
-
         internalPlayer.previousFocusItem = buttonList
 
         focus = true;
@@ -59,7 +57,22 @@ BaseScreen
     {
         if (event.key === Qt.Key_M)
         {
-            //TODO add menu
+            event.accepted = true;
+            downSound.play();
+
+            popupMenu.clearMenuItems();
+            popupMenu.addMenuItem("", "Show Version...", "version");
+            popupMenu.addMenuItem("", "Exit", "exit");
+
+            if (settings.rebootCommand !== "")
+                popupMenu.addMenuItem("", "Reboot", "reboot");
+
+            if (settings.shutdownCommand !== "")
+                popupMenu.addMenuItem("", "Shutdown", "shutdown");
+
+            popupMenu.addMenuItem("", "Volume...", "volume");
+
+            popupMenu.show(window.activeFocusItem);
         }
         else if (event.key === Qt.Key_F)
         {
