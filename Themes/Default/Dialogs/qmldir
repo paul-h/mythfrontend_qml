@@ -2,6 +2,7 @@ module Dialogs
 AdventPlayDialog 1.0 AdventPlayDialog.qml
 BaseDialog 1.0 BaseDialog.qml
 BusyDialog 1.0 BusyDialog.qml
+InfoDialog 1.0 InfoDialog.qml
 OkCancelDialog 1.0 OkCancelDialog.qml
 PopupMenu 1.0 PopupMenu.qml
 RecordingFilterDialog 1.0 RecordingFilterDialog.qml

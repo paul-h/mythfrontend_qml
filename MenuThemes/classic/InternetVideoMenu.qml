@@ -8,12 +8,6 @@ ListModel
 
     ListElement
     {
-        menutext: "YouTube"
-        loaderSource:"YouTube.qml"
-        waterMark: "watermark/youtube.png"
-    }
-    ListElement
-    {
         menutext: "WebCam Viewer"
         loaderSource:"WebCamViewer.qml"
         waterMark: "watermark/webcam.png"
@@ -23,5 +17,17 @@ ListModel
         menutext: "WebVideo Viewer"
         loaderSource:"WebVideoViewer.qml"
         waterMark: "watermark/video.png"
+    }
+    ListElement
+    {
+        menutext: "YouTube TV"
+        loaderSource:"YouTube.qml"
+        waterMark: "watermark/youtube.png"
+    }
+    ListElement
+    {
+        menutext: "YouTube Subscriptions"
+        loaderSource:"YouTubeFeeds.qml"
+        waterMark: "watermark/youtube.png"
     }
 }

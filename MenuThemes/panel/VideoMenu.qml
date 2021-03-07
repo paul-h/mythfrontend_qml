@@ -20,12 +20,6 @@ ListModel
     }
     ListElement
     {
-        menutext: "WebVideo Viewer"
-        loaderSource:"WebVideoViewer.qml"
-        waterMark: "watermark/video.png"
-    }
-    ListElement
-    {
         menutext: "Feed Sources Settings"
         loaderSource: "settings/FeedSettingsEditor.qml"
         waterMark: "watermark/keys.png"
