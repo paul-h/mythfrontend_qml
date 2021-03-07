@@ -23,32 +23,28 @@ FocusScope
 
     function show(focusItem)
     {
-        // set the item to focus when the dialog closes
-        if (focusItem)
-            _activeFocusItem = focusItem;
-        else if (stack)
-            _activeFocusItem = stack;
-        else
-            _activeFocusItem = null;
+        _show(focusItem);
+    }
 
+    function _show(focusItem)
+    {
+        if (!focusItem)
+            focusItem = window.activeFocusItem
+
+        _activeFocusItem = focusItem;
         modalDialog.state = "show";
     }
 
     function hide()
     {
         modalDialog.state = "";
-
-        if (_activeFocusItem)
-            _activeFocusItem.focus = true;
     }
 
     Keys.onEscapePressed:
     {
         modalDialog.state = "";
         modalDialog.cancelled();
-
-        if (_activeFocusItem)
-            _activeFocusItem.focus = true;
+        focus = false;
     }
 
     Item
@@ -169,6 +165,11 @@ FocusScope
                 target: modalDialog
                 focus: false
             }
+            StateChangeScript
+            {
+                name: "changefocus"
+                script: modalDialog._activeFocusItem.forceActiveFocus()
+            }
         },
         State
         {
@@ -178,6 +179,7 @@ FocusScope
                 target: dialog
                 opacity: 1
             }
+
             PropertyChanges
             {
                 target: modalDialog
