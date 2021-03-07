@@ -14,12 +14,12 @@ BaseDialog
 
     signal itemSelected(string itemText, string itemData)
 
-    function show()
+    function show(focusItem)
     {
         if (!restoreSelected)
             menuList.setFocusedNode(0);
 
-        popupMenu.state = "show";
+        _show(focusItem);
     }
 
     function clearMenuItems()
