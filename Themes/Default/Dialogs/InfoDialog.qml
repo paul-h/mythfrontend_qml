@@ -8,6 +8,16 @@ BaseDialog
     property alias infoText: info.text
     property alias acceptButtonText: acceptButton.text
 
+    Keys.onPressed:
+    {
+        event.accepted = true;
+
+        if (event.key === Qt.Key_I)
+        {
+            state = "";
+            cancelled();
+        }
+    }
 
     content: Item
     {
