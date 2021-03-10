@@ -45,8 +45,8 @@ BaseScreen
         }
         else if (event.key === Qt.Key_I)
         {
-            infoDialog.infoText = youtubeFeedModel.get(articleList.currentIndex) ? youtubeFeedModel.get(articleList.currentIndex).description : "N/A";
-            infoDialog.show(articleList.focus ? articleList : feedList);
+            infoDialog.infoText = youtubeFeedModel.get(videoList.currentIndex) ? youtubeFeedModel.get(videoList.currentIndex).description : "N/A";
+            infoDialog.show(videoList.focus ? videoList : feedList);
         }
     }
 
@@ -122,19 +122,19 @@ BaseScreen
         onCurrentIndexChanged:
         {
             root.currentFeed = model.get(feedList.currentIndex).url
-            articleList.currentIndex = 0
+            videoList.currentIndex = 0
             youtubeFeedModel.reload()
         }
 
         Component.onCompleted:
         {
             root.currentFeed = model.get(feedList.currentIndex).url
-            articleList.currentIndex = 0
+            videoList.currentIndex = 0
             youtubeFeedModel.reload()
         }
 
-        KeyNavigation.left: previousFocusItem ? previousFocusItem : articleList;
-        KeyNavigation.right: articleList;
+        KeyNavigation.left: previousFocusItem ? previousFocusItem : videoList;
+        KeyNavigation.right: videoList;
     }
 
     Component
@@ -143,12 +143,12 @@ BaseScreen
 
         Item
         {
-            width: articleList.width
+            width: videoList.width
             height: yscale(103)
 
             property bool selected: ListView.isCurrentItem
-            property bool focused: articleList.focus
-            property real itemSize: articleList.itemWidth
+            property bool focused: videoList.focus
+            property real itemSize: videoList.itemWidth
 
             Image
             {
@@ -172,7 +172,7 @@ BaseScreen
 
     ButtonList
     {
-        id: articleList
+        id: videoList
         property int itemWidth: 190
 
         x: parent.width / 2 + xscale(10); y: yscale(60); width: parent.width / 2- xscale(40); height: yscale(421)
@@ -181,17 +181,12 @@ BaseScreen
         delegate: articleDelegate
         spacing: 3
 
-        KeyNavigation.left: feedList;
-        KeyNavigation.right: feedList;
+        KeyNavigation.left: feedList
+        KeyNavigation.right: feedList
 
-        Keys.onReturnPressed:
-        {
-            returnSound.play();
+        Keys.onReturnPressed: play(false)
 
-            play(false);
-        }
-
-        onCurrentIndexChanged: updateVideoDetails();
+        onCurrentIndexChanged: updateVideoDetails()
     }
 
     BaseBackground
@@ -252,20 +247,20 @@ BaseScreen
 
     function play(useYouTubeTV)
     {
-        defaultFocusItem = articleList;
-        mediaModel.get(0).title = youtubeFeedModel.get(articleList.currentIndex).title;
-        mediaModel.get(0).icon = youtubeFeedModel.get(articleList.currentIndex).image;
+        defaultFocusItem = videoList;
+        mediaModel.get(0).title = youtubeFeedModel.get(videoList.currentIndex).title;
+        mediaModel.get(0).icon = youtubeFeedModel.get(videoList.currentIndex).image;
 
         if (useYouTubeTV)
         {
-            var youtubeID = youtubeFeedModel.get(articleList.currentIndex).id.replace('yt:video:', '')
+            var youtubeID = youtubeFeedModel.get(videoList.currentIndex).id.replace('yt:video:', '')
             var url = "https://www.youtube.com/TV#/watch/video/control?v=" + youtubeID + "&resume"
             mediaModel.get(0).url = url;
             mediaModel.get(0).player = "YouTubeTV";
         }
         else
         {
-            mediaModel.get(0).url = youtubeFeedModel.get(articleList.currentIndex).link;
+            mediaModel.get(0).url = youtubeFeedModel.get(videoList.currentIndex).link;
             mediaModel.get(0).player = "YouTube";
         }
 
@@ -284,18 +279,18 @@ BaseScreen
 
     function updateVideoDetails()
     {
-        if (articleList.currentIndex === -1)
+        if (videoList.currentIndex === -1)
             return;
 
-        titleText.text = youtubeFeedModel.get(articleList.currentIndex) ? mythUtils.replaceHtmlChar(youtubeFeedModel.get(articleList.currentIndex).title) : "";
+        titleText.text = youtubeFeedModel.get(videoList.currentIndex) ? mythUtils.replaceHtmlChar(youtubeFeedModel.get(videoList.currentIndex).title) : "";
 
         // description
-        descText.text = youtubeFeedModel.get(articleList.currentIndex) ? mythUtils.replaceHtmlChar(youtubeFeedModel.get(articleList.currentIndex).description) : "";
+        descText.text = youtubeFeedModel.get(videoList.currentIndex) ? mythUtils.replaceHtmlChar(youtubeFeedModel.get(videoList.currentIndex).description) : "";
 
         // published
-        published.text = youtubeFeedModel.get(articleList.currentIndex) ? Qt.formatDateTime(youtubeFeedModel.get(articleList.currentIndex).published, "dddd, dd MMM yyyy (hh:mm)") : "";
+        published.text = youtubeFeedModel.get(videoList.currentIndex) ? Qt.formatDateTime(youtubeFeedModel.get(videoList.currentIndex).published, "dddd, dd MMM yyyy (hh:mm)") : "";
 
         // icon
-        articleImage.source = findArticleImage(articleList.currentIndex)
+        articleImage.source = findArticleImage(videoList.currentIndex)
     }
 }
