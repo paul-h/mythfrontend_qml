@@ -6,7 +6,7 @@ Item
 
     signal clicked();
 
-    x: 0; y: 0; width: 200; height: 50
+    x: 0; y: 0; width: xscale(200); height: yscale(50)
     focus: false
     state: "normal"
     states:
