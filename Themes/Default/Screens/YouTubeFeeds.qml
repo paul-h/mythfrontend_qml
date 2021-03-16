@@ -225,6 +225,15 @@ BaseScreen
         fontColor: "grey"
     }
 
+    InfoText
+    {
+        id: duration
+        x: parent.width - xscale(40) - width; y: yscale(665); width: _xscale(200); height: yscale(30)
+        horizontalAlignment: Text.AlignRight
+        verticalAlignment: Text.AlignBottom
+        fontColor: "grey"
+    }
+
     function findArticleImage(index)
     {
         if (youtubeFeedModel.get(index) && youtubeFeedModel.get(index).image !== "")
@@ -243,6 +252,12 @@ BaseScreen
     {
         id: infoDialog
         width: xscale(800)
+    }
+
+    JSONListModel
+    {
+        id: youtubeResult
+        query: "$.items[*]"
     }
 
     function play(useYouTubeTV)
@@ -277,6 +292,18 @@ BaseScreen
         }
     }
 
+    function parseYTTime(youtube_time)
+    {
+        var array = youtube_time.match(/(\d+)(?=[MHS])/ig)||[];
+        var formatted = array.map(function(item)
+        {
+            if (item.length < 2) return '0' + item;
+            return item;
+        }).join(':');
+
+        return formatted;
+    }
+
     function updateVideoDetails()
     {
         if (videoList.currentIndex === -1)
@@ -292,5 +319,29 @@ BaseScreen
 
         // icon
         articleImage.source = findArticleImage(videoList.currentIndex)
+
+        // query the YouTube  API for more details
+        var youtubeID = youtubeFeedModel.get(videoList.currentIndex).id.replace('yt:video:', '')
+
+        youtubeFeedModel.getYouTubeVideos(youtubeID,
+            function ()
+            {
+                var json = this.responseText;
+                youtubeResult.json = json;
+
+                var ytDuration = youtubeResult.model.get(0).contentDetails.duration;
+                if (ytDuration === "P0D")
+                    duration.text = "Live Stream";
+                else
+                {
+                    var d = parseYTTime(ytDuration);
+
+                    if (d.length < 4)
+                        d = "00:" + d
+
+                    duration.text = "Duration: " + d;
+                }
+            }
+        );
     }
 }
