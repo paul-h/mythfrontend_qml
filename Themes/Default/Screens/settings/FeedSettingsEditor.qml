@@ -245,7 +245,7 @@ BaseScreen
         text: settings.youtubeSubListFile
         KeyNavigation.up: webvideoListFileEdit
         KeyNavigation.right: youtubeSubListFileButton
-        KeyNavigation.down: saveButton
+        KeyNavigation.down: youtubeAPIKeyEdit
     }
 
     BaseButton
@@ -254,12 +254,45 @@ BaseScreen
         x: parent.width - xscale(70); y: yscale(500);
         width: xscale(50); height: yscale(50)
         text: "X";
-        KeyNavigation.up: webcamListFileButton
-        KeyNavigation.left: webvideoListFileEdit
-        KeyNavigation.down: saveButton
+        KeyNavigation.up: webvideoListFileButton
+        KeyNavigation.left: youtubeSubListFileEdit
+        KeyNavigation.down: youtubeAPIKeyButton
         onClicked:
         {
             // TODO show directory finder popup
+        }
+    }
+
+    LabelText
+    {
+        x: xscale(30); y: yscale(550)
+        text: "YouTube API Key:"
+    }
+
+    BaseEdit
+    {
+        id: youtubeAPIKeyEdit
+        x: xscale(300); y: yscale(550)
+        width: parent.width - x - xscale(80)
+        height: yscale(50)
+        text: settings.youtubeAPIKey
+        KeyNavigation.up: youtubeSubListFileEdit
+        KeyNavigation.right: youtubeAPIKeyButton
+        KeyNavigation.down: saveButton
+    }
+
+    BaseButton
+    {
+        id: youtubeAPIKeyButton;
+        x: parent.width - xscale(70); y: yscale(550);
+        width: xscale(50); height: yscale(50)
+        text: "X";
+        KeyNavigation.up: youtubeSubListFileButton
+        KeyNavigation.left: youtubeAPIKeyEdit
+        KeyNavigation.down: saveButton
+        onClicked:
+        {
+            // TODO Youtube API sign up page in web browser
         }
     }
 
@@ -268,7 +301,7 @@ BaseScreen
         id: saveButton;
         x: parent.width - width - xscale(50); y: yscale(630);
         text: "Save";
-        KeyNavigation.up: youtubeSubListFileEdit
+        KeyNavigation.up: youtubeAPIKeyEdit
         KeyNavigation.down: videoPathEdit
         onClicked:
         {
@@ -281,6 +314,7 @@ BaseScreen
             dbUtils.setSetting("WebcamListFile",     settings.hostName, webcamListFileEdit.text);
             dbUtils.setSetting("WebvideoListFile",   settings.hostName, webvideoListFileEdit.text);
             dbUtils.setSetting("YoutubeSubListFile", settings.hostName, youtubeSubListFileEdit.text);
+            dbUtils.setSetting("YoutubeAPIKey",      settings.hostName, youtubeAPIKeyEdit.text);
 
             settings.videoPath          = videoPathEdit.text;
             settings.picturePath        = picturePathEdit.text;
@@ -291,6 +325,7 @@ BaseScreen
             settings.webcamListFile     = webcamListFileEdit.text;
             settings.webvideoListFile   = webvideoListFileEdit.text;
             settings.youtubeSubListFile = youtubeSubListFileEdit.text;
+            settings.youtubeAPIKey      = youtubeAPIKeyEdit.text;
 
             returnSound.play();
             stack.pop();

@@ -35,6 +35,7 @@ class Settings : public QObject
     Q_PROPERTY(QString webcamListFile READ webcamListFile WRITE setWebcamListFile NOTIFY webcamListFileChanged)
     Q_PROPERTY(QString webvideoListFile READ webvideoListFile WRITE setWebvideoListFile NOTIFY webvideoListFileChanged)
     Q_PROPERTY(QString youtubeSubListFile READ youtubeSubListFile WRITE setYoutubeSubListFile NOTIFY youtubeSubListFileChanged)
+    Q_PROPERTY(QString youtubeAPIKey READ youtubeAPIKey WRITE setYoutubeAPIKey NOTIFY youtubeAPIKeyChanged)
 
     // vbox
     Q_PROPERTY(QString vboxFreeviewIP READ vboxFreeviewIP WRITE setVboxFreeviewIP NOTIFY vboxFreeviewIPChanged)
@@ -94,6 +95,7 @@ class Settings : public QObject
      void webcamListFileChanged(void);
      void webvideoListFileChanged(void);
      void youtubeSubListFileChanged(void);
+     void youtubeAPIKeyChanged(void);
      void osdTimeoutShortChanged(void);
      void osdTimeoutMediumChanged(void);
      void osdTimeoutLongChanged(void);
@@ -196,6 +198,9 @@ class Settings : public QObject
     QString youtubeSubListFile(void);
     void    setYoutubeSubListFile(const QString &youtubeSubListFile);
 
+    QString youtubeAPIKey(void);
+    void    setYoutubeAPIKey(const QString &youtubeAPIKey);
+
     int     osdTimeoutShort(void);
     void    setOsdTimeoutShort(const int osdTimeoutShort);
 
@@ -250,6 +255,7 @@ class Settings : public QObject
     QString m_webcamListFile;
     QString m_webvideoListFile;
     QString m_youtubeSubListFile;
+    QString m_youtubeAPIKey;
 
     QString m_webSocketUrl;
     QString m_videoPath;
