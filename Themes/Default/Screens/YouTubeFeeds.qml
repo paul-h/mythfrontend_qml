@@ -45,7 +45,7 @@ BaseScreen
         }
         else if (event.key === Qt.Key_I)
         {
-            infoDialog.infoText = youtubeFeedModel.get(videoList.currentIndex) ? youtubeFeedModel.get(videoList.currentIndex).description : "N/A";
+            infoDialog.infoText = descText.text;
             infoDialog.show(videoList.focus ? videoList : feedList);
         }
     }
@@ -309,10 +309,8 @@ BaseScreen
         if (videoList.currentIndex === -1)
             return;
 
+        // title
         titleText.text = youtubeFeedModel.get(videoList.currentIndex) ? mythUtils.replaceHtmlChar(youtubeFeedModel.get(videoList.currentIndex).title) : "";
-
-        // description
-        descText.text = youtubeFeedModel.get(videoList.currentIndex) ? mythUtils.replaceHtmlChar(youtubeFeedModel.get(videoList.currentIndex).description) : "";
 
         // published
         published.text = youtubeFeedModel.get(videoList.currentIndex) ? Qt.formatDateTime(youtubeFeedModel.get(videoList.currentIndex).published, "dddd, dd MMM yyyy (hh:mm)") : "";
@@ -326,9 +324,12 @@ BaseScreen
         youtubeFeedModel.getYouTubeVideos(youtubeID,
             function ()
             {
-                var json = this.responseText;
-                youtubeResult.json = json;
+                youtubeResult.json = this.responseText;
 
+                // description
+                descText.text = youtubeResult.model.get(0).snippet.description.replace(/\n/g, "<br>");;
+
+                // duration
                 var ytDuration = youtubeResult.model.get(0).contentDetails.duration;
                 if (ytDuration === "P0D")
                     duration.text = "Live Stream";
