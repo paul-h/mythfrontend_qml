@@ -35,4 +35,40 @@ XmlListModel
             log.error(Verbose.MODEL, "YoutubeFeedModel: ERROR: " + errorString() + " - " + source);
         }
     }
+
+    function getYouTubeVideos(videoId, callback)
+    {
+        var key = settings.youtubeAPIKey;
+        var http = new XMLHttpRequest();
+        var url = "https://youtube.googleapis.com/youtube/v3/videos"
+        var params = "?part=snippet%2CcontentDetails%2Cstatistics%2CrecordingDetails%2Cplayer&id=" + videoId + "&maxResults=50&key=" + key;
+
+        http.open("GET", url + params, true);
+
+        // Send the proper header information along with the request
+        http.setRequestHeader("Accept", "application/xml");
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        http.setRequestHeader("Content-length", params.length);
+
+        http.onreadystatechange = function()
+        {
+            if (http.readyState == 4)
+            {
+                if (http.status == 200)
+                {
+                    if (typeof callback === "function")
+                    {
+                        callback.apply(http);
+                    }
+                }
+                else
+                {
+                    console.log("getYouTubeVideos: " + http.status + "\n" + http.responseText);
+                    return;
+                }
+            }
+        }
+
+        http.send();
+    }
 }
