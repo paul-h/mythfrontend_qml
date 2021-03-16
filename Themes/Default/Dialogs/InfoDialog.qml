@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Base 1.0
+import QtQuick.Controls 2.0
 
 BaseDialog
 {
@@ -12,25 +13,52 @@ BaseDialog
     {
         event.accepted = true;
 
-        if (event.key === Qt.Key_I)
+        if (event.key === Qt.Key_I || event.key === Qt.Key_Enter)
         {
             state = "";
             cancelled();
+        }
+        else if (event.key === Qt.Key_Down)
+        {
+            flickable.flick(0, -600);
+        }
+        else if (event.key === Qt.Key_Up)
+        {
+            flickable.flick(0, 600);
+        }
+        else if (event.key === Qt.Key_PageDown)
+        {
+            flickable.flick(0, -1000);
+        }
+        else if (event.key === Qt.Key_PageUp)
+        {
+            flickable.flick(0, 1000);
         }
     }
 
     content: Item
     {
         anchors.fill: parent
-
-        InfoText
+        Flickable
         {
-            id: info
+            id: flickable
             anchors.fill: parent
-            horizontalAlignment: Text.AlignLeft
-            verticalAlignment: Text.AlignTop
-            multiline: true
-            text: ""
+
+            TextArea.flickable:
+                TextArea
+                {
+                    id: info
+                    font.family: theme.infoFontFamily
+                    font.pixelSize: xscale(theme.infoFontPixelSize)
+                    font.bold: theme.infoFontBold
+                    color: theme.infoFontColor
+                    clip: true
+                    wrapMode: TextEdit.WordWrap
+                    textFormat: TextEdit.RichText
+                    readOnly: true
+                }
+
+            ScrollBar.vertical: ScrollBar { }
         }
     }
 
