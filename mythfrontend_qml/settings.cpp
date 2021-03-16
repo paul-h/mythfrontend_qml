@@ -42,6 +42,7 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     setWebcamListFile(gContext->m_databaseUtils->getSetting("WebcamListFile", hostName));
     setWebvideoListFile(gContext->m_databaseUtils->getSetting("WebvideoListFile", hostName));
     setYoutubeSubListFile(gContext->m_databaseUtils->getSetting("YoutubeSubListFile", hostName));
+    setYoutubeAPIKey(gContext->m_databaseUtils->getSetting("YoutubeAPIKey", hostName));
 
     // set the websocket url using the master backend as a starting point
     QUrl url(QString("ws://%1:%2").arg(masterIP()).arg(masterPort() + 5));
@@ -154,8 +155,8 @@ void Settings::setDefaultSettings(const QString &hostName)
 
     if (gContext->m_databaseUtils->getSetting("YoutubeSubListFile", hostName) == "")
     {
-        setYoutubeSubListFile("https://mythqml.net/download.php?f=youtube_sub_list.xml");
-        gContext->m_databaseUtils->setSetting("YoutubeSubListFile", hostName, "https://mythqml.net/download.php?f=youtube_sub_list.xml");
+        setYoutubeSubListFile("https://mythqml.net/download.php?f=youtube_subscriptions_public.xml");
+        gContext->m_databaseUtils->setSetting("YoutubeSubListFile", hostName, "https://mythqml.net/download.php?f=youtube_subscriptions_public.xml");
     }
 
     // start fullscreen
@@ -513,6 +514,17 @@ void Settings::setYoutubeSubListFile(const QString &youtubeSubListFile)
 {
     m_youtubeSubListFile = youtubeSubListFile;
     emit youtubeSubListFileChanged();
+}
+
+QString Settings::youtubeAPIKey(void)
+{
+    return m_youtubeAPIKey;
+}
+
+void Settings::setYoutubeAPIKey(const QString &youtubeAPIKey)
+{
+    m_youtubeAPIKey = youtubeAPIKey;
+    emit youtubeAPIKeyChanged();
 }
 
 int Settings::osdTimeoutShort(void)
