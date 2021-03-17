@@ -118,8 +118,6 @@ Item
     function doShowHeader(show)
     {
         player1.showBorder = show;
-        parent.showTime(show);
-        parent.showTitle(show);
     }
 
     Item
