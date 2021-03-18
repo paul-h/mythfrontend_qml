@@ -41,7 +41,7 @@ XmlListModel
         var key = settings.youtubeAPIKey;
         var http = new XMLHttpRequest();
         var url = "https://youtube.googleapis.com/youtube/v3/videos"
-        var params = "?part=snippet%2CcontentDetails%2Cstatistics%2CrecordingDetails%2Cplayer&id=" + videoId + "&maxResults=50&key=" + key;
+        var params = "?part=snippet%2CcontentDetails%2Cstatistics%2CrecordingDetails%2Cplayer%2Cstatus&id=" + videoId + "&maxResults=50&key=" + key;
 
         http.open("GET", url + params, true);
 

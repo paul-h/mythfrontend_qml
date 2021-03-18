@@ -34,11 +34,11 @@ BaseScreen
         }
         else if (event.key === Qt.Key_F3)
         {
-            play(false);
+            play();
         }
         else if (event.key === Qt.Key_F4)
         {
-            play(true);
+            play();
         }
         else if (event.key === Qt.Key_F5)
         {
@@ -184,7 +184,7 @@ BaseScreen
         KeyNavigation.left: feedList
         KeyNavigation.right: feedList
 
-        Keys.onReturnPressed: play(false)
+        Keys.onReturnPressed: play()
 
         onCurrentIndexChanged: updateVideoDetails()
     }
@@ -260,13 +260,13 @@ BaseScreen
         query: "$.items[*]"
     }
 
-    function play(useYouTubeTV)
+    function play()
     {
         defaultFocusItem = videoList;
         mediaModel.get(0).title = youtubeFeedModel.get(videoList.currentIndex).title;
         mediaModel.get(0).icon = youtubeFeedModel.get(videoList.currentIndex).image;
 
-        if (useYouTubeTV)
+        if (!youtubeResult.model.get(0).status.embeddable)
         {
             var youtubeID = youtubeFeedModel.get(videoList.currentIndex).id.replace('yt:video:', '')
             var url = "https://www.youtube.com/TV#/watch/video/control?v=" + youtubeID + "&resume"

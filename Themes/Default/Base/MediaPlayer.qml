@@ -142,7 +142,6 @@ FocusScope
         enabled: visible
         anchors.fill: parent
         anchors.margins: playerBorder.border.width
-        url: ""
         settings.pluginsEnabled: true
         settings.javascriptEnabled: true
         settings.javascriptCanOpenWindows: true
@@ -167,10 +166,31 @@ FocusScope
         {
             if (loadRequest.status === WebEngineLoadRequest.LoadSucceededStatus)
             {
-                // hack to defeat Chrome's Web Audio autoplay policy
-                if (feedSource.feedList.get(feedSource.currentFeed).url.includes("railcam.co.uk"))
+                if (feedSource.feedList.get(feedSource.currentFeed).url === undefined)
+                        return;
+
+                var url = feedSource.feedList.get(feedSource.currentFeed).url;
+
+                if (url !== "")
                 {
-                     runJavaScript("document.getElementsByClassName(\"drawer-icon media-control-icon\")[0].click();");
+                    // hack to defeat Chrome's Web Audio autoplay policy
+                    if (url.includes("railcam.co.uk"))
+                    {
+                        runJavaScript("document.getElementsByClassName(\"drawer-icon media-control-icon\")[0].click();");
+                    }
+                    else if (url.includes("www.youtube.com/TV#/watch/video/control"))
+                    {
+                        // hack to make sure non embeddable Youtube videos start playing automatically in the TV player
+                        delay(500, function ()
+                        {
+                            mythUtils.sendKeyEvent(window, Qt.Key_Tab);
+                        });
+
+                        delay(500, function ()
+                        {
+                            mythUtils.sendKeyEvent(window, Qt.Key_Return);
+                        });
+                    }
                 }
             }
         }
