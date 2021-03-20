@@ -142,6 +142,11 @@ BaseScreen
             // for testing reset the last checked to now -4 weeks
             dbUtils.setSetting("LastWebcamCheck", settings.hostName, Util.addDays(Date(Date.now()), -28));
         }
+        else if (event.key === Qt.Key_I)
+        {
+            infoDialog.infoText = description.text.replace(/\n/g, "<br>");
+            infoDialog.show(webcamGrid);
+        }
         else
             event.accepted = false;
     }
@@ -378,6 +383,12 @@ BaseScreen
         {
             webcamGrid.focus = true;
         }
+    }
+
+    InfoDialog
+    {
+        id: infoDialog
+        width: xscale(800)
     }
 
      function createMenu(menu)
