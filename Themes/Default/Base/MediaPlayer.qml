@@ -106,6 +106,16 @@ FocusScope
          }
     }
 
+    DelayTimer
+    {
+        id: tabDelay
+    }
+
+    DelayTimer
+    {
+        id: returnDelay
+    }
+
     Rectangle
     {
         id: playerRect
@@ -166,30 +176,20 @@ FocusScope
         {
             if (loadRequest.status === WebEngineLoadRequest.LoadSucceededStatus)
             {
-                if (feedSource.feedList.get(feedSource.currentFeed).url === undefined)
-                        return;
+                var feedurl = loadRequest.url.toString();
 
-                var url = feedSource.feedList.get(feedSource.currentFeed).url;
-
-                if (url !== "")
+                if (feedurl !== "")
                 {
                     // hack to defeat Chrome's Web Audio autoplay policy
-                    if (url.includes("railcam.co.uk"))
+                    if (feedurl.includes("railcam.co.uk"))
                     {
                         runJavaScript("document.getElementsByClassName(\"drawer-icon media-control-icon\")[0].click();");
                     }
-                    else if (url.includes("www.youtube.com/TV#/watch/video/control"))
+                    else if (feedurl.includes("www.youtube.com/tv#/watch/video/control"))
                     {
                         // hack to make sure non embeddable Youtube videos start playing automatically in the TV player
-                        delay(500, function ()
-                        {
-                            mythUtils.sendKeyEvent(window, Qt.Key_Tab);
-                        });
-
-                        delay(500, function ()
-                        {
-                            mythUtils.sendKeyEvent(window, Qt.Key_Return);
-                        });
+                        tabDelay.delay(750, sendTab);
+                        returnDelay.delay(900, sendReturn);
                     }
                 }
             }
@@ -1535,5 +1535,15 @@ FocusScope
     function playStream()
     {
         switchURL(settings.configPath + "stream.ts")
+    }
+
+    function sendTab()
+    {
+        mythUtils.sendKeyEvent(window, Qt.Key_Tab);
+    }
+
+    function sendReturn()
+    {
+        mythUtils.sendKeyEvent(window, Qt.Key_Return);
     }
 }
