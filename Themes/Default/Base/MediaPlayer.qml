@@ -188,8 +188,8 @@ FocusScope
                     else if (feedurl.includes("www.youtube.com/tv#/watch/video/control"))
                     {
                         // hack to make sure non embeddable Youtube videos start playing automatically in the TV player
-                        tabDelay.delay(750, sendTab);
-                        returnDelay.delay(900, sendReturn);
+                        tabDelay.delay(1750, sendTab);
+                        returnDelay.delay(1900, sendReturn);
                     }
                 }
             }
