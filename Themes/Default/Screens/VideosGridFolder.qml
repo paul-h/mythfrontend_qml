@@ -41,6 +41,8 @@ BaseScreen
 
     Keys.onPressed:
     {
+        event.accepted = true;
+
         if (event.key === Qt.Key_F1)
         {
             ffmpegProcess.start("/usr/bin/mythffmpeg", ["-i",  "file://" + videoList.model.get(videoList.currentIndex, "filePath"),
@@ -48,9 +50,8 @@ BaseScreen
                                                         "file://" + videoList.model.get(videoList.currentIndex, "filePath") + "_clean.mp4"
                                                        ]);
         }
-        else if (event.key === Qt.Key_F2)
-        {
-        }
+        else
+            event.accepted = true;
     }
 
     // ffmpeg cleanup script

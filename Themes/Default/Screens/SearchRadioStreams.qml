@@ -87,10 +87,9 @@ BaseScreen
 
     Keys.onPressed:
     {
-        if (event.key === Qt.Key_M)
-        {
-        }
-        else if (event.key === Qt.Key_F1)
+        event.accepted = true;
+
+        if (event.key === Qt.Key_F1)
         {
             // RED
             if (sorter === "broadcaster")
@@ -141,6 +140,8 @@ BaseScreen
             event.accepted = true;
             returnSound.play();
         }
+        else
+          event.accepted = false;
     }
 //    Image
 //    {
