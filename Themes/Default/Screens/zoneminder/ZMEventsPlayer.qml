@@ -42,6 +42,8 @@ BaseScreen
 
     Keys.onPressed:
     {
+        event.accepted = true;
+
         if (event.key === Qt.Key_F1 || event.key === Qt.Key_Less)
         {
             // RED - Previous
@@ -103,6 +105,8 @@ BaseScreen
                 frameImage.swapImage("http://" + settings.zmIP + "/zm/index.php?view=image&fid=" + _frameNo + "&eid=" +eventList.get(currentEvent).Id + "&show=capture&token=" + playerSources.zmToken);
             }
         }
+        else
+            event.accepted = false;
     }
 
     Timer
