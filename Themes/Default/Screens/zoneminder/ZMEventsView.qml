@@ -18,6 +18,8 @@ BaseScreen
 
     Keys.onPressed:
     {
+        event.accepted = true;
+
         if (event.key === Qt.Key_F1 || event.key === Qt.Key_D)
         {
             // RED - delete
@@ -47,6 +49,8 @@ BaseScreen
             // BLUE - refresh
             zmEventsModel.reload();
         }
+        else
+            event.accepted = false;
     }
 
     ZMEventsModel

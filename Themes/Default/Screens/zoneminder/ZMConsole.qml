@@ -20,6 +20,8 @@ BaseScreen
 
     Keys.onPressed:
     {
+        event.accepted = true;
+
         if (event.key === Qt.Key_F1)
         {
             // RED - Edit Camera
@@ -55,6 +57,8 @@ BaseScreen
             playerSources.zmCameraList.reload();
             zmLoadModel.reload();
         }
+        else
+            event.accepted = false;
     }
 
     Timer
