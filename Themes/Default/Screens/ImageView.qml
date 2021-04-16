@@ -20,18 +20,20 @@ BaseScreen
 
     Keys.onPressed:
     {
+        event.accepted = true;
+
         if (event.key === Qt.Key_F1)
         {
             // red - previous image
             prevImage();
-            event.accepted = true;
         }
         else if (event.key === Qt.Key_F2)
         {
             // green - next image
             nextImage();
-            event.accepted = true;
         }
+        else
+            event.accepted = false;
     }
 
     Rectangle

@@ -79,6 +79,8 @@ BaseScreen
 
     Keys.onPressed:
     {
+        event.accepted = true;
+
         if (event.key === Qt.Key_Less)
         {
             if (channelList.focus)
@@ -95,8 +97,6 @@ BaseScreen
                 channelSelector.selectPrevious();
                 channelList.currentIndex = channelSelector.currentIndex;
             }
-
-            event.accepted = true;
         }
         else if (event.key === Qt.Key_Greater)
         {
@@ -114,13 +114,10 @@ BaseScreen
                 channelSelector.selectNext();
                 channelList.currentIndex = channelSelector.currentIndex;
             }
-
-            event.accepted = true;
         }
         else if (event.key === Qt.Key_F1)
         {
             // RED
-            event.accepted = true;
         }
         else if (event.key === Qt.Key_F2)
         {
@@ -159,6 +156,8 @@ BaseScreen
         {
             playerSources.channelGroups.removeChannelFromGroup(channelList.model.get(channelList.currentIndex).ChanId, 1)
         }
+        else
+            event.accepted = false;
     }
 
     ListModel { id: timeModel }
