@@ -41,6 +41,11 @@ BaseDialog
             popupMenu.state = "";
             popupMenu.cancelled();
         }
+        else if (event.key >= Qt.Key_1 && event.key <= Qt.Key_9)
+        {
+            var num = event.key - Qt.Key_0;
+            menuList.scrollToPos(num * 10);
+        }
         else
         {
             // eat all key presses except these
