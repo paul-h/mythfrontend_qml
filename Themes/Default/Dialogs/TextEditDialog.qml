@@ -6,16 +6,11 @@ BaseDialog
     id: textEditDialog
 
     width: xscale(500)
-    height: yscale(600)
+    height: yscale(350)
 
     property alias text: textEdit.text
 
     signal resultText(string text)
-
-    function show()
-    {
-        textEditDialog.state = "show";
-    }
 
     content: Item
     {
