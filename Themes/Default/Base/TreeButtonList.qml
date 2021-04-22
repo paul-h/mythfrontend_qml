@@ -391,4 +391,10 @@ FocusScope
                 lists[i].visible = false;
         }
     }
+
+    function scrollToPos(percent)
+    {
+        lists[_focusedList].highlightMoveDuration = 1500;
+        lists[_focusedList].currentIndex = lists[_focusedList].model.count / (100 / percent);
+    }
 }
