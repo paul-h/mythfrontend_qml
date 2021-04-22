@@ -15,9 +15,10 @@ BaseDialog
 
     signal itemSelected(string itemText)
 
-    function show()
+    function reset()
     {
-        searchDialog.state = "show";
+        searchEdit.text = "";
+        itemList.currentIndex = 0;
     }
 
     function addSearchItem(item)
