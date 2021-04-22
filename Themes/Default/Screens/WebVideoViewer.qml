@@ -72,7 +72,7 @@ BaseScreen
 
             popupMenu.addMenuItem("", "Switch Web Video List");
             for (var x = 0; x < playerSources.webvideoList.webvideoList.count; x++)
-                popupMenu.addMenuItem("0", playerSources.webvideoList.webvideoList.get(x).title, x(feedSource.webvideoListIndex == x ? true : false));
+                popupMenu.addMenuItem("0", playerSources.webvideoList.webvideoList.get(x).title, x, (feedSource.webvideoListIndex == x ? true : false));
 
             popupMenu.show();
         }
