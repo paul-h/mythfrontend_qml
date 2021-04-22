@@ -5,6 +5,7 @@
  */
 
 import QtQuick 2.0
+import QtQuick.XmlListModel 2.0
 import "jsonpath.js" as JSONPath
 
 Item
@@ -13,10 +14,17 @@ Item
     property string json: ""
     property string query: ""
 
-    property ListModel model : ListModel { id: jsonModel }
+    property ListModel model : jsonModel
     property alias count: jsonModel.count
 
     signal loaded()
+
+    ListModel
+    {
+        id: jsonModel
+
+        signal loadingStatus(int status);
+    }
 
     onSourceChanged:
     {
@@ -28,6 +36,8 @@ Item
 
     function updateJSONModel()
     {
+        jsonModel.loadingStatus(XmlListModel.Loading);
+
         jsonModel.clear();
 
         if ( json === "" )
@@ -41,6 +51,8 @@ Item
         }
 
         loaded();
+
+        jsonModel.loadingStatus(XmlListModel.Ready);
     }
 
     function parseJSONString(jsonString, jsonPathQuery)
@@ -66,6 +78,9 @@ Item
                     str = str.substring(1);
                 if (str.endsWith(");"))
                     str = str.substring(0, str.length - 2);
+
+                // convert null to empty string to stop QT spamming the logs
+                str = str.replace(/:null/g, ':""');
 
                 json = str;
             }

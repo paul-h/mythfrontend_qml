@@ -28,6 +28,11 @@ Item
     property string  webcamFilterFavorite: "Any"
     property string  webvideoFilterFavorite: "Any"
 
+    // IPTV
+    property string country: ""
+    property string language: ""
+    property string genre: ""
+
     // private
     property bool _switchingFeed: false
 
@@ -36,6 +41,9 @@ Item
     signal feedModelError()
 
     onCategoryChanged: { categoryFilter.category = category; vidCategoryFilter.category = category;}
+    onGenreChanged: iptvGenre.pattern = genre
+    onCountryChanged: iptvCountry.pattern = country
+    onLanguageChanged: iptvLanguage.pattern = language
 
     onWebcamListIndexChanged:
     {
@@ -50,7 +58,29 @@ Item
     {
         if (!_switchingFeed)
         {
-            var filter = webcamListIndex + "," + category + "," + sort;
+            var filter = "";
+
+            if (feedName === "Live TV")
+                switchToLiveTV(filter, currFeed);
+            else if (feedName === "Webcams")
+                filter = webcamListIndex + "," + category + "," + sort;
+            else if (feedName === "Web Videos")
+                filter = webvideoListIndex + "," + category + "," + sort;
+            else if (feedName === "Videos")
+                filter = ""
+            else if (feedName === "Recordings")
+                filter = ""
+            else if (feedName === "ZoneMinder Cameras")
+                filter = ""
+            else if (feedName === "Adhoc")
+                filter = ""
+            else if (feedName === "Advent Calendar")
+                filter = ""
+            else if (feedName === "IPTV")
+                filter = sort + "," + genre + "," + country + "," + language;
+            else
+                log.error(Verbose.PLAYBACK, "FeedSource: onSortChanged Error - unknown feed: " + feedName);
+
             switchToFeed(feedName, filter, currentFeed);
         }
     }
@@ -203,6 +233,34 @@ Item
         }
     ]
 
+    property list<QtObject> iptvFilter:
+    [
+        AllOf
+        {
+            RegExpFilter
+            {
+                id: iptvCountry
+                roleName: "countries"
+                pattern: ""
+                caseSensitivity: Qt.CaseInsensitive
+            }
+            RegExpFilter
+            {
+                id: iptvLanguage
+                roleName: "languages"
+                pattern: ""
+                caseSensitivity: Qt.CaseInsensitive
+            }
+            RegExpFilter
+            {
+                id: iptvGenre
+                roleName: "genre"
+                pattern: ""
+                caseSensitivity: Qt.CaseInsensitive
+            }
+        }
+    ]
+
     property list<QtObject> chanNumSorter:
     [
         RoleSorter { roleName: "ChanNum"; ascendingOrder: true}
@@ -223,6 +281,29 @@ Item
         RoleSorter { roleName: "Title" },
         RoleSorter { roleName: "Season" },
         RoleSorter { roleName: "Episode" }
+    ]
+
+    property list<QtObject> idSorter:
+    [
+        RoleSorter { roleName: "id"; ascendingOrder: true}
+    ]
+
+    property list<QtObject> countrySorter:
+    [
+        RoleSorter { roleName: "countries"; ascendingOrder: true},
+        RoleSorter { roleName: "title" }
+    ]
+
+    property list<QtObject> languageSorter:
+    [
+        RoleSorter { roleName: "languages"; ascendingOrder: true},
+        RoleSorter { roleName: "title" }
+    ]
+
+    property list<QtObject> genreSorter:
+    [
+        RoleSorter { roleName: "genre"; ascendingOrder: true},
+        RoleSorter { roleName: "title" }
     ]
 
     ChannelsModel
@@ -256,6 +337,8 @@ Item
             switchToAdhoc(filter, currFeed);
         else if (feed === "Advent Calendar")
             switchToAdventCalendar(filter, currFeed);
+        else if (feed === "IPTV")
+            switchToIPTV(filter, currFeed);
         else
             log.error(Verbose.PLAYBACK, "FeedSource: switchToFeed Error - unknown feed: " + feed);
 
@@ -421,7 +504,8 @@ Item
                 feedList.sourceModel.loadingStatus.disconnect(handleModelStatusChange);
 
             feedList.sourceModel = playerSources.videoList;
-            playerSources.videoList.loadingStatus.connect(handleModelStatusChange);
+            handleModelStatusChange(XmlListModel.Ready);
+            // playerSources.videoList.loadingStatus.connect(handleModelStatusChange);
         }
     }
 
@@ -440,6 +524,46 @@ Item
 
             feedList.sourceModel = playerSources.adhocList;
             handleModelStatusChange(XmlListModel.Ready);
+        }
+    }
+
+    function switchToIPTV(filterList, currFeed)
+    {
+        feedName = "IPTV";
+        currentFeed = currFeed;
+        currentFilter = filterList;
+
+        var list = filterList.split(",");
+
+        if (list.length === 4)
+        {
+            sort = list[0];
+            iptvGenre.pattern = list[1];
+            iptvCountry.pattern = list[2];
+            iptvLanguage.pattern = list[3];
+        }
+
+        filters = iptvFilter;
+
+        if (sort === "Title")
+            sorters = titleSorter;
+        else if (sort === "Genre")
+            sorters = genreSorter;
+        else if (sort === "Country")
+            sorters = countrySorter;
+        else if (sort === "Language")
+            sorters = languageSorter;
+        else
+            sorters = idSorter;
+
+        if (feedList.sourceModel !== playerSources.iptvList)
+        {
+            if (feedList.sourceModel)
+                feedList.sourceModel.loadingStatus.disconnect(handleModelStatusChange);
+
+            feedList.sourceModel = playerSources.iptvList;
+            handleModelStatusChange(XmlListModel.Ready);
+            //playerSources.iptvList.loadingStatus.connect(handleModelStatusChange);
         }
     }
 

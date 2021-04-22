@@ -196,15 +196,24 @@ FocusScope
 
     function addNode(path, title, data, checked, icon)
     {
-        if (!checked)
+        if (checked === undefined)
             checked = false;
 
-        if (!icon)
+        if (icon === undefined)
             icon = "";
+
+        var sData;
+
+        if (data === undefined)
+            sData = "";
+        else if (typeof data === "number")
+            sData = data.toString();
+        else
+            sData = data;
 
         if (path === "")
         {
-            objRoot.model.append({"itemTitle": title, "itemData": data, "checked": checked, "icon": icon, "subNodes": []})
+            objRoot.model.append({"itemTitle": title, "itemData": sData, "checked": checked, "icon": icon, "subNodes": []})
         }
         else
         {
@@ -231,8 +240,10 @@ FocusScope
             if (node.subNodes === undefined)
                 node.subNodes = [];
 
-            node.subNodes.append({"itemTitle": title, "itemData": data, "checked": checked, "icon": icon, "subNodes": []})
+            node.subNodes.append({"itemTitle": title, "itemData": sData, "checked": checked, "icon": icon, "subNodes": []})
         }
+
+        return true
     }
 
     //FIXME: 

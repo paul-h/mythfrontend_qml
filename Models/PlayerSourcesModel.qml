@@ -11,6 +11,7 @@ Item
     property var webcamList: webcamModel
     property var webvideoList: webvideoModel
     property var zmCameraList: zmMonitorsModel
+    property var iptvList: iptvModel.model
     property var adhocList: undefined
 
     // live tv
@@ -154,6 +155,13 @@ Item
         sorters: titleSorter
     }
 
+    /* --------------------------------------------------- IPTV -------------------------------------------------------------- */
+
+    IPTVModel
+    {
+        id: iptvModel
+    }
+
     /* ------------------------------------------------ ZoneMinder Cameras --------------------------------------------------- */
 
     ZMLoginModel
@@ -227,6 +235,8 @@ Item
     {
         if (feed.feedName === "Live TV")
             addChannelMenu(popupMenu, feed, path, player);
+        else if (feed.feedName === "IPTV")
+            addIPTVMenu(popupMenu, feed, path, player);
         else if (feed.feedName === "Webcams")
             addWebcamMenu(popupMenu, feed, path, player);
         else if (feed.feedName === "Web Videos")
@@ -257,6 +267,16 @@ Item
                 var data = "player=" + player + "\nLive TV\n" + captureCardModel.get(x).SourceId + "\n" + y;
                 popupMenu.addMenuItem(path + "," + x , title, data);
             }
+        }
+    }
+
+    function addIPTVMenu(popupMenu, feed, path, player)
+    {
+        for (var x = 0; x < iptvList.count; x++)
+        {
+            var title = iptvList.get(x).title;
+            var data = "player=" + player + "\nIPTV\n" + "Title,,," + "\n" + x;
+            popupMenu.addMenuItem(path, title, data);
         }
     }
 

@@ -22,6 +22,12 @@ ListModel
     }
     ListElement
     {
+        menutext: "IPTV"
+        loaderSource:"IPTVViewer.qml"
+        waterMark: "watermark/stream.png"
+    }
+    ListElement
+    {
         menutext: "Guide"
         loaderSource:"ProgramGuide.qml"
         waterMark: "watermark/tv.png"

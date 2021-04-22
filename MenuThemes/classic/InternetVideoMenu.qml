@@ -30,4 +30,11 @@ ListModel
         loaderSource:"YouTubeFeeds.qml"
         waterMark: "watermark/youtube.png"
     }
+
+    ListElement
+    {
+        menutext: "IPTV Channel Viewer"
+        loaderSource:"IPTVViewer.qml"
+        waterMark: "watermark/video.png"
+    }
 }

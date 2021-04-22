@@ -553,6 +553,11 @@ BaseScreen
                 getActivePlayer().feed.switchToFeed("Live TV", "-1", 0);
                 getActivePlayer().startPlayback();
             }
+            else if (itemText == "IPTV")
+            {
+                getActivePlayer().feed.switchToFeed("IPTV", "-1", 0);
+                getActivePlayer().startPlayback();
+            }
             else if (itemText == "Recordings")
             {
                 getActivePlayer().feed.switchToFeed("Recordings", "", 0);
@@ -765,6 +770,7 @@ BaseScreen
 
         popupMenu.addMenuItem("", "Switch Source");
         popupMenu.addMenuItem("1", "Live TV");
+        popupMenu.addMenuItem("1", "IPTV");
         popupMenu.addMenuItem("1", "Recordings");
         popupMenu.addMenuItem("1", "Videos");
         popupMenu.addMenuItem("1", "Webcams");
