@@ -19,7 +19,7 @@ class Skyline(Plugin):
             return
 
         url = match.group(0)
-        url = url.replace("source:'", '')
+        url = url.replace("source:'", 'https://hd-auth.skylinewebcams.com/')
 
         headers = {
             'User-Agent': useragents.FIREFOX,
