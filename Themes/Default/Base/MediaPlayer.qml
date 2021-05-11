@@ -321,6 +321,7 @@ FocusScope
             {
                 anchors.fill: parent
                 horizontalAlignment: Text.AlignHCenter
+                multiline: true
                 text: "This RailCam webcam does not provide any realtime diagrams"
             }
         }
