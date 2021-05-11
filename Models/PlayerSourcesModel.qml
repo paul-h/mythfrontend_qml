@@ -298,15 +298,17 @@ Item
         for (var x = 0; x < webcamModel.models[feed.webcamListIndex].categoryList.count; x++)
         {
             var category = webcamModel.models[feed.webcamListIndex].categoryList.get(x).item;
-            popupMenu.addMenuItem(path, category)
+            popupMenu.addMenuItem(path, category);
 
             // add the webcams for this category
-            feed.category = category === "<All Webcams>" ? "" : category
+            feed.category = "";
+            feed.category = category === "<All Webcams>" ? "" : category;
 
             for (var y = 0; y < feed.feedList.count; y++)
             {
                 var title = feed.feedList.get(y).title;
-                var data = "player=" + player + "\nWebcams\n" + category  + "\n" + y;
+                var filter = feed.webcamListIndex + ',' + feed.category + ',' + "title";
+                var data = "player=" + player + "\nWebcams\n" + filter + "\n" + y;
                 popupMenu.addMenuItem(path + "," + x , title, data);
             }
         }
