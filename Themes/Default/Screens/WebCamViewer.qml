@@ -12,6 +12,8 @@ BaseScreen
 
     defaultFocusItem: webcamGrid
 
+    property int savedID: -1
+
     signal feedSelected(string feedSource, string filter, int index)
 
     Component.onCompleted:
@@ -41,7 +43,7 @@ BaseScreen
         var filter = feedSource.webcamListIndex + "," + feedSource.category + "," + "title";
         feedSource.switchToFeed("Webcams", filter, 0);
 
-        feedSource.feedModelLoaded.connect(function() { webcamGrid.currentIndex = 0; });
+        playerSources.webcamList.models[feedSource.webcamListIndex].loaded.connect(feedLoaded);
 
         webcamGrid.currentIndex = 0;
 
@@ -95,7 +97,6 @@ BaseScreen
             }
 
             var index = feedSource.findById(id);
-
             webcamGrid.currentIndex = (index != -1 ? index : 0);
         }
         else if (event.key === Qt.Key_F2)
@@ -348,7 +349,7 @@ BaseScreen
 
             webcamGrid.focus = true;
 
-            updateWebcamDetails()
+            updateWebcamDetails();
         }
     }
 
@@ -365,6 +366,7 @@ BaseScreen
 
             if (itemText == "Reload")
             {
+                savedID = webcamGrid.model.get(webcamGrid.currentIndex).id;
                 playerSources.webcamList.models[feedSource.webcamListIndex].model.reload();
             }
             else if (itemData !== "")
@@ -374,8 +376,10 @@ BaseScreen
 
                 showTitle(true, "WebCam Viewer - " + playerSources.webcamList.webcamList.get(feedSource.webcamListIndex).title);
 
+                webcamGrid.currentIndex = 0;
                 feedSource.category = "";
                 footer.greenText = "Show (All Webcams)"
+                updateWebcamDetails();
             }
         }
 
@@ -723,6 +727,20 @@ BaseScreen
                 }
             }
         ]
+    }
+
+    function feedLoaded()
+    {
+        if (savedID !== -1)
+        {
+            var index = feedSource.findById(savedID);
+            webcamGrid.currentIndex = (index !== -1 ? index : 0);
+            savedID = -1;
+        }
+        else
+            webcamGrid.currentIndex = 0;
+
+        updateWebcamDetails();
     }
 
     function handleCommand(command)
