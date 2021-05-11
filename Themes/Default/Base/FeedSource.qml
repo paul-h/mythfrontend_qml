@@ -47,7 +47,7 @@ Item
 
     onWebcamListIndexChanged:
     {
-        if (!_switchingFeed)
+        if (!_switchingFeed && feedName === "Webcams")
         {
             var filter = webcamListIndex + "," + category + "," + sort;
             switchToFeed(feedName, filter, currentFeed);
