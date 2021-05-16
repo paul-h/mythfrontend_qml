@@ -182,6 +182,11 @@ BaseScreen
             id: webcamDelegate
             Item
             {
+                id: root
+
+                property bool selected: GridView.isCurrentItem
+                property bool focused: GridView.view.focus
+
                 x: 0
                 y: 0
                 width: webcamGrid.cellWidth
@@ -197,13 +202,26 @@ BaseScreen
                 }
                 LabelText
                 {
-                    x: 5;
+                    x: xscale(5);
                     y: webcamGrid.cellHeight - yscale(40)
                     width: webcamGrid.cellWidth - xscale(10)
                     visible: (offline || status === "Temporarily Offline" || status === "Not Working")
                     text: offline ? "OFFLINE" : status
                     horizontalAlignment: Text.AlignHCenter;
                     fontPixelSize: xscale(14)
+                }
+                LabelText
+                {
+                    x: xscale(20);
+                    y: yscale(20)
+                    width: webcamGrid.cellWidth - xscale(40)
+                    height: webcamGrid.cellHeight - yscale(40)
+                    visible: root.selected
+                    text: title
+                    multiline: true
+                    horizontalAlignment: Text.AlignHCenter;
+                    fontPixelSize: xscale(14)
+                    fontColor: "white"
                 }
                 Image
                 {
