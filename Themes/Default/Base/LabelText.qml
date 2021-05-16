@@ -14,7 +14,7 @@ Item
     property color  shadowColor: theme.labelShadowColor
     property int    shadowXOffset: theme.labelShadowXOffset
     property int    shadowYOffset: theme.labelShadowYOffset
-
+    property bool   multiline: false
 
     x: xscale(50); y: 0; width: xscale(300); height: yscale(50)
 
@@ -42,6 +42,7 @@ Item
         verticalAlignment: root.verticalAlignment
         clip: true
         elide: Text.ElideRight
+        wrapMode: root.multiline ? Text.WordWrap : Text.NoWrap
         visible: shadowXOffset != 0 || shadowYOffset != 0 ? true : false
     }
 
@@ -59,6 +60,7 @@ Item
         verticalAlignment: root.verticalAlignment
         clip: true
         elide: Text.ElideRight
+        wrapMode: root.multiline ? Text.WordWrap : Text.NoWrap
     }
 }
 
