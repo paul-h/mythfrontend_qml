@@ -37,8 +37,8 @@ QtObject
     property color  labelFontColor:      "#ff00ff"
     property real   labelShadowAlpha:    100 / 255
     property color  labelShadowColor:    "#000000"
-    property int    labelShadowXOffset:  2
-    property int    labelShadowYOffset:  2
+    property int    labelShadowXOffset:  1
+    property int    labelShadowYOffset:  0
 
     // recording text
     property color  recordingFontColor: "#00ff00"
@@ -90,7 +90,7 @@ QtObject
 
     property real  lvBackgroundOpacity:      1.0;
     property color lvBackgroundBorderColor:  "green";
-    property int   lvBackgroundBorderWidth:  2;
+    property int   lvBackgroundBorderWidth:  4;
     property int   lvBackgroundBorderRadius: 10;
 
     // button
