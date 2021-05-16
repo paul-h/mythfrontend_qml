@@ -17,6 +17,7 @@ GridView
 
         Rectangle
         {
+            id: borderRect
             width: GridView.view ? GridView.view.width : 0
             height: yscale(50)
             color:
@@ -33,6 +34,42 @@ GridView
             border.color: theme.lvBackgroundBorderColor
             border.width: xscale(theme.lvBackgroundBorderWidth)
             radius: xscale(theme.lvBackgroundBorderRadius)
+
+            SequentialAnimation
+            {
+                id: anim
+                running: true
+                loops: Animation.Infinite
+
+                PropertyAnimation
+                {
+                    targets: [borderRect.border]
+                    property: "color"
+                    to: Qt.lighter(theme.lvBackgroundBorderColor, 1.33)
+                    duration: 300
+                }
+                PropertyAnimation
+                {
+                    targets: [borderRect.border]
+                    property: "color"
+                    to: theme.lvBackgroundBorderColor
+                    duration: 300
+                }
+                PropertyAnimation
+                {
+                    targets: [borderRect.border]
+                    property: "color"
+                    to: Qt.darker(theme.lvBackgroundBorderColor, 1.33)
+                    duration: 300
+                }
+                PropertyAnimation
+                {
+                    targets: [borderRect.border]
+                    property: "color"
+                    to: theme.lvBackgroundBorderColor
+                    duration: 300
+                }
+            }
         }
     }
 
