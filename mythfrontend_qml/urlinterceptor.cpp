@@ -40,6 +40,19 @@ QUrl MythQmlAbstractUrlInterceptor::intercept(const QUrl &url, DataType type)
     if (fileName.startsWith(m_activeThemePath))
         fileName.remove(m_activeThemePath);
 
+    // special case for Theme.qml files - look at the top level theme directory
+    if (fileName.endsWith("/Theme.qml"))
+    {
+        QString searchURL = m_activeThemePath + "/Theme.qml";
+
+        if (QFile::exists(searchURL.remove("file://")))
+        {
+            m_fileMap.insert(sUrl, searchURL);
+            gContext->m_logger->debug(Verbose::FILE, QString("MythQmlAbstractUrlInterceptor::intercept: found themes Theme.qml - result: '%1'").arg("file://" + searchURL));
+            return QUrl("file://" + searchURL);
+        }
+    }
+
     // look up in the active theme
     if (!m_defaultThemePath.isEmpty())
     {
@@ -68,7 +81,7 @@ QUrl MythQmlAbstractUrlInterceptor::intercept(const QUrl &url, DataType type)
 
     // fall back to the original url
     m_fileMap.insert(sUrl, sUrl);
-    gContext->m_logger->debug(Verbose::FILE, QString("MythQmlAbstractUrlInterceptor::intercept: not found using origal URL - result: '%1'").arg(sUrl));
+    gContext->m_logger->debug(Verbose::FILE, QString("MythQmlAbstractUrlInterceptor::intercept: not found using original URL - result: '%1'").arg(sUrl));
     return url;
 }
 
