@@ -175,6 +175,8 @@ FocusScope
         delegate: selectorRow
         focus: true
 
+        highlightMoveDuration: 1500
+
         Keys.onPressed:
         {
             if (event.key === Qt.Key_PageDown)
