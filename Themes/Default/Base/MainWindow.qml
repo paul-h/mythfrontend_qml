@@ -28,7 +28,6 @@ Window
 
     property double wmult: width / 1280
     property double hmult: height / 720
-    property var theme: loadTheme()
     property double soundEffectsVolume: 1.0
     property double backgroundVideoVolume: 1.0
 
@@ -58,6 +57,75 @@ Window
 
                  mouseArea.oldX = mouseArea.mouseX;
                  mouseArea.oldY =mouseArea.mouseY;
+            }
+        }
+    }
+
+    Theme
+    {
+        id: theme
+
+        Component.onCompleted:
+        {
+            log.info(Verbose.GUI, "loading theme from: " + settings.qmlPath + "Theme.qml");
+
+            if (theme.backgroundVideo === undefined || theme.backgroundVideo != "")
+            {
+                if (!mythUtils.fileExists(settings.configPath + "Themes/Videos/" + theme.backgroundVideo))
+                {
+                    var source = "https://mythqml.net/downloads/themes/" + settings.themeName +"/" + theme.backgroundVideo;
+                    var dest = settings.configPath + "Themes/Videos/" + theme.backgroundVideo;
+                    screenBackground.showVideo = false;
+                    screenBackground.showImage = true;
+                    screenBackground.showSlideShow = false;
+
+                    log.info(Verbose.GUI, "MainWindow: Downloading theme background video from - " + source);
+                    log.info(Verbose.GUI, "to - " + dest);
+
+                    showNotification("Downloading the background video.<br>Please Wait....", settings.osdTimeoutLong);
+
+                    themeDLProcess.start("wget", ['-O', dest, source]);
+                }
+                else
+                {
+                    screenBackground.showVideo = true;
+                    screenBackground.showImage = false;
+                    screenBackground.showSlideShow = false;
+                }
+            }
+            else if (theme.backgroundSlideShow != "")
+            {
+                if (!mythUtils.fileExists(settings.configPath + "Themes/Pictures/" + settings.themeName + "/" +theme.backgroundSlideShow))
+                {
+                    var source = "https://mythqml.net/downloads/themes/" + settings.themeName + "/" + theme.backgroundSlideShow;
+                    var dest = settings.configPath + "Themes/Pictures/" + settings.themeName + "/" + theme.backgroundSlideShow;
+
+                    mythUtils.mkPath(settings.configPath + "Themes/Pictures/" + settings.themeName);
+
+                    screenBackground.showVideo = false;
+                    screenBackground.showImage = true;
+                    screenBackground.showSlideShow = false;
+
+                    log.info(Verbose.GUI, "MainWindow: Downloading theme background slideshow from - " + source);
+                    log.info(Verbose.GUI, "to - " + dest);
+
+                    showNotification("Downloading the background slideshow.<br>Please Wait....", 1000 * 60 * 60);
+
+                    themeDLProcess.start("wget", ['-O', dest, source]);
+                }
+                else
+                {
+                    screenBackground.setSlideShow(settings.configPath + "Themes/Pictures/" + settings.themeName);
+                    screenBackground.showVideo = false;
+                    screenBackground.showImage = false;
+                    screenBackground.showSlideShow = true;
+                }
+            }
+            else
+            {
+                screenBackground.showVideo = false;
+                screenBackground.showImage = true;
+                screenBackground.showSlideShow = false;
             }
         }
     }
@@ -466,98 +534,6 @@ Window
         {
             id: busyDialog
         }
-    }
-
-     function loadTheme()
-    {
-        log.info(Verbose.GUI, "loading theme from: " + settings.qmlPath + "Theme.qml");
-
-        var component = Qt.createComponent(settings.qmlPath + "Theme.qml");
-
-        while (component.status != Component.Ready && component.status != Component.Error)
-        {
-            log.debug(Verbose.GUI, "waiting for component to load! Status: " + component.status);
-        }
-
-        if (component.status == Component.Ready)
-        {
-            var theme = component.createObject(window);
-
-            if (theme == null)
-            {
-                // Error Handling
-                log.error(Verbose.GUI, "Error creating theme");
-                return null
-            }
-
-            if (theme.backgroundVideo === undefined || theme.backgroundVideo != "")
-            {
-                if (!mythUtils.fileExists(settings.configPath + "Themes/Videos/" + theme.backgroundVideo))
-                {
-                    var source = "https://mythqml.net/downloads/themes/" + settings.themeName +"/" + theme.backgroundVideo;
-                    var dest = settings.configPath + "Themes/Videos/" + theme.backgroundVideo;
-                    screenBackground.showVideo = false;
-                    screenBackground.showImage = true;
-                    screenBackground.showSlideShow = false;
-
-                    log.info(Verbose.GUI, "MainWindow: Downloading theme background video from - " + source);
-                    log.info(Verbose.GUI, "to - " + dest);
-
-                    showNotification("Downloading the background video.<br>Please Wait....", settings.osdTimeoutLong);
-
-                    themeDLProcess.start("wget", ['-O', dest, source]);
-                }
-                else
-                {
-                    screenBackground.showVideo = true;
-                    screenBackground.showImage = false;
-                    screenBackground.showSlideShow = false;
-                }
-            }
-            else if (theme.backgroundSlideShow != "")
-            {
-                if (!mythUtils.fileExists(settings.configPath + "Themes/Pictures/" + settings.themeName + "/" +theme.backgroundSlideShow))
-                {
-                    var source = "https://mythqml.net/downloads/themes/" + settings.themeName + "/" + theme.backgroundSlideShow;
-                    var dest = settings.configPath + "Themes/Pictures/" + settings.themeName + "/" + theme.backgroundSlideShow;
-
-                    mythUtils.mkPath(settings.configPath + "Themes/Pictures/" + settings.themeName);
-
-                    screenBackground.showVideo = false;
-                    screenBackground.showImage = true;
-                    screenBackground.showSlideShow = false;
-
-                    log.info(Verbose.GUI, "MainWindow: Downloading theme background slideshow from - " + source);
-                    log.info(Verbose.GUI, "to - " + dest);
-
-                    showNotification("Downloading the background slideshow.<br>Please Wait....", 1000 * 60 * 60);
-
-                    themeDLProcess.start("wget", ['-O', dest, source]);
-                }
-                else
-                {
-                    screenBackground.setSlideShow(settings.configPath + "Themes/Pictures/" + settings.themeName);
-                    screenBackground.showVideo = false;
-                    screenBackground.showImage = false;
-                    screenBackground.showSlideShow = true;
-                }
-            }
-            else
-            {
-                screenBackground.showVideo = false;
-                screenBackground.showImage = true;
-                screenBackground.showSlideShow = false;
-            }
-
-            return theme
-        }
-        else if (component.status == Component.Error)
-        {
-            // Error Handling
-            log.error(Verbose.GUI, "Error loading component:", component.errorString());
-        }
-
-        return null;
     }
 
     function showBusyDialog(message, timeoutTime)
