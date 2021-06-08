@@ -37,6 +37,8 @@ BaseScreen
         showTicker(false);
         muteAudio(true);
 
+        radioPlayerDialog.suspendPlayback();
+
         playerLayout.mediaPlayer1.feed.feedModelLoaded.connect(feedSourceLoaded);
         playerLayout.mediaPlayer1.feed.switchToFeed(defaultFeedSource, defaultFilter, defaultCurrentFeed);
 
@@ -50,6 +52,22 @@ BaseScreen
         playerLayout.mediaPlayer4.setVolume(volume);
 
         getActivePlayer().showInfo(true);
+        getActivePlayer().updateRadioFeedList();
+        updateRadioFeed();
+    }
+
+    Connections
+    {
+        target: radioPlayerDialog
+        onAccepted:
+        {
+            _actionsEnabled = true;
+        }
+
+        onCancelled:
+        {
+            _actionsEnabled = true;
+        }
     }
 
     Component.onDestruction:
@@ -58,6 +76,8 @@ BaseScreen
         playerLayout.mediaPlayer2.stop();
         playerLayout.mediaPlayer3.stop();
         playerLayout.mediaPlayer4.stop();
+
+        radioPlayerDialog.resumePlayback();
     }
 
     Action
@@ -145,7 +165,9 @@ BaseScreen
             {
                 getActivePlayer().previousFeed();
                 getActivePlayer().updateBrowserURLList();
+                getActivePlayer().updateRadioFeedList();
                 updateBrowser();
+                updateRadioFeed();
                 feedChanged(getActivePlayer().feed.feedName, getActivePlayer().feed.currentFilter, getActivePlayer().feed.currentFeed);
             }
         }
@@ -166,7 +188,9 @@ BaseScreen
             {
                 getActivePlayer().nextFeed();
                 getActivePlayer().updateBrowserURLList();
+                getActivePlayer().updateRadioFeedList();
                 updateBrowser();
+                updateRadioFeed();
                 feedChanged(getActivePlayer().feed.feedName, getActivePlayer().feed.currentFilter, getActivePlayer().feed.currentFeed);
             }
         }
@@ -250,6 +274,17 @@ BaseScreen
         onTriggered:
         {
             playerLayout.showHeader = !playerLayout.showHeader;
+        }
+    }
+
+    Action
+    {
+        shortcut: "F8" // show radio player dialog
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            _actionsEnabled = false;
+            radioPlayerDialog.show();
         }
     }
 
@@ -594,7 +629,11 @@ BaseScreen
 
                 Util.reportBroken("webcam", version, systemid, name, url);
                 showNotification(name + "<br>Thank you for reporting this broken WebCam.<br>It will be fixed shortly", settings.osdTimeoutMedium);
-
+            }
+            else if (itemText == "Radio Player...")
+            {
+                _actionsEnabled = false;
+                radioPlayerDialog.show();
             }
             else if (itemData.startsWith("player="))
             {
@@ -613,7 +652,9 @@ BaseScreen
                     getActivePlayer().startPlayback();
                     getActivePlayer().showInfo(true);
                     getActivePlayer().updateBrowserURLList();
+                    getActivePlayer().updateRadioFeedList();
                     updateBrowser();
+                    updateRadioFeed()
                 }
             }
 
@@ -693,6 +734,25 @@ BaseScreen
             playerLayout.browserWidth = xscale(350);
             playerLayout.browserZoom = xscale(1.0);
         }
+    }
+
+    function updateRadioFeed()
+    {
+        // copy the radio streams from the active player to the radio player
+        radioPlayerDialog.switchStreamList("internal");
+        radioPlayerDialog.clearStreams();
+
+        for (var x = 0; x < (getActivePlayer().getRadioFeedList().count); x++)
+        {
+            var title = getActivePlayer().getRadioFeedList().get(x).title;
+            var url = getActivePlayer().getRadioFeedList().get(x).url;
+            var logo = getActivePlayer().getRadioFeedList().get(x).logo;
+
+            radioPlayerDialog.addStream(title, url, logo)
+        }
+
+        if (radioPlayerDialog.radioFeedsEnabled)
+            radioPlayerDialog.playFirst();
     }
 
     function setLayout(newLayout)
@@ -784,6 +844,8 @@ BaseScreen
 
         if (getActivePlayer().feed.feedName === "Webcams")
             popupMenu.addMenuItem("", "Report Broken WebCam");
+
+        popupMenu.addMenuItem("", "Radio Player...");
 
         _actionsEnabled = false;
         popupMenu.show();

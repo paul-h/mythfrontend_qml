@@ -270,6 +270,13 @@ FocusScope
         property int currentIndex: 0
     }
 
+    ListModel
+    {
+        id: radioFeedList
+
+        property int currentIndex: 0
+    }
+
     RailcamModel
     {
         id: railcamModel
@@ -1453,6 +1460,49 @@ FocusScope
         }
 
         // TODO add other web urls here
+    }
+
+    // update radio feeds
+    function getRadioFeed(o)
+    {
+        if (radioFeedList.count === 0)
+            return false;
+
+        o.title = radioFeedList.get(radioFeedList.currentIndex).title;
+        o.url = radioFeedList.get(radioFeedList.currentIndex).url;
+
+        return true;
+    }
+
+    function getRadioFeedList()
+    {
+        return radioFeedList;
+    }
+
+    function updateRadioFeedList()
+    {
+        radioFeedList.clear();
+
+        // add radio feed
+        for (var y = 0; y < 10; y++)
+        {
+            var link = getLink("radio_feed" + y);
+            if (link !== undefined)
+            {
+                var list = link.split("|");
+                if (list.length >= 2)
+                {
+                    var title = list[0];
+                    var url = list[1];
+                    var logo = mythUtils.findThemeFile("images/radio.png");
+
+                    if (list.length === 3)
+                        logo = list[2];
+
+                    radioFeedList.append({"title": title, "url": url, "logo": logo});
+                }
+            }
+        }
     }
 
     function updateRailCamMiniDiagram(url)

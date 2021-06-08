@@ -321,8 +321,15 @@ BaseScreen
     Image
     {
         id: websiteIcon
-        x: _xscale(900); y: yscale(630); width: xscale(32); height: yscale(32)
+        x: _xscale(900); y: yscale(635); width: xscale(32); height: yscale(32)
         source: mythUtils.findThemeFile("images/website.png")
+    }
+
+    AnimatedImage
+    {
+        id: radioFeedIcon
+        x: _xscale(850); y: yscale(635); width: xscale(32); height: yscale(32)
+        source: mythUtils.findThemeFile("images/radio.webp")
     }
 
     Footer
@@ -531,8 +538,26 @@ BaseScreen
         webcamIcon.source = getIconURL(webcamGrid.model.get(webcamGrid.currentIndex).icon);
 
         websiteIcon.visible = ((webcamGrid.model.get(webcamGrid.currentIndex).website !== undefined && webcamGrid.model.get(webcamGrid.currentIndex).website !== "" ) ? true : false)
+        radioFeedIcon.visible = (getLink("radio_feed0") !== undefined ? true : false)
     }
 
+    function getLink(linktype)
+    {
+        if (!webcamGrid.model.get(webcamGrid.currentIndex).links || webcamGrid.model.get(webcamGrid.currentIndex).links === "")
+            return undefined;
+
+        var links = webcamGrid.model.get(webcamGrid.currentIndex).links.split("\n");
+
+        for (var x = 0; x < links.length; x++)
+        {
+            if (links[x].startsWith(linktype))
+            {
+                return links[x].substring(linktype.length + 1, links[x].length);
+            }
+        }
+
+        return undefined;
+    }
 
     function checkForUpdates()
     {

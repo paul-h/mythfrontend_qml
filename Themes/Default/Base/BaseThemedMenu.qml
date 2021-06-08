@@ -117,6 +117,9 @@ Item
                     downSound.play();
 
                     popupMenu.clearMenuItems();
+
+                    popupMenu.addMenuItem("", "Radio...", "radioplayer");
+                    popupMenu.addMenuItem("", "Volume...", "volume");
                     popupMenu.addMenuItem("", "Show Version...", "version");
                     popupMenu.addMenuItem("", "Exit", "exit");
 
@@ -126,29 +129,55 @@ Item
                     if (settings.shutdownCommand !== "")
                         popupMenu.addMenuItem("", "Shutdown", "shutdown");
 
-                    popupMenu.addMenuItem("", "Volume...", "volume");
-
                     popupMenu.show(listView);
                 }
                 else if (event.key === Qt.Key_BracketLeft || event.key === Qt.Key_BraceLeft)
                 {
-                    // background video volume down
-                    if (window.backgroundVideoVolume * 100 >= 1.00)
-                        window.backgroundVideoVolume -= 0.01;
+                    if (radioPlayerDialog.isPlaying())
+                    {
+                        // radio player volume down
+                        if (window.radioPlayerVolume * 100 >= 1.00)
+                            window.radioPlayerVolume -= 0.01;
 
-                    dbUtils.setSetting("BackgroundVideoVolume", settings.hostName, window.backgroundVideoVolume);
+                        dbUtils.setSetting("RadioPlayerVolume", settings.hostName, window.radioPlayerVolume);
+                        radioPlayerDialog.volume = Math.round(window.radioPlayerVolume * 100);
 
-                    showNotification("Background Volume: " + Math.round(backgroundVideoVolume * 100) + "%");
+                        showNotification("Radio Player Volume: " + Math.round(radioPlayerDialog.volume) + "%");
+                    }
+                    else
+                    {
+                        // background video volume down
+                        if (window.backgroundVideoVolume * 100 >= 1.00)
+                            window.backgroundVideoVolume -= 0.01;
+
+                        dbUtils.setSetting("BackgroundVideoVolume", settings.hostName, window.backgroundVideoVolume);
+
+                        showNotification("Background Volume: " + Math.round(window.backgroundVideoVolume * 100) + "%");
+                    }
                 }
                 else if (event.key === Qt.Key_BracketRight || event.key === Qt.Key_BraceRight)
                 {
-                    // background video volume up
-                    if (window.backgroundVideoVolume * 100 <= 99)
-                        window.backgroundVideoVolume += 0.01;
+                    if (radioPlayerDialog.isPlaying())
+                    {
+                        // radio player volume down
+                        if (window.radioPlayerVolume * 100 <= 99.0)
+                            window.radioPlayerVolume += 0.01;
 
-                    dbUtils.setSetting("BackgroundVideoVolume", settings.hostName, window.backgroundVideoVolume);
+                        dbUtils.setSetting("RadioPlayerVolume", settings.hostName, window.radioPlayerVolume);
+                        radioPlayerDialog.volume = Math.round(window.radioPlayerVolume * 100);
 
-                    showNotification("Background Volume: " + Math.round(backgroundVideoVolume * 100) + "%");
+                        showNotification("Radio Player Volume: " + Math.round(radioPlayerDialog.volume) + "%");
+                    }
+                    else
+                    {
+                        // background video volume up
+                        if (window.backgroundVideoVolume * 100 <= 99.0)
+                            window.backgroundVideoVolume += 0.01;
+
+                        dbUtils.setSetting("BackgroundVideoVolume", settings.hostName, window.backgroundVideoVolume);
+
+                        showNotification("Background Volume: " + Math.round(window.backgroundVideoVolume * 100) + "%");
+                    }
                 }
             }
 
