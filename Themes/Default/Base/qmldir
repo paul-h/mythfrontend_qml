@@ -22,6 +22,7 @@ DropDown 1.0 DropDown.qml
 FadeImage 1.0 FadeImage.qml
 FeedSource 1.0 FeedSource.qml
 Footer 1.0 Footer.qml
+ImageButton 1.0 ImageButton.qml
 InfoText 1.0 InfoText.qml
 LabelText 1.0 LabelText.qml
 ListBackground 1.0 ListBackground.qml
@@ -44,6 +45,7 @@ Snow 1.0 Snow.qml
 Ticker 1.0 Ticker.qml
 TitleText 1.0 TitleText.qml
 Tracer 1.0 Tracer.qml
+Theme 1.0 Theme.qml
 TreeButtonList 1.0 TreeButtonList.qml
 VideoPlayerQtAV 1.0 VideoPlayerQtAV.qml
 VideoPlayerQmlVLC 1.0 VideoPlayerQmlVLC.qml

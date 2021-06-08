@@ -30,6 +30,7 @@ Window
     property double hmult: height / 720
     property double soundEffectsVolume: 1.0
     property double backgroundVideoVolume: 1.0
+    property double radioPlayerVolume: 1.0
 
     property alias playerSources: playerSourcesModel
 
@@ -39,6 +40,7 @@ Window
 
         soundEffectsVolume = dbUtils.getSetting("SoundEffectsVolume", settings.hostName, "1.0");
         backgroundVideoVolume = dbUtils.getSetting("BackgroundVideoVolume", settings.hostName, "1.0");
+        radioPlayerVolume = dbUtils.getSetting("RadioPlayerVolume", settings.hostName, "1.0");
     }
 
     Connections
@@ -126,6 +128,22 @@ Window
                 screenBackground.showVideo = false;
                 screenBackground.showImage = true;
                 screenBackground.showSlideShow = false;
+            }
+
+            // load any radio streams defined by the theme
+            if (theme.radioStreams && theme.radioStreams.count > 0)
+            {
+                radioPlayerDialog.clearStreams();
+
+                for (var x = 0; x < theme.radioStreams.count; x++)
+                {
+                    var title = theme.radioStreams.get(x).title;
+                    var url  = theme.radioStreams.get(x).url;
+                    var logo  = theme.radioStreams.get(x).logo;
+                    radioPlayerDialog.addStream(title, url, logo);
+                }
+
+                radioPlayerDialog.playFirst();
             }
         }
     }
@@ -442,13 +460,29 @@ Window
             {
                 if (event.key === Qt.Key_F1)
                 {
+                    // red
                     screenBackground.screenSaverMode = !screenBackground.screenSaverMode;
                 }
                 else if (event.key === Qt.Key_F2)
                 {
-                    screenBackground.muteAudio = !screenBackground.muteAudio;
+                    // green
+                    if (radioPlayerDialog.isPlaying())
+                    {
+                        radioPlayerDialog.toggleMute();
+                        showNotification("Radio Player Mute: " + (radioPlayerDialog.muteAudio ? "On" : "Off"));
+                    }
+                    else
+                    {
+                        screenBackground.muteAudio = !screenBackground.muteAudio;
+                        showNotification("Background Video Mute: " + (screenBackground.muteAudio ? "On" : "Off"));
+                    }
                 }
-                else if (event.key === Qt.Key_F || event.key === Qt.Key_F8)
+                else if (event.key === Qt.Key_F3)
+                {
+                    // yellow
+                    radioPlayerDialog.show();
+                }
+                else if (event.key === Qt.Key_F || event.key === Qt.Key_W)
                 {
                     if (visibility == 5)
                         visibility = 2
@@ -527,6 +561,7 @@ Window
                 anchors.fill: parent
                 horizontalAlignment: Text.AlignHCenter
                 multiline: true
+                textFormat: TextEdit.RichText
             }
         }
 
@@ -696,6 +731,11 @@ Window
         }
     }
 
+    RadioPlayerDialog
+    {
+        id: radioPlayerDialog
+    }
+
     PopupMenu
     {
         id: popupMenu
@@ -726,6 +766,7 @@ Window
             {
                 volumeDialog.oldEffectsVolume = window.soundEffectsVolume;
                 volumeDialog.oldBackgroundVideoVolume = window.backgroundVideoVolume;
+                volumeDialog.oldRadioPlayerVolume = window.radioPlayerVolume;
 
                 var index = window.soundEffectsVolume * 100.0;
                 effectsSelector.selectItem(volumeModel.get(index).itemText);
@@ -733,8 +774,15 @@ Window
                 index = window.backgroundVideoVolume * 100.0;
                 backgroundSelector.selectItem(volumeModel.get(index).itemText);
 
+                index = window.radioPlayerVolume * 100.0;
+                radioSelector.selectItem(volumeModel.get(index).itemText);
+
                 volumeDialog.show(_activeFocusItem);
                 return;
+            }
+            else if (itemData === "radioplayer")
+            {
+                radioPlayerDialog.show();
             }
         }
     }
@@ -779,24 +827,28 @@ Window
         title: "Volume"
         message: "Set sound effects and background video volume"
         width: xscale(500)
-        height: yscale(400)
+        height: yscale(470)
 
         property double oldEffectsVolume: -1
         property double oldBackgroundVideoVolume: -1
+        property double oldRadioPlayerVolume: -1
 
         onAccepted:
         {
             window.soundEffectsVolume = volumeModel.get(effectsSelector.currentIndex).volume / 100;
             window.backgroundVideoVolume = volumeModel.get(backgroundSelector.currentIndex).volume / 100;
+            window.radioPlayerVolume = volumeModel.get(radioSelector.currentIndex).volume / 100;
 
             dbUtils.setSetting("SoundEffectsVolume", settings.hostName, window.soundEffectsVolume);
             dbUtils.setSetting("BackgroundVideoVolume", settings.hostName, window.backgroundVideoVolume);
+            dbUtils.setSetting("RadioPlayerVolume", settings.hostName, window.radioPlayerVolume);
         }
 
         onCancelled:
         {
             window.soundEffectsVolume = oldEffectsVolume;
             window.backgroundVideoVolume = oldBackgroundVideoVolume;
+            window.radioPlayerVolume = oldRadioPlayerVolume;
         }
 
         content: Item
@@ -827,6 +879,7 @@ Window
                     }
                 }
             }
+
             LabelText
             {
                 text: "Background Video"
@@ -839,7 +892,7 @@ Window
                 x: xscale(260); y: yscale(60);
                 model: volumeModel
                 KeyNavigation.up: effectsSelector;
-                KeyNavigation.down: acceptButton;
+                KeyNavigation.down: radioSelector;
 
                 onItemSelected:
                 {
@@ -847,7 +900,30 @@ Window
                     {
                          window.backgroundVideoVolume = volumeModel.get(backgroundSelector.currentIndex).volume / 100;
                     }
+                }
+            }
 
+            LabelText
+            {
+                text: "Radio Player"
+                x: xscale(10); y: yscale(120); width: xscale(250);
+            }
+
+            BaseSelector
+            {
+                id: radioSelector
+                x: xscale(260); y: yscale(120);
+                model: volumeModel
+                KeyNavigation.up: backgroundSelector;
+                KeyNavigation.down: acceptButton;
+
+                onItemSelected:
+                {
+                    if (volumeDialog.oldRadioPlayerVolume !== -1)
+                    {
+                        radioPlayerVolume = volumeModel.get(radioSelector.currentIndex).volume / 100;
+                        radioPlayerDialog.volume = volumeModel.get(radioSelector.currentIndex).volume;
+                    }
                 }
             }
         }
@@ -862,7 +938,7 @@ Window
 
                 KeyNavigation.left: rejectButton;
                 KeyNavigation.right: rejectButton;
-                KeyNavigation.up: backgroundSelector;
+                KeyNavigation.up: radioSelector;
                 KeyNavigation.down: effectsSelector;
                 onClicked:
                 {
@@ -879,7 +955,7 @@ Window
 
                 KeyNavigation.left: acceptButton;
                 KeyNavigation.right: acceptButton;
-                KeyNavigation.up: backgroundSelector;
+                KeyNavigation.up: radioSelector;
                 KeyNavigation.down: effectsSelector;
 
                 onClicked:

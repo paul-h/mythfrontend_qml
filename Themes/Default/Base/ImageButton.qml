@@ -1,8 +1,10 @@
 import QtQuick 2.0
+import QtGraphicalEffects 1.12
 
 Item
 {
-    property alias text: buttonText.text
+    property alias source: iconImage.source
+    property bool effectEnabled: true
 
     signal clicked();
 
@@ -16,12 +18,15 @@ Item
             name: "normal"
             PropertyChanges
             {
-                target: buttonText;
-                fontColor: theme.btTextColorNormal;
+                target: effect;
+                hue: 0.0
+                saturation: 1.0
+                lightness:0.0
             }
             PropertyChanges
             {
                 target: background;
+                visible: false
                 gradient: theme.gradientNormal();
                 border.color: theme.btBorderColorNormal;
             }
@@ -31,14 +36,16 @@ Item
             name: "focused"
             PropertyChanges
             {
-                target: buttonText;
-                fontColor: theme.btTextColorSelected;
+                target: effect;
+                enabled: true;
+                hue: 0.0
+                saturation: 1.1
+                lightness:0.0
             }
             PropertyChanges
             {
                 target: background;
-                gradient: theme.gradientSelected();
-                border.color: theme.btBorderColorSelected;
+                visible: true
             }
         },
         State
@@ -46,14 +53,16 @@ Item
             name: "disabled"
             PropertyChanges
             {
-                target: buttonText;
-                fontColor: theme.btTextColorDisabled;
+                target: effect;
+                enabled: true;
+                hue: 0.0
+                saturation: 0.0
+                lightness:0.0
             }
             PropertyChanges
             {
                 target: background;
-                gradient: theme.gradientDisabled();
-                border.color: theme.btBorderColorDisabled;
+                visible: false
             }
         },
         State
@@ -61,12 +70,16 @@ Item
             name: "pushed"
             PropertyChanges
             {
-                target: buttonText;
-                fontColor: theme.btTextColorFocusedSelected;
+                target: effect;
+                enabled: true;
+                hue: 0.0
+                saturation: 0.6
+                lightness:0.5
             }
             PropertyChanges
             {
                 target: background;
+                visible: true
                 gradient: theme.gradientFocusedSelected();
                 border.color: theme.btBorderColorFocusedSelected;
             }
@@ -103,19 +116,31 @@ Item
     Rectangle
     {
         id: background
-        anchors.fill: parent
-        gradient: theme.gradientNormal();
+        x: 0
+        y: parent.height - yscale(theme.btBorderWidth)
+        width: parent.width
+        height: yscale(theme.btBorderWidth)
         border.width: theme.btBorderWidth
-        border.color: theme.btBorderColorNormal
-        radius: theme.btBorderRadius
+        border.color: "green"; //theme.btBorderColorNormal
     }
 
-    LabelText
+    Image
     {
-        id: buttonText
-        anchors {fill: parent; margins: 3}
-        horizontalAlignment: Text.AlignHCenter
-        fontColor: theme.btTextColorNormal
+        id: iconImage
+        anchors
+        {
+            fill: parent;
+            bottomMargin: yscale(theme.btBorderWidth + 2)
+        }
+    }
+
+    Colorize
+    {
+        id: effect
+        anchors.fill: effectEnabled ? iconImage : undefined
+        source: effectEnabled ? iconImage : undefined
+        hue: 0.0
+        saturation: 0.0
+        lightness:0.0
     }
 }
-

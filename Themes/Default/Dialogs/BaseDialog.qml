@@ -96,7 +96,7 @@ FocusScope
             x: xscale(10)
             y: column.height + yscale(10)
             width: parent.width - xscale(20)
-            height: parent.height - column.height - buttonsRow.height - yscale(30)
+            height: parent.height - column.height - buttonsRow.height - yscale(20)
             clip: true
 
             Rectangle
