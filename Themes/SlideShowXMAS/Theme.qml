@@ -11,6 +11,30 @@ QtObject
     property string   backgroundVideo:     ""
     property string   backgroundSlideShow: "Christmas.tar.gz"
     
+    // radio stream list
+    property ListModel radioStreams:
+        ListModel
+        {
+            ListElement
+            {
+                title: "Klassik Radio - Christmas";
+                url: "http://stream.klassikradio.de/christmas/mp3-192/radiosure/";
+                logo: "https://images.klassikradio.de/files/2021-03/channel_christmas-classics_360.jpg"
+            }
+            ListElement
+            {
+                title: "RSL - Radio Santa Claus";
+                url: "http://streaming.radiostreamlive.com/radiosantaclaus_devices";
+                logo: "https://cdn.radiostreamlive.com/v1/logos/radiosantaclaus.png"
+            }
+            ListElement
+            {
+                title: "1.FM - Always-Christmas";
+                url: "http://sc2c-sjc.1.fm:8650/";
+                logo: "https://cache.usercontentapp.com/logo/network/1fm.png"
+            }
+        }
+
     // main menu font
     property string menuFontFamily:     "Liberation Sans"
     property int    menuFontPixelSize:  30
