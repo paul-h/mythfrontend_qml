@@ -96,7 +96,7 @@ FocusScope
             x: xscale(10)
             y: column.height + yscale(10)
             width: parent.width - xscale(20)
-            height: parent.height - column.height - buttonsRow.height - yscale(20)
+            height: parent.height - column.height - buttonsRow.height - yscale(25)
             clip: true
 
             Rectangle
@@ -128,13 +128,9 @@ FocusScope
             onChildrenChanged: __update()
             Component.onCompleted: __update()
 
-            x: 0; y: contentItem.y + contentItem.height + yscale(5)
+            x: 0; y: parent.height - height - yscale(15)
             spacing: xscale(10)
-            anchors
-            {
-                horizontalCenter: parent.horizontalCenter
-                bottomMargin: yscale(10)
-            }
+            anchors.horizontalCenter: parent.horizontalCenter
         }
 
         Rectangle
