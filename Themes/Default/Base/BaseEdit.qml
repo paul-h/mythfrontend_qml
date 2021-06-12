@@ -111,12 +111,11 @@ FocusScope
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignVCenter
         font.family: "Helvetica"
-        font.pointSize: 20
+        font.pointSize: xscale(20)
         color: theme.txTextColorNormal
 
         Keys.onReturnPressed: root.editingFinished();
         onTextChanged: root.textEdited()
-
     }
 }
 
