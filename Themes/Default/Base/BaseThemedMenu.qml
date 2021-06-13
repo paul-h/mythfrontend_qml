@@ -136,47 +136,47 @@ Item
                     if (radioPlayerDialog.isPlaying())
                     {
                         // radio player volume down
-                        if (window.radioPlayerVolume * 100 >= 1.00)
-                            window.radioPlayerVolume -= 0.01;
+                        if (window.radioPlayerVolume >= 1)
+                            window.radioPlayerVolume -= 1;
 
                         dbUtils.setSetting("RadioPlayerVolume", settings.hostName, window.radioPlayerVolume);
-                        radioPlayerDialog.volume = Math.round(window.radioPlayerVolume * 100);
+                        radioPlayerDialog.volume = window.radioPlayerVolume;
 
-                        showNotification("Radio Player Volume: " + Math.round(radioPlayerDialog.volume) + "%");
+                        showNotification("Radio Player Volume: " + radioPlayerDialog.volume + "%");
                     }
                     else
                     {
                         // background video volume down
-                        if (window.backgroundVideoVolume * 100 >= 1.00)
-                            window.backgroundVideoVolume -= 0.01;
+                        if (window.backgroundVideoVolume > 0)
+                            window.backgroundVideoVolume -= 1;
 
                         dbUtils.setSetting("BackgroundVideoVolume", settings.hostName, window.backgroundVideoVolume);
 
-                        showNotification("Background Volume: " + Math.round(window.backgroundVideoVolume * 100) + "%");
+                        showNotification("Background Volume: " + window.backgroundVideoVolume + "%");
                     }
                 }
                 else if (event.key === Qt.Key_BracketRight || event.key === Qt.Key_BraceRight)
                 {
                     if (radioPlayerDialog.isPlaying())
                     {
-                        // radio player volume down
-                        if (window.radioPlayerVolume * 100 <= 99.0)
-                            window.radioPlayerVolume += 0.01;
+                        // radio player volume up
+                        if (window.radioPlayerVolume < 100)
+                            window.radioPlayerVolume += 1;
 
                         dbUtils.setSetting("RadioPlayerVolume", settings.hostName, window.radioPlayerVolume);
-                        radioPlayerDialog.volume = Math.round(window.radioPlayerVolume * 100);
+                        radioPlayerDialog.volume = window.radioPlayerVolume * 100;
 
-                        showNotification("Radio Player Volume: " + Math.round(radioPlayerDialog.volume) + "%");
+                        showNotification("Radio Player Volume: " + radioPlayerDialog.volume + "%");
                     }
                     else
                     {
                         // background video volume up
-                        if (window.backgroundVideoVolume * 100 <= 99.0)
-                            window.backgroundVideoVolume += 0.01;
+                        if (window.backgroundVideoVolume < 100)
+                            window.backgroundVideoVolume += 1;
 
                         dbUtils.setSetting("BackgroundVideoVolume", settings.hostName, window.backgroundVideoVolume);
 
-                        showNotification("Background Volume: " + Math.round(window.backgroundVideoVolume * 100) + "%");
+                        showNotification("Background Volume: " + window.backgroundVideoVolume + "%");
                     }
                 }
             }

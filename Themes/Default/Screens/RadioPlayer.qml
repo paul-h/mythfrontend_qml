@@ -143,7 +143,7 @@ BaseScreen
             streamPlayer.mrl = url;
 
             var vol = dbUtils.getSetting("RadioPlayerVolume", settings.hostName)
-            if (vol !== undefined && vol !== "")
+            if (vol !== undefined && vol !== "" && vol >= 0 && vol <= 100)
                 audio.volume = vol;
             else
                 audio.volume = 80
@@ -377,6 +377,8 @@ BaseScreen
     {
         id: muteIcon
         x: xscale(30); y: yscale(669)
+        width: xscale(30)
+        height: yscale(30)
         source: root.muted ? mythUtils.findThemeFile("images/mm_volume_muted.png") : mythUtils.findThemeFile("images/mm_volume.png")
     }
 
