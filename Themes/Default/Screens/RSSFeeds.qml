@@ -165,7 +165,6 @@ BaseScreen
 
         Keys.onReturnPressed:
         {
-            returnSound.play();
             defaultFocusItem = articleList;
             if (isPanel)
                 panelStack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: feedModel.get(articleList.currentIndex).link, zoomFactor: xscale(1.0)}});
