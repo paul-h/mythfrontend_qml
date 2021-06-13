@@ -1,5 +1,5 @@
 #app version
-VERSION = 0.0.9.alpha
+VERSION = 0.0.10.alpha
 BRANCH = master
 
 PREFIX = /usr
@@ -46,3 +46,4 @@ HEADERS += mythincrementalmodel.h recordingsmodel.h zmeventsmodel.h eventlistene
 SOURCES += main.cpp
 SOURCES += sqlquerymodel.cpp databaseutils.cpp urlinterceptor.cpp settings.cpp mythutils.cpp downloadmanager.cpp
 SOURCES += mythincrementalmodel.cpp recordingsmodel.cpp zmeventsmodel.cpp context.cpp logger.cpp
+
