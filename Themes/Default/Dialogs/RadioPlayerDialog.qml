@@ -485,6 +485,7 @@ BaseDialog
 
     function playFirst()
     {
+        onoff.focus = true;
         streamList.currentItem = 0;
         root.play();
     }
