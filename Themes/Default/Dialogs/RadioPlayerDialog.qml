@@ -449,9 +449,6 @@ BaseDialog
             icon.source = mythUtils.findThemeFile("images/radio.png");
             trackArtistTitle = "";
 
-            if (root.state !== "show")
-                showNotification("No Radio Streams Found");
-
             return;
         }
 
