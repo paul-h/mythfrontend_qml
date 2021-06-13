@@ -1,5 +1,5 @@
 #app version
-VERSION = 0.0.9.alpha
+VERSION = 0.0.10.alpha
 BRANCH = stable
 
 PREFIX = /usr
