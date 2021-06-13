@@ -28,9 +28,9 @@ Window
 
     property double wmult: width / 1280
     property double hmult: height / 720
-    property double soundEffectsVolume: 1.0
-    property double backgroundVideoVolume: 1.0
-    property double radioPlayerVolume: 1.0
+    property int soundEffectsVolume: 100
+    property int backgroundVideoVolume: 100
+    property int radioPlayerVolume: 100
 
     property alias playerSources: playerSourcesModel
 
@@ -38,9 +38,9 @@ Window
     {
         eventListener.listenTo(window)
 
-        soundEffectsVolume = dbUtils.getSetting("SoundEffectsVolume", settings.hostName, "1.0");
-        backgroundVideoVolume = dbUtils.getSetting("BackgroundVideoVolume", settings.hostName, "1.0");
-        radioPlayerVolume = dbUtils.getSetting("RadioPlayerVolume", settings.hostName, "1.0");
+        soundEffectsVolume = dbUtils.getSetting("SoundEffectsVolume", settings.hostName, "100");
+        backgroundVideoVolume = dbUtils.getSetting("BackgroundVideoVolume", settings.hostName, "100");
+        radioPlayerVolume = dbUtils.getSetting("RadioPlayerVolume", settings.hostName, "100");
     }
 
     Connections
@@ -277,49 +277,49 @@ Window
     {
          id: upSound
          source: mythUtils.findThemeFile("sounds/pock.wav");
-         volume: soundEffectsVolume
+         volume: soundEffectsVolume / 100
     }
     SoundEffect
     {
          id: downSound
          source: mythUtils.findThemeFile("sounds/pock.wav")
-         volume: soundEffectsVolume
+         volume: soundEffectsVolume / 100
     }
     SoundEffect
     {
          id: leftSound
          source: mythUtils.findThemeFile("sounds/pock.wav")
-         volume: soundEffectsVolume
+         volume: soundEffectsVolume / 100
     }
     SoundEffect
     {
          id: rightSound
          source: mythUtils.findThemeFile("sounds/pock.wav")
-         volume: soundEffectsVolume
+         volume: soundEffectsVolume / 100
     }
     SoundEffect
     {
          id: returnSound
          source: mythUtils.findThemeFile("sounds/poguck.wav")
-         volume: soundEffectsVolume
+         volume: soundEffectsVolume / 100
     }
     SoundEffect
     {
          id: escapeSound
          source: mythUtils.findThemeFile("sounds/pock.wav")
-         volume: soundEffectsVolume
+         volume: soundEffectsVolume / 100
     }
     SoundEffect
     {
          id: messageSound
          source: mythUtils.findThemeFile("sounds/message.wav")
-         volume: 1.0 //soundEffectsVolume
+         volume: 1.0 //soundEffectsVolume / 100
     }
     SoundEffect
     {
          id: errorSound
          source: mythUtils.findThemeFile("sounds/downer.wav")
-         volume: soundEffectsVolume
+         volume: soundEffectsVolume / 100
     }
 
     // ticker items grabber process
@@ -552,7 +552,7 @@ Window
         BaseBackground
         {
             id: notificationPanel
-            x: xscale(800); y: yscale(100); width: xscale(400); height: yscale(110)
+            x: parent.width - width - xscale(100); y: yscale(120); width: xscale(400); height: yscale(110)
             visible: false
 
             InfoText
@@ -768,13 +768,13 @@ Window
                 volumeDialog.oldBackgroundVideoVolume = window.backgroundVideoVolume;
                 volumeDialog.oldRadioPlayerVolume = window.radioPlayerVolume;
 
-                var index = window.soundEffectsVolume * 100.0;
+                var index = window.soundEffectsVolume;
                 effectsSelector.selectItem(volumeModel.get(index).itemText);
 
-                index = window.backgroundVideoVolume * 100.0;
+                index = window.backgroundVideoVolume;
                 backgroundSelector.selectItem(volumeModel.get(index).itemText);
 
-                index = window.radioPlayerVolume * 100.0;
+                index = window.radioPlayerVolume;
                 radioSelector.selectItem(volumeModel.get(index).itemText);
 
                 volumeDialog.show(_activeFocusItem);
@@ -827,17 +827,17 @@ Window
         title: "Volume"
         message: "Set sound effects and background video volume"
         width: xscale(500)
-        height: yscale(470)
+        height: yscale(485)
 
-        property double oldEffectsVolume: -1
-        property double oldBackgroundVideoVolume: -1
-        property double oldRadioPlayerVolume: -1
+        property int oldEffectsVolume: -1
+        property int oldBackgroundVideoVolume: -1
+        property int oldRadioPlayerVolume: -1
 
         onAccepted:
         {
-            window.soundEffectsVolume = volumeModel.get(effectsSelector.currentIndex).volume / 100;
-            window.backgroundVideoVolume = volumeModel.get(backgroundSelector.currentIndex).volume / 100;
-            window.radioPlayerVolume = volumeModel.get(radioSelector.currentIndex).volume / 100;
+            window.soundEffectsVolume = volumeModel.get(effectsSelector.currentIndex).volume;
+            window.backgroundVideoVolume = volumeModel.get(backgroundSelector.currentIndex).volume;
+            window.radioPlayerVolume = volumeModel.get(radioSelector.currentIndex).volume;
 
             dbUtils.setSetting("SoundEffectsVolume", settings.hostName, window.soundEffectsVolume);
             dbUtils.setSetting("BackgroundVideoVolume", settings.hostName, window.backgroundVideoVolume);
@@ -874,7 +874,7 @@ Window
                 {
                     if (volumeDialog.oldEffectsVolume !== -1)
                     {
-                        window.soundEffectsVolume = volumeModel.get(effectsSelector.currentIndex).volume / 100;
+                        window.soundEffectsVolume = volumeModel.get(effectsSelector.currentIndex).volume;
                         returnSound.play();
                     }
                 }
@@ -898,7 +898,7 @@ Window
                 {
                     if (volumeDialog.oldBackgroundVideoVolume !== -1)
                     {
-                         window.backgroundVideoVolume = volumeModel.get(backgroundSelector.currentIndex).volume / 100;
+                         window.backgroundVideoVolume = volumeModel.get(backgroundSelector.currentIndex).volume;
                     }
                 }
             }
@@ -921,7 +921,7 @@ Window
                 {
                     if (volumeDialog.oldRadioPlayerVolume !== -1)
                     {
-                        radioPlayerVolume = volumeModel.get(radioSelector.currentIndex).volume / 100;
+                        radioPlayerVolume = volumeModel.get(radioSelector.currentIndex).volume;
                         radioPlayerDialog.volume = volumeModel.get(radioSelector.currentIndex).volume;
                     }
                 }

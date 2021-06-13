@@ -88,7 +88,7 @@ Item
         anchors.fill: parent
         visible: false
         loop: true;
-        volume: window.backgroundVideoVolume * 100
+        volume: window.backgroundVideoVolume
 
         Component.onCompleted:
         {

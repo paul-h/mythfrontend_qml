@@ -58,8 +58,8 @@ BaseDialog
         Component.onCompleted:
         {
             var vol = dbUtils.getSetting("RadioPlayerVolume", settings.hostName)
-            if (vol !== undefined && vol !== "")
-                volume = vol * 100;
+            if (vol !== undefined && vol !== "" && vol >= 0 && vol <= 100)
+                volume = vol;
             else
                 volume = 80
 
@@ -185,20 +185,20 @@ BaseDialog
         else if (event.key === Qt.Key_BracketLeft || event.key === Qt.Key_BraceLeft)
         {
             // radio player volume down
-            if (window.radioPlayerVolume * 100 >= 1.00)
-                window.radioPlayerVolume -= 0.01;
+            if (window.radioPlayerVolume > 0)
+                window.radioPlayerVolume -= 1;
 
             dbUtils.setSetting("RadioPlayerVolume", settings.hostName, window.radioPlayerVolume);
-            radioPlayerDialog.volume = Math.round(window.radioPlayerVolume * 100);
+            radioPlayerDialog.volume = window.radioPlayerVolume;
         }
         else if (event.key === Qt.Key_BracketRight || event.key === Qt.Key_BraceRight)
         {
             // radio player volume down
-            if (window.radioPlayerVolume * 100 <= 99.0)
-                window.radioPlayerVolume += 0.01;
+            if (window.radioPlayerVolume < 100)
+                window.radioPlayerVolume += 1;
 
             dbUtils.setSetting("RadioPlayerVolume", settings.hostName, window.radioPlayerVolume);
-            radioPlayerDialog.volume = Math.round(window.radioPlayerVolume * 100);
+            radioPlayerDialog.volume = window.radioPlayerVolume;
         }
         else
             event.accepted = false;
@@ -282,7 +282,15 @@ BaseDialog
                 source: radioFeedsEnabled ? mythUtils.findThemeFile("images/player/on.png") : mythUtils.findThemeFile("images/player/off.png")
                 KeyNavigation.right: previous
                 KeyNavigation.left: record
-                onClicked: radioFeedsEnabled = !radioFeedsEnabled
+                onClicked:
+                {
+                    radioFeedsEnabled = !radioFeedsEnabled;
+
+                    if (radioFeedsEnabled)
+                        root.play();
+                    else
+                        root.stop();
+                }
             }
 
             ImageButton
