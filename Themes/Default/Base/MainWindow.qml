@@ -90,6 +90,8 @@ Window
                 }
                 else
                 {
+                    log.info(Verbose.GUI, "MainWindow: starting background video");
+                    screenBackground.setVideo("file://" + settings.configPath + "Themes/Videos/" + theme.backgroundVideo);
                     screenBackground.showVideo = true;
                     screenBackground.showImage = false;
                     screenBackground.showSlideShow = false;
