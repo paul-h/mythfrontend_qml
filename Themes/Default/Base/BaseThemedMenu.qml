@@ -83,6 +83,9 @@ Item
             width: parent.width; height: parent.height
             delegate: menuDelegate
             highlight: Image {cache: false; source: mythUtils.findThemeFile("ui/button_on.png")}
+            highlightMoveDuration: 1500
+            highlightResizeDuration: 0
+            snapMode: ListView.SnapToItem
             focus: true
             clip: true
             keyNavigationWraps: true
