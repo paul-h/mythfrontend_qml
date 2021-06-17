@@ -14,7 +14,7 @@ Item
     property alias showBusyIndicator: busyIndicator.running
     property bool  muteAudio: videoPlayer.muteAudio
 
-    property bool  screenSaverMode: false
+    property bool  screenSaverMode: true
 
     onMuteAudioChanged: videoPlayer.setMute(muteAudio);
 
@@ -115,6 +115,7 @@ Item
         width: xscale(900)
         visible : true
         opacity: screenSaverMode ? 0 : 1
+        Behavior on opacity { NumberAnimation { duration: 2000 } }
     }
 
     // time/date text
@@ -125,6 +126,7 @@ Item
         format: "ddd MMM dd, HH:mm:ss"
         visible: true
         opacity: screenSaverMode ? 0 : 1
+        Behavior on opacity { NumberAnimation { duration: 2000 } }
     }
 
     Scroller
@@ -133,6 +135,7 @@ Item
         x: xscale(0); y: window.height - yscale(40); width: window.width; height: yscale(40)
         visible: false
         opacity: screenSaverMode ? 0 : 1
+        Behavior on opacity { NumberAnimation { duration: 2000 } }
     }
 
     BusyIndicator
@@ -141,6 +144,7 @@ Item
         x: xscale(500); y: yscale(5); z:99
         running: false
         opacity: screenSaverMode ? 0 : 1
+        Behavior on opacity { NumberAnimation { duration: 2000 } }
     }
 
     Component.onCompleted:
