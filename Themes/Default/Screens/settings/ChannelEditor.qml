@@ -111,10 +111,7 @@ BaseScreen
             {
                 id: radioIcon
                 x: xscale(3); y: yscale(3); height: parent.height - yscale(6); width: height
-                source: if (icon)
-                    settings.masterBackend + "Guide/GetChannelIcon?ChanId=" + chanid
-                else
-                    mythUtils.findThemeFile("images/grid_noimage.png")
+                source: icon ? settings.masterBackend + "Guide/GetChannelIcon?ChanId=" + chanid : mythUtils.findThemeFile("images/grid_noimage.png")
             }
 
             ListText
