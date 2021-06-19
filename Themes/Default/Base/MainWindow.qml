@@ -345,12 +345,14 @@ Window
     Timer
     {
         id: mouseMoveTimer
-        interval: 1000; running: true; repeat: false
+        interval: 2000; running: true; repeat: false
         onTriggered:
         {
             // wiggle the mouse to force it to timeout and auto hide itself
             var pos =  mythUtils.getMousePos();
             mythUtils.moveMouse(pos.x + 1, pos.y + 1);
+
+            screenBackground.screenSaverMode = false
         }
     }
 
@@ -504,6 +506,8 @@ Window
                     if (stack.depth > 1) {stack.pop(); escapeSound.play();} else quit();
                 }
             }
+
+            Behavior on opacity { NumberAnimation { duration: 2000 } }
 
             function createThemedMenu()
             {
@@ -797,7 +801,7 @@ Window
         message: '<font  color="yellow"><b>Version: </font></b>' + version  + " (" + branch + ")" +
                  '<br><font color="yellow"><b>Date: </font></b>' + buildtime +
                  '<br><font  color="yellow"><b>Qt Version: </font></b>' + qtversion +
-                 '<br><br>(c) Paul Harrison 2019-2020'
+                 '<br><br>(c) Paul Harrison 2019-2021'
 
         rejectButtonText: ""
         acceptButtonText: "OK"
