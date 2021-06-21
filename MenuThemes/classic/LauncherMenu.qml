@@ -30,6 +30,24 @@ ListModel
     }
     ListElement
     {
+        menutext: "Pluto TV"
+        loaderSource:"WebBrowser.qml"
+        waterMark: "watermark/pluto.png"
+        url: "https://pluto.tv/live-tv/"
+        zoom: 1.0
+        fullscreen: true
+    }
+    ListElement
+    {
+        menutext: "Netflix"
+        loaderSource:"WebBrowser.qml"
+        waterMark: "watermark/netflix.png"
+        url: "https://www.netflix.com/browse"
+        zoom: 1.0
+        fullscreen: true
+    }
+    ListElement
+    {
         menutext:"Shutdown"
         loaderSource: "shutdown"
         waterMark: "watermark/shutdown.png"
