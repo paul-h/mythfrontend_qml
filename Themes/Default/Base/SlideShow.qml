@@ -78,8 +78,8 @@ Rectangle
 
             shuffleList();
             img1.item.asynchronous = false
-            img1.item.visible = true;
             img1.item.loadNextSlide();
+            img1.item.fadein();
             img2.item.loadNextSlide();
 
             img1.item.asynchronous = true;
