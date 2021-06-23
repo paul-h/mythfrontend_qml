@@ -8,12 +8,17 @@ BaseScreen
 {
     defaultFocusItem: browser
 
+    property bool autoShow: false
     property int currentPage: 0
 
     Component.onCompleted:
     {
         showTitle(true, "What's New");
         showTicker(false);
+
+        var lastShown = parseInt(dbUtils.getSetting("LastWhatsNewShown", settings.hostName, "-1"));
+        if (lastShown !== -1)
+            autoShow ? currentPage = lastShown + 1 : currentPage = lastShown;
     }
 
     Action
@@ -23,21 +28,12 @@ BaseScreen
         enabled: browser.focus
         onTriggered:
         {
-            if (browser.canGoBack)
-                browser.goBack();
-            else
+            if (!isPanel)
             {
-                if (!isPanel)
+                if (stack.depth > 1)
                 {
-                    if (stack.depth > 1)
-                    {
-                        stack.pop();
-                        escapeSound.play();
-                    }
-                }
-                else
-                {
-                    handleEscape();
+                    stack.pop();
+                    escapeSound.play();
                 }
             }
         }

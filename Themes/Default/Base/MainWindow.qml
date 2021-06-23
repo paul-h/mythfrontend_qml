@@ -733,7 +733,7 @@ Window
         else if (lastShownIndex + 1 < whatsNewModel.count)
         {
             messageSound.play();
-            stack.push({item: mythUtils.findThemeFile("Screens/WhatsNew.qml"), properties:{currentPage:  lastShownIndex + 1}});
+            stack.push({item: mythUtils.findThemeFile("Screens/WhatsNew.qml"), properties:{autoShow: true}});
         }
     }
 
