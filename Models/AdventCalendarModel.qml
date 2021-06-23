@@ -7,7 +7,7 @@ Item
     id: root
 
     property var calendarList: adventCalendarsModel
-    property int calendarIndex: 2
+    property int calendarIndex: 3
     property var model: listModel
 
     signal loaded();
