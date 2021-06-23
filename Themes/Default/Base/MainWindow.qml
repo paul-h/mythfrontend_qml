@@ -145,7 +145,8 @@ Window
                     radioPlayerDialog.addStream(title, url, logo);
                 }
 
-                radioPlayerDialog.playFirst();
+                if (radioPlayerDialog.radioFeedsEnabled)
+                    radioPlayerDialog.playFirst();
             }
         }
     }
