@@ -13,7 +13,7 @@ BaseScreen
 
     Component.onCompleted:
     {
-        showTitle(true, "Advent Calendar 2019");
+        showTitle(true, "Advent Calendar 2020");
         showTicker(false);
 
         var index = dbUtils.getSetting("AdventIndex", settings.hostName, "");
