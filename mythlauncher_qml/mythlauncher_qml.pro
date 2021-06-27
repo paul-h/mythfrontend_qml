@@ -6,7 +6,7 @@ PREFIX = /usr
 
 include(../QmlVlc/QmlVlc.pri)
 include(../SortFilterProxyModel/SortFilterProxyModel.pri)
-
+include(../DownloadManager/quickdownload.pri)
 
 DEFINES += APP_VERSION=\\\"$$VERSION\\\" GIT_BRANCH=\\\"$$BRANCH\\\"
 
