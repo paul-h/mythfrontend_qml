@@ -240,31 +240,6 @@ Window
         }
     }
 
-    Process
-    {
-        id: unTarProcess
-        onFinished:
-        {
-            if (exitStatus === Process.NormalExit && themeDLProcess.exitCode() === 0)
-            {
-                showNotification("");
-                screenBackground.showVideo = false;
-                screenBackground.setSlideShow(settings.configPath + "Themes/Pictures/" + settings.themeName);
-                screenBackground.showImage = false;
-                screenBackground.showSlideShow = true;
-            }
-            else
-            {
-                var source = "https://mythqml.net/downloads/themes/" + settings.themeName + "/" + theme.backgroundSlideShow;
-                var dest = settings.configPath + "Themes/Pictures/" + settings.themeName + "/" + theme.backgroundSlideShow;
-                mythUtils.removeFile(dest);
-                showNotification("Downloading of the background video failed!");
-                log.error(Verbose.GUI, "MainWindow: Error - failed to download background video from: " + source);
-                log.error(Verbose.GUI, "MainWindow: Error - exit code was: " + themeDLProcess.exitCode());
-            }
-        }
-    }
-
     WebSocket
     {
         id: webSocket
