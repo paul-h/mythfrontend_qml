@@ -8,7 +8,32 @@ QtObject
 
     // screen background
     property string   backgroundImage:  "background2019.png"
-    property string   backgroundVideo:  "autumn2019.mp4"
+
+    property var backgroundVideo:
+    ListModel
+    {
+        property string filename: "autumn2019.mp4"
+        property string md5: "56151240b0b88b0cb8bd9c552b5211b7"
+        property double size: 101.7
+
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterAUTUMN/autumn2019.mp4.part01";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterAUTUMN/autumn2019.mp4.part02";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterAUTUMN/autumn2019.mp4.part03";
+            size: 1.7
+        }
+    }
+
+    property var backgroundSlideShow: undefined
 
     // main menu font
     property string menuFontFamily:     "Liberation Sans"

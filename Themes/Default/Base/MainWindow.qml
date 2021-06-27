@@ -10,6 +10,7 @@ import Dialogs 1.0
 import Screens 1.0
 import Models 1.0
 import mythqml.net 1.0
+import com.blackgrain.qml.quickdownload 1.0
 
 Window
 {
@@ -63,6 +64,61 @@ Window
         }
     }
 
+    Download
+    {
+        id: themeDownloader
+
+        overwrite: true
+        followRedirects: true
+        onRedirected: log.info(Verbose.NETWORK, "ThemeDownloader: got redirected: "+ url + "->" + redirectUrl)
+
+        onError:
+        {
+            log.error(Verbose.GENERAL, "ThemeDownloader: download failed. URL was: " + url + ", Error was: "+ errorString);
+            showNotification("Downloading of the background video failed.<br>Error was: "+ errorString, settings.osdTimeoutMedium);
+        }
+
+        onFinished:
+        {
+            if (theme.backgroundVideo !== undefined)
+            {
+                showNotification("Downloading of the background video completed OK", settings.osdTimeoutShort);
+                screenBackground.showVideo = true;
+                screenBackground.setVideo("file://" + settings.configPath + "Themes/Videos/" + theme.backgroundVideo.filename);
+                screenBackground.showImage = false;
+            }
+            else if (theme.backgroundSlideShow !== undefined)
+            {
+                var source = destination.toString().replace("file://", ""); // the file we just downloaded
+                var dest = settings.configPath.replace("file://", "") + "Themes/Pictures/" + settings.themeName + "/";
+
+                showNotification("Downloading of the background slideshow completed OK<br>Extracting images - Please Wait...", settings.osdTimeoutLong);
+                unTarProcess.start("tar", ['--overwrite', '-x', '-C', dest, '-f', source]);
+            }
+        }
+
+        onUpdate:
+        {
+            var received = kiloBytesReceived / 1024;
+            var total = kiloBytesTotal / 1024;
+
+            if (theme.backgroundVideo !== undefined)
+            {
+                if (total > 0)
+                    showNotification("Downloading the background video.<br>Received " + received.toFixed(1) + "Mb of " + total.toFixed(1) + "Mb<br>Please Wait....", settings.osdTimeoutLong);
+                else
+                    showNotification("Downloading the background video.<br>Received " + received.toFixed(1) + "Mb<br>Please Wait....", settings.osdTimeoutLong);
+            }
+            else if (theme.backgroundSlideShow !== undefined)
+            {
+                if (total > 0)
+                    showNotification("Downloading the background slideshow.<br>Received " + received.toFixed(1) + "Mb of " + total.toFixed(1) + "Mb<br>Please Wait....", settings.osdTimeoutLong);
+                else
+                    showNotification("Downloading the background slideshow.<br>Received " + received.toFixed(1) + "Mb<br>Please Wait....", settings.osdTimeoutLong);
+            }
+        }
+    }
+
     Theme
     {
         id: theme
@@ -71,54 +127,55 @@ Window
         {
             log.info(Verbose.GUI, "loading theme from: " + settings.qmlPath + "Theme.qml");
 
-            if (theme.backgroundVideo === undefined || theme.backgroundVideo != "")
+            var dest;
+
+            if (theme.backgroundVideo != undefined)
             {
-                if (!mythUtils.fileExists(settings.configPath + "Themes/Videos/" + theme.backgroundVideo))
+                dest = settings.configPath + "Themes/Videos/" + theme.backgroundVideo.filename;
+
+                if (!mythUtils.fileExists(dest))
                 {
-                    var source = "https://mythqml.net/downloads/themes/" + settings.themeName +"/" + theme.backgroundVideo;
-                    var dest = settings.configPath + "Themes/Videos/" + theme.backgroundVideo;
+                    mythUtils.mkPath(settings.configPath + "Themes/Videos");
+
                     screenBackground.showVideo = false;
                     screenBackground.showImage = true;
                     screenBackground.showSlideShow = false;
 
-                    log.info(Verbose.GUI, "MainWindow: Downloading theme background video from - " + source);
-                    log.info(Verbose.GUI, "to - " + dest);
+                    log.info(Verbose.GUI, "MainWindow: Downloading theme background video to - " + dest);
 
-                    showNotification("Downloading the background video.<br>Please Wait....", settings.osdTimeoutLong);
-
-                    themeDLProcess.start("wget", ['-O', dest, source]);
+                    // start the download
+                    themeDownloader.destination = dest;
+                    themeDownloader.start(theme.backgroundVideo);
                 }
                 else
                 {
                     log.info(Verbose.GUI, "MainWindow: starting background video");
-                    screenBackground.setVideo("file://" + settings.configPath + "Themes/Videos/" + theme.backgroundVideo);
+                    screenBackground.setVideo("file://" + settings.configPath + "Themes/Videos/" + theme.backgroundVideo.filename);
                     screenBackground.showVideo = true;
                     screenBackground.showImage = false;
                     screenBackground.showSlideShow = false;
                 }
             }
-            else if (theme.backgroundSlideShow != "")
+            else if (theme.backgroundSlideShow != undefined)
             {
-                if (!mythUtils.fileExists(settings.configPath + "Themes/Pictures/" + settings.themeName + "/" +theme.backgroundSlideShow))
-                {
-                    var source = "https://mythqml.net/downloads/themes/" + settings.themeName + "/" + theme.backgroundSlideShow;
-                    var dest = settings.configPath + "Themes/Pictures/" + settings.themeName + "/" + theme.backgroundSlideShow;
+                dest = settings.configPath + "Themes/Pictures/" + settings.themeName + "/" + theme.backgroundSlideShow.filename;
 
+                if (!mythUtils.fileExists(dest))
+                {
                     mythUtils.mkPath(settings.configPath + "Themes/Pictures/" + settings.themeName);
 
                     screenBackground.showVideo = false;
                     screenBackground.showImage = true;
                     screenBackground.showSlideShow = false;
 
-                    log.info(Verbose.GUI, "MainWindow: Downloading theme background slideshow from - " + source);
-                    log.info(Verbose.GUI, "to - " + dest);
+                    log.info(Verbose.GUI, "MainWindow: Downloading theme background slideshow to - " + dest);
 
-                    showNotification("Downloading the background slideshow.<br>Please Wait....", 1000 * 60 * 60);
-
-                    themeDLProcess.start("wget", ['-O', dest, source]);
+                    themeDownloader.destination = dest;
+                    themeDownloader.start(theme.backgroundSlideShow);
                 }
                 else
                 {
+                    log.info(Verbose.GUI, "MainWindow: starting background slideshow");
                     screenBackground.setSlideShow(settings.configPath + "Themes/Pictures/" + settings.themeName);
                     screenBackground.showVideo = false;
                     screenBackground.showImage = false;
@@ -156,53 +213,29 @@ Window
         id: playerSourcesModel
     }
 
-    // theme background video downloader
     Process
     {
-        id: themeDLProcess
+        id: unTarProcess
         onFinished:
         {
-            var source;
-            var dest;
-
-            if (theme.backgroundVideo)
+            if (exitStatus === Process.NormalExit && unTarProcess.exitCode() === 0)
             {
-                source = "https://mythqml.net/downloads/themes/" + settings.themeName + "/" + theme.backgroundVideo;
-                dest = settings.configPath + "Themes/Videos/" + theme.backgroundVideo;
-
-                if (exitStatus === Process.NormalExit && themeDLProcess.exitCode() === 0)
-                {
-                    showNotification("");
-                    screenBackground.showVideo = true;
-                    screenBackground.setVideo("file://" + settings.configPath + "Themes/Videos/" + theme.backgroundVideo);
-                    screenBackground.showImage = false;
-                }
-                else
-                {
-                    mythUtils.removeFile(dest);
-                    showNotification("Downloading of the background video failed!");
-                    log.error(Verbose.GUI, "MainWindow: Error - failed to download background video from: " + source);
-                    log.error(Verbose.GUI, "MainWindow: Error - exit code was: " + themeDLProcess.exitCode());
-                }
+                showNotification("Extracting slideshow images completed OK", settings.osdTimeoutShort);
+                screenBackground.showVideo = false;
+                screenBackground.setSlideShow(settings.configPath + "Themes/Pictures/" + settings.themeName);
+                screenBackground.showImage = false;
+                screenBackground.showSlideShow = true;
             }
             else
             {
-                source = settings.configPath + "Themes/Pictures/" + settings.themeName + "/" + theme.backgroundSlideShow;
-                dest = settings.configPath + "Themes/Pictures/" + settings.themeName + "/";
+                var source = settings.configPath + "Themes/Pictures/" + settings.themeName + "/" + theme.backgroundSlideShow.filename;
+                var dest = settings.configPath + "Themes/Pictures/" + settings.themeName + "/"
 
-                if (exitStatus === Process.NormalExit && themeDLProcess.exitCode() === 0)
-                {
-                    // extract the slideshow pictures from the compressed tar.gz file
-                    unTarProcess.start("tar", ['--overwrite', '-x', '-C', dest, '-f', source]);
-                }
-                else
-                {
-                    source = "https://mythqml.net/downloads/themes/" + settings.themeName + "/" + theme.backgroundSlideShow;
-                    mythUtils.removeFile(dest);
-                    showNotification("Downloading of the background slideshow failed!");
-                    log.error(Verbose.GUI, "MainWindow: Error - failed to download background slideshow from: " + source);
-                    log.error(Verbose.GUI, "MainWindow: Error - exit code was: " + themeDLProcess.exitCode());
-                }
+                mythUtils.removeFile(source);
+
+                showNotification("Extracting of the background slideshow images failed!");
+                log.error(Verbose.GUI, "MainWindow: Error - failed to extract background slideshow images from: " + source);
+                log.error(Verbose.GUI, "MainWindow: Error - exit code was: " + unTarProcess.exitCode());
             }
         }
     }

@@ -8,7 +8,87 @@ QtObject
 
     // screen background
     property string   backgroundImage:  "background.png"
-    property string   backgroundVideo:  "SlideShow.mkv"
+
+    property var backgroundVideo:
+    ListModel
+    {
+        property string filename: "SlideShow.mkv"
+        property string md5: "cfa4142f0eeda4ed78a898e5c98e3594"
+        property double size: 684.5
+
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterXMAS/SlideShow.mkv.part01";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterXMAS/SlideShow.mkv.part02";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterXMAS/SlideShow.mkv.part03";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterXMAS/SlideShow.mkv.part04";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterXMAS/SlideShow.mkv.part05";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterXMAS/SlideShow.mkv.part06";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterXMAS/SlideShow.mkv.part07";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterXMAS/SlideShow.mkv.part08";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterXMAS/SlideShow.mkv.part09";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterXMAS/SlideShow.mkv.part10";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterXMAS/SlideShow.mkv.part11";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterXMAS/SlideShow.mkv.part12";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterXMAS/SlideShow.mkv.part13";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterXMAS/SlideShow.mkv.part14";
+            size: 34.5
+        }
+    }
+
+    property var backgroundSlideShow: undefined
 
     // main menu font
     property string menuFontFamily:     "Liberation Sans"

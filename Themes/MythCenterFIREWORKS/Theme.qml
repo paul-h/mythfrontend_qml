@@ -8,7 +8,27 @@ QtObject
 
     // screen background
     property string   backgroundImage:  "background.png"
-    property string   backgroundVideo:  "Fireworks.mp4"
+
+    property var backgroundVideo:
+    ListModel
+    {
+        property string filename: "Fireworks.mp4"
+        property string md5: "5f26f4460e465bf82539381a798ffa6c"
+        property double size: 54.0
+
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterFIREPLACE/Fireworks.mp4.part01";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterFIREPLACE/Fireworks.mp4.part02";
+            size: 4.0
+        }
+    }
+
+    property var backgroundSlideShow: undefined
 
     // main menu font
     property string menuFontFamily:     "Liberation Sans"

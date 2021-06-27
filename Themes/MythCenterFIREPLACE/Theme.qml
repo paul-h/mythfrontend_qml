@@ -8,7 +8,37 @@ QtObject
 
     // screen background
     property string   backgroundImage:  "background.png"
-    property string   backgroundVideo:  "fireplace.mkv"
+
+    property var backgroundVideo:
+    ListModel
+    {
+        property string filename: "fireplace.mkv"
+        property string md5: "8c9b7c567f7579299b83aede0a6cef24"
+        property double size: 177.9
+
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterFIREPLACE/fireplace.mkv.part01";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterFIREPLACE/fireplace.mkv.part02";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterFIREPLACE/fireplace.mkv.part03";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterFIREPLACE/fireplace.mkv.part04";
+            size: 27.9
+        }
+    }
+
+    property var backgroundSlideShow: undefined
 
     // main menu font
     property string menuFontFamily:     "Liberation Sans"

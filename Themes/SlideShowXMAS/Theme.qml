@@ -7,33 +7,106 @@ QtObject
     id: root
 
     // screen background
-    property string   backgroundImage:     "background.png"
-    property string   backgroundVideo:     ""
-    property string   backgroundSlideShow: "Christmas.tar.gz"
-    
+    property string backgroundImage: "background.png"
+    property var    backgroundVideo:  undefined
+
+    property var    backgroundSlideShow:
+    ListModel
+    {
+        property string filename: "Christmas.tar.gz"
+        property string md5: "701818fb7964bd77b556b000f774a233"
+        property double size: 616.0
+
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/SlideShowXMAS/Christmas.tar.gz.part01";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/SlideShowXMAS/Christmas.tar.gz.part02";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/SlideShowXMAS/Christmas.tar.gz.part03";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/SlideShowXMAS/Christmas.tar.gz.part04";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/SlideShowXMAS/Christmas.tar.gz.part05";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/SlideShowXMAS/Christmas.tar.gz.part06";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/SlideShowXMAS/Christmas.tar.gz.part07";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/SlideShowXMAS/Christmas.tar.gz.part08";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/SlideShowXMAS/Christmas.tar.gz.part09";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/SlideShowXMAS/Christmas.tar.gz.part10";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/SlideShowXMAS/Christmas.tar.gz.part11";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/SlideShowXMAS/Christmas.tar.gz.part12";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/SlideShowXMAS/Christmas.tar.gz.part13";
+            size: 16.0
+        }
+    }
+
     // radio stream list
     property ListModel radioStreams:
-        ListModel
+    ListModel
+    {
+        ListElement
         {
-            ListElement
-            {
-                title: "Klassik Radio - Christmas";
-                url: "http://stream.klassikradio.de/christmas/mp3-192/radiosure/";
-                logo: "https://images.klassikradio.de/files/2021-03/channel_christmas-classics_360.jpg"
-            }
-            ListElement
-            {
-                title: "RSL - Radio Santa Claus";
-                url: "http://streaming.radiostreamlive.com/radiosantaclaus_devices";
-                logo: "https://cdn.radiostreamlive.com/v1/logos/radiosantaclaus.png"
-            }
-            ListElement
-            {
-                title: "1.FM - Always-Christmas";
-                url: "http://sc2c-sjc.1.fm:8650/";
-                logo: "https://cache.usercontentapp.com/logo/network/1fm.png"
-            }
+            title: "Klassik Radio - Christmas";
+            url: "http://stream.klassikradio.de/christmas/mp3-192/radiosure/";
+            logo: "https://images.klassikradio.de/files/2021-03/channel_christmas-classics_360.jpg"
         }
+        ListElement
+        {
+            title: "RSL - Radio Santa Claus";
+            url: "http://streaming.radiostreamlive.com/radiosantaclaus_devices";
+            logo: "https://cdn.radiostreamlive.com/v1/logos/radiosantaclaus.png"
+        }
+        ListElement
+        {
+            title: "1.FM - Always-Christmas";
+            url: "http://sc2c-sjc.1.fm:8650/";
+            logo: "https://cache.usercontentapp.com/logo/network/1fm.png"
+        }
+    }
 
     // main menu font
     property string menuFontFamily:     "Liberation Sans"

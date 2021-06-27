@@ -8,7 +8,32 @@ QtObject
 
     // screen background
     property string   backgroundImage:  "background.png"
-    property string   backgroundVideo:  "easter.mkv"
+
+    property var backgroundVideo:
+    ListModel
+    {
+        property string filename: "easter.mkv"
+        property string md5: "6e26a95cf8c6c3f5bb49571062bb74dc"
+        property double size: 129.9
+
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterEASTER/easter.mkv.part01";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterEASTER/easter.mkv.part02";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterEASTER/easter.mkv.part03";
+            size: 29.9
+        }
+    }
+
+    property var backgroundSlideShow: undefined
 
     // main menu font
     property string menuFontFamily:     "Liberation Sans"

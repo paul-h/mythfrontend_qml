@@ -8,7 +8,32 @@ QtObject
 
     // screen background
     property string   backgroundImage:  "background.png"
-    property string   backgroundVideo:  "Xmas_Village.mp4"
+
+    property var backgroundVideo:
+    ListModel
+    {
+        property string filename: "Xmas_Village.mp4"
+        property string md5: "ce00f1fd293dd120feb4956494366880"
+        property double size: 138.3
+
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/3DVillageXMAS/Xmas_Village.mp4.part01";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/3DVillageXMAS/Xmas_Village.mp4.part02";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/3DVillageXMAS/Xmas_Village.mp4.part03";
+            size: 38.3
+        }
+    }
+
+    property var backgroundSlideShow: undefined
 
     // main menu font
     property string menuFontFamily:     "Liberation Sans"

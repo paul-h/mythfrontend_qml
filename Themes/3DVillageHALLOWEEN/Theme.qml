@@ -8,7 +8,22 @@ QtObject
 
     // screen background
     property string   backgroundImage:  "background.png"
-    property string   backgroundVideo:  "Halloween_Village.mkv"
+
+    property var backgroundVideo:
+    ListModel
+    {
+        property string filename: "Halloween_Village.mkv"
+        property string md5: "8c9b7c567f7579299b83aede0a6cef24"
+        property double size: 39.4
+
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/3DVillageHALLOWEEN/Halloween_Village.mkv";
+            size: 39.4
+        }
+    }
+
+    property var backgroundSlideShow: undefined
 
     // main menu font
     property string menuFontFamily:     "Liberation Sans"
