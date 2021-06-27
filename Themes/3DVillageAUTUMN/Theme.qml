@@ -8,7 +8,27 @@ QtObject
 
     // screen background
     property string   backgroundImage:  "background.png"
-    property string   backgroundVideo:  "village_autumn.mp4"
+
+    property var backgroundVideo:
+    ListModel
+    {
+        property string filename: "village_autumn.mp4"
+        property string md5: "584ef89d1555da4884a0cb347f01a536"
+        property double size: 61.9
+
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/3DVillageAUTUMN/village_autumn.mp4.part01";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/3DVillageAUTUMN/village_autumn.mp4.part02";
+            size: 11.9
+        }
+    }
+
+    property var backgroundSlideShow: undefined
 
     // main menu font
     property string menuFontFamily:     "Liberation Sans"

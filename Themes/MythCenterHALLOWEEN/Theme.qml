@@ -8,7 +8,27 @@ QtObject
 
     // screen background
     property string   backgroundImage:  "background.png"
-    property string   backgroundVideo:  "Haunted_House.mp4"
+
+    property var backgroundVideo:
+    ListModel
+    {
+        property string filename: "Haunted_House.mp4"
+        property string md5: "d21d0e50041f988583f1d0a46e3cd926"
+        property double size: 71.8
+
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterHALLOWEEN/Haunted_House.mp4.part01";
+            size: 50.0
+        }
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenterHALLOWEEN/Haunted_House.mp4.part02";
+            size: 21.8
+        }
+    }
+
+    property var backgroundSlideShow: undefined
 
     // main menu font
     property string menuFontFamily:     "Liberation Sans"

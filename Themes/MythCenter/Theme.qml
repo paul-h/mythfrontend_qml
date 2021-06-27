@@ -8,7 +8,22 @@ QtObject
 
     // screen background
     property string   backgroundImage:  "background.png"
-    property string   backgroundVideo:  "blue_bubbles.mkv"
+
+    property var backgroundVideo:
+    ListModel
+    {
+        property string filename: "blue_bubbles.mkv"
+        property string md5: "5f1b7ecc24d90da5bae688e9df39628f"
+        property double size: 22.8
+
+        ListElement
+        {
+            url: "https://mythqml.net/downloads/themes/MythCenter/blue_bubbles.mkv";
+            size: 22.8
+        }
+    }
+
+    property var backgroundSlideShow: undefined
 
     // main menu font
     property string menuFontFamily:     "Liberation Sans"
