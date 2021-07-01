@@ -9,8 +9,33 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "ZoneMinder Settings");
-        showTime(false);
+        setHelp("https://mythqml.net/help/settings_zoneminder.php");
+        showTime(true);
         showTicker(false);
+    }
+
+    Keys.onPressed:
+    {
+        event.accepted = true;
+
+        if (event.key === Qt.Key_F1)
+        {
+            // RED - cancel
+            returnSound.play();
+            stack.pop();
+        }
+        else if (event.key === Qt.Key_F2)
+        {
+            // GREEN - save
+            save();
+        }
+        else if (event.key === Qt.Key_F4)
+        {
+            // BLUE - help
+            window.showHelp();
+        }
+        else
+            event.accepted = false;
     }
 
     LabelText
@@ -67,24 +92,35 @@ BaseScreen
     BaseButton
     {
         id: saveButton;
-        x: parent.width - width - xscale(50); y: yscale(630);
+        x: parent.width - width - xscale(50); y: yscale(600);
         text: "Save";
         KeyNavigation.up: zmPasswordEdit
         KeyNavigation.down: zmIPEdit
-        onClicked:
-        {
-            dbUtils.setSetting("ZmIP",         settings.hostName, zmIPEdit.text);
-            dbUtils.setSetting("ZmUserName",   settings.hostName, zmUserNameEdit.text);
-            dbUtils.setSetting("ZmPassword",   settings.hostName, zmPasswordEdit.text);
+        onClicked: save()
+    }
 
-            settings.zmIP       = zmIPEdit.text;
-            settings.zmUserName = zmUserNameEdit.text;
-            settings.zmPassword = zmPasswordEdit.text;
+    Footer
+    {
+        id: footer
+        redText: "Cancel"
+        greenText: "Save"
+        yellowText: ""
+        blueText: "Help"
+    }
 
-            playerSources.zmSettingsChanged();
+    function save()
+    {
+        dbUtils.setSetting("ZmIP",         settings.hostName, zmIPEdit.text);
+        dbUtils.setSetting("ZmUserName",   settings.hostName, zmUserNameEdit.text);
+        dbUtils.setSetting("ZmPassword",   settings.hostName, zmPasswordEdit.text);
 
-            returnSound.play();
-            stack.pop();
-        }
+        settings.zmIP       = zmIPEdit.text;
+        settings.zmUserName = zmUserNameEdit.text;
+        settings.zmPassword = zmPasswordEdit.text;
+
+        playerSources.zmSettingsChanged();
+
+        returnSound.play();
+        stack.pop();
     }
 }

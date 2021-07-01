@@ -11,6 +11,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(false);
+        setHelp("https://mythqml.net/help/image_browser.php");
         showTime(false);
         showTicker(false);
     }

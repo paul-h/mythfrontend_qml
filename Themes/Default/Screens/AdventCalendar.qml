@@ -15,6 +15,7 @@ BaseScreen
     {
         showTitle(true, "Advent Calendar 2020");
         showTicker(false);
+        setHelp("https://mythqml.net/help/advent_calendar.php");
 
         var index = dbUtils.getSetting("AdventIndex", settings.hostName, "");
 

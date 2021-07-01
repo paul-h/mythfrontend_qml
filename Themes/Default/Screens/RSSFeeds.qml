@@ -16,6 +16,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "RSS Feeds");
+        setHelp("https://mythqml.net/help/rss_feeds.php");
         showTime(true);
         showTicker(false);
     }

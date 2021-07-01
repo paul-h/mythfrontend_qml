@@ -12,6 +12,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "ZoneMinder Events");
+        setHelp("https://mythqml.net/help/zm_eventsviewer.php");
         showTime(true);
         showTicker(false)
     }

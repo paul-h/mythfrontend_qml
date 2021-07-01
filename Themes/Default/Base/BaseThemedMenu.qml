@@ -132,6 +132,8 @@ Item
                     if (settings.shutdownCommand !== "")
                         popupMenu.addMenuItem("", "Shutdown", "shutdown");
 
+                    popupMenu.addMenuItem("", "Help...", "showhelp");
+
                     popupMenu.show(listView);
                 }
                 else if (event.key === Qt.Key_BracketLeft || event.key === Qt.Key_BraceLeft)

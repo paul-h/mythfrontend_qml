@@ -18,6 +18,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "YouTube Subscriptions");
+        setHelp("https://mythqml.net/help/youtube_subscriptions.php");
         showTime(true);
         showTicker(false);
 
@@ -26,28 +27,14 @@ BaseScreen
 
     Keys.onPressed:
     {
-        if (event.key === Qt.Key_F1)
-        {
-        }
-        else if (event.key === Qt.Key_F2)
-        {
-        }
-        else if (event.key === Qt.Key_F3)
-        {
-            play();
-        }
-        else if (event.key === Qt.Key_F4)
-        {
-            play();
-        }
-        else if (event.key === Qt.Key_F5)
-        {
-        }
-        else if (event.key === Qt.Key_I)
+        event.accepted = true;
+        if (event.key === Qt.Key_I)
         {
             infoDialog.infoText = descText.text;
             infoDialog.show(videoList.focus ? videoList : feedList);
         }
+        else
+            event.accepted = false;
     }
 
     BaseBackground

@@ -7,4 +7,6 @@ MainWindow
     id: window
 
     mainMenu: "MainMenu.qml"
+    helpURL: "https://mythqml.net/help/mainmenu.php";
+
 }

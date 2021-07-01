@@ -20,6 +20,7 @@ BaseScreen
         while (stack.busy) {};
 
         showTitle(true, "IPTV Channel Viewer");
+        setHelp("https://mythqml.net/help/iptv_channelviewer.php");
 
         feedSource.sort = "Title"
 

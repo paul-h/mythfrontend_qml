@@ -24,6 +24,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(false, "");
+        setHelp("https://mythqml.net/help/play_radiostreams.php");
         showTime(false);
         showTicker(false);
         muteAudio(true);

@@ -9,8 +9,33 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "Feed Source Settings");
-        showTime(false);
+        setHelp("https://mythqml.net/help/settings_feedsources.php");
+        showTime(true);
         showTicker(false);
+    }
+
+    Keys.onPressed:
+    {
+        event.accepted = true;
+
+        if (event.key === Qt.Key_F1)
+        {
+            // RED - cancel
+            returnSound.play();
+            stack.pop();
+        }
+        else if (event.key === Qt.Key_F2)
+        {
+            // GREEN - save
+            save();
+        }
+        else if (event.key === Qt.Key_F4)
+        {
+            // BLUE - help
+            window.showHelp();
+        }
+        else
+            event.accepted = false;
     }
 
     LabelText
@@ -299,36 +324,47 @@ BaseScreen
     BaseButton
     {
         id: saveButton;
-        x: parent.width - width - xscale(50); y: yscale(630);
+        x: parent.width - width - xscale(50); y: yscale(620);
         text: "Save";
         KeyNavigation.up: youtubeAPIKeyEdit
         KeyNavigation.down: videoPathEdit
-        onClicked:
-        {
-            dbUtils.setSetting("VideoPath",          settings.hostName, videoPathEdit.text);
-            dbUtils.setSetting("PicturePath",        settings.hostName, picturePathEdit.text);
-            dbUtils.setSetting("SdChannels",         settings.hostName, sdChannelsEdit.text);
-            dbUtils.setSetting("VboxFreeviewIP",     settings.hostName, vboxFreeviewIPEdit.text);
-            dbUtils.setSetting("VboxFreesatIP",      settings.hostName, vboxFreesatIPEdit.text);
-            dbUtils.setSetting("HdmiEncoder",        settings.hostName, hdmiEncoderEdit.text);
-            dbUtils.setSetting("WebcamListFile",     settings.hostName, webcamListFileEdit.text);
-            dbUtils.setSetting("WebvideoListFile",   settings.hostName, webvideoListFileEdit.text);
-            dbUtils.setSetting("YoutubeSubListFile", settings.hostName, youtubeSubListFileEdit.text);
-            dbUtils.setSetting("YoutubeAPIKey",      settings.hostName, youtubeAPIKeyEdit.text);
+        onClicked: save()
+    }
 
-            settings.videoPath          = videoPathEdit.text;
-            settings.picturePath        = picturePathEdit.text;
-            settings.sdChannels         = sdChannelsEdit.text;
-            settings.vboxFreeviewIP     = vboxFreeviewIPEdit.text;
-            settings.vboxFreesatIP      = vboxFreesatIPEdit.text;
-            settings.hdmiEncoder        = hdmiEncoderEdit.text;
-            settings.webcamListFile     = webcamListFileEdit.text;
-            settings.webvideoListFile   = webvideoListFileEdit.text;
-            settings.youtubeSubListFile = youtubeSubListFileEdit.text;
-            settings.youtubeAPIKey      = youtubeAPIKeyEdit.text;
+    Footer
+    {
+        id: footer
+        redText: "Cancel"
+        greenText: "Save"
+        yellowText: ""
+        blueText: "Help"
+    }
 
-            returnSound.play();
-            stack.pop();
-        }
+    function save()
+    {
+        dbUtils.setSetting("VideoPath",          settings.hostName, videoPathEdit.text);
+        dbUtils.setSetting("PicturePath",        settings.hostName, picturePathEdit.text);
+        dbUtils.setSetting("SdChannels",         settings.hostName, sdChannelsEdit.text);
+        dbUtils.setSetting("VboxFreeviewIP",     settings.hostName, vboxFreeviewIPEdit.text);
+        dbUtils.setSetting("VboxFreesatIP",      settings.hostName, vboxFreesatIPEdit.text);
+        dbUtils.setSetting("HdmiEncoder",        settings.hostName, hdmiEncoderEdit.text);
+        dbUtils.setSetting("WebcamListFile",     settings.hostName, webcamListFileEdit.text);
+        dbUtils.setSetting("WebvideoListFile",   settings.hostName, webvideoListFileEdit.text);
+        dbUtils.setSetting("YoutubeSubListFile", settings.hostName, youtubeSubListFileEdit.text);
+        dbUtils.setSetting("YoutubeAPIKey",      settings.hostName, youtubeAPIKeyEdit.text);
+
+        settings.videoPath          = videoPathEdit.text;
+        settings.picturePath        = picturePathEdit.text;
+        settings.sdChannels         = sdChannelsEdit.text;
+        settings.vboxFreeviewIP     = vboxFreeviewIPEdit.text;
+        settings.vboxFreesatIP      = vboxFreesatIPEdit.text;
+        settings.hdmiEncoder        = hdmiEncoderEdit.text;
+        settings.webcamListFile     = webcamListFileEdit.text;
+        settings.webvideoListFile   = webvideoListFileEdit.text;
+        settings.youtubeSubListFile = youtubeSubListFileEdit.text;
+        settings.youtubeAPIKey      = youtubeAPIKeyEdit.text;
+
+        returnSound.play();
+        stack.pop();
     }
 }

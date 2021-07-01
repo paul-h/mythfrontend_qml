@@ -12,6 +12,7 @@ BaseScreen
         showTitle(false, "");
         showTime(false);
         showTicker(false);
+        setHelp("https://mythqml.net/help/settings_channeleditor.php");
     }
 
     BaseBackground { anchors.fill: parent; anchors.margins: 10 }

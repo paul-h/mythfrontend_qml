@@ -14,6 +14,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "What's New");
+        setHelp("https://mythqml.net/help/whatsnew.php");
         showTicker(false);
 
         var lastShown = parseInt(dbUtils.getSetting("LastWhatsNewShown", settings.hostName, "-1"));

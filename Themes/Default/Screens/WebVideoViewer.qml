@@ -35,6 +35,7 @@ BaseScreen
             feedSource.webvideoListIndex = index;
 
         showTitle(true, "Web Video Viewer - " + playerSources.webvideoList.webvideoList.get(feedSource.webvideoListIndex).title);
+        setHelp("https://mythqml.net/help/webvideo_viewer.php");
 
         var filter = feedSource.webvideoListIndex + "," + feedSource.category + "," + "title";
         feedSource.switchToFeed("Web Videos", filter, 0);

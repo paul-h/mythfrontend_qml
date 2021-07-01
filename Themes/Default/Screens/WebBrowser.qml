@@ -15,6 +15,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(!fullscreen, "Web Browser");
+        setHelp("https://mythqml.net/help/web_browser.php");
         showTime(false);
         showTicker(false);
         pauseVideo(false);

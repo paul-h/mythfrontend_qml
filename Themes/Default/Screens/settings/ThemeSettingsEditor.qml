@@ -9,8 +9,33 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "Theme Settings");
-        showTime(false);
+        setHelp("https://mythqml.net/help/settings_themes.php");
+        showTime(true);
         showTicker(false);
+    }
+
+    Keys.onPressed:
+    {
+        event.accepted = true;
+
+        if (event.key === Qt.Key_F1)
+        {
+            // RED - cancel
+            returnSound.play();
+            stack.pop();
+        }
+        else if (event.key === Qt.Key_F2)
+        {
+            // GREEN - save
+            save();
+        }
+        else if (event.key === Qt.Key_F4)
+        {
+            // BLUE - help
+            window.showHelp();
+        }
+        else
+            event.accepted = false;
     }
 
     LabelText
@@ -118,20 +143,31 @@ BaseScreen
     BaseButton
     {
         id: saveButton;
-        x: parent.width - width - xscale(50); y: yscale(630);
+        x: parent.width - width - xscale(50); y: yscale(600);
         text: "Save";
         KeyNavigation.up: startFullscreenCheck
         KeyNavigation.down: themeSelector
-        onClicked:
-        {
-            dbUtils.setSetting("Theme",           settings.hostName, themeModel.get(themeSelector.currentIndex).itemText);
-            dbUtils.setSetting("StartFullScreen", settings.hostName, startFullscreenCheck.checked);
-            dbUtils.setSetting("MythQLayout",      settings.hostName, mythQLayoutCheck.checked);
+        onClicked: save()
+    }
 
-            screenBackground.pauseVideo(true);
+    Footer
+    {
+        id: footer
+        redText: "Cancel"
+        greenText: "Save"
+        yellowText: ""
+        blueText: "Help"
+    }
 
-            // force a full restart of the app
-            Qt.exit(1000);
-        }
+    function save()
+    {
+        dbUtils.setSetting("Theme",           settings.hostName, themeModel.get(themeSelector.currentIndex).itemText);
+        dbUtils.setSetting("StartFullScreen", settings.hostName, startFullscreenCheck.checked);
+        dbUtils.setSetting("MythQLayout",      settings.hostName, mythQLayoutCheck.checked);
+
+        screenBackground.pauseVideo(true);
+
+        // force a full restart of the app
+        Qt.exit(1000);
     }
 }

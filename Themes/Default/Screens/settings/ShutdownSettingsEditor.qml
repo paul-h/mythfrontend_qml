@@ -9,8 +9,33 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "Shutdown Settings");
-        showTime(false);
+        setHelp("https://mythqml.net/help/settings_shutdown.php");
+        showTime(true);
         showTicker(false);
+    }
+
+    Keys.onPressed:
+    {
+        event.accepted = true;
+
+        if (event.key === Qt.Key_F1)
+        {
+            // RED - cancel
+            returnSound.play();
+            stack.pop();
+        }
+        else if (event.key === Qt.Key_F2)
+        {
+            // GREEN - save
+            save();
+        }
+        else if (event.key === Qt.Key_F4)
+        {
+            // BLUE - help
+            window.showHelp();
+        }
+        else
+            event.accepted = false;
     }
 
     LabelText
@@ -88,27 +113,39 @@ BaseScreen
     BaseButton
     {
         id: saveButton;
-        x: parent.width - width - xscale(50); y: yscale(630);
+        x: parent.width - width - xscale(50); y: yscale(600);
         text: "Save";
         KeyNavigation.up: shutdownCmdEdit
         KeyNavigation.down: frontendIdleTimeEdit
-        onClicked:
-        {
-            dbUtils.setSetting("FrontendIdleTime", settings.hostName, frontendIdleTimeEdit.text);
-            dbUtils.setSetting("LauncherIdleTime", settings.hostName, launcherIdleTimeEdit.text);
-            dbUtils.setSetting("RebootCommand",   settings.hostName, rebootCmdEdit.text);
-            dbUtils.setSetting("ShutdownCommand", settings.hostName, shutdownCmdEdit.text);
-
-            settings.frontendIdleTime = frontendIdleTimeEdit.text;
-            settings.launcherIdleTime = launcherIdleTimeEdit.text;
-            settings.rebootCommand   = rebootCmdEdit.text;
-            settings.shutdownCommand = shutdownCmdEdit.text;
-
-            // guess which idleTime we need to use
-            window.idleTime = (window.shutdownOnIdle ? settings.launcherIdleTime : settings.frontendIdleTime);
-
-            returnSound.play();
-            stack.pop();
-        }
+        onClicked: save()
     }
+
+    Footer
+    {
+        id: footer
+        redText: "Cancel"
+        greenText: "Save"
+        yellowText: ""
+        blueText: "Help"
+    }
+
+    function save()
+    {
+        dbUtils.setSetting("FrontendIdleTime", settings.hostName, frontendIdleTimeEdit.text);
+        dbUtils.setSetting("LauncherIdleTime", settings.hostName, launcherIdleTimeEdit.text);
+        dbUtils.setSetting("RebootCommand",   settings.hostName, rebootCmdEdit.text);
+        dbUtils.setSetting("ShutdownCommand", settings.hostName, shutdownCmdEdit.text);
+
+        settings.frontendIdleTime = frontendIdleTimeEdit.text;
+        settings.launcherIdleTime = launcherIdleTimeEdit.text;
+        settings.rebootCommand   = rebootCmdEdit.text;
+        settings.shutdownCommand = shutdownCmdEdit.text;
+
+        // guess which idleTime we need to use
+        window.idleTime = (window.shutdownOnIdle ? settings.launcherIdleTime : settings.frontendIdleTime);
+
+        returnSound.play();
+        stack.pop();
+    }
+
 }

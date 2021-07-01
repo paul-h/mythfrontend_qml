@@ -16,6 +16,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, folderModel.folder);
+        setHelp("https://mythqml.net/help/videos_folder.php");
         showTime(false);
         showTicker(false);
     }
