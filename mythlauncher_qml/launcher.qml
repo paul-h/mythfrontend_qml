@@ -7,6 +7,7 @@ MainWindow
     id: window
 
     mainMenu: "LauncherMenu.qml"
+    helpURL: "https://mythqml.net/help/launcher.php";
     showWhatsNew: false
     exitOnEscape: false
     shutdownOnIdle: true

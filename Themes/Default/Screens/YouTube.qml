@@ -13,6 +13,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(false, "");
+        setHelp("https://mythqml.net/help/youtube_tv.php");
         showTime(false);
         showTicker(false);
         pauseVideo(true);

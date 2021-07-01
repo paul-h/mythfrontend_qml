@@ -39,6 +39,7 @@ BaseScreen
             feedSource.webcamListIndex = index;
 
         showTitle(true, "WebCam Viewer - " + playerSources.webcamList.webcamList.get(feedSource.webcamListIndex).title);
+        setHelp("https://mythqml.net/help/webcam_viewer.php");
 
         var filter = feedSource.webcamListIndex + "," + feedSource.category + "," + "title";
         feedSource.switchToFeed("Webcams", filter, 0);

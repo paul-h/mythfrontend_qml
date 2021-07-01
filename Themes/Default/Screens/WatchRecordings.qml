@@ -20,6 +20,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "Watch Recordings");
+        setHelp("https://mythqml.net/help/tv_watchrecordings.php");
         showTime(false);
         showTicker(false);
     }

@@ -20,6 +20,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "Play Music");
+        setHelp("https://mythqml.net/help/play_music.php");
         showTime(false);
         showTicker(false);
     }

@@ -12,6 +12,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(false, "");
+        setHelp("https://mythqml.net/help/tv_epg.php");
         showTime(false);
         showTicker(false);
     }

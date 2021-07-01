@@ -16,6 +16,8 @@ Item
     property bool   oldShowImage: false
     property bool   oldMuteAudio: false
 
+    property string oldHelpURL: ""
+
     property bool   isPanel: (parent.objectName == "panelstack" || parent.objectName == "themedpanel")
 
     // private properties
@@ -128,6 +130,11 @@ Item
         screenBackground.pauseVideo(pause);
     }
 
+    function setHelp(url)
+    {
+        screenBackground.helpURL = url;
+    }
+
     function handleCommand(command)
     {
         log.debug(Verbose.GUI, "BaseScreen: handle command - " + command);
@@ -151,6 +158,8 @@ Item
         oldShowImage = screenBackground.showImage;
         oldMuteAudio = screenBackground.muteAudio;
 
+        oldHelpURL = screenBackground.helpURL;
+
         stateSaved();
     }
 
@@ -164,5 +173,7 @@ Item
         screenBackground.showVideo = oldShowVideo;
         screenBackground.showImage = oldShowImage;
         screenBackground.muteAudio = oldMuteAudio;
+
+        screenBackground.helpURL = oldHelpURL;
     }
 }

@@ -13,6 +13,7 @@ Item
     property alias showTicker: ticker.visible
     property alias showBusyIndicator: busyIndicator.running
     property bool  muteAudio: videoPlayer.muteAudio
+    property string helpURL: ""
 
     property bool  screenSaverMode: true
 
@@ -60,6 +61,11 @@ Item
     function setSlideShow(path)
     {
         slideShow.folder = path;
+    }
+
+    function setHelpURL(url)
+    {
+        helpURL = url;
     }
 
     x: 0; y : 0; width: window.width; height: window.height

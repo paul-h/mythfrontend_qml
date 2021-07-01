@@ -22,6 +22,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "LiveTV Channel Viewer");
+        setHelp("https://mythqml.net/help/tv_watchtv.php");
         showTime(false);
         showTicker(false);
 

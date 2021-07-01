@@ -10,8 +10,33 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "MythTV Settings");
-        showTime(false);
+        showTime(true);
         showTicker(false);
+        setHelp("https://mythqml.net/help/settings_mythbackend.php");
+    }
+
+    Keys.onPressed:
+    {
+        event.accepted = true;
+
+        if (event.key === Qt.Key_F1)
+        {
+            // RED - cancel
+            returnSound.play();
+            stack.pop();
+        }
+        else if (event.key === Qt.Key_F2)
+        {
+            // GREEN - save
+            save();
+        }
+        else if (event.key === Qt.Key_F4)
+        {
+            // BLUE - help
+            window.showHelp();
+        }
+        else
+            event.accepted = false;
     }
 
     // MythTV Backend Settings
@@ -156,36 +181,20 @@ BaseScreen
     BaseButton
     {
         id: saveButton;
-        x: parent.width - width - xscale(50); y: yscale(630);
+        x: parent.width - width - xscale(50); y: yscale(600);
         text: "Save";
         KeyNavigation.up: mysqlDBNameEdit
         KeyNavigation.down: ipEdit
-        onClicked:
-        {
-            // master backend settings
-            dbUtils.setSetting("MasterIP",    settings.hostName, ipEdit.text);
-            dbUtils.setSetting("MasterPort",  settings.hostName, portEdit.text);
-            dbUtils.setSetting("SecurityPin", settings.hostName, pinEdit.text);
+        onClicked: save()
+    }
 
-            settings.masterIP    = ipEdit.text;
-            settings.masterPort  = parseInt(portEdit.text);
-            settings.securityPin = pinEdit.text;
-
-            // mysql database settings
-            dbUtils.setSetting("MysqlIP", settings.hostName, mysqlIPEdit.text);
-            dbUtils.setSetting("MysqlPort", settings.hostName,mysqlPortEdit.text);
-            dbUtils.setSetting("MysqlUser", settings.hostName, mysqlUserEdit.text);
-            dbUtils.setSetting("MysqlPassword", settings.hostName, mysqlPasswordEdit.text);
-            dbUtils.setSetting("MysqlDBName", settings.hostName, mysqlDBNameEdit.text);
-
-            settings.MysqlIP       = mysqlIPEdit.text;
-            settings.MysqlPort     = mysqlPortEdit.text;
-            settings.MysqlUser     = mysqlUserEdit.text;
-            settings.MysqlPassword = mysqlPasswordEdit.text;
-            settings.MysqlDBName   = mysqlDBNameEdit.text;
-
-            okDialog.show();
-        }
+    Footer
+    {
+        id: footer
+        redText: "Cancel"
+        greenText: "Save"
+        yellowText: ""
+        blueText: "Help"
     }
 
     OkCancelDialog
@@ -210,5 +219,32 @@ BaseScreen
             returnSound.play();
             stack.pop();
         }
+    }
+
+    function save()
+    {
+        // master backend settings
+        dbUtils.setSetting("MasterIP",    settings.hostName, ipEdit.text);
+        dbUtils.setSetting("MasterPort",  settings.hostName, portEdit.text);
+        dbUtils.setSetting("SecurityPin", settings.hostName, pinEdit.text);
+
+        settings.masterIP    = ipEdit.text;
+        settings.masterPort  = parseInt(portEdit.text);
+        settings.securityPin = pinEdit.text;
+
+        // mysql database settings
+        dbUtils.setSetting("MysqlIP", settings.hostName, mysqlIPEdit.text);
+        dbUtils.setSetting("MysqlPort", settings.hostName,mysqlPortEdit.text);
+        dbUtils.setSetting("MysqlUser", settings.hostName, mysqlUserEdit.text);
+        dbUtils.setSetting("MysqlPassword", settings.hostName, mysqlPasswordEdit.text);
+        dbUtils.setSetting("MysqlDBName", settings.hostName, mysqlDBNameEdit.text);
+
+        settings.MysqlIP       = mysqlIPEdit.text;
+        settings.MysqlPort     = mysqlPortEdit.text;
+        settings.MysqlUser     = mysqlUserEdit.text;
+        settings.MysqlPassword = mysqlPasswordEdit.text;
+        settings.MysqlDBName   = mysqlDBNameEdit.text;
+
+        okDialog.show();
     }
 }

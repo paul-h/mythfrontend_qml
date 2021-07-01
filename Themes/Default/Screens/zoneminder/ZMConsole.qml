@@ -12,6 +12,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "ZoneMinder Console");
+        setHelp("https://mythqml.net/help/zm_console.php");
         showTime(true);
         showTicker(false);
 

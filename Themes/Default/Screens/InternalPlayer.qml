@@ -33,6 +33,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(false, "Media Player");
+        setHelp("https://mythqml.net/help/internal_player.php");
         showTime(false);
         showTicker(false);
         muteAudio(true);
@@ -542,6 +543,16 @@ BaseScreen
             {
                 parent.toggleFullscreenPlayer();
             }
+        }
+    }
+
+    Action
+    {
+        shortcut: "H" // help
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            window.showHelp();
         }
     }
 

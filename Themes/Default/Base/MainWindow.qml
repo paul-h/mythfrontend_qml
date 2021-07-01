@@ -21,6 +21,7 @@ Window
     height: 720
 
     property string mainMenu: "MainMenu.qml"
+    property alias helpURL: screenBackground.helpURL
     property bool showWhatsNew: true
     property bool exitOnEscape: true
     property bool shutdownOnIdle: false
@@ -514,6 +515,10 @@ Window
                 {
                     if (stack.depth > 1) {stack.pop(); escapeSound.play();} else quit();
                 }
+                else if (event.key === Qt.Key_H)
+                {
+                    showHelp();
+                }
             }
 
             Behavior on opacity { NumberAnimation { duration: 2000 } }
@@ -617,6 +622,14 @@ Window
         id: notificationTimer
         interval: 6000; running: false; repeat: false
         onTriggered: notificationPanel.visible = false;
+    }
+
+    function showHelp()
+    {
+        var url = screenBackground.helpURL;
+        var zoom = xscale(1.3);
+        var fullscreen = true;
+        stack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: url, fullscreen: fullscreen, zoomFactor: zoom}});
     }
 
     function showNotification(message, timeOut)
@@ -798,6 +811,10 @@ Window
             else if (itemData === "radioplayer")
             {
                 radioPlayerDialog.show();
+            }
+            else if (itemData === "showhelp")
+            {
+                showHelp();
             }
         }
     }
