@@ -17,6 +17,7 @@ BaseScreen
     // private
     property int _frameNo: 1
     property bool _paused: false
+    property int _playbackspeed: 1
 
     Component.onCompleted:
     {
@@ -105,6 +106,21 @@ BaseScreen
                 frameImage.swapImage("http://" + settings.zmIP + "/zm/index.php?view=image&fid=" + _frameNo + "&eid=" +eventList.get(currentEvent).Id + "&show=capture&token=" + playerSources.zmToken);
             }
         }
+        else if (event.key === Qt.Key_PageDown)
+        {
+            if (_playbackspeed > 1)
+                _playbackspeed--;
+
+            showNotification("Playback Speed is now: " + _playbackspeed);
+        }
+        else if (event.key === Qt.Key_PageUp)
+        {
+            if (_playbackspeed < 50)
+                _playbackspeed++;
+
+            showNotification("Playback Speed is now: " + _playbackspeed);
+        }
+
         else
             event.accepted = false;
     }
@@ -117,7 +133,7 @@ BaseScreen
         {
             if (_frameNo < eventList.get(currentEvent).Frames)
             {
-                _frameNo++;
+                _frameNo = Math.min(_frameNo + _playbackspeed, eventList.get(currentEvent).Frames);
                 frameImage.swapImage("http://" + settings.zmIP + "/zm/index.php?view=image&fid=" + _frameNo + "&eid=" +eventList.get(currentEvent).Id + "&show=capture&token=" + playerSources.zmToken);
             }
             else
@@ -158,6 +174,13 @@ BaseScreen
     {
         id: date
         x: xscale(850); y: yscale(100); width: xscale(330); height: yscale(30);
+    }
+
+    InfoText
+    {
+        id: playbackspeed
+        x: frameImage.x + frameImage.width + xscale(10); y: yscale(650); width: xscale(100); height: yscale(30);
+        text: _playbackspeed + "x"
     }
 
     Rectangle
