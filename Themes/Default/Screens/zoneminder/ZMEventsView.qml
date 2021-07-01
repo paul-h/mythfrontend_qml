@@ -213,25 +213,25 @@ BaseScreen
             ListText
             {
                 x: xscale(55)
-                width: xscale(250); height: yscale(50)
+                width: xscale(290); height: yscale(50)
                 text: if (Name !== undefined) Name ; else "";
             }
             ListText
             {
-                x: xscale(260)
-                width: xscale(190); height: yscale(50)
+                x: xscale(355)
+                width: xscale(230); height: yscale(50)
                 text: if (MonitorId !== undefined) playerSources.zmCameraList.lookupMonitorName(MonitorId); else "";
             }
             ListText
             {
-                x: xscale(460)
-                width: xscale(600); height: yscale(50)
+                x: xscale(595)
+                width: xscale(300); height: yscale(50)
                 text: Frames + " frames (" + Length + " seconds)"
             }
             ListText
             {
-                x: xscale(770)
-                width: xscale(400); height: yscale(50)
+                x: xscale(905)
+                width: xscale(275); height: yscale(50)
                 text: if (StartTime !== undefined) mythUtils.formatDateTime(StartTime); else "";
                 horizontalAlignment: Text.AlignRight
             }
