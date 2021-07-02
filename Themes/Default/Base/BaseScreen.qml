@@ -56,6 +56,8 @@ Item
     {
         if (isPanel && previousFocusItem)
             previousFocusItem.focus = true
+        else
+            event.accepted = false;
     }
 
     function handleEscape()
