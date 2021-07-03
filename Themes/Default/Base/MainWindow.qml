@@ -17,6 +17,8 @@ Window
     id: window
     visible: true
     visibility: settings.startFullscreen ? "FullScreen" : "Windowed"
+    x: 0
+    y: 0
     width: 1280
     height: 720
 
