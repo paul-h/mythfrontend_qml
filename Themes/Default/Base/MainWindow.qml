@@ -38,6 +38,8 @@ Window
 
     property alias playerSources: playerSourcesModel
 
+    property int _fadeTime: 4000
+
     Component.onCompleted:
     {
         eventListener.listenTo(window)
@@ -523,7 +525,7 @@ Window
                 }
             }
 
-            Behavior on opacity { NumberAnimation { duration: 2000 } }
+            Behavior on opacity { NumberAnimation { duration: _fadeTime } }
 
             function createThemedMenu()
             {
