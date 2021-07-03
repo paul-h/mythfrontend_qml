@@ -27,6 +27,8 @@ Window
     property bool showWhatsNew: true
     property bool exitOnEscape: true
     property bool shutdownOnIdle: false
+    property bool showVideoBackground: true
+    property bool playStartupEffect: true
 
     property int idleTime: settings.frontendIdleTime
 
@@ -130,7 +132,8 @@ Window
 
         Component.onCompleted:
         {
-            startupSound.play();
+            if (playStartupEffect)
+                startupSound.play();
 
             log.info(Verbose.GUI, "loading theme from: " + settings.qmlPath + "Theme.qml");
 
@@ -158,8 +161,8 @@ Window
                 {
                     log.info(Verbose.GUI, "MainWindow: starting background video");
                     screenBackground.setVideo("file://" + settings.configPath + "Themes/Videos/" + theme.backgroundVideo.filename);
-                    screenBackground.showVideo = true;
-                    screenBackground.showImage = false;
+                    screenBackground.showVideo = showVideoBackground;
+                    screenBackground.showImage = !showVideoBackground;
                     screenBackground.showSlideShow = false;
                 }
             }
@@ -185,8 +188,8 @@ Window
                     log.info(Verbose.GUI, "MainWindow: starting background slideshow");
                     screenBackground.setSlideShow(settings.configPath + "Themes/Pictures/" + settings.themeName);
                     screenBackground.showVideo = false;
-                    screenBackground.showImage = false;
-                    screenBackground.showSlideShow = true;
+                    screenBackground.showImage = !showVideoBackground;
+                    screenBackground.showSlideShow = showVideoBackground;
                 }
             }
             else

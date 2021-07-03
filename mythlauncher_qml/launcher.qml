@@ -11,6 +11,8 @@ MainWindow
     showWhatsNew: false
     exitOnEscape: false
     shutdownOnIdle: true
+    showVideoBackground: false
+    playStartupEffect: false
 
     idleTime: settings.launcherIdleTime
 
