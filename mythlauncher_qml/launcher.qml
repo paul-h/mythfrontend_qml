@@ -16,7 +16,7 @@ MainWindow
 
     Component.onCompleted:
     {
-        delay(1000, checkAutoStart);
+        delay(200, checkAutoStart);
     }
 
     function checkAutoStart()

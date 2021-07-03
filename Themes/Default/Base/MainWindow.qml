@@ -715,6 +715,7 @@ Window
         onFinished:
         {
             log.debug(Verbose.PROCESS, "External Process is finished");
+            busyDialog.hide();
             wake();
         }
 
