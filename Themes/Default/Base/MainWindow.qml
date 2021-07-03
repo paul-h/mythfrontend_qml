@@ -130,6 +130,8 @@ Window
 
         Component.onCompleted:
         {
+            startupSound.play();
+
             log.info(Verbose.GUI, "loading theme from: " + settings.qmlPath + "Theme.qml");
 
             var dest;
@@ -335,6 +337,13 @@ Window
     {
          id: errorSound
          source: mythUtils.findThemeFile("sounds/downer.wav")
+         volume: soundEffectsVolume / 100
+    }
+
+    SoundEffect
+    {
+         id: startupSound
+         source: mythUtils.findThemeFile("sounds/welcome.wav")
          volume: soundEffectsVolume / 100
     }
 
