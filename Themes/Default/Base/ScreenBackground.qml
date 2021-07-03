@@ -121,7 +121,7 @@ Item
         width: xscale(900)
         visible : true
         opacity: screenSaverMode ? 0 : 1
-        Behavior on opacity { NumberAnimation { duration: 2000 } }
+        Behavior on opacity { NumberAnimation { duration: window._fadeTime } }
     }
 
     // time/date text
@@ -132,7 +132,7 @@ Item
         format: "ddd MMM dd, HH:mm:ss"
         visible: true
         opacity: screenSaverMode ? 0 : 1
-        Behavior on opacity { NumberAnimation { duration: 2000 } }
+        Behavior on opacity { NumberAnimation { duration: window._fadeTime } }
     }
 
     Scroller
@@ -141,7 +141,7 @@ Item
         x: xscale(0); y: window.height - yscale(40); width: window.width; height: yscale(40)
         visible: false
         opacity: screenSaverMode ? 0 : 1
-        Behavior on opacity { NumberAnimation { duration: 2000 } }
+        Behavior on opacity { NumberAnimation { duration: window._fadeTime } }
     }
 
     BusyIndicator
@@ -150,7 +150,7 @@ Item
         x: xscale(500); y: yscale(5); z:99
         running: false
         opacity: screenSaverMode ? 0 : 1
-        Behavior on opacity { NumberAnimation { duration: 2000 } }
+        Behavior on opacity { NumberAnimation { duration: window._fadeTime } }
     }
 
     Component.onCompleted:
