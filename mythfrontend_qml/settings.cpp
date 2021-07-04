@@ -155,8 +155,8 @@ void Settings::setDefaultSettings(const QString &hostName)
 
     if (gContext->m_databaseUtils->getSetting("YoutubeSubListFile", hostName) == "")
     {
-        setYoutubeSubListFile("https://mythqml.net/download.php?f=youtube_subscriptions_public.xml");
-        gContext->m_databaseUtils->setSetting("YoutubeSubListFile", hostName, "https://mythqml.net/download.php?f=youtube_subscriptions_public.xml");
+        setYoutubeSubListFile("https://mythqml.net/download.php?f=youtube_subs_list.xml");
+        gContext->m_databaseUtils->setSetting("YoutubeSubListFile", hostName, "https://mythqml.net/download.php?f=youtube_subs_list.xml");
     }
 
     // start fullscreen
