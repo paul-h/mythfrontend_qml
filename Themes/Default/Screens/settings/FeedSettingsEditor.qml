@@ -9,7 +9,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "Feed Source Settings");
-        setHelp("https://mythqml.net/help/settings_feedsources.php");
+        setHelp("https://mythqml.net/help/settings_feedsources.php#top");
         showTime(true);
         showTicker(false);
     }

@@ -12,7 +12,7 @@ BaseScreen
         showTitle(true, "MythTV Settings");
         showTime(true);
         showTicker(false);
-        setHelp("https://mythqml.net/help/settings_mythbackend.php");
+        setHelp("https://mythqml.net/help/settings_mythbackend.php#top");
     }
 
     Keys.onPressed:

@@ -9,7 +9,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "ZoneMinder Settings");
-        setHelp("https://mythqml.net/help/settings_zoneminder.php");
+        setHelp("https://mythqml.net/help/settings_zoneminder.php#top");
         showTime(true);
         showTicker(false);
     }

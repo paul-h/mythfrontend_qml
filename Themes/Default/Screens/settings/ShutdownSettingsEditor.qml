@@ -9,7 +9,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "Shutdown Settings");
-        setHelp("https://mythqml.net/help/settings_shutdown.php");
+        setHelp("https://mythqml.net/help/settings_shutdown.php#top");
         showTime(true);
         showTicker(false);
     }
