@@ -27,6 +27,8 @@ public:
     Q_INVOKABLE QVariantMap get(int row) const;
     Q_INVOKABLE bool remove(int row);
 
+    Q_INVOKABLE void set(int row, const QByteArray &roleName, QVariant value);
+
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
 
     void addRole(const QByteArray &roleName);

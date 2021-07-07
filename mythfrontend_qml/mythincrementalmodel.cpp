@@ -96,6 +96,31 @@ void MythIncrementalModel::addRole(const QByteArray &roleName)
     m_lastRole++;
 }
 
+void MythIncrementalModel::set(int row, const QByteArray &roleName, QVariant value)
+{
+    if (row < 0 || row >= m_data.count())
+        return;
+
+    RowData *rowData = m_data[row];
+
+    if (!rowData)
+        return;
+
+    (*rowData)[m_roleMap[roleName]].setValue(value);
+
+    QModelIndex topLeft = createIndex(row, 0);
+    QModelIndex bottomRight = createIndex(row, 0);
+    QVector<int> roles;
+
+    for (QHash<int, QByteArray>::const_iterator it = m_roleNames.begin(); it != m_roleNames.end(); ++it)
+    {
+        if (it.value() == roleName)
+            roles.append(it.key());
+    }
+
+    emit dataChanged(topLeft, bottomRight, roles);
+}
+
 RowData *MythIncrementalModel::addNewRow(void)
 {
     RowData *row = new RowData;
