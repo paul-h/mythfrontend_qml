@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Base 1.0
+import Dialogs 1.0
 import Models 1.0
 import ZMEventsModel 1.0
 import "../../../../Util.js" as Util
@@ -12,9 +13,9 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "ZoneMinder Events");
-        setHelp("https://mythqml.net/help/zm_eventsviewer.php");
+        setHelp("https://mythqml.net/help/zm_eventsviewer.php#top");
         showTime(true);
-        showTicker(false)
+        showTicker(false);
     }
 
     Keys.onPressed:
@@ -24,6 +25,14 @@ BaseScreen
         if (event.key === Qt.Key_F1 || event.key === Qt.Key_D)
         {
             // RED - delete
+            if (zmEventsModel.get(eventsList.currentIndex).Archived)
+            {
+                // don't allow archived events to be deleted
+                errorSound.play();
+                notAllowed.show();
+                return;
+            }
+
             if (zmEventsModel.totalAvailable > 0)
                 zmEventsModel.deleteEvent(zmEventsModel.get(eventsList.currentIndex).Id);
         }
@@ -49,6 +58,10 @@ BaseScreen
         {
             // BLUE - refresh
             zmEventsModel.reload();
+        }
+        else if (event.key === Qt.Key_M)
+        {
+            showMenu();
         }
         else
             event.accepted = false;
@@ -96,7 +109,7 @@ BaseScreen
                 {
                     if (http.status == 200)
                     {
-                        log.info(Verbose.GENERAL, "ZMEventsView: Event Deleted OK - " + eventID)
+                        log.debug(Verbose.GENERAL, "ZMEventsView: Event Deleted OK - " + eventID)
 
                         // update the monitorsModel so the event counts are updated
                         playerSources.zmCameraList.reload();
@@ -104,6 +117,108 @@ BaseScreen
                     else
                     {
                         log.error(Verbose.GENERAL, "ZMEventsView: Failed to delete event. Got status - " + http.status)
+                    }
+                }
+            }
+            http.send(params);
+        }
+
+        function archiveEvent(eventID)
+        {
+            var http = new XMLHttpRequest();
+            var url = "http://" + settings.zmIP + "/zm/api/events/" + eventID + ".json";
+            var params = "token=" + playerSources.zmToken + "&Event[Archived]=1";
+
+            http.withCredentials = true;
+            http.open("PUT", url, true);
+            http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            http.setRequestHeader("Content-length", params.length);
+            http.setRequestHeader("Connection", "close");
+
+            http.onreadystatechange = function()
+            {
+                if (http.readyState == 4)
+                {
+                    if (http.status == 200)
+                    {
+                        log.debug(Verbose.GENERAL, "ZMEventsView: Event archived OK - " + eventID)
+
+                        var index = findEventIndex(eventID);
+
+                        if (index != -1)
+                            set(index, "Archived", 1);
+                    }
+                    else
+                    {
+                        log.error(Verbose.GENERAL, "ZMEventsView: Failed to archive event. Got status - " + http.status)
+                    }
+                }
+            }
+            http.send(params);
+        }
+
+        function unarchiveEvent(eventID)
+        {
+            var http = new XMLHttpRequest();
+            var url = "http://" + settings.zmIP + "/zm/api/events/" + eventID + ".json";
+            var params = "token=" + playerSources.zmToken + "&Event[Archived]=0";
+
+            http.withCredentials = true;
+            http.open("PUT", url, true);
+            http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            http.setRequestHeader("Content-length", params.length);
+            http.setRequestHeader("Connection", "close");
+
+            http.onreadystatechange = function()
+            {
+                if (http.readyState == 4)
+                {
+                    if (http.status == 200)
+                    {
+                        log.debug(Verbose.GENERAL, "ZMEventsView: Event unarchived OK - " + eventID)
+
+                        var index = findEventIndex(eventID);
+
+                        if (index != -1)
+                            set(index, "Archived", 0);
+                    }
+                    else
+                    {
+                        log.error(Verbose.GENERAL, "ZMEventsView: Failed to unarchive event. Got status - " + http.status)
+                    }
+                }
+            }
+            http.send(params);
+        }
+
+        function renameEvent(eventID, newName)
+        {
+            var http = new XMLHttpRequest();
+            var url = "http://" + settings.zmIP + "/zm/api/events/" + eventID + ".json";
+            var params = "token=" + playerSources.zmToken + "&Event[Name]=" + encodeURIComponent(newName);
+
+            http.withCredentials = true;
+            http.open("PUT", url, true);
+            http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            http.setRequestHeader("Content-length", params.length);
+            http.setRequestHeader("Connection", "close");
+
+            http.onreadystatechange = function()
+            {
+                if (http.readyState == 4)
+                {
+                    if (http.status == 200)
+                    {
+                        log.debug(Verbose.GENERAL, "ZMEventsView: Event renamed OK - " + eventID)
+
+                        var index = findEventIndex(eventID);
+
+                        if (index != -1)
+                            set(index, "Name", newName);
+                    }
+                    else
+                    {
+                        log.error(Verbose.GENERAL, "ZMEventsView: Failed to rename event. Got status - " + http.status)
                     }
                 }
             }
@@ -215,7 +330,7 @@ BaseScreen
             {
                 x: xscale(55)
                 width: xscale(290); height: yscale(50)
-                text: if (Name !== undefined) Name ; else "";
+                text: if (Name !== undefined) Name + (Archived === 1 ? "*" : ""); else "";
             }
             ListText
             {
@@ -284,6 +399,87 @@ BaseScreen
         greenText: "Sort (Oldest First)"
         yellowText: "Play Event"
         blueText: "Refresh"
+    }
+
+    PopupMenu
+    {
+        id: popupMenu
+
+        title: "Menu"
+        message: "Event Options"
+
+        onItemSelected:
+        {
+            eventsList.focus = true;
+
+            if (itemText == "Archive Event")
+            {
+                zmEventsModel.archiveEvent(zmEventsModel.get(eventsList.currentIndex).Id);
+            }
+            else if (itemText == "Unarchive Event")
+            {
+                zmEventsModel.unarchiveEvent(zmEventsModel.get(eventsList.currentIndex).Id);
+            }
+            else if (itemText == "Rename Event")
+            {
+                textEditDialog.show();
+            }
+        }
+
+        onCancelled:
+        {
+            eventsList.focus = true;
+        }
+    }
+
+    TextEditDialog
+    {
+        id: textEditDialog
+
+        title: "Rename Event"
+        message: "Enter the new event name."
+
+        width: xscale(600); height: yscale(350)
+
+        onResultText:
+        {
+            zmEventsModel.renameEvent(zmEventsModel.get(eventsList.currentIndex).Id, text);
+
+            eventsList.focus = true
+        }
+        onCancelled:
+        {
+            eventsList.focus = true
+        }
+    }
+
+    OkCancelDialog
+    {
+        id: notAllowed
+
+        title: "Can't Delete This Event"
+        message: "This event is Archived and so can't be deleted until it is Unarchived"
+        rejectButtonText: ""
+
+        width: xscale(600); height: yscale(300)
+
+        onAccepted:  eventsList.focus = true
+        onCancelled: eventsList.focus = true
+    }
+
+    function showMenu()
+    {
+        popupMenu.message = "Event Options";
+        popupMenu.clearMenuItems();
+
+        if (zmEventsModel.get(eventsList.currentIndex).Archived === 1)
+            popupMenu.addMenuItem("", "Unarchive Event");
+        else
+            popupMenu.addMenuItem("", "Archive Event");
+
+        popupMenu.addMenuItem("", "Rename Event");
+
+        popupMenu.show();
     }
 
     function playEvent()
