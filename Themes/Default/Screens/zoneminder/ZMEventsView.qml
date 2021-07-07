@@ -48,16 +48,49 @@ BaseScreen
 
             zmEventsModel.reload();
         }
-        else if (event.key === Qt.Key_F3 || event.key === Qt.Key_P)
+        else if (event.key === Qt.Key_F3)
         {
-            // YELLOW - play event
-            if (zmEventsModel.totalAvailable > 0)
-                playEvent();
+            // YELLOW - cause
+            if (zmEventsModel.cause === ZMEventsModel.CauseAll)
+            {
+                zmEventsModel.cause = ZMEventsModel.CauseContinuous;
+                footer.yellowText = "Cause (Continuous)";
+            }
+            else if (zmEventsModel.cause === ZMEventsModel.CauseContinuous)
+            {
+                zmEventsModel.cause = ZMEventsModel.CauseMotion;
+                footer.yellowText = "Cause (Motion)";
+            }
+            else if (zmEventsModel.cause === ZMEventsModel.CauseMotion)
+            {
+                zmEventsModel.cause = ZMEventsModel.CauseAll;
+                footer.yellowText = "Cause (All)";
+            }
         }
         else if (event.key === Qt.Key_F4)
         {
-            // BLUE - refresh
-            zmEventsModel.reload();
+            // BLUE - archived
+            if (zmEventsModel.archived === ZMEventsModel.ArchivedAll)
+            {
+                zmEventsModel.archived = ZMEventsModel.ArchivedNo;
+                footer.blueText = "Archived (No)";
+            }
+            else if (zmEventsModel.archived === ZMEventsModel.ArchivedNo)
+            {
+                zmEventsModel.archived = ZMEventsModel.ArchivedYes;
+                footer.blueText = "Archived (Yes)";
+            }
+            else if (zmEventsModel.archived === ZMEventsModel.ArchivedYes)
+            {
+                zmEventsModel.archived = ZMEventsModel.ArchivedAll;
+                footer.blueText = "Archived (All)";
+            }
+        }
+        else if (event.key === Qt.Key_F5 || event.key === Qt.Key_P)
+        {
+            // play event
+            if (zmEventsModel.totalAvailable > 0)
+                playEvent();
         }
         else if (event.key === Qt.Key_M)
         {
@@ -397,8 +430,8 @@ BaseScreen
         width: parent.width
         redText: "Delete Event"
         greenText: "Sort (Oldest First)"
-        yellowText: "Play Event"
-        blueText: "Refresh"
+        yellowText: "Cause (All)"
+        blueText: "Archived (All)"
     }
 
     PopupMenu
@@ -423,6 +456,10 @@ BaseScreen
             else if (itemText == "Rename Event")
             {
                 textEditDialog.show();
+            }
+            else if (itemText == "Refresh Events")
+            {
+                zmEventsModel.reload();
             }
         }
 
@@ -478,6 +515,7 @@ BaseScreen
             popupMenu.addMenuItem("", "Archive Event");
 
         popupMenu.addMenuItem("", "Rename Event");
+        popupMenu.addMenuItem("", "Refresh Events");
 
         popupMenu.show();
     }

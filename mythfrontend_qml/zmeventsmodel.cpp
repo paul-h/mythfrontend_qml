@@ -47,6 +47,8 @@ ZMEventsModel::ZMEventsModel(void) : MythIncrementalModel()
     // we want to load all events so we can get the full list of event dates and monitors
     m_count = 100;
     m_loadAll = true;
+    m_cause = CauseAll;
+    m_archived = ArchivedAll;
 
     startDownload();
 }
@@ -76,6 +78,18 @@ void ZMEventsModel::setDescending(bool descending)
 void ZMEventsModel::setSort(const QString &sort)
 {
     m_sort = sort;
+}
+
+void ZMEventsModel::setCause(Cause cause)
+{
+    m_cause = cause;
+    reload();
+}
+
+void ZMEventsModel::setArchived(Archived archive)
+{
+    m_archived = archive;
+    reload();
 }
 
 // construct the download URL and start the download
@@ -112,11 +126,25 @@ void ZMEventsModel::startDownload(void)
         dateRange = QString("/StartTime >=:%1/EndTime <=:%2").arg(startTime).arg(endTime);
     }
 
+    QString cause;
+    if (m_cause == CauseContinuous)
+        cause = "/Cause =:Continuous";
+    else if (m_cause == CauseMotion)
+        cause = "/Cause =:Motion";
+    else if (m_cause == CauseForced)
+        cause = "/Cause =:Forced";
+
+    QString archived;
+    if (m_archived == ArchivedNo)
+        cause = "/Archived =:0";
+    else if (m_archived == ArchivedYes)
+        cause = "/Archived =:1";
+
     QString descending = (m_descending ? "desc" : "asc");
 
     QString sUrl = QString("http://" + gContext->m_settings->zmIP() + "/zm/api/events");
 
-    if (!monitor.isEmpty() || !dateRange.isEmpty())
+    if (!monitor.isEmpty() || !dateRange.isEmpty() || !cause.isEmpty() || !archived.isEmpty())
         sUrl += "/index";
 
     if (!monitor.isEmpty())
@@ -124,6 +152,12 @@ void ZMEventsModel::startDownload(void)
 
     if (!dateRange.isEmpty())
         sUrl += dateRange;
+
+    if (!cause.isEmpty())
+        sUrl += cause;
+
+    if (!archived.isEmpty())
+        sUrl += archived;
 
     sUrl += QString(".json?page=%1&sort=StartTime&direction=%2&limit=%3&token=%4").arg(page).arg(descending).arg(count).arg(m_token);
 
