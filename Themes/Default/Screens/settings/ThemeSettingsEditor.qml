@@ -9,7 +9,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "Theme Settings");
-        setHelp("https://mythqml.net/help/settings_themes.php");
+        setHelp("https://mythqml.net/help/settings_themes.php#top");
         showTime(true);
         showTicker(false);
     }
