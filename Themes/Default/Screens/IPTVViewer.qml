@@ -20,7 +20,7 @@ BaseScreen
         while (stack.busy) {};
 
         showTitle(true, "IPTV Channel Viewer");
-        setHelp("https://mythqml.net/help/iptv_channelviewer.php");
+        setHelp("https://mythqml.net/help/iptv_channelviewer.php#top");
 
         feedSource.sort = "Title"
 
@@ -47,7 +47,8 @@ BaseScreen
             popupMenu.clearMenuItems();
 
             popupMenu.addMenuItem("", "Clear Filters");
-            popupMenu.addMenuItem("", "Search ...");
+            popupMenu.addMenuItem("", "Search");
+            popupMenu.addMenuItem("", "Help");
             popupMenu.show();
         }
         else if (event.key === Qt.Key_F1)
@@ -345,9 +346,13 @@ BaseScreen
 
                 updateChannelDetails();
             }
-            else if (itemText == "Search ...")
+            else if (itemText == "Search")
             {
                 editDialog.show();
+            }
+            else if (itemText == "Help")
+            {
+                window.showHelp();
             }
         }
 
