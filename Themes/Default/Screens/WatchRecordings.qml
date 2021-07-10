@@ -20,7 +20,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "Watch Recordings");
-        setHelp("https://mythqml.net/help/tv_watchrecordings.php");
+        setHelp("https://mythqml.net/help/tv_watchrecordings.php#top");
         showTime(false);
         showTicker(false);
     }
@@ -47,6 +47,8 @@ BaseScreen
 
     Keys.onPressed:
     {
+        event.accepted = true;
+
         if (event.key === Qt.Key_M)
         {
         }
@@ -92,6 +94,8 @@ BaseScreen
             //BLUE
             showFanart = !showFanart;
         }
+        else
+            event.accepted = false;
     }
 
     Image
@@ -462,10 +466,10 @@ BaseScreen
     Footer
     {
         id: footer
-        redText: "Options"
+        redText: "Filter"
         greenText: "Show (All Recordings)"
         yellowText: "Sort (Time)"
-        blueText: "Info"
+        blueText: "Toggle Background"
     }
 
     RecordingFilterDialog
