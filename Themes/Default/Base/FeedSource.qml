@@ -471,7 +471,7 @@ Item
             if (feedList.sourceModel)
                 feedList.sourceModel.loadingStatus.disconnect(handleModelStatusChange);
 
-            feedList.sourceModel = playerSources.zmCameraList;
+            feedList.sourceModel = playerSources.zmCameraList.model;
 
             if (playerSources.zmCameraList.status === XmlListModel.Ready)
                 handleModelStatusChange(XmlListModel.Ready);

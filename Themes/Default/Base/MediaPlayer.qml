@@ -65,6 +65,22 @@ FocusScope
         }
     }
 
+    Connections
+    {
+        target: playerSources.zmCameraList
+        onMonitorStatus:
+        {
+            if (feedSource.feedName === "ZoneMinder Cameras")
+            {
+                if (feedSource.feedList.get(feedSource.currentFeed).id === monitorId)
+                {
+                    statusText.text = status;
+                    statusText.state = status;
+                }
+            }
+        }
+    }
+
     Timer
     {
         id: checkProcessTimer
@@ -128,7 +144,7 @@ FocusScope
     WebEngineProfile
     {
         id: youtubeWebProfile
-        storageName: "YouTube"
+        storageName: "YouTube_" + objectName
         offTheRecord: false
         httpCacheType: WebEngineProfile.DiskHttpCache
         persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
@@ -138,7 +154,7 @@ FocusScope
     WebEngineProfile
     {
         id: mythqmlWebProfile
-        storageName: "MythQML"
+        storageName: "MythQML_" + objectName
         offTheRecord: false
         httpCacheType: WebEngineProfile.DiskHttpCache
         persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
@@ -284,6 +300,51 @@ FocusScope
 
         onMiniDiagramImageChanged: mediaPlayer.updateRailCamMiniDiagram(railcamImageFilename)
      }
+
+    InfoText
+    {
+        id: statusText
+        x: parent. width - xscale(10) - width
+        y: yscale(0)
+        width: xscale(150)
+        height: yscale(30)
+        horizontalAlignment: Text.AlignRight
+        visible: state === "Pre Alarm" || state === "Alert" || state === "Alarm"
+
+        states:
+        [
+            State
+            {
+                name: "Idle"
+                PropertyChanges { target: statusText; fontColor: "white" }
+            },
+            State
+            {
+                name: "Pre Alarm"
+                PropertyChanges { target: statusText; fontColor: "yellow" }
+            },
+            State
+            {
+                name: "Alert"
+                PropertyChanges { target: statusText; fontColor: "orange" }
+            },
+            State
+            {
+                name: "Alarm"
+                PropertyChanges { target: statusText; fontColor: "red" }
+            },
+            State
+            {
+                name: "Tape"
+                PropertyChanges { target: statusText; fontColor: "green" }
+            },
+            State
+            {
+                name: "Unknown"
+                PropertyChanges { target: statusText; fontColor: "white" }
+            }
+        ]
+    }
 
     Item
     {
