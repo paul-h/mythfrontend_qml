@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import SortFilterProxyModel 0.2
+import mythqml.net 1.0
 
 Item
 {
@@ -175,31 +176,12 @@ Item
         {
             token = get(0).access_token;
             zmMonitorsModel.token = token;
-
         }
     }
 
     ZMMonitorsModel
     {
         id: zmMonitorsModel
-    }
-
-    function getFeedList(feedSource)
-    {
-        if (feedSource === "Live TV")
-            return channelList;
-        else if (feedSource === "Webcams")
-            return webcamList;
-        else if (feedSource === "Web Videos")
-            return webvideoList;
-        else if (feedSource === "Videos")
-            return videoList;
-        else if (feedSource === "Recordings")
-            return recordingList;
-        else if (feedSource === "ZoneMinder Cameras")
-            return zmCameraList;
-
-        return channelList;
     }
 
     /* ------------------------------------------------ Videos -----------------------------------------------------------*/
@@ -229,6 +211,25 @@ Item
         }
 
         return -1;
+    }
+
+    /* -----------------------------------------------------------------------------------------------------------------*/
+    function getFeedList(feedSource)
+    {
+        if (feedSource === "Live TV")
+            return channelList;
+        else if (feedSource === "Webcams")
+            return webcamList;
+        else if (feedSource === "Web Videos")
+            return webvideoList;
+        else if (feedSource === "Videos")
+            return videoList;
+        else if (feedSource === "Recordings")
+            return recordingList;
+        else if (feedSource === "ZoneMinder Cameras")
+            return zmCameraList;
+
+        return channelList;
     }
 
     function addFeedMenu(popupMenu, feed, path, player)
