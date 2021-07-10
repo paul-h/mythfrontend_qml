@@ -502,7 +502,7 @@ Item
                                 }
                 StateChangeScript { script: if ( !player4.isPlaying()) player4.startPlayback() }
 
-                PropertyChanges { target: chatBrowser;
+                PropertyChanges { target: browser;
                                   KeyNavigation.left: player2;
                                   KeyNavigation.right: player1;
                                   KeyNavigation.up: browser;

@@ -104,6 +104,7 @@ BaseScreen
     {
         id: zmEventsModel
         token: playerSources.zmToken
+        archived: ZMEventsModel.ArchivedNo
 
         onTotalAvailableChanged:
         {
@@ -145,7 +146,7 @@ BaseScreen
                         log.debug(Verbose.GENERAL, "ZMEventsView: Event Deleted OK - " + eventID)
 
                         // update the monitorsModel so the event counts are updated
-                        playerSources.zmCameraList.reload();
+                        playerSources.zmCameraList.model.reload();
                     }
                     else
                     {
@@ -431,7 +432,7 @@ BaseScreen
         redText: "Delete Event"
         greenText: "Sort (Oldest First)"
         yellowText: "Cause (All)"
-        blueText: "Archived (All)"
+        blueText: "Archived (No)"
     }
 
     PopupMenu

@@ -181,7 +181,7 @@ BaseScreen
         id: monitorList
         x: xscale(30); y: yscale(270); width: parent.width - xscale(60); height: yscale(380)
 
-        model: playerSources.zmCameraList
+        model: playerSources.zmCameraList.model
         clip: true
         delegate: listRow
 
