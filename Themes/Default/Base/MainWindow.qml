@@ -69,6 +69,7 @@ Window
                  mouseArea.oldY =mouseArea.mouseY;
             }
         }
+        onMouseButtonPressed: log.info(Verbose.GENERAL, "mouse button pressed at: " + x + "x" + y)
     }
 
     Download

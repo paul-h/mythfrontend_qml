@@ -40,10 +40,20 @@ public:
             }
 
         }
+        if (event->type() == QEvent::MouseButtonPress)
+        {
+            QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent*>(event);
+            if (mouseEvent)
+            {
+                emit mouseButtonPressed(mouseEvent->globalX(), mouseEvent->globalY());
+            }
+
+        }
         return false;
     }
 
   signals:
     void keyPressed(void);
     void mouseMoved(int x, int y);
+    void mouseButtonPressed(int x, int y);
 };
