@@ -19,7 +19,7 @@ BaseScreen
         pauseVideo(true);
         showVideo(false);
 
-        showNotification("Use the RED button to exit the YouTube screen.")
+        showNotification('Use the <font  color="red"><b>RED</b></font> button to exit the YouTube screen.')
     }
 
     Component.onDestruction:
