@@ -773,6 +773,10 @@ BaseScreen
 
     function setLayout(newLayout)
     {
+        // restart player1
+        playerLayout.mediaPlayer1.feed.switchToFeed(playerLayout.mediaPlayer1.feed.feedName, playerLayout.mediaPlayer1.feed.currentFilter, playerLayout.mediaPlayer1.feed.currentFeed);
+        playerLayout.mediaPlayer1.startPlayback();
+
         if (newLayout == 2 || newLayout == 3 || newLayout == 4)
         {
             // we need 2 players for these layouts
