@@ -18,7 +18,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "YouTube Subscriptions");
-        setHelp("https://mythqml.net/help/youtube_subscriptions.php");
+        setHelp("https://mythqml.net/help/youtube_subscriptions.php#top");
         showTime(true);
         showTicker(false);
 
