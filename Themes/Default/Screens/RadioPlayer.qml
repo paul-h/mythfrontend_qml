@@ -24,7 +24,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(false, "");
-        setHelp("https://mythqml.net/help/play_radiostreams.php");
+        setHelp("https://mythqml.net/help/play_radiostreams.php#top");
         showTime(false);
         showTicker(false);
         muteAudio(true);
@@ -33,6 +33,45 @@ BaseScreen
     Component.onDestruction:
     {
         muteAudio(false);
+    }
+
+    Keys.onPressed:
+    {
+        event.accepted = true;
+
+        if (event.key === Qt.Key_M)
+        {
+        }
+        else if (event.key === Qt.Key_F1 || event.key === Qt.Key_A)
+        {
+            // RED - search for stream
+            stack.push({item: Qt.resolvedUrl("SearchRadioStreams.qml"), properties:{player: streamPlayer}});
+            returnSound.play();
+        }
+        else if (event.key === Qt.Key_F2)
+        {
+            // GREEN
+        }
+        else if (event.key === Qt.Key_F3)
+        {
+            // YELLOW
+        }
+        else if (event.key === Qt.Key_F4)
+        {
+            //BLUE
+        }
+        else if (event.key === Qt.Key_O)
+            stop();
+        else if (event.key === Qt.Key_P)
+            togglePaused();
+        else if (event.key === Qt.Key_BracketLeft || event.key === Qt.Key_BraceLeft)
+            changeVolume(-1.00);
+        else if (event.key === Qt.Key_BracketRight  || event.key === Qt.Key_BraceRight)
+            changeVolume(1.00);
+        else if (event.key === Qt.Key_F9)
+            toggleMute();
+        else
+            event.accepted = false;
     }
 
     onTrackArtistTitleChanged:
@@ -396,26 +435,6 @@ BaseScreen
         x: xscale(1085); y: yscale(660); width: xscale(156); height: yscale(35)
         horizontalAlignment: Text.AlignHCenter
         text: "AlbumArt"
-    }
-
-    Keys.onPressed:
-    {
-        if (event.key === Qt.Key_O)
-            stop();
-        else if (event.key === Qt.Key_P)
-            togglePaused();
-        else if (event.key === Qt.Key_BracketLeft || event.key === Qt.Key_BraceLeft)
-            changeVolume(-1.00);
-        else if (event.key === Qt.Key_BracketRight  || event.key === Qt.Key_BraceRight)
-            changeVolume(1.00);
-        else if (event.key === Qt.Key_M)
-            toggleMute();
-        else if (event.key === Qt.Key_A)
-        {
-            stack.push({item: Qt.resolvedUrl("SearchRadioStreams.qml"), properties:{player: streamPlayer}});
-            event.accepted = true;
-            returnSound.play();
-        }
     }
 
     Timer
