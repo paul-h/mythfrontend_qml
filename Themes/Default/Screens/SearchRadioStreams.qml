@@ -92,30 +92,31 @@ BaseScreen
         if (event.key === Qt.Key_F1)
         {
             // RED
-            if (sorter === "broadcaster")
-            {
-                sorter = "genre";
-                streamsProxyModel.sorters = genreSorter;
-                footer.redText = "Sort (Genre)";
-            }
-            else if (sorter === "genre")
-            {
-                sorter = "country"
-                streamsProxyModel.sorters = countrySorter;
-                footer.redText = "Sort (Country)";
-            }
-            else if (sorter === "country")
-            {
-                sorter = "language"
-                streamsProxyModel.sorters = languageSorter;
-                footer.redText = "Sort (Language)";
-            }
-            else
-            {
-                sorter = "broadcaster"
-                streamsProxyModel.sorters = broadcasterSorter;
-                footer.redText = "Sort (Broadcaster)";
-            }
+// FIXME: this is to slow
+//            if (sorter === "broadcaster")
+//            {
+//                sorter = "genre";
+//                streamsProxyModel.sorters = genreSorter;
+//                footer.redText = "Sort (Genre)";
+//            }
+//            else if (sorter === "genre")
+//            {
+//                sorter = "country"
+//                streamsProxyModel.sorters = countrySorter;
+//                footer.redText = "Sort (Country)";
+//            }
+//            else if (sorter === "country")
+//            {
+//                sorter = "language"
+//                streamsProxyModel.sorters = languageSorter;
+//                footer.redText = "Sort (Language)";
+//            }
+//            else
+//            {
+//                sorter = "broadcaster"
+//                streamsProxyModel.sorters = broadcasterSorter;
+//                footer.redText = "Sort (Broadcaster)";
+//            }
         }
         else if (event.key === Qt.Key_F2)
         {
