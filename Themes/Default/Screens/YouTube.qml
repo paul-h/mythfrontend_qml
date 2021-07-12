@@ -13,7 +13,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(false, "");
-        setHelp("https://mythqml.net/help/youtube_tv.php");
+        setHelp("https://mythqml.net/help/youtube_tv.php#top");
         showTime(false);
         showTicker(false);
         pauseVideo(true);
@@ -31,6 +31,18 @@ BaseScreen
     {
         shortcut: "F1"
         onTriggered: if (stack.depth > 1) {stack.pop(); escapeSound.play();}
+    }
+
+    Action
+    {
+        shortcut: "F4"
+        onTriggered: window.showHelp()
+    }
+
+    Action
+    {
+        shortcut: "F11" // take snapshot of the screen
+        onTriggered: window.takeSnapshot();
     }
 
     WebEngineView
