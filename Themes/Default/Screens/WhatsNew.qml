@@ -14,7 +14,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "What's New");
-        setHelp("https://mythqml.net/help/whatsnew.php");
+        setHelp("https://mythqml.net/help/whatsnew.php#top");
         showTicker(false);
 
         var lastShown = parseInt(dbUtils.getSetting("LastWhatsNewShown", settings.hostName, "-1"));
@@ -112,6 +112,13 @@ BaseScreen
         shortcut: "R" // for testing reset the last shown setting to -1
         enabled: browser.focus
         onTriggered: dbUtils.setSetting("LastWhatsNewShown", settings.hostName, -1);
+    }
+
+    Action
+    {
+        shortcut: "H" // show help screen
+        enabled: browser.focus
+        onTriggered: window.showHelp();
     }
 
     WhatsNewModel
