@@ -23,7 +23,7 @@ BaseScreen
     {
         showTitle(true, "LiveTV Channel Viewer");
         setHelp("https://mythqml.net/help/tv_watchtv.php#top");
-        showTime(false);
+        showTime(true);
         showTicker(false);
 
         while (stack.busy) {};
