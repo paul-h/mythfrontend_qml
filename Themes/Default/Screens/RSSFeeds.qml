@@ -16,7 +16,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "RSS Feeds");
-        setHelp("https://mythqml.net/help/rss_feeds.php");
+        setHelp("https://mythqml.net/help/rss_feeds.php#top");
         showTime(true);
         showTicker(false);
     }
@@ -61,7 +61,6 @@ BaseScreen
             {
                id: icon
                x: xscale(3); y: yscale(3); height: parent.height - yscale(6); width: height
-               fillMode: Image.PreserveAspectFit
                source: if (ico) ico; else mythUtils.findThemeFile("images/grid_noimage.png")
             }
 
