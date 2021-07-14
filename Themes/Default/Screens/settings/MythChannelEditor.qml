@@ -14,7 +14,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "MythTV Channel Editor");
-        setHelp("https://mythqml.net/help/settings_mythtv_channeleditor.php");
+        setHelp("https://mythqml.net/help/settings_mythtv_channeleditor.php#top");
         showTime(false);
         showTicker(false);
     }

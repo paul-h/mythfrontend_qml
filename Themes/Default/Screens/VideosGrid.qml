@@ -18,7 +18,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(true, "MythTV Videos Viewer");
-        setHelp("https://mythqml.net/help/videos_mythtv.php");
+        setHelp("https://mythqml.net/help/videos_mythtv.php#top");
         showTime(false);
         showTicker(false);
     }
