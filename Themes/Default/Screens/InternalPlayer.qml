@@ -33,7 +33,7 @@ BaseScreen
     Component.onCompleted:
     {
         showTitle(false, "Media Player");
-        setHelp("https://mythqml.net/help/internal_player.php");
+        setHelp("https://mythqml.net/help/internal_player.php#top");
         showTime(false);
         showTicker(false);
         muteAudio(true);
