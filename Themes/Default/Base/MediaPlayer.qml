@@ -693,6 +693,8 @@ FocusScope
             {
                 if (getActivePlayer() === "VLC")
                     return "Position: " + Util.milliSecondsToString(vlcPlayer.getPosition()) + " / " + Util.milliSecondsToString(vlcPlayer.getDuration())
+                else if (getActivePlayer() === "QTAV")
+                    return "Position: " + Util.milliSecondsToString(qtAVPlayer.getPosition()) + " / " + Util.milliSecondsToString(qtAVPlayer.getDuration())
                 else if (getActivePlayer() === "YOUTUBE")
                     return "Position: " + Util.milliSecondsToString(youtubePlayer.getPosition()) + " / " + Util.milliSecondsToString(youtubePlayer.getDuration())
                 else
@@ -712,6 +714,8 @@ FocusScope
             {
                 if (getActivePlayer() === "VLC")
                     return Util.milliSecondsToString(vlcPlayer.getDuration() - vlcPlayer.getPosition())
+                else if (getActivePlayer() === "QTAV")
+                    return Util.milliSecondsToString(qtAVPlayer.getDuration() - qtAVPlayer.getPosition())
                 else if (getActivePlayer() === "YOUTUBE")
                     return Util.milliSecondsToString(youtubePlayer.getDuration() - youtubePlayer.getPosition())
                 else
@@ -815,6 +819,9 @@ FocusScope
 
                         if (getActivePlayer() === "VLC")
                             position = vlcPlayer.getPosition() / vlcPlayer.getDuration();
+                        else if (getActivePlayer() === "QTAV")
+                            position = qtAVPlayer.getPosition() / qtAVPlayer.getDuration();
+
                         else if (getActivePlayer() === "YOUTUBE")
                             position = youtubePlayer.getPosition() / youtubePlayer.getDuration();
 
