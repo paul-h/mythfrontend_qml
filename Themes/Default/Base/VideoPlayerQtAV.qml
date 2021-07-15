@@ -171,6 +171,16 @@ FocusScope
         mediaplayer.muted = !mediaplayer.muted;
     }
 
+    function getPosition()
+    {
+        return mediaplayer.position;
+    }
+
+    function getDuration()
+    {
+        return mediaplayer.duration;
+    }
+
     function setLoopMode(doLoop)
     {
         //FIXME
