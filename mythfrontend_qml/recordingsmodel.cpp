@@ -38,8 +38,10 @@ RecordingsModel::RecordingsModel(void) : MythIncrementalModel()
     addRole("RecordingId");
     addRole("RecGroup");
     addRole("Status");
+    addRole("StartTs");
 
     //channel
+    addRole("ChanId");
     addRole("ChanNum");
     addRole("ChannelName");
     addRole("CallSign");
@@ -228,8 +230,10 @@ void RecordingsModel::processDownload(QByteArray buffer)
                 addStringData(data, recordingNode, "RecordingId");
                 addStringData(data, recordingNode, "RecGroup");
                 addStringData(data, recordingNode, "Status");
+                addStringData(data, recordingNode, "StartTs");
 
                 //channel
+                addStringData(data, channelNode, "ChanId");
                 addStringData(data, channelNode, "ChanNum");
                 addStringData(data, channelNode, "ChannelName");
                 addStringData(data, channelNode, "CallSign");
