@@ -15,7 +15,8 @@ BaseScreen
     property bool dateSorterActive: true
     property bool showFanart: false
 
-    property bool _useMythProtocol: true
+    property bool _useMythProtocol: (dbUtils.getSetting("UseMythProtocol", settings.hostName, "0") === "1");
+    property bool _useMDKPlayer: (dbUtils.getSetting("InternalPlayer", settings.hostName, "Internal") === "MDK");
 
     defaultFocusItem: recordingList
 
@@ -98,11 +99,19 @@ BaseScreen
         }
         else if (event.key === Qt.Key_F5)
         {
+            _useMDKPlayer = !_useMDKPlayer;
+            if (_useMDKPlayer)
+                showNotification("Using MDK player for internal playback");
+            else
+                showNotification("Using QtAV for internal playback");
+        }
+        else if (event.key === Qt.Key_F6)
+        {
             _useMythProtocol = !_useMythProtocol;
             if (_useMythProtocol)
-                showNotification("Using MythProtocol and FFMPEG for playback");
+                showNotification("Using MythProtocol for playback");
             else
-                showNotification("Using VLC for playback");
+                showNotification("Using HTTP streaming for playback");
         }
         else
             event.accepted = false;
@@ -385,7 +394,7 @@ BaseScreen
 
             mediaModel.get(0).title = title;
             mediaModel.get(0).url = url;
-            mediaModel.get(0).player = (_useMythProtocol ? "VLC" : "FFMPEG");
+            mediaModel.get(0).player = (_useMythProtocol ? "VLC" : (_useMDKPlayer ? "MDK" : "FFMPEG"));
             playerSources.adhocList = mediaModel;
             stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0}});
             event.accepted = true;
