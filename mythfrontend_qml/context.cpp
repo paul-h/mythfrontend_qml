@@ -21,6 +21,7 @@
 #include "process.h"
 #include "eventlistener.h"
 #include "context.h"
+#include "mdkplayer.h"
 
 // from QmlVlc
 #include <QmlVlc.h>
@@ -89,6 +90,8 @@ void Context::init()
     //VlcQmlVideoPlayer::registerPlugin();
     VlcQml::registerTypes();
 #endif
+
+    qmlRegisterType<QmlMDKPlayer>("MDKPlayer", 1, 0, "MDKPlayer");
 
     // create the logger for QML
     m_engine->rootContext()->setContextProperty("log", m_logger);

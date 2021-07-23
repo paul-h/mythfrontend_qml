@@ -20,7 +20,7 @@ FocusScope
     property int streamlinkPort: Util.randomIntFromRange(4000, 65536)
     property string commandlog
 
-    // one of VLC, FFMPEG, WebBrowser, YouTube, YouTubeTV, RailCam, StreamLink, StreamBuffer, Internal
+    // one of VLC, FFMPEG, WebBrowser, YouTube, YouTubeTV, RailCam, StreamLink, StreamBuffer, Internal, MDK
     property string player: ""
 
     property bool showBorder: true
@@ -273,6 +273,22 @@ FocusScope
         anchors.margins: playerBorder.border.width
 
         fillMode: VideoOutput.Stretch
+
+        onPlaybackEnded: root.playbackEnded()
+
+        onShowMessage: root.showMessage(message, timeOut)
+    }
+
+    VideoPlayerMDK
+    {
+        id: mdkPlayer
+
+        visible: false
+        enabled: visible
+        anchors.fill: parent
+        anchors.margins: playerBorder.border.width
+
+        //fillMode: VideoOutput.Stretch
 
         onPlaybackEnded: root.playbackEnded()
 
@@ -697,6 +713,8 @@ FocusScope
                     return "Position: " + Util.milliSecondsToString(qtAVPlayer.getPosition()) + " / " + Util.milliSecondsToString(qtAVPlayer.getDuration())
                 else if (getActivePlayer() === "YOUTUBE")
                     return "Position: " + Util.milliSecondsToString(youtubePlayer.getPosition()) + " / " + Util.milliSecondsToString(youtubePlayer.getDuration())
+                else if (getActivePlayer() === "MDK")
+                    return "Position: " + Util.milliSecondsToString(mdkPlayer.getPosition()) + " / " + Util.milliSecondsToString(mdkPlayer.getDuration())
                 else
                     return "Position: " + "N/A"
             }
@@ -718,6 +736,8 @@ FocusScope
                     return Util.milliSecondsToString(qtAVPlayer.getDuration() - qtAVPlayer.getPosition())
                 else if (getActivePlayer() === "YOUTUBE")
                     return Util.milliSecondsToString(youtubePlayer.getDuration() - youtubePlayer.getPosition())
+                else if (getActivePlayer() === "MDK")
+                    return Util.milliSecondsToString(mdkPlayer.getDuration() - mdkPlayer.getPosition())
                 else
                     "Remaining :" + "N/A"
             }
@@ -821,9 +841,10 @@ FocusScope
                             position = vlcPlayer.getPosition() / vlcPlayer.getDuration();
                         else if (getActivePlayer() === "QTAV")
                             position = qtAVPlayer.getPosition() / qtAVPlayer.getDuration();
-
                         else if (getActivePlayer() === "YOUTUBE")
                             position = youtubePlayer.getPosition() / youtubePlayer.getDuration();
+                        else if (getActivePlayer() === "MDK")
+                            position = mdkPlayer.getPosition() / mdkPlayer.getDuration();
 
                         return (parent.width - anchors.leftMargin - anchors.rightMargin) * position;
                     }
@@ -983,6 +1004,8 @@ FocusScope
             return "VLC";
         else if (qtAVPlayer.visible === true)
             return "QTAV";
+        else if (mdkPlayer.visible === true)
+            return "MDK";
         else
             return "NONE";
     }
@@ -997,6 +1020,8 @@ FocusScope
             return vlcPlayer;
         else if (qtAVPlayer.visible === true)
             return qtAVPlayer;
+        else if (mdkPlayer.visible === true)
+            return mdkPlayer;
         else
             return undefined;
     }
@@ -1033,7 +1058,7 @@ FocusScope
         vlcPlayer.stop();
         qtAVPlayer.stop();
         webPlayer.url = "about:blank";
-
+        mdkPlayer.stop();
         activeFeedChanged();
         showMessage("", 0);
 
@@ -1044,6 +1069,7 @@ FocusScope
             webPlayer.visible = false;
             vlcPlayer.visible = false;
             qtAVPlayer.visible = false;
+            mdkPlayer.visible = false;
 
             commandlog = "";
 
@@ -1094,6 +1120,7 @@ FocusScope
             webPlayer.visible = false;
             vlcPlayer.visible = true;
             qtAVPlayer.visible = false;
+            mdkPlayer.visible = false;
         }
         else if (newPlayer === "FFMPEG")
         {
@@ -1101,6 +1128,7 @@ FocusScope
             webPlayer.visible = false;
             vlcPlayer.visible = false;
             qtAVPlayer.visible = true;
+            mdkPlayer.visible = false;
         }
         else if (newPlayer === "WebBrowser" || newPlayer === "RailCam")
         {
@@ -1108,6 +1136,7 @@ FocusScope
             webPlayer.visible = true;
             vlcPlayer.visible = false;
             qtAVPlayer.visible = false;
+            mdkPlayer.visible = false;
         }
         else if (newPlayer === "YouTube")
         {
@@ -1116,6 +1145,7 @@ FocusScope
             webPlayer.visible = false;
             vlcPlayer.visible = false;
             qtAVPlayer.visible = false;
+            mdkPlayer.visible = false;
         }
         else if (newPlayer === "YouTubeTV")
         {
@@ -1124,6 +1154,15 @@ FocusScope
             webPlayer.visible = true;
             vlcPlayer.visible = false;
             qtAVPlayer.visible = false;
+            mdkPlayer.visible = false;
+        }
+        else if (newPlayer === "MDK")
+        {
+            youtubePlayer.visible = false;
+            webPlayer.visible = false;
+            vlcPlayer.visible = false;
+            qtAVPlayer.visible = false;
+            mdkPlayer.visible = true;
         }
         else
         {
@@ -1185,6 +1224,11 @@ FocusScope
             qtAVPlayer.source = newURL;
             qtAVPlayer.play();
         }
+        else if (root.player === "MDK")
+        {
+            mdkPlayer.source = newURL;
+            mdkPlayer.play();
+        }
         else
         {
             log.error(Verbose.PLAYBACK, "MediaPlayer: switchURL - Unknown player '" + root.player + "'");
@@ -1207,6 +1251,8 @@ FocusScope
                 qtAVPlayer.play();
             else if (getActivePlayer() === "YOUTUBE")
                 youtubePlayer.play();
+            else if (getActivePlayer() === "MDK")
+                mdkPlayer.play();
             else if (getActivePlayer() === "BROWSER")
             {
                 // nothing to do
@@ -1235,6 +1281,11 @@ FocusScope
             youtubePlayer.stop();
         else if (getActivePlayer() === "BROWSER")
             webPlayer.url = "about:blank";
+        else if (getActivePlayer() === "MDK")
+        {
+            mdkPlayer.stop();
+            mdkPlayer.source = "";
+        }
     }
 
     function togglePaused()
@@ -1245,6 +1296,8 @@ FocusScope
             qtAVPlayer.togglePaused();
         else if (getActivePlayer() === "YOUTUBE")
             youtubePlayer.togglePaused();
+        else if (getActivePlayer() === "MDK")
+            mdkPlayer.togglePaused();
     }
 
     function toggleOnline()
@@ -1264,22 +1317,18 @@ FocusScope
         root.muteAudio = !root.muteAudio;
 
         if (getActivePlayer() === "VLC")
-        {
             vlcPlayer.setMute(root.muteAudio);
-        }
         else if (getActivePlayer() === "QTAV")
-        {
             qtAVPlayer.setMute(root.muteAudio);
-        }
         else if (getActivePlayer() === "BROWSER")
         {
             webPlayer.audioMuted = root.muteAudio;
             webPlayer.triggerWebAction(WebEngineView.ToggleMediaMute);
         }
         else if (getActivePlayer() === "YOUTUBE")
-        {
             youtubePlayer.setMute(root.muteAudio);
-        }
+        else if (getActivePlayer() === "MDK")
+            mdkPlayer.setMute(root.muteAudio);
 
         showMessage("Mute: " + (root.muteAudio ? "On" : "Off"), settings.osdTimeoutMedium);
     }
@@ -1292,6 +1341,8 @@ FocusScope
             qtAVPlayer.changeVolume(amount);
         else if (getActivePlayer() === "YOUTUBE")
             youtubePlayer.changeVolume(amount);
+        else if (getActivePlayer() === "MDK")
+            mdkPlayer.changeVolume(amount);
     }
 
     function getVolume()
@@ -1302,6 +1353,8 @@ FocusScope
             return qtAVPlayer.getVolume();
         else if (getActivePlayer() === "YOUTUBE")
             return youtubePlayer.getVolume();
+        else if (getActivePlayer() === "MDK")
+            mdkPlayer.getVolume(amount);
 
         return undefined
     }
@@ -1314,6 +1367,9 @@ FocusScope
             qtAVPlayer.setVolume(volume);
         else if (getActivePlayer() === "YOUTUBE")
             youtubePlayer.setVolume(volume);
+        else if (getActivePlayer() === "MDK")
+            mdkPlayer.setVolume(volume);
+
     }
 
     function skipBack(time)
@@ -1324,6 +1380,8 @@ FocusScope
             qtAVPlayer.skipBack(time);
         else if (getActivePlayer() === "YOUTUBE")
             youtubePlayer.skipBack(time);
+        else if (getActivePlayer() === "MDK")
+            mdkPlayer.skipBack(time);
     }
 
     function skipForward(time)
@@ -1334,6 +1392,8 @@ FocusScope
             qtAVPlayer.skipForward(time);
         else if (getActivePlayer() === "YOUTUBE")
             youtubePlayer.skipForward(time);
+        else if (getActivePlayer() === "MDK")
+            mdkPlayer.skipForward(time);
     }
 
     function toggleInterlacer()
@@ -1342,6 +1402,9 @@ FocusScope
             vlcPlayer.toggleInterlacer();
         else if (getActivePlayer() === "QTAV")
             qtAVPlayer.toggleInterlacer();
+        else if (getActivePlayer() === "MDK")
+            mdkPlayer.toggleInterlacer();
+
     }
 
     function toggleInfo()
