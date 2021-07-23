@@ -6,6 +6,8 @@
 RecordingsModel::RecordingsModel(void) : MythIncrementalModel()
 {
     m_descending = true;
+    m_ignoreLiveTV = true;
+    m_ignoreDeleted = true;
 
     // program
     addRole("Title");
@@ -80,6 +82,16 @@ void RecordingsModel::setDescending(bool descending)
     m_descending = descending;
 }
 
+void RecordingsModel::setIgnoreLiveTV(bool ignoreLiveTV)
+{
+    m_ignoreLiveTV = ignoreLiveTV;
+}
+
+void RecordingsModel::setIgnoreDeleted(bool ignoreDeleted)
+{
+    m_ignoreDeleted = ignoreDeleted;
+}
+
 void RecordingsModel::setSort(const QString &sort)
 {
     m_sort = sort;
@@ -120,6 +132,12 @@ void RecordingsModel::startDownload(void)
 
     if (!m_sort.isEmpty())
         sUrl.append(QString("&Sort=%1").arg(m_sort));
+
+    if (m_ignoreLiveTV)
+        sUrl.append("&IgnoreLiveTV=true");
+
+    if (m_ignoreDeleted)
+        sUrl.append("&IgnoreDeleted=true");
 
     QUrl url(sUrl);
     m_downloadManager->append(url);

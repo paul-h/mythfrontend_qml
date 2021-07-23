@@ -20,6 +20,8 @@ public:
     Q_PROPERTY(QString category READ category WRITE setCategory NOTIFY categoryChanged)
     Q_PROPERTY(bool descending READ descending WRITE setDescending NOTIFY descendingChanged)
     Q_PROPERTY(QString sort READ getSort WRITE setSort NOTIFY sortChanged)
+    Q_PROPERTY(bool ignoreLiveTV READ ignoreLiveTV WRITE setIgnoreLiveTV NOTIFY ignoreLiveTVChanged)
+    Q_PROPERTY(bool ignoreDeleted READ ignoreDeleted WRITE setIgnoreDeleted NOTIFY ignoreDeletedChanged)
 
     QString titleRegExp(void) { return m_title; }
     void setTitleRegExp(const QString &title);
@@ -39,6 +41,12 @@ public:
     QString getSort(void) { return m_sort; }
     void setSort(const QString &sort);
 
+    bool ignoreLiveTV(void) { return m_ignoreLiveTV; }
+    void setIgnoreLiveTV(bool ignoreLiveTV);
+
+    bool ignoreDeleted(void) { return m_ignoreDeleted; }
+    void setIgnoreDeleted(bool ignoreDeleted);
+
  signals:
     void titleRegExpChanged(void);
     void recGroupChanged(void);
@@ -46,6 +54,8 @@ public:
     void categoryChanged(void);
     void descendingChanged(void);
     void sortChanged(void);
+    void ignoreLiveTVChanged(void);
+    void ignoreDeletedChanged(void);
 
   protected slots:
     virtual void startDownload(void);
@@ -58,6 +68,8 @@ public:
     QString m_category;
     bool    m_descending;
     QString m_sort;
+    bool    m_ignoreLiveTV;
+    bool    m_ignoreDeleted;
 };
 
 #endif // RECORDINGSMODEL_H
