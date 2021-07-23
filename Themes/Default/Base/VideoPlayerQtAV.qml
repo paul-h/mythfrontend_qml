@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.0
-import QtAV 1.5
+import QtAV 1.7
 import mythqml.net 1.0
 
 import "../../../Util.js" as Util
@@ -28,11 +28,37 @@ FocusScope
         layer.enabled: false
         anchors.fill: parent
 
-//        VideoFilter
-//        {
-//            id: vf
-//            avfilter: "negate"
-//        }
+        VideoFilter
+        {
+            id: vf
+            enabled: currentDeinterlacer > 0
+            avfilter: ""
+
+            property int currentDeinterlacer: 0
+            property var deinterlacers: ["None", "Bob", "Yadif", "w3fdif"]
+
+            onCurrentDeinterlacerChanged:
+            {
+                switch (currentDeinterlacer)
+                {
+                    case 0:
+                        avfilter = "";
+                        break;
+                    case 1:
+                        avfilter = "bwdif";
+                        break;
+                    case 2:
+                        avfilter = "yadif"
+                        break;
+                    case 3:
+                        avfilter = "w3fdif"
+                        break;
+                    default:
+                        avfilter =""
+                        break;
+                }
+            }
+        }
 
         Video
         {
@@ -43,9 +69,9 @@ FocusScope
             backgroundColor: "black"
             anchors.fill: parent
             subtitle.engines: ["FFmpeg"]
-            videoCodecPriority: ["CUDA", "FFmpeg", "VAAPI"]
+            videoCodecPriority: ["FFmpeg", "VAAPI", "CUDA"]
             audioBackends: ["OpenAL", "Pulse", "Null"]
-//            videoFilters: [vf]
+            videoFilters: [vf]
 
             onStatusChanged:
             {
@@ -152,7 +178,12 @@ FocusScope
 
     function getVolume()
     {
-        return mediaplayer.volume;
+        return parseInt(mediaplayer.volume * 100);
+    }
+
+    function setVolume(volume)
+    {
+        mediaplayer.volume = volume / 100;
     }
 
     function getMuted()
@@ -188,9 +219,12 @@ FocusScope
 
     function toggleInterlacer()
     {
-        //FIXME
+        if (vf.currentDeinterlacer >= vf.deinterlacers.length - 1)
+            vf.currentDeinterlacer = 0;
+        else
+            vf.currentDeinterlacer++
 
-        showMessage("Deinterlacer: N/A", settings.osdTimeoutMedium);
+        showMessage("Deinterlacer: " + vf.deinterlacers[vf.currentDeinterlacer], settings.osdTimeoutMedium);
     }
 }
 
