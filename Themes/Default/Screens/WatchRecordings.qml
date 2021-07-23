@@ -15,6 +15,8 @@ BaseScreen
     property bool dateSorterActive: true
     property bool showFanart: false
 
+    property bool _useMythProtocol: true
+
     defaultFocusItem: recordingList
 
     Component.onCompleted:
@@ -93,6 +95,14 @@ BaseScreen
         {
             //BLUE
             showFanart = !showFanart;
+        }
+        else if (event.key === Qt.Key_F5)
+        {
+            _useMythProtocol = !_useMythProtocol;
+            if (_useMythProtocol)
+                showNotification("Using MythProtocol and FFMPEG for playback");
+            else
+                showNotification("Using VLC for playback");
         }
         else
             event.accepted = false;
@@ -333,7 +343,7 @@ BaseScreen
             title: ""
             icon: ""
             url: ""
-            player: "Internal"
+            player: ""
             duration: ""
         }
     }
@@ -348,18 +358,34 @@ BaseScreen
 
         Keys.onReturnPressed:
         {
+            var url;
             var hostname = model.get(currentIndex).HostName === settings.hostName ? "localhost" : model.get(currentIndex).HostName
-            var filename = "myth://" + "type=recording:server=" + hostname +
-                           ":pin=" + settings.securityPin +
-                           ":port=6543:filename=" + model.get(currentIndex).FileName +
-                           ":sgroup=" + model.get(currentIndex).StorageGroup;
+
+            if (_useMythProtocol)
+            {
+                url = "myth://" + "type=recording:server=" + hostname +
+                               ":pin=" + settings.securityPin +
+                               ":port=6543:filename=" + model.get(currentIndex).FileName +
+                               ":sgroup=" + model.get(currentIndex).StorageGroup;
+                log.info(Verbose.PLAYBACK, "WatchRecordings: MythProtocol URL: " + url);
+                console.log(url);
+            }
+            else
+            {
+                var chanID = model.get(currentIndex).ChanId;
+                var startTime = model.get(currentIndex).StartTs;
+                url = "http://" + hostname + ":" + settings.masterPort + "/Content/GetRecording?ChanId=" + chanID + "&StartTime=" + startTime;
+                log.info(Verbose.PLAYBACK, "WatchRecordings: HTTP URL: " + url);
+            }
+
             var title = ""
 
             if (model.get(currentIndex).HostName !== "")
                 title = (model.get(currentIndex).SubTitle !== "" ? model.get(currentIndex).Title + ": " + model.get(currentIndex).SubTitle : model.get(currentIndex).Title)
 
             mediaModel.get(0).title = title;
-            mediaModel.get(0).url = filename;
+            mediaModel.get(0).url = url;
+            mediaModel.get(0).player = (_useMythProtocol ? "VLC" : "FFMPEG");
             playerSources.adhocList = mediaModel;
             stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0}});
             event.accepted = true;
