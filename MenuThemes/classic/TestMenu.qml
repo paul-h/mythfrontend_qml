@@ -54,4 +54,10 @@ ListModel
         loaderSource: "tests/TestVlcQt.qml"
         waterMark: "watermark/setup.png"
     }
+    ListElement
+    {
+        menutext:"MDK SDK Player Test"
+        loaderSource: "tests/TestMDK.qml"
+        waterMark: "watermark/setup.png"
+    }
 }
