@@ -589,7 +589,10 @@ static int Control(stream_t *p_stream, int i_query, va_list args)
             pb_bool = (bool*)va_arg(args, bool*);
             *pb_bool = true;    /* FIXME */
             break;
-
+        case STREAM_IS_DIRECTORY:
+            pb_bool = (bool*)va_arg(args, bool*);
+            *pb_bool = false;
+            break;
         case STREAM_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg(args, int64_t *);
             var_Get(p_stream, "myth-caching", &val);
@@ -614,21 +617,13 @@ static int Control(stream_t *p_stream, int i_query, va_list args)
             return VLC_EGENERIC;
 
         case STREAM_SET_PAUSE_STATE:
-            pb_bool = (bool*)va_arg(args, bool*);
-            if (!pb_bool)
-            {
-                if (p_sys->m_lp)
-                    return Seek(p_stream, p_sys->m_lp->GetPosition()); // FIXME
-                else if (p_sys->m_fp)
-                    return Seek(p_stream, p_sys->m_fp->GetPosition()); // FIXME
-
-                return VLC_EGENERIC;
-            }
+            /* nothing to do */
             break;
 
         case STREAM_SET_PRIVATE_ID_STATE:
-        case STREAM_GET_CONTENT_TYPE:
         case STREAM_GET_META:
+        case STREAM_GET_SIGNAL:
+        case STREAM_GET_TAGS:
             return VLC_EGENERIC;
 
         case STREAM_GET_TITLE_INFO:
@@ -683,7 +678,7 @@ static int Control(stream_t *p_stream, int i_query, va_list args)
             //}
             return VLC_EGENERIC;
 
-        case STREAM_SET_SEEKPOINT:
+        case STREAM_GET_SEEKPOINT:
 #if 0
             i_skp = (int)va_arg(args, int);
             p_sys->i_seekpoint = i_skp;
@@ -720,6 +715,12 @@ static int Control(stream_t *p_stream, int i_query, va_list args)
 
         case STREAM_SET_PRIVATE_ID_CA:
             return VLC_EGENERIC;
+
+        case STREAM_GET_CONTENT_TYPE:
+            msg_Warn(p_stream, "DONT KNOW THE CONTENT TYPE");
+            return VLC_EGENERIC;
+            //*va_arg( args, char ** ) = strdup( false ? "video/MP2T" : "video/MP2P" );
+            //return VLC_SUCCESS;
 
         default:
             msg_Warn(p_stream, "unimplemented query in control: %d", i_query);
