@@ -13,6 +13,8 @@ BaseScreen
     defaultFocusItem: videoList
     property alias folder: folderModel.folder
 
+    property bool _useMDKPlayer: (dbUtils.getSetting("InternalPlayer", settings.hostName, "Internal") === "MDK");
+
     Component.onCompleted:
     {
         showTitle(true, folderModel.folder);
@@ -30,7 +32,7 @@ BaseScreen
             title: ""
             icon: ""
             url: ""
-            player: "Internal"
+            player: ""
             duration: ""
         }
     }
@@ -50,6 +52,14 @@ BaseScreen
                                                         "-vcodec", "copy", "-acodec", "copy",
                                                         "file://" + videoList.model.get(videoList.currentIndex, "filePath") + "_clean.mp4"
                                                        ]);
+        }
+        else if (event.key === Qt.Key_F5)
+        {
+            _useMDKPlayer = !_useMDKPlayer;
+            if (_useMDKPlayer)
+                showNotification("Using MDK player for internal playback");
+            else
+                showNotification("Using QtAV for internal playback");
         }
         else
             event.accepted = true;
@@ -174,6 +184,7 @@ BaseScreen
         {
             mediaModel.get(0).title = model.get(currentIndex, "filePath");
             mediaModel.get(0).url = "file://" + model.get(currentIndex, "filePath");
+            mediaModel.get(0).player = _useMDKPlayer ? "MDK" : "Internal";
 
             if (model.get(currentIndex, "fileIsDir"))
             {
