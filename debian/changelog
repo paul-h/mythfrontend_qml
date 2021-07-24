@@ -2,7 +2,7 @@ mythfrontend-qml (3:0.0.10.alpha~stable) hirsute; urgency=medium
 
   * Bump the version
 
- -- Paul Harrison <pharrison@mythtv.org>  Wed, 13 June 2021 15:12:00 +0100
+ -- Paul Harrison <pharrison@mythtv.org>  Wed, 13 Jun 2021 15:12:00 +0100
 
 
 mythfrontend-qml (3:0.0.9.alpha~stable) eoan; urgency=medium
