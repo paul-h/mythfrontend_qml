@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 
 export QT_SELECT=qt5
+export VERBOSE=1
 
 %:
 	dh $@
