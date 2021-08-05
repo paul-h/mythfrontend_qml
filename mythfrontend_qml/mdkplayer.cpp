@@ -1,5 +1,39 @@
-#include "mdkplayer.h"
+// qt
 #include <QDebug>
+
+// mdk
+#include "mdk/c/MediaInfo.h"
+
+// mythqml
+#include "context.h"
+#include "mdkplayer.h"
+
+
+static void renderCallback(void *vo_opaque, void *opaque)
+{
+    Q_UNUSED(vo_opaque)
+
+    QmlMDKPlayer *player = static_cast<QmlMDKPlayer *>(opaque);
+    QMetaObject::invokeMethod(player, "update");
+}
+
+static void stateChangedCallback(MDK_State state, void *opaque)
+{
+    QmlMDKPlayer *player = static_cast<QmlMDKPlayer *>(opaque);
+    player->playbackStateChanged(state);
+}
+
+static bool mediaStatusChangedCallback(MDK_MediaStatus status, void *opaque)
+{
+    QmlMDKPlayer *player = static_cast<QmlMDKPlayer *>(opaque);
+    return player->mediaStatusChanged(status);
+}
+
+static bool mediaEventCallback(const mdkMediaEvent *event, void *opaque)
+{
+    QmlMDKPlayer *player = static_cast<QmlMDKPlayer *>(opaque);
+    return player->eventHandler(*event);
+}
 
 class VideoRendererInternal : public QQuickFramebufferObject::Renderer
 {
@@ -23,26 +57,48 @@ public:
     QmlMDKPlayer *r;
 };
 
-
-QmlMDKPlayer::QmlMDKPlayer(QQuickItem *parent):
-    QQuickFramebufferObject(parent),
-    m_player(new mdk::Player), m_updateTimer(new QTimer)
+QmlMDKPlayer::QmlMDKPlayer(QQuickItem *parent): QQuickFramebufferObject(parent),
+    m_isAvailable(false), m_playerAPI(nullptr), m_updateTimer(new QTimer),m_mediaStatus(MediaStatusNoMedia),
+    m_playbackState(PlayerStateStopped), m_position(0), m_duration(0), m_muted(false), m_volume(1.0)
 {
+    m_playerAPI = gMDKAPI->createPlayer();
+
     qRegisterMetaType<MediaStatus>("MediaStatus");
 
     setMirrorVertically(true);
 
-    m_player->onStateChanged([this](mdk::PlaybackState s) { playbackStateChanged(s);});
-    m_player->onMediaStatusChanged([this](mdk::MediaStatus s) { return mediaStatusChanged(s);});
-    m_player->onEvent([this](mdk::MediaEvent e) { return eventHandler(e);});
+    if (m_playerAPI)
+    {
+        mdkStateChangedCallback callback;
+        callback.cb = stateChangedCallback;
+        callback.opaque = this;
+        m_playerAPI->onStateChanged(m_playerAPI->object, callback);
 
-    connect(m_updateTimer, &QTimer::timeout, this, &QmlMDKPlayer::updatePosition);
-    m_updateTimer->start(1000);
+
+        mdkMediaStatusChangedCallback callback2;
+        callback2.cb = mediaStatusChangedCallback;
+        callback2.opaque = this;
+        m_playerAPI->onMediaStatusChanged(m_playerAPI->object, callback2);
+
+        mdkMediaEventCallback callback3;
+        callback3.cb = mediaEventCallback;
+        callback3.opaque = this;
+        m_playerAPI->onEvent(m_playerAPI->object, callback3, nullptr);
+
+        connect(m_updateTimer, &QTimer::timeout, this, &QmlMDKPlayer::updatePosition);
+        m_updateTimer->start(1000);
+    }
 }
 
 QmlMDKPlayer::~QmlMDKPlayer()
 {
-    delete m_player;
+    if (m_playerAPI)
+        gMDKAPI->destroyPlayer(&m_playerAPI);
+}
+
+bool QmlMDKPlayer::isAvailable(void)
+{
+    return (m_playerAPI != nullptr);
 }
 
 QQuickFramebufferObject::Renderer *QmlMDKPlayer::createRenderer() const
@@ -50,9 +106,12 @@ QQuickFramebufferObject::Renderer *QmlMDKPlayer::createRenderer() const
     return new VideoRendererInternal(const_cast<QmlMDKPlayer*>(this));
 }
 
-void QmlMDKPlayer::setSource(const QString & s)
+void QmlMDKPlayer::setSource(const QString &s)
 {
-    m_player->setMedia(s.toUtf8().data());
+    if (!m_playerAPI)
+        return;
+
+    m_playerAPI->setMedia(m_playerAPI->object, s.toUtf8().data());
     m_source = s;
     emit sourceChanged();
     play();
@@ -60,52 +119,55 @@ void QmlMDKPlayer::setSource(const QString & s)
 
 void QmlMDKPlayer::updatePosition(void)
 {
-    if (m_position != m_player->position())
+    if (!m_playerAPI)
+        return;
+
+    if (m_position != m_playerAPI->position(m_playerAPI->object))
     {
-        m_position = m_player->position();
+        m_position = m_playerAPI->position(m_playerAPI->object);
         positionChanged();
     }
 
-    if (m_duration != m_player->mediaInfo().duration)
+    if (m_duration != m_playerAPI->mediaInfo(m_playerAPI->object)->duration)
     {
-        m_duration = m_player->mediaInfo().duration;
+        m_duration = m_playerAPI->mediaInfo(m_playerAPI->object)->duration;
         emit durationChanged();
     }
 }
-void QmlMDKPlayer::playbackStateChanged(mdk::PlaybackState playbackState)
+void QmlMDKPlayer::playbackStateChanged(MDK_PlaybackState playbackState)
 {
     m_playbackState = static_cast<PlayerState>(playbackState);
 
     emit playerStateChanged(m_playbackState);
 }
 
-bool QmlMDKPlayer::mediaStatusChanged(mdk::MediaStatus mediaStatus)
+bool QmlMDKPlayer::mediaStatusChanged(MDK_MediaStatus mediaStatus)
 {
     QStringList status;
-    if (mediaStatus == 0)
+    if (mediaStatus == MDK_MediaStatus_NoMedia)
         status.append("NoMedia");
-    if (mediaStatus == 1)
+    if (mediaStatus == MDK_MediaStatus_Unloaded)
         status.append("Unloaded");
-    if (mediaStatus & mdk::Loading)
+    if (mediaStatus & MDK_MediaStatus_Loading)
         status.append("Loading");
-    if (mediaStatus & mdk::Loaded)
+    if (mediaStatus & MDK_MediaStatus_Loaded)
         status.append("Loaded");
-    if (mediaStatus & mdk::Prepared)
+    if (mediaStatus & MDK_MediaStatus_Prepared)
         status.append("Prepared");
-    if (mediaStatus & mdk::Stalled)
+    if (mediaStatus & MDK_MediaStatus_Stalled)
         status.append("Stalled");
-    if (mediaStatus & mdk::Buffering)
+    if (mediaStatus & MDK_MediaStatus_Buffering)
         status.append("Buffering");
-    if (mediaStatus & mdk::Buffered)
+    if (mediaStatus & MDK_MediaStatus_Buffered)
         status.append("Buffered");
-    if (mediaStatus & mdk::End)
+    if (mediaStatus & MDK_MediaStatus_End)
         status.append("End");
-    if (mediaStatus & mdk::Seeking)
+    if (mediaStatus & MDK_MediaStatus_Seeking)
         status.append("Seeking");
-    if (mediaStatus & mdk::Invalid)
+    if (mediaStatus & MDK_MediaStatus_Invalid)
         status.append("Invalid");
 
-    qDebug() << "QmlMDKPlayer: MediaStatus changed - " << status.join("|") << " - " << (int) mediaStatus;
+    gContext->m_logger->info(Verbose::GUI, QString("QmlMDKPlayer: MediaStatus changed - %1 (%2)").arg(status.join("|")).arg((int) mediaStatus));
 
     m_mediaStatus = static_cast<MediaStatus>(mediaStatus);
 
@@ -114,81 +176,137 @@ bool QmlMDKPlayer::mediaStatusChanged(mdk::MediaStatus mediaStatus)
     return true;
 }
 
-bool QmlMDKPlayer::eventHandler(mdk::MediaEvent mediaEvent)
+bool QmlMDKPlayer::eventHandler(mdkMediaEvent mediaEvent)
 {
-    qDebug() << "QmlMDKPlayer::eventHandler - category: " << mediaEvent.category.c_str() << ", details: " << mediaEvent.detail.c_str() << ", error: " << mediaEvent.error;
+    gContext->m_logger->debug(Verbose::GUI, QString("QmlMDKPlayer::eventHandler - category: %1 , details %2, error: %3").arg(mediaEvent.category).arg(mediaEvent.detail).arg(mediaEvent.error));
     return true;
 }
 
 QmlMDKPlayer::PlayerState QmlMDKPlayer::playerState()
 {
-    return (PlayerState)m_player->state();
+    if (!m_playerAPI)
+        return PlayerStateStopped;
+
+    return (PlayerState)m_playerAPI->state(m_playerAPI->object);
 }
 
 void QmlMDKPlayer::setPlayerState(PlayerState newState)
 {
-    m_player->set((mdk::PlaybackState)newState);
+    if (!m_playerAPI)
+        return;
+
+    m_playerAPI->setState(m_playerAPI->object, (MDK_State)newState);
 }
 
+float QmlMDKPlayer::volume(void)
+{
+    if (!m_playerAPI)
+        return m_volume;
+
+    return 1.0;
+}
 
 void QmlMDKPlayer::setVolume(float volume)
 {
-    m_player->setVolume(volume);
+    if (!m_playerAPI)
+        return;
+
+    m_volume = volume;
+    m_playerAPI->setVolume(m_playerAPI->object, m_volume);
+
     emit volumeChanged();
+}
+
+bool QmlMDKPlayer::muted(void)
+{
+    if (!m_playerAPI)
+        return true;
+
+    return m_muted;
 }
 
 void QmlMDKPlayer::setMuted(bool muted)
 {
-    m_player->setMute(muted);
+    if (!m_playerAPI)
+        return;
+
+    m_muted = muted;
+    m_playerAPI->setMute(m_playerAPI->object, m_muted);
+
     emit mutedChanged();
 }
 
 qint64 QmlMDKPlayer::position(void)
 {
-    if (m_position != m_player->position())
+    if (!m_playerAPI)
+        return 0;
+
+    if (m_position != m_playerAPI->position(m_playerAPI->object))
     {
-        m_position = m_player->position();
+        m_position = m_playerAPI->position(m_playerAPI->object);
         emit positionChanged();
     }
 
-    return m_player->position();
+    return m_playerAPI->position(m_playerAPI->object);
 }
 
 qint64 QmlMDKPlayer::duration(void)
 {
-    if (m_duration != m_player->mediaInfo().duration)
+    if (!m_playerAPI)
+        return 0;
+
+    if (m_duration != m_playerAPI->mediaInfo(m_playerAPI->object)->duration)
     {
-        m_duration = m_player->mediaInfo().duration;
+        m_duration = m_playerAPI->mediaInfo(m_playerAPI->object)->duration;
         emit durationChanged();
     }
 
-    return m_player->mediaInfo().duration;
+    return m_playerAPI->mediaInfo(m_playerAPI->object)->duration;
 }
 
 void QmlMDKPlayer::play()
 {
-    m_player->set(mdk::PlaybackState::Playing);
-    m_player->setRenderCallback([=](void *) {QMetaObject::invokeMethod(this, "update");} );
+    if (!m_playerAPI)
+        return;
+
+    m_playerAPI->setState(m_playerAPI->object, MDK_State_Playing);
+
+    mdkRenderCallback callback;
+    callback.cb = renderCallback;
+    callback.opaque = this;
+    m_playerAPI->setRenderCallback(m_playerAPI->object, callback );
 }
 
 void QmlMDKPlayer::stop()
 {
-    m_player->set(mdk::PlaybackState::Stopped);
+    if (!m_playerAPI)
+        return;
+
+    m_playerAPI->setState(m_playerAPI->object, MDK_State_Stopped);
 }
 
 void QmlMDKPlayer::pause()
 {
-    m_player->set(mdk::PlaybackState::Paused);
+    if (!m_playerAPI)
+        return;
+
+    m_playerAPI->setState(m_playerAPI->object, MDK_State_Paused);
 }
 
 float QmlMDKPlayer::getPlaybackRate(void)
 {
-    return m_player->playbackRate();
+    if (!m_playerAPI)
+        return 1.0;
+
+    return m_playerAPI->playbackRate(m_playerAPI->object);
 }
 
 void QmlMDKPlayer::setPlaybackRate(float rate)
 {
-    m_player->setPlaybackRate(rate);
+    if (!m_playerAPI)
+        return;
+
+    m_playerAPI->setPlaybackRate(m_playerAPI->object, rate);
 }
 
 QmlMDKPlayer::MediaStatus QmlMDKPlayer::mediaStatus(void)
@@ -198,25 +316,47 @@ QmlMDKPlayer::MediaStatus QmlMDKPlayer::mediaStatus(void)
 
 void QmlMDKPlayer::seek(qint64 ms)
 {
-    m_player->seek(ms, mdk::SeekFlag::FromNow, nullptr);
+    if (!m_playerAPI)
+        return;
+
+    m_playerAPI->seekWithFlags(m_playerAPI->object, ms, MDK_SeekFlag_FromNow, {nullptr, nullptr});
 }
 
 void QmlMDKPlayer::setProperty(const QString &key, const QString &value)
 {
-    m_player->setProperty(key.toLocal8Bit().data(), value.toLocal8Bit().data());
+    if (!m_playerAPI)
+        return;
+
+    m_playerAPI->setProperty(m_playerAPI->object, key.toLocal8Bit().data(), value.toLocal8Bit().data());
 }
 
 QString QmlMDKPlayer::getProperty(const QString &key, const QString &defaultValue)
 {
-    return QString::fromStdString(m_player->property(key.toLocal8Bit().data(), defaultValue.toLocal8Bit().data()));
+    if (!m_playerAPI)
+        return defaultValue;
+
+    QString result;
+
+    result = QString::fromStdString(m_playerAPI->getProperty(m_playerAPI->object, key.toLocal8Bit().data()));
+
+    if (result.isNull() || result.isEmpty())
+        result = defaultValue;
+
+    return result;
 }
 
 void QmlMDKPlayer::setVideoSurfaceSize(int width, int height)
 {
-    m_player->setVideoSurfaceSize(width, height);
+    if (!m_playerAPI)
+        return;
+
+    m_playerAPI->setVideoSurfaceSize(m_playerAPI->object, width, height, nullptr);
 }
 
 void QmlMDKPlayer::renderVideo()
 {
-    m_player->renderVideo();
+    if (!m_playerAPI)
+        return;
+
+    m_playerAPI->renderVideo(m_playerAPI->object, nullptr);
 }

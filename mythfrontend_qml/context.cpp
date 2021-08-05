@@ -91,6 +91,8 @@ void Context::init()
     VlcQml::registerTypes();
 #endif
 
+    // try to load the MDK API
+    gMDKAPI = new MDKAPI();
     qmlRegisterType<QmlMDKPlayer>("MDKPlayer", 1, 0, "MDKPlayer");
 
     // create the logger for QML

@@ -1,11 +1,11 @@
-#ifndef VIDEORENDERER_H
-#define VIDEORENDERER_H
+#ifndef QMLMDKPLAYER_H
+#define QMLMDKPLAYER_H
 
 #include <QQuickFramebufferObject>
 #include <QOpenGLFramebufferObject>
 #include <QDebug>
 #include <QTimer>
-#include "mdk/Player.h"
+#include "mdkapi.h"
 
 class QmlMDKPlayer : public QQuickFramebufferObject
 {
@@ -21,20 +21,21 @@ public:
 
     enum MediaStatus
     {
-        MediaStatusNoMedia = mdk::NoMedia,     // initial status, not invalid. // what if set an empty url and closed?
-        MediaStatusUnloaded = mdk::Unloaded,   // unloaded // (TODO: or when a source(url) is set?)
-        MediaStatusLoading = mdk::Loading,     // opening and parsing the media
-        MediaStatusLoaded = mdk::Loaded,       // media is loaded and parsed. player is stopped state. mediaInfo() is available now
-        MediaStatusPrepared = mdk::Prepared,   // all tracks are buffered and ready to decode frames. tracks failed to open decoder are ignored
-        MediaStatusStalled = mdk::Stalled,     // insufficient buffering or other interruptions (timeout, user interrupt)
-        MediaStatusBuffering = mdk::Buffering, // when buffering starts
-        MediaStatusBuffered = mdk::Buffered,   // when buffering ends
-        MediaStatusEnd = mdk::End,             // reached the end of the current media, no more data to read
-        MediaStatusSeeking = mdk::Seeking,
-        MediaStatusInvalid = mdk::Invalid,     // failed to load media because of unsupport format or invalid media source
+        MediaStatusNoMedia = MDK_MediaStatus_NoMedia,     // initial status, not invalid. // what if set an empty url and closed?
+        MediaStatusUnloaded = MDK_MediaStatus_Unloaded,   // unloaded // (TODO: or when a source(url) is set?)
+        MediaStatusLoading = MDK_MediaStatus_Loading,     // opening and parsing the media
+        MediaStatusLoaded = MDK_MediaStatus_Loaded,       // media is loaded and parsed. player is stopped state. mediaInfo() is available now
+        MediaStatusPrepared = MDK_MediaStatus_Prepared,   // all tracks are buffered and ready to decode frames. tracks failed to open decoder are ignored
+        MediaStatusStalled = MDK_MediaStatus_Stalled,     // insufficient buffering or other interruptions (timeout, user interrupt)
+        MediaStatusBuffering = MDK_MediaStatus_Buffering, // when buffering starts
+        MediaStatusBuffered = MDK_MediaStatus_Buffered,   // when buffering ends
+        MediaStatusEnd = MDK_MediaStatus_End,             // reached the end of the current media, no more data to read
+        MediaStatusSeeking = MDK_MediaStatus_Seeking,
+        MediaStatusInvalid = MDK_MediaStatus_Invalid,     // failed to load media because of unsupport format or invalid media source
     };
     Q_ENUM(MediaStatus)
 
+    Q_PROPERTY(bool isAvailable READ isAvailable NOTIFY isAvailableChanged)
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(float volume READ volume WRITE setVolume NOTIFY volumeChanged)
     Q_PROPERTY(bool muted READ muted WRITE setMuted NOTIFY mutedChanged)
@@ -64,13 +65,15 @@ public:
     Q_INVOKABLE void setProperty(const QString &key, const QString &value);
     Q_INVOKABLE QString getProperty(const QString &key, const QString &defaultValue);
 
+    bool isAvailable(void);
+
     PlayerState playerState(void);
     void setPlayerState(PlayerState newstate);
 
-    float volume(void) { return m_player->volume(); }
+    float volume(void);
     void setVolume(float volume);
 
-    bool muted(void) { return m_player->isMute(); }
+    bool muted(void);
     void setMuted(bool muted);
 
     qint64 position(void);
@@ -80,11 +83,13 @@ public:
 
     void updatePosition(void);
     void renderVideo();
-    void playbackStateChanged(mdk::PlaybackState playbackState);
-    bool mediaStatusChanged(mdk::MediaStatus mediaStatus);
-    bool eventHandler(mdk::MediaEvent mediaEvent);
+    void playbackStateChanged(MDK_State playbackState);
+    bool mediaStatusChanged(MDK_MediaStatus mediaStatus);
+    bool eventHandler(mdkMediaEvent mediaEvent);
+//    void update(struct mdkPlayer*, struct mdkVideoCallback);
 
 signals:
+    void isAvailableChanged();
     void sourceChanged();
     void volumeChanged();
     void mutedChanged();
@@ -95,13 +100,16 @@ signals:
     void playbackEnded();
 
 private:
-    QString      m_source;
-    mdk::Player *m_player;
-    QTimer      *m_updateTimer;
-    MediaStatus  m_mediaStatus;
-    PlayerState  m_playbackState;
-    qint64       m_position;
-    qint64       m_duration;
+    bool          m_isAvailable;
+    QString       m_source;
+    const mdkPlayerAPI *m_playerAPI;
+    QTimer       *m_updateTimer;
+    MediaStatus   m_mediaStatus;
+    PlayerState   m_playbackState;
+    qint64        m_position;
+    qint64        m_duration;
+    bool          m_muted;
+    float         m_volume;
 };
 
-#endif // VIDEORENDERER_H
+#endif // QMLMDKPLAYER_H
