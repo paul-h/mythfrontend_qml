@@ -66,6 +66,15 @@ FocusScope
         }
     }
 
+    LabelText
+    {
+        anchors.fill: parent
+        visible: !mediaplayer.isAvailable
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        text: "The MDK player is not available.\nPlease install the MDK library. See help for instructions."
+    }
+
     function getPlayerState()
     {
         return mediaplayer.playerState;
