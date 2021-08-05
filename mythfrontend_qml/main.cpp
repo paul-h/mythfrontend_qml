@@ -17,10 +17,12 @@
 
 // shared
 #include "context.h"
+#include "mdkapi.h"
 
 //#undef QT_NO_DEBUG_OUTPUT
 
 Context *gContext = nullptr;
+MDKAPI  *gMDKAPI = nullptr;
 
 int main(int argc, char *argv[])
 {

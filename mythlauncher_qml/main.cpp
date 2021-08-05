@@ -4,8 +4,10 @@
 
 // common
 #include "context.h"
+#include "mdkapi.h"
 
 Context *gContext = nullptr;
+MDKAPI  *gMDKAPI = nullptr;
 
 int main(int argc, char *argv[])
 {
