@@ -1354,7 +1354,7 @@ FocusScope
         else if (getActivePlayer() === "YOUTUBE")
             return youtubePlayer.getVolume();
         else if (getActivePlayer() === "MDK")
-            mdkPlayer.getVolume(amount);
+            return mdkPlayer.getVolume();
 
         return undefined
     }
