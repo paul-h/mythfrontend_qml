@@ -18,12 +18,12 @@ QtObject
 
         ListElement
         {
-            url: "https://mythqml.net/downloads/themes/MythCenterFIREPLACE/Fireworks.mp4.part01";
+            url: "https://mythqml.net/downloads/themes/MythCenterFIREWORKS/Fireworks.mp4.part01";
             size: 50.0
         }
         ListElement
         {
-            url: "https://mythqml.net/downloads/themes/MythCenterFIREPLACE/Fireworks.mp4.part02";
+            url: "https://mythqml.net/downloads/themes/MythCenterFIREWORKS/Fireworks.mp4.part02";
             size: 4.0
         }
     }
