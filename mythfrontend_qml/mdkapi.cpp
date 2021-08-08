@@ -67,7 +67,11 @@ bool MDKAPI::load(const QString &path)
         return false;
     }
 
-    gContext->m_logger->info(Verbose::GENERAL, QString("MDKAPI: MDK Versions is: %1").arg(m_MDK_version()));
+    int mdkVersion = m_MDK_version();
+    int major = (mdkVersion & 0xff0000) >> 16;
+    int minor = (mdkVersion & 0x00ff00) >> 8;
+    int patch = (mdkVersion & 0x0000ff);
+    gContext->m_logger->info(Verbose::GENERAL, QString("MDKAPI: MDK Versions is: v%1.%2.%3").arg(major).arg(minor).arg(patch));
 
     return true;
 }
