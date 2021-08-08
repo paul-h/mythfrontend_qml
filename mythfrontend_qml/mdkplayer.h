@@ -86,7 +86,6 @@ public:
     void playbackStateChanged(MDK_State playbackState);
     bool mediaStatusChanged(MDK_MediaStatus mediaStatus);
     bool eventHandler(mdkMediaEvent mediaEvent);
-//    void update(struct mdkPlayer*, struct mdkVideoCallback);
 
 signals:
     void isAvailableChanged();

@@ -122,18 +122,22 @@ void QmlMDKPlayer::updatePosition(void)
     if (!m_playerAPI)
         return;
 
-    if (m_position != m_playerAPI->position(m_playerAPI->object))
+    int pos = m_playerAPI->position(m_playerAPI->object);
+
+    if (m_position != pos)
     {
-        m_position = m_playerAPI->position(m_playerAPI->object);
-        positionChanged();
+        m_position =pos;
+        emit positionChanged();
     }
 
-    if (m_duration != m_playerAPI->mediaInfo(m_playerAPI->object)->duration)
+    int duration = m_playerAPI->mediaInfo(m_playerAPI->object)->duration;
+    if (m_duration != duration)
     {
-        m_duration = m_playerAPI->mediaInfo(m_playerAPI->object)->duration;
+        m_duration = duration;
         emit durationChanged();
     }
 }
+
 void QmlMDKPlayer::playbackStateChanged(MDK_PlaybackState playbackState)
 {
     m_playbackState = static_cast<PlayerState>(playbackState);
@@ -241,13 +245,7 @@ qint64 QmlMDKPlayer::position(void)
     if (!m_playerAPI)
         return 0;
 
-    if (m_position != m_playerAPI->position(m_playerAPI->object))
-    {
-        m_position = m_playerAPI->position(m_playerAPI->object);
-        emit positionChanged();
-    }
-
-    return m_playerAPI->position(m_playerAPI->object);
+    return m_position;
 }
 
 qint64 QmlMDKPlayer::duration(void)
@@ -255,13 +253,7 @@ qint64 QmlMDKPlayer::duration(void)
     if (!m_playerAPI)
         return 0;
 
-    if (m_duration != m_playerAPI->mediaInfo(m_playerAPI->object)->duration)
-    {
-        m_duration = m_playerAPI->mediaInfo(m_playerAPI->object)->duration;
-        emit durationChanged();
-    }
-
-    return m_playerAPI->mediaInfo(m_playerAPI->object)->duration;
+    return m_duration;
 }
 
 void QmlMDKPlayer::play()
