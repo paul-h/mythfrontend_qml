@@ -14,6 +14,8 @@ BaseScreen
 
     property int savedID: -1
 
+    property bool checkedForUpdates: false
+
     signal feedSelected(string feedSource, string filter, int index)
 
     Component.onCompleted:
@@ -51,7 +53,7 @@ BaseScreen
         updateWebcamDetails();
 
         if (!isPanel)
-            delay(1500, checkForUpdates);
+            delay(750, checkForUpdates);
     }
 
     Component.onDestruction:
@@ -69,6 +71,9 @@ BaseScreen
 
     Keys.onPressed:
     {
+        if (!checkedForUpdates)
+            return;
+
         event.accepted = true;
 
         if (event.key === Qt.Key_M)
@@ -253,6 +258,9 @@ BaseScreen
 
         Keys.onReturnPressed:
         {
+            if (!checkedForUpdates)
+                return;
+
             var filter = feedSource.webcamListIndex + "," + feedSource.category + "," + feedSource.sort;
 
             returnSound.play();
@@ -661,6 +669,8 @@ BaseScreen
             messageSound.play();
             updatesDialog.show();
         }
+        else
+            checkedForUpdates = true;
     }
 
     Timer
@@ -690,11 +700,13 @@ BaseScreen
 
         onAccepted:
         {
+            checkedForUpdates = true;
             webcamGrid.focus = true;
 
         }
         onCancelled:
         {
+            checkedForUpdates = true;
             webcamGrid.focus = true;
         }
 
