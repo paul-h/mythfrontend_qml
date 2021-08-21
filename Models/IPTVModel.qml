@@ -46,7 +46,7 @@ Item
                 var country = getCountries(jsonModel.model.get(x).countries);
                 var language = getLanguages(jsonModel.model.get(x).languages);
 
-                listModel.append({"id": x, "title": title, "icon": icon, "player": "FFMPEG", "url": url, "genre": genre, "countries": country, "languages": language});
+                listModel.append({"id": x, "title": title, "icon": icon, "player": "Internal", "url": url, "genre": genre, "countries": country, "languages": language});
 
                 if (genres.indexOf(genre) < 0)
                     genres.push(genre);

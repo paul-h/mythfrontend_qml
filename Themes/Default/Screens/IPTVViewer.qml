@@ -12,6 +12,9 @@ BaseScreen
 
     defaultFocusItem: iptvGrid
 
+    // one of VLC, QtAV or MDK
+    property string _playerToUse: dbUtils.getSetting("InternalPlayer", settings.hostName, "VLC");
+
     Component.onCompleted:
     {
         showTime(false);
@@ -100,6 +103,27 @@ BaseScreen
             searchDialog.model = playerSources.iptvList.languageList;
             searchDialog.field = "Language";
             searchDialog.show();
+        }
+        else if (event.key === Qt.Key_F5)
+        {
+            if (_playerToUse === "VLC")
+            {
+                _playerToUse = "QtAV";
+                dbUtils.setSetting("InternalPlayer", settings.hostName, "QtAV");
+                showNotification("Using QtAV player for internal playback");
+            }
+            else if (_playerToUse === "QtAV")
+            {
+                _playerToUse = "MDK";
+                dbUtils.setSetting("InternalPlayer", settings.hostName, "MDK");
+                showNotification("Using MDK for internal playback");
+            }
+            else
+            {
+                _playerToUse = "VLC";
+                dbUtils.setSetting("InternalPlayer", settings.hostName, "VLC");
+                showNotification("Using VLC player for internal playback");
+            }
         }
         else
             event.accepted = false;
