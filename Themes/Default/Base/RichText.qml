@@ -13,6 +13,12 @@ Item
     onLabelChanged: updateText();
     onInfoChanged: updateText();
 
+    Connections
+    {
+        target: window
+        onWmultChanged: updateText()
+    }
+
     x: xscale(50); y: 0; width: xscale(300); height: yscale(50)
 
     Rectangle
@@ -39,10 +45,10 @@ Item
 
     function updateText()
     {
-        text.text = '<p style="font-family: ' + theme.labelFontFamily +  '; font-size: ' + xscale(theme.labelFontPixelSize) + 'px; color: ' + theme.labelFontColor + '"> ' +
+        text.text = '<p style="font-family: ' + theme.labelFontFamily +  '; font-size: ' + Math.ceil(xscale(theme.labelFontPixelSize)) + 'px; color: ' + theme.labelFontColor + '"> ' +
                     (theme.labelFontBold ? '<b>' : '') + label + (theme.labelFontBold ? '</b>' : '') +
-                    '<span style="font-family: ' + theme.infoFontFamily +  '; font-size: ' + xscale(theme.infoFontPixelSize) + 'px; color: ' + theme.infoFontColor  +  '" >' +
-                    (theme.infoFontBold ? '<b>' : '') + info + (theme.infoFontBold ? '</b>' : '') + '</span></p>'
+                    '<span style="font-family: ' + theme.infoFontFamily +  '; font-size: ' + Math.ceil(xscale(theme.infoFontPixelSize)) + 'px; color: ' + theme.infoFontColor  +  '" >' +
+                    (theme.infoFontBold ? '<b>' : '') + info + (theme.infoFontBold ? '</b>' : '') + '</span></p>';
     }
 }
 
