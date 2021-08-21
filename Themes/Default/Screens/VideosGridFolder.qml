@@ -13,7 +13,8 @@ BaseScreen
     defaultFocusItem: videoList
     property alias folder: folderModel.folder
 
-    property bool _useMDKPlayer: (dbUtils.getSetting("InternalPlayer", settings.hostName, "Internal") === "MDK");
+    // one of VLC, QtAV or MDK
+    property string _playerToUse: dbUtils.getSetting("InternalPlayer", settings.hostName, "VLC");
 
     Component.onCompleted:
     {
@@ -55,11 +56,24 @@ BaseScreen
         }
         else if (event.key === Qt.Key_F5)
         {
-            _useMDKPlayer = !_useMDKPlayer;
-            if (_useMDKPlayer)
-                showNotification("Using MDK player for internal playback");
+            if (_playerToUse === "VLC")
+            {
+                _playerToUse = "QtAV";
+                dbUtils.setSetting("InternalPlayer", settings.hostName, "QtAV");
+                showNotification("Using QtAV player for internal playback");
+            }
+            else if (_playerToUse === "QtAV")
+            {
+                _playerToUse = "MDK";
+                dbUtils.setSetting("InternalPlayer", settings.hostName, "MDK");
+                showNotification("Using MDK for internal playback");
+            }
             else
-                showNotification("Using QtAV for internal playback");
+            {
+                _playerToUse = "VLC";
+                dbUtils.setSetting("InternalPlayer", settings.hostName, "VLC");
+                showNotification("Using VLC player for internal playback");
+            }
         }
         else
             event.accepted = true;
@@ -184,7 +198,7 @@ BaseScreen
         {
             mediaModel.get(0).title = model.get(currentIndex, "filePath");
             mediaModel.get(0).url = "file://" + model.get(currentIndex, "filePath");
-            mediaModel.get(0).player = _useMDKPlayer ? "MDK" : "Internal";
+            mediaModel.get(0).player = _playerToUse;
 
             if (model.get(currentIndex, "fileIsDir"))
             {
