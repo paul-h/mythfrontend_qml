@@ -61,9 +61,16 @@ QmlMDKPlayer::QmlMDKPlayer(QQuickItem *parent): QQuickFramebufferObject(parent),
     m_isAvailable(false), m_playerAPI(nullptr), m_updateTimer(new QTimer),m_mediaStatus(MediaStatusNoMedia),
     m_playbackState(PlayerStateStopped), m_position(0), m_duration(0), m_muted(false), m_volume(1.0)
 {
+    if (!gMDKAPI->isAvailable())
+    {
+        gContext->m_logger->info(Verbose::GUI, QString("QmlMDKPlayer: MDK API is not available"));
+        return;
+    }
+
     m_playerAPI = gMDKAPI->createPlayer();
 
     qRegisterMetaType<MediaStatus>("MediaStatus");
+    qRegisterMetaType<PlayerState>("PlayerState");
 
     setMirrorVertically(true);
 
@@ -87,6 +94,9 @@ QmlMDKPlayer::QmlMDKPlayer(QQuickItem *parent): QQuickFramebufferObject(parent),
 
         connect(m_updateTimer, &QTimer::timeout, this, &QmlMDKPlayer::updatePosition);
         m_updateTimer->start(1000);
+
+        gMDKAPI->getFFMPEGVersion();
+        gMDKAPI->getFFMPEGConfig();
     }
 }
 
@@ -108,7 +118,7 @@ QQuickFramebufferObject::Renderer *QmlMDKPlayer::createRenderer() const
 
 void QmlMDKPlayer::setSource(const QString &s)
 {
-    if (!m_playerAPI)
+    if (!m_playerAPI || m_source == s)
         return;
 
     m_playerAPI->setMedia(m_playerAPI->object, s.toUtf8().data());
@@ -150,7 +160,7 @@ bool QmlMDKPlayer::mediaStatusChanged(MDK_MediaStatus mediaStatus)
     QStringList status;
     if (mediaStatus == MDK_MediaStatus_NoMedia)
         status.append("NoMedia");
-    if (mediaStatus == MDK_MediaStatus_Unloaded)
+    if (mediaStatus & MDK_MediaStatus_Unloaded)
         status.append("Unloaded");
     if (mediaStatus & MDK_MediaStatus_Loading)
         status.append("Loading");
@@ -171,11 +181,11 @@ bool QmlMDKPlayer::mediaStatusChanged(MDK_MediaStatus mediaStatus)
     if (mediaStatus & MDK_MediaStatus_Invalid)
         status.append("Invalid");
 
-    gContext->m_logger->info(Verbose::GUI, QString("QmlMDKPlayer: MediaStatus changed - %1 (%2)").arg(status.join("|")).arg((int) mediaStatus));
+    gContext->m_logger->debug(Verbose::GUI, QString("QmlMDKPlayer: MediaStatus changed - %1 (%2)").arg(status.join("|")).arg((int) mediaStatus));
 
     m_mediaStatus = static_cast<MediaStatus>(mediaStatus);
 
-    emit mediaStatusChanged(m_mediaStatus);
+    emit mediaStatusChanged(m_mediaStatus, status.join(" | "));
 
     return true;
 }
@@ -267,6 +277,9 @@ void QmlMDKPlayer::play()
     callback.cb = renderCallback;
     callback.opaque = this;
     m_playerAPI->setRenderCallback(m_playerAPI->object, callback );
+
+//    gMDKAPI->getFFMPEGVersion();
+//    gMDKAPI->getFFMPEGConfig();
 }
 
 void QmlMDKPlayer::stop()
