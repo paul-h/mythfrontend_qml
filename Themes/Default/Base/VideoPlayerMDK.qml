@@ -1,6 +1,6 @@
-import QtQuick 2.9
+import QtQuick 2.10
 import MDKPlayer 1.0
-
+import mythqml.net 1.0
 
 FocusScope
 {
@@ -12,11 +12,10 @@ FocusScope
     property bool playbackStarted: false
     property bool muteAudio: false
 
-    signal stateChanged(int state)
-    signal playbackEnded()
     signal showMessage(string message, int timeOut)
-    
-    
+    signal mediaStatusChanged(int mediaStatus)
+    signal playbackStatusChanged(int playbackStatus)
+
     Rectangle
     {
         id: background
@@ -60,8 +59,51 @@ FocusScope
 
             onMediaStatusChanged:
             {
-                if (mediaStatus & (MDKPlayer.MediaStatusEnd + MDKPlayer.MediaPrepared + MDKPlayer.MediaBuffered))
-                    root.playbackEnded();
+                if (mediaStatus == (MDKPlayer.MediaStatusEnd + MDKPlayer.MediaPrepared + MDKPlayer.MediaBuffered))
+                {
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerMDK: mediaStatus: Ended");
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Ended);
+                }
+                else if (mediaStatus & MDKPlayer.MediaStatusInvalid)
+                {
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerMDK: mediaStatus: Invalid");
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Invalid);
+                }
+                else if (mediaStatus & MDKPlayer.MediaStatusUnloaded)
+                {
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerMDK: mediaStatus: Unloaded");
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Unknown);
+                }
+                else if (mediaStatus == (MDKPlayer.MediaStatusLoaded + MDKPlayer.MediaStatusPrepared + MDKPlayer.MediaStatusBuffered))
+                {
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerMDK: mediaStatus: Loaded | Prepared | Buffered");
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Buffered);
+                }
+                else if (mediaStatus & MDKPlayer.MediaStatusLoading)
+                {
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerMDK: mediaStatus: Loaded");
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Loading)
+                }
+                else if (mediaStatus & MDKPlayer.MediaStatusBuffering)
+                {
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerMDK: mediaStatus: Buffering");
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Buffering)
+                }
+                else
+                {
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerMDK: mediaStatus: Unknown");
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Unknown)
+                }
+            }
+
+            onPlayerStateChanged:
+            {
+                if (playerState === MDKPlayer.PlayerStatePlaying)
+                    root.playbackStatusChanged(MediaPlayers.PlaybackStatus.Playing);
+                else if (playerState === MDKPlayer.PlayerStatePaused)
+                    root.playbackStatusChanged(MediaPlayers.PlaybackStatus.Paused);
+                else if (playerState === MDKPlayer.PlayerStateStopped)
+                    root.playbackStatusChanged(MediaPlayers.PlaybackStatus.Stopped);
             }
         }
     }
@@ -107,7 +149,10 @@ FocusScope
 
     function togglePaused()
     {
-        if (mediaplayer.playerState === MDKPlayer.PlayerStatePaused) mediaplayer.play(); else mediaplayer.pause();
+        if (mediaplayer.playerState === MDKPlayer.PlayerStateStopped || mediaplayer.playerState === MDKPlayer.PlayerStatePaused)
+            mediaplayer.play();
+        else
+            mediaplayer.pause();
     }
 
     function skipBack(time)

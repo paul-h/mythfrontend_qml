@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QmlVlc 0.1
+import mythqml.net 1.0
 
 FocusScope
 {
@@ -10,9 +11,9 @@ FocusScope
     property bool playbackStarted: false
     property bool muteAudio: false
 
-    signal stateChanged(int state)
-    signal playbackEnded()
     signal showMessage(string message, int timeOut)
+    signal mediaStatusChanged(int mediaStatus)
+    signal playbackStatusChanged(int playbackStatus)
 
     Rectangle
     {
@@ -31,22 +32,64 @@ FocusScope
 
             onStateChanged:
             {
-                if (playbackStarted && position > 0 && state === VlcPlayer.Ended)
-                {
-                    playbackStarted = false;
-                    root.playbackEnded();
-                }
-
                 if (state === VlcPlayer.Playing)
                 {
                     playbackStarted = true;
                 }
 
-                root.stateChanged(state);
+                if (state == VlcPlayer.NothingSpecial)
+                {
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerQmlVLC: state: NothingSpecial");
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Unknown);
+                }
+                else if (state === VlcPlayer.Opening)
+                {
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerQmlVLC: state: Opening");
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Loading);
+                }
+                else if (state === VlcPlayer.Buffering)
+                {
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerQmlVLC: state: Buffering");
+                }
+                else if (state === VlcPlayer.Playing)
+                {
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerQmlVLC: state: Playing");
+                    root.playbackStatusChanged(MediaPlayers.PlaybackStatus.Playing);
+                    playbackStarted = true;
+                }
+                else if (state === VlcPlayer.Paused)
+                {
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerQmlVLC: state: Paused");
+                    root.playbackStatusChanged(MediaPlayers.PlaybackStatus.Paused);
+                }
+                else if (state === VlcPlayer.Stopped)
+                {
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerQmlVLC: state: Stopped");
+                    root.playbackStatusChanged(MediaPlayers.PlaybackStatus.Stopped);
+                }
+                else if (playbackStarted && position > 0 && state === VlcPlayer.Ended)
+                {
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerQmlVLC: status: Ended");
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Ended);
+                    playbackStarted = false;
+                }
+                else if (state === VlcPlayer.Error)
+                {
+                    log.debug(Verbose.PLAYBACK, "VideoPlayerQmlVLC: state: Error");
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Invalid);
+                }
             }
 
             onMediaPlayerSeekableChanged: mediaplayer.seekable = seekable
             onPlayingChanged: muteTimer.start()
+
+            onMediaPlayerBuffering:
+            {
+                if (percents < 100.0)
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Buffering);
+                else
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Buffered);
+            }
         }
 
         Timer
@@ -107,7 +150,10 @@ FocusScope
 
     function togglePaused()
     {
-        if (mediaplayer.state === VlcPlayer.Paused) mediaplayer.play(); else mediaplayer.pause();
+        if (mediaplayer.state === VlcPlayer.Paused || mediaplayer.state === VlcPlayer.Stopped)
+            mediaplayer.play();
+        else
+            mediaplayer.pause();
     }
 
     function skipBack(time)

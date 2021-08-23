@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.10
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.0
 import QtWebEngine 1.5
@@ -8,6 +8,7 @@ import Models 1.0
 import QtAV 1.5
 import SortFilterProxyModel 0.2
 import mythqml.net 1.0
+import MDKPlayer 1.0
 
 import "../../../Util.js" as Util
 
@@ -20,7 +21,7 @@ FocusScope
     property int streamlinkPort: Util.randomIntFromRange(4000, 65536)
     property string commandlog
 
-    // one of VLC, FFMPEG, WebBrowser, YouTube, YouTubeTV, RailCam, StreamLink, StreamBuffer, Internal, MDK
+    // one of Internal, VLC, MDK, QtAV, WebBrowser, YouTube, YouTubeTV, RailCam, StreamLink, StreamBuffer
     property string player: ""
 
     property bool showBorder: true
@@ -30,12 +31,33 @@ FocusScope
     property bool showFeedBrowser: false
 
     // private properties
+    property int _mediaStatus: MediaPlayers.MediaStatus.Unknown
+    property int _playbackStatus: MediaPlayers.PlaybackStatus.Stopped
     property bool _playbackStarted: false
     property double _wmult: width / 1280
     property double _hmult: height / 720
 
     signal playbackEnded()
     signal activeFeedChanged()
+
+    enum MediaStatus
+    {
+        Unknown,
+        NoMedia,
+        Invalid,
+        Loading,
+        Loaded,
+        Buffering,
+        Buffered,
+        Ended
+    }
+
+    enum PlaybackStatus
+    {
+        Stopped,
+        Paused,
+        Playing
+    }
 
     function _xscale(x)
     {
@@ -212,29 +234,29 @@ FocusScope
         }
     }
 
-    WebEngineView
-    {
-        id: browser
-        x: 0
-        y: 0
-        width: 300;
-        height: 720;
-        z: 99
-        zoomFactor: parent.width / xscale(1280)
-        visible: false
-        enabled: visible
+//    WebEngineView
+//    {
+//        id: browser
+//        x: 0
+//        y: 0
+//        width: 300;
+//        height: 720;
+//        z: 99
+//        zoomFactor: parent.width / xscale(1280)
+//        visible: false
+//        enabled: visible
 
-        settings.pluginsEnabled: true
+//        settings.pluginsEnabled: true
 
-        profile:  WebEngineProfile
-                  {
-                      storageName: "YouTube"
-                      offTheRecord: false
-                      httpCacheType: WebEngineProfile.DiskHttpCache
-                      persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
-                      httpUserAgent: "Mozilla/5.0 (SMART-TV; Linux; Tizen 5.0) AppleWebKit/538.1 (KHTML, like Gecko) Version/5.0 NativeTVAds Safari/538.1"
-                  }
-    }
+//        profile:  WebEngineProfile
+//                  {
+//                      storageName: "YouTube"
+//                      offTheRecord: false
+//                      httpCacheType: WebEngineProfile.DiskHttpCache
+//                      persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
+//                      httpUserAgent: "Mozilla/5.0 (SMART-TV; Linux; Tizen 5.0) AppleWebKit/538.1 (KHTML, like Gecko) Version/5.0 NativeTVAds Safari/538.1"
+//                  }
+//    }
 
     VideoPlayerYT
     {
@@ -244,9 +266,9 @@ FocusScope
         anchors.fill: parent
         anchors.margins: playerBorder.border.width
 
-        onPlaybackEnded: root.playbackEnded()
-
         onShowMessage: root.showMessage(message, timeOut)
+        onMediaStatusChanged: root.mediaStatusChanged(mediaStatus)
+        onPlaybackStatusChanged: root.playbackStatusChanged(playbackStatus)
     }
 
     VideoPlayerQmlVLC
@@ -258,9 +280,9 @@ FocusScope
         anchors.fill: parent
         anchors.margins: playerBorder.border.width
 
-        onPlaybackEnded: root.playbackEnded()
-
         onShowMessage: root.showMessage(message, timeOut);
+        onMediaStatusChanged: root.mediaStatusChanged(mediaStatus)
+        onPlaybackStatusChanged: root.playbackStatusChanged(playbackStatus)
     }
 
     VideoPlayerQtAV
@@ -274,9 +296,9 @@ FocusScope
 
         fillMode: VideoOutput.Stretch
 
-        onPlaybackEnded: root.playbackEnded()
-
         onShowMessage: root.showMessage(message, timeOut)
+        onMediaStatusChanged: root.mediaStatusChanged(mediaStatus)
+        onPlaybackStatusChanged: root.playbackStatusChanged(playbackStatus)
     }
 
     VideoPlayerMDK
@@ -290,9 +312,9 @@ FocusScope
 
         //fillMode: VideoOutput.Stretch
 
-        onPlaybackEnded: root.playbackEnded()
-
         onShowMessage: root.showMessage(message, timeOut)
+        onMediaStatusChanged: root.mediaStatusChanged(mediaStatus)
+        onPlaybackStatusChanged: root.playbackStatusChanged(playbackStatus)
     }
 
     ListModel
@@ -812,7 +834,7 @@ FocusScope
             Behavior on anchors.bottomMargin { PropertyAnimation { duration: 250} }
             Rectangle
             {
-                height: _yscale(24)
+                height: _yscale(25)
                 width: height
                 radius: width * _xscale(0.25)
                 color: 'black'
@@ -820,8 +842,8 @@ FocusScope
                 border.color: 'white'
                 Image
                 {
-                    source: mythUtils.findThemeFile("images/play.png") //mediaplayer.playing ? mythUtils.findThemeFile("images/play.png") : mythUtils.findThemeFile("images/pause.png")
-                    anchors.centerIn: parent
+                    source:  _playbackStatus === MediaPlayers.PlaybackStatus.Playing ? mythUtils.findThemeFile("images/player/play.png") : (_playbackStatus === MediaPlayers.PlaybackStatus.Paused ? mythUtils.findThemeFile("images/player/pause.png") : mythUtils.findThemeFile("images/player/stop.png"))
+                    anchors.fill: parent
                 }
             }
             Rectangle
@@ -947,6 +969,26 @@ FocusScope
         }
     }
 
+    BusyIndicator
+    {
+        id: busyIndicator
+        x: (parent.width / 2) - (width / 2)
+        y: (parent.height / 2) - (height / 2)
+        running: visible
+        visible: false
+    }
+
+    InfoText
+    {
+        id: busyText
+        x: (parent.width / 2) - (width / 2)
+        y: busyIndicator.y + busyIndicator.height + yscale(10)
+        visible: false
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        text: "Loading..."
+    }
+
     Timer
     {
         id: messageTimer
@@ -994,6 +1036,87 @@ FocusScope
         }
     }
 
+    function mediaStatusChanged(mediaStatus)
+    {
+        if (mediaStatus === _mediaStatus)
+            return;
+
+        _mediaStatus = mediaStatus;
+
+       log.debug(Verbose.PLAYBACK, "MediaPlayers: mediaStatus: " + mediaStatus + " for source: " + feedSource.feedList.get(feedSource.currentFeed).url);
+
+        if (mediaStatus === MediaPlayers.MediaStatus.NoMedia)
+        {
+            showMessage("No Media!!", settings.osdTimeoutMedium);
+        }
+        else if (mediaStatus === MediaPlayers.MediaStatus.Invalid)
+        {
+            busyIndicator.visible = false;
+            busyText.visible = true;
+            busyText.text = "Cannot play this file";
+        }
+        else if (mediaStatus === MediaPlayers.MediaStatus.Ended)
+        {
+            // playback ended
+            busyIndicator.visible = false;
+            busyText.visible = false;
+            root.playbackEnded();
+        }
+        else if (mediaStatus === MediaPlayers.MediaStatus.Buffered)
+        {
+            // playback started
+            busyIndicator.visible = false;
+            busyText.visible = false;
+        }
+        else if (mediaStatus === MediaPlayers.MediaStatus.Loading)
+        {
+            busyIndicator.visible = true;
+            busyText.visible = true;
+            busyText.text = "Loading..."
+        }
+        else if (mediaStatus === MediaPlayers.MediaStatus.Loaded)
+        {
+            busyIndicator.visible = false;
+            busyText.visible = false;
+            busyText.text = "";
+        }
+        else if (mediaStatus === MediaPlayers.MediaStatus.Buffering)
+        {
+            busyIndicator.visible = true;
+            busyText.visible = true;
+            busyText.text = "Buffering...";
+        }
+        else
+        {
+            busyIndicator.visible = false;
+            busyText.visible = false;
+            busyText.text = "";
+        }
+    }
+
+    function playbackStatusChanged(playbackStatus)
+    {
+        if (playbackStatus === _playbackStatus)
+            return;
+
+        _playbackStatus = playbackStatus;
+
+        log.debug(Verbose.PLAYBACK, "MediaPlayers: playbackStatus: " + playbackStatus + " for source: " + feedSource.feedList.get(feedSource.currentFeed).url);
+
+        if (playbackStatus === MediaPlayers.PlaybackStatus.Stopped)
+        {
+
+        }
+        else if (playbackStatus === MediaPlayers.PlaybackStatus.Playing)
+        {
+            showMessage("", 0)
+        }
+        else if (playbackStatus === MediaPlayers.PlaybackStatus.Paused)
+        {
+
+        }
+    }
+
     function getActivePlayer()
     {
         if (webPlayer.visible === true)
@@ -1028,9 +1151,6 @@ FocusScope
 
     function startPlayback()
     {
-        if (_playbackStarted)
-            return;
-
         if (feedSource.feedList === undefined ||
                 feedSource.feedList.get(feedSource.currentFeed).player === undefined ||
                 feedSource.feedList.get(feedSource.currentFeed).url === undefined)
@@ -1114,7 +1234,14 @@ FocusScope
         if (newPlayer === root.player)
             return;
 
-        if (newPlayer === "VLC" || newPlayer === "Internal")
+        // if the player is Internal we can use any of VLC, QtAV or MDK players
+        if (newPlayer === "Internal")
+        {
+            newPlayer = dbUtils.getSetting("InternalPlayer", settings.hostName, "VLC");
+            log.info(Verbose.PLAYBACK, "MediaPlayers: switchPlayer -  using " + newPlayer + " for the Internal player");
+        }
+
+        if (newPlayer === "VLC")
         {
             youtubePlayer.visible = false;
             webPlayer.visible = false;
@@ -1122,13 +1249,21 @@ FocusScope
             qtAVPlayer.visible = false;
             mdkPlayer.visible = false;
         }
-        else if (newPlayer === "FFMPEG")
+        else if (newPlayer === "FFMPEG" || newPlayer === "QtAV")
         {
             youtubePlayer.visible = false;
             webPlayer.visible = false;
             vlcPlayer.visible = false;
             qtAVPlayer.visible = true;
             mdkPlayer.visible = false;
+        }
+        else if (newPlayer === "MDK")
+        {
+            youtubePlayer.visible = false;
+            webPlayer.visible = false;
+            vlcPlayer.visible = false;
+            qtAVPlayer.visible = false;
+            mdkPlayer.visible = true;
         }
         else if (newPlayer === "WebBrowser" || newPlayer === "RailCam")
         {
@@ -1156,17 +1291,9 @@ FocusScope
             qtAVPlayer.visible = false;
             mdkPlayer.visible = false;
         }
-        else if (newPlayer === "MDK")
-        {
-            youtubePlayer.visible = false;
-            webPlayer.visible = false;
-            vlcPlayer.visible = false;
-            qtAVPlayer.visible = false;
-            mdkPlayer.visible = true;
-        }
         else
         {
-            log.debug(Verbose.PLAYBACK, "MediaPlayer: switchPlayer - Got unknown player '" + newPlayer + "'");
+            log.error(Verbose.PLAYBACK, "MediaPlayers: switchPlayer - Got unknown player '" + newPlayer + "'");
             return;
         }
 
@@ -1175,10 +1302,10 @@ FocusScope
 
     function switchURL(newURL)
     {
-        log.debug(Verbose.PLAYBACK, "MediaPlayer: switchURL -  " + newURL);
+        log.debug(Verbose.PLAYBACK, "MediaPlayers: switchURL -  " + newURL);
 
         if (!feedSource.feedList.get(feedSource.currentFeed))
-                title.text = "";
+            title.text = "";
         else if (feedSource.feedList.get(feedSource.currentFeed).title !== undefined)
             title.text = feedSource.feedList.get(feedSource.currentFeed).title;
         else if (feedSource.feedList.get(feedSource.currentFeed).url !== undefined)
@@ -1189,16 +1316,19 @@ FocusScope
         if (feedSource.feedName == "ZoneMinder Cameras")
             newURL += "&connkey=" + Util.randomIntFromRange(0, 999999);
 
-        browser.visible = false;
-        browser.url = "";
+        //webPlayer.visible = false;
+        //webPlayer.url = "";
 
         if (root.player === "VLC" || root.player === "Internal")
         {
             vlcPlayer.source = newURL;
         }
-        else if (root.player === "FFMPEG")
+        else if (root.player === "FFMPEG" || root.player === "QtAV")
         {
+            qtAVPlayer.stop();
             qtAVPlayer.source = newURL;
+            // we have to fake a loading signal because QtAV does not send one
+            mediaStatusChanged(MediaPlayers.MediaStatus.Loading);
         }
         else if (root.player === "WebBrowser" || root.player === "RailCam")
         {
@@ -1227,11 +1357,10 @@ FocusScope
         else if (root.player === "MDK")
         {
             mdkPlayer.source = newURL;
-            mdkPlayer.play();
         }
         else
         {
-            log.error(Verbose.PLAYBACK, "MediaPlayer: switchURL - Unknown player '" + root.player + "'");
+            log.error(Verbose.PLAYBACK, "MediaPlayers: switchURL - Unknown player '" + root.player + "'");
             return;
         }
     }
@@ -1240,7 +1369,7 @@ FocusScope
     {
         if (!_playbackStarted)
         {
-            _playbackStarted = true;
+            _playbackStarted = true
             startPlayback();
         }
         else
@@ -1265,17 +1394,17 @@ FocusScope
         streamLinkProcess.stop();
         checkProcessTimer.running = false;
         streamLinkProcess.waitForFinished();
-        _playbackStarted = false;
+        //_playbackStarted = false;
 
         if (getActivePlayer() === "VLC")
         {
             vlcPlayer.stop();
-            vlcPlayer.source = "";
+            //vlcPlayer.source = "";
         }
         else if (getActivePlayer() === "QTAV")
         {
             qtAVPlayer.stop();
-            qtAVPlayer.source = "";
+            //qtAVPlayer.source = "";
         }
         else if (getActivePlayer() === "YOUTUBE")
             youtubePlayer.stop();
@@ -1284,7 +1413,7 @@ FocusScope
         else if (getActivePlayer() === "MDK")
         {
             mdkPlayer.stop();
-            mdkPlayer.source = "";
+            //mdkPlayer.source = "";
         }
     }
 
@@ -1461,6 +1590,8 @@ FocusScope
         if (feedSource.feedName === "Advent Calendar")
             return;
 
+        stop();
+
         if (feedSource.currentFeed === feedSource.feedCount - 1)
         {
             feedSource.currentFeed = 0;
@@ -1468,7 +1599,8 @@ FocusScope
         else
             feedSource.currentFeed++;
 
-        startPlayback();
+        _playbackStarted = false;
+        play();
 
         updateOSD();
 
@@ -1480,6 +1612,8 @@ FocusScope
         if (feedSource.feedName === "Advent Calendar")
             return;
 
+        stop();
+
         if (feedSource.currentFeed === 0)
         {
             feedSource.currentFeed = feedSource.feedList.count - 1;
@@ -1487,7 +1621,8 @@ FocusScope
         else
             feedSource.currentFeed--;
 
-        startPlayback();
+        _playbackStarted = false;
+        play();
 
         updateOSD();
 
