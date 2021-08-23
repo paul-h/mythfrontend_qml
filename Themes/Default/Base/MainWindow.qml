@@ -552,7 +552,7 @@ Window
 
                 if (component.status === Component.Ready)
                 {
-                    var object =component.createObject(window, {model: mainMenuLoader.item});
+                    var object = component.createObject(stack, {model: mainMenuLoader.item});
                     return object;
                 }
                 else
@@ -848,12 +848,9 @@ Window
                  '<br><br>(c) Paul Harrison 2019-2021'
 
         rejectButtonText: ""
-        acceptButtonText: "OK"
+        acceptButtonText: "Close"
 
         width: xscale(600); height: yscale(300)
-
-        //onAccepted: if (_activeFocusItem) _activeFocusItem.focus = true;
-        //onCancelled: if (_activeFocusItem) _activeFocusItemlistView.focus = true;
     }
 
     ListModel
@@ -948,7 +945,7 @@ Window
                 {
                     if (volumeDialog.oldBackgroundVideoVolume !== -1)
                     {
-                         window.backgroundVideoVolume = volumeModel.get(backgroundSelector.currentIndex).volume;
+                        window.backgroundVideoVolume = volumeModel.get(backgroundSelector.currentIndex).volume;
                     }
                 }
             }
