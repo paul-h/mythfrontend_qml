@@ -17,8 +17,9 @@ FocusScope
     property bool loop: false
     property bool playbackStarted: false
 
-    signal playbackEnded()
     signal showMessage(string message, int timeOut)
+    signal mediaStatusChanged(int mediaStatus)
+    signal playbackStatusChanged(int playbackStatus)
 
     Rectangle
     {
@@ -63,7 +64,7 @@ FocusScope
         Video
         {
             id: mediaplayer
-            visible: (status === MediaPlayer.Buffered && playbackState === MediaPlayer.PlayingState);
+            visible: (status === MediaPlayer.Buffered && (playbackState === MediaPlayer.PlayingState || playbackState === MediaPlayer.PausedState));
             focus: true
             autoPlay: true
             backgroundColor: "black"
@@ -78,20 +79,21 @@ FocusScope
                 if (status == MediaPlayer.NoMedia)
                 {
                     log.debug(Verbose.PLAYBACK, "VideoPlayerQtAV: status: no media");
-                    showMessage("No Media", settings.osdTimeoutMedium);
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.NoMedia);
                 }
                 else if (status === MediaPlayer.Loading)
                 {
                     log.debug(Verbose.PLAYBACK, "VideoPlayerQtAV: status: loading");
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Loading);
                 }
                 else if (status === MediaPlayer.Loaded)
                 {
                     log.debug(Verbose.PLAYBACK, "VideoPlayerQtAV: status: loaded");
                 }
-                else if (status === MediaPlayer.Buffering)
+                else if (playbackState === MediaPlayer.PlayingState && status === MediaPlayer.Buffering)
                 {
                     log.debug(Verbose.PLAYBACK, "VideoPlayerQtAV: status: buffering");
-                    showMessage("Buffering", settings.osdTimeoutLong);
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Buffering);
                 }
                 else if (status === MediaPlayer.Stalled)
                 {
@@ -100,21 +102,33 @@ FocusScope
                 else if (status === MediaPlayer.Buffered)
                 {
                     log.debug(Verbose.PLAYBACK, "VideoPlayerQtAV: status: Buffered");
-                    showMessage("", settings.osdTimeoutShort);
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Buffered)
                 }
                 else if (status === MediaPlayer.EndOfMedia)
                 {
                     log.debug(Verbose.PLAYBACK, "VideoPlayerQtAV: status: EndOfMedia");
-                    playbackEnded();
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Ended);
                 }
                 else if (status === MediaPlayer.InvalidMedia)
                 {
                     log.debug(Verbose.PLAYBACK, "VideoPlayerQtAV: status: InvalidMedia");
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Invalid);
                 }
                 else if (status === MediaPlayer.UnknownStatus)
                 {
                     log.debug(Verbose.PLAYBACK, "VideoPlayerQtAV: status: UnknownStatus");
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Unknown);
                 }
+            }
+
+            onPlaybackStateChanged:
+            {
+                if (playbackState === MediaPlayer.PlayingState)
+                    root.playbackStatusChanged(MediaPlayers.PlaybackStatus.Playing);
+                else if (playbackState === MediaPlayer.PausedState)
+                    root.playbackStatusChanged(MediaPlayers.PlaybackStatus.Paused);
+                else if (playbackState === MediaPlayer.StoppedState)
+                    root.playbackStatusChanged(MediaPlayers.PlaybackStatus.Stopped);
             }
         }
     }

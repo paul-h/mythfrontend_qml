@@ -14,18 +14,46 @@ Item
     property int position: 0
     property int duration: 0
 
-    signal playbackEnded()
+    signal mediaStatusChanged(int mediaStatus)
+    signal playbackStatusChanged(int playbackStatus)
     signal showMessage(string message, int timeOut)
 
     property bool _playerLoaded: false
 
     onPlayerStateChanged:
     {
+        if (playerState === -1) // unstarted
+        {
+            root.mediaStatusChanged(MediaPlayers.MediaStatus.Loading);
+        }
+
         if (playerState === 0) // ended
-            playbackEnded();
+        {
+            root.mediaStatusChanged(MediaPlayers.MediaStatus.Ended);
+            root.playbackStatusChanged(MediaPlayers.PlaybackStatus.Stopped); // ???
+        }
 
         if (playerState === 1) // playing
+        {
             playbackStarted = true;
+            root.mediaStatusChanged(MediaPlayers.MediaStatus.Buffered);
+            root.playbackStatusChanged(MediaPlayers.PlaybackStatus.Playing);
+        }
+
+        if (playerState === 2) // paused
+        {
+            root.playbackStatusChanged(MediaPlayers.PlaybackStatus.Paused);
+        }
+
+        if (playerState === 3) // buffering
+        {
+            root.mediaStatusChanged(MediaPlayers.MediaStatus.Buffering);
+        }
+
+        if (playerState === 5) // video cued
+        {
+            root.mediaStatusChanged(MediaPlayers.MediaStatus.Loaded);
+        }
     }
 
     onSourceChanged:

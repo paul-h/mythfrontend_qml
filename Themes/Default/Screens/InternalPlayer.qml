@@ -350,7 +350,7 @@ BaseScreen
             }
 
             playerLayout.mediaPlayer1.focus = true;
-            playerLayout.mediaPlayer1.startPlayback();
+            playerLayout.mediaPlayer1.play();
             playerLayout.mediaPlayer2.stop();
             playerLayout.mediaPlayer3.stop();
             playerLayout.mediaPlayer4.stop();
@@ -602,39 +602,39 @@ BaseScreen
             else if (itemText == "Live TV")
             {
                 getActivePlayer().feed.switchToFeed("Live TV", "-1", 0);
-                getActivePlayer().startPlayback();
+                getActivePlayer().play();
             }
             else if (itemText == "IPTV")
             {
                 getActivePlayer().feed.switchToFeed("IPTV", "-1", 0);
-                getActivePlayer().startPlayback();
+                getActivePlayer().play();
             }
             else if (itemText == "Recordings")
             {
                 getActivePlayer().feed.switchToFeed("Recordings", "", 0);
-                getActivePlayer().startPlayback();
+                getActivePlayer().play();
             }
             else if (itemText == "Videos")
             {
                 getActivePlayer().feed.switchToFeed("Videos", "", 0);
-                getActivePlayer().startPlayback();
+                getActivePlayer().play();
             }
             else if (itemText == "ZoneMinder Cameras")
             {
                getActivePlayer().feed.switchToFeed("ZoneMinder Cameras", "", 0);
-                getActivePlayer().startPlayback();
+                getActivePlayer().play();
             }
             else if (itemText == "Webcams")
             {
                 var index = dbUtils.getSetting("WebcamListIndex", settings.hostName, "");
                 var filter = index + ",," + "title";
                 getActivePlayer().feed.switchToFeed("Webcams", filter, 0);
-                getActivePlayer().startPlayback();
+                getActivePlayer().play();
             }
             else if (itemText == "Web Videos")
             {
                 getActivePlayer().feed.switchToFeed("Web Videos", "", 0);
-                getActivePlayer().startPlayback();
+                getActivePlayer().play();
             }
             else if (itemText == "Toggle Mute")
                 getActivePlayer().toggleMute();
@@ -665,7 +665,7 @@ BaseScreen
                     feedNo = list[3];
                     feedChanged(feedSource, filter, feedNo);
                     getActivePlayer().feed.switchToFeed(feedSource, filter, feedNo);
-                    getActivePlayer().startPlayback();
+                    getActivePlayer().play();
                     getActivePlayer().showInfo(true);
                     getActivePlayer().updateBrowserURLList();
                     getActivePlayer().updateRadioFeedList();
@@ -775,7 +775,7 @@ BaseScreen
     {
         // restart player1
         playerLayout.mediaPlayer1.feed.switchToFeed(playerLayout.mediaPlayer1.feed.feedName, playerLayout.mediaPlayer1.feed.currentFilter, playerLayout.mediaPlayer1.feed.currentFeed);
-        playerLayout.mediaPlayer1.startPlayback();
+        playerLayout.mediaPlayer1.play();
 
         if (newLayout == 2 || newLayout == 3 || newLayout == 4)
         {
@@ -783,7 +783,7 @@ BaseScreen
             if (playerLayout.mediaPlayer2.feed.feedName === "" || playerLayout.mediaPlayer2.feed.currentFeed == -1)
             {
                 playerLayout.mediaPlayer2.feed.switchToFeed(playerLayout.mediaPlayer1.feed.feedName, playerLayout.mediaPlayer1.feed.currentFilter, playerLayout.mediaPlayer1.feed.currentFeed + 1);
-                playerLayout.mediaPlayer2.startPlayback();
+                playerLayout.mediaPlayer2.play();
             }
         }
         else if (newLayout == 5)
@@ -792,13 +792,13 @@ BaseScreen
             if (playerLayout.mediaPlayer2.feed.feedName === "" || playerLayout.mediaPlayer2.feed.currentFeed == -1)
             {
                 playerLayout.mediaPlayer2.feed.switchToFeed(playerLayout.mediaPlayer1.feed.feedName, playerLayout.mediaPlayer1.feed.currentFilter, playerLayout.mediaPlayer1.feed.currentFeed + 1);
-                playerLayout.mediaPlayer2.startPlayback();
+                playerLayout.mediaPlayer2.play();
             }
 
             if (playerLayout.mediaPlayer3.feed.feedName === "" || playerLayout.mediaPlayer3.feed.currentFeed == -1)
             {
                 playerLayout.mediaPlayer3.feed.switchToFeed(playerLayout.mediaPlayer2.feed.feedName, playerLayout.mediaPlayer2.feed.currentFilter, playerLayout.mediaPlayer2.feed.currentFeed + 1);
-                playerLayout.mediaPlayer3.startPlayback();
+                playerLayout.mediaPlayer3.play();
             }
         }
         else if (newLayout == 6)
@@ -807,19 +807,19 @@ BaseScreen
             if (playerLayout.mediaPlayer2.feed.feedName === "" || playerLayout.mediaPlayer2.feed.currentFeed == -1)
             {
                 playerLayout.mediaPlayer2.feed.switchToFeed(playerLayout.mediaPlayer1.feed.feedName, playerLayout.mediaPlayer1.feed.currentFilter, playerLayout.mediaPlayer1.feed.currentFeed + 1);
-                playerLayout.mediaPlayer2.startPlayback();
+                playerLayout.mediaPlayer2.play();
             }
 
             if (playerLayout.mediaPlayer3.feed.feedName === "" || playerLayout.mediaPlayer3.feed.currentFeed == -1)
             {
                 playerLayout.mediaPlayer3.feed.switchToFeed(playerLayout.mediaPlayer2.feed.feedName, playerLayout.mediaPlayer2.feed.currentFilter, playerLayout.mediaPlayer2.feed.currentFeed + 1);
-                playerLayout.mediaPlayer3.startPlayback();
+                playerLayout.mediaPlayer3.play();
             }
 
             if (playerLayout.mediaPlayer4.feed.feedName === "" || playerLayout.mediaPlayer4.feed.currentFeed == -1)
             {
                 playerLayout.mediaPlayer4.feed.switchToFeed(playerLayout.mediaPlayer3.feed.feedName, playerLayout.mediaPlayer3.feed.currentFilter, playerLayout.mediaPlayer3.feed.currentFeed + 1);
-                playerLayout.mediaPlayer4.startPlayback();
+                playerLayout.mediaPlayer4.play();
             }
         }
 
@@ -904,6 +904,7 @@ BaseScreen
 
     function feedSourceLoaded()
     {
+        playerLayout.mediaPlayer1.stop();
         playerLayout.mediaPlayer1.startPlayback();
     }
 }

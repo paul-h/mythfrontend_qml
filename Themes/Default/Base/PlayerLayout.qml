@@ -151,7 +151,7 @@ Item
                                   KeyNavigation.up: browser;
                                   KeyNavigation.down: browser;
                                 }
-                StateChangeScript { script: if ( !player1.isPlaying()) player1.startPlayback() }
+                StateChangeScript { script: if ( !player1.isPlaying()) player1.play(); }
 
                 StateChangeScript { script: player2.stop() }
                 PropertyChanges { target: videoTitle2; width: 0 }
@@ -195,7 +195,7 @@ Item
                                   KeyNavigation.up: player2;
                                   KeyNavigation.down: player2;
                                 }
-                StateChangeScript { script: if ( !player1.isPlaying()) player1.startPlayback() }
+                StateChangeScript { script: if ( !player1.isPlaying()) player1.play() }
 
                 PropertyChanges { target: videoTitle2;
                                   x: playerArea.width - (playerArea.width / 3) - xscale(50);
@@ -213,7 +213,7 @@ Item
                                   KeyNavigation.up: player1;
                                   KeyNavigation.down: player1;
                                  }
-                StateChangeScript { script: if ( !player2.isPlaying()) player2.startPlayback() }
+                StateChangeScript { script: if ( !player2.isPlaying()) player2.play() }
 
                 StateChangeScript { script: player3.stop() }
                 PropertyChanges { target: videoTitle3; width: 0 }
@@ -251,7 +251,7 @@ Item
                                   KeyNavigation.up: player2;
                                   KeyNavigation.down: player2;
                                 }
-                StateChangeScript { script: if ( !player1.isPlaying()) player1.startPlayback() }
+                StateChangeScript { script: if ( !player1.isPlaying()) player1.play() }
 
                 PropertyChanges { target: videoTitle2;
                                   x: videoTitle1.x + videoTitle1.width;
@@ -270,7 +270,7 @@ Item
                                   KeyNavigation.up: player1;
                                   KeyNavigation.down: player1;
                                 }
-                StateChangeScript { script: if ( !player2.isPlaying()) player2.startPlayback() }
+                StateChangeScript { script: if ( !player2.isPlaying()) player2.play() }
 
                 StateChangeScript { script: player3.stop() }
                 PropertyChanges { target: videoTitle3; width: 0 }
@@ -309,7 +309,7 @@ Item
                                   KeyNavigation.up: player2;
                                   KeyNavigation.down: player2;
                                 }
-                StateChangeScript { script: if ( !player1.isPlaying()) player1.startPlayback() }
+                StateChangeScript { script: if ( !player1.isPlaying()) player1.play() }
 
                 PropertyChanges { target: videoTitle2;
                                   x: playerArea.width - player2.width;
@@ -329,7 +329,7 @@ Item
                                   KeyNavigation.up: player2;
                                   KeyNavigation.down: browser;
                                 }
-                StateChangeScript { script: if ( !player2.isPlaying()) player2.startPlayback() }
+                StateChangeScript { script: if ( !player2.isPlaying()) player2.play() }
 
                 StateChangeScript { script: player3.stop() }
                 PropertyChanges { target: videoTitle3; width: 0 }
@@ -369,7 +369,7 @@ Item
                                   KeyNavigation.up: browser;
                                   KeyNavigation.down: browser;
                                 }
-                StateChangeScript { script: if ( !player1.isPlaying()) player1.startPlayback() }
+                StateChangeScript { script: if ( !player1.isPlaying()) player1.play() }
 
                 PropertyChanges { target: videoTitle2;
                                   x: playerArea.width - videoTitle2.width;
@@ -388,7 +388,7 @@ Item
                                   KeyNavigation.up: browser;
                                   KeyNavigation.down: player3;
                                 }
-                StateChangeScript { script: if ( !player2.isPlaying()) player2.startPlayback() }
+                StateChangeScript { script: if ( !player2.isPlaying()) player2.play() }
 
                 PropertyChanges { target: videoTitle3;
                                   x: videoTitle2.x;
@@ -407,7 +407,7 @@ Item
                                   KeyNavigation.up: player2;
                                   KeyNavigation.down: browser;
                                 }
-                StateChangeScript { script: if ( !player3.isPlaying()) player3.startPlayback() }
+                StateChangeScript { script: if ( !player3.isPlaying()) player3.play() }
 
                 StateChangeScript { script: player4.stop() }
                 PropertyChanges { target: videoTitle4; width: 0 }
@@ -441,7 +441,7 @@ Item
                                   KeyNavigation.up: browser;
                                   KeyNavigation.down: player3;
                                 }
-                StateChangeScript { script: if ( !player1.isPlaying()) player1.startPlayback() }
+                StateChangeScript { script: if ( !player1.isPlaying()) player1.play() }
 
                 PropertyChanges { target: videoTitle2;
                                   x: playerArea.width / 2;
@@ -460,7 +460,7 @@ Item
                                   KeyNavigation.up: browser;
                                   KeyNavigation.down: player4;
                                 }
-                StateChangeScript { script: if ( !player2.isPlaying()) player2.startPlayback() }
+                StateChangeScript { script: if ( !player2.isPlaying()) player2.play() }
 
                 PropertyChanges { target: videoTitle3;
                                   x: 0;
@@ -480,7 +480,7 @@ Item
                                   KeyNavigation.up: player1;
                                   KeyNavigation.down: browser;
                                 }
-                StateChangeScript { script: if ( !player3.isPlaying()) player3.startPlayback() }
+                StateChangeScript { script: if ( !player3.isPlaying()) player3.play() }
 
                 PropertyChanges { target: videoTitle4;
                                   x: playerArea.width / 2;
@@ -500,7 +500,7 @@ Item
                                   KeyNavigation.up: player2;
                                   KeyNavigation.down: browser;
                                 }
-                StateChangeScript { script: if ( !player4.isPlaying()) player4.startPlayback() }
+                StateChangeScript { script: if ( !player4.isPlaying()) player4.play() }
 
                 PropertyChanges { target: browser;
                                   KeyNavigation.left: player2;
@@ -526,7 +526,7 @@ Item
             Tracer {color: Qt.rgba(Math.random(), Math.random(), Math.random(), 1)}
         }
 
-        MediaPlayer
+        MediaPlayers
         {
             id: player1
             objectName: "Player 1"
@@ -566,7 +566,7 @@ Item
             Tracer {color: Qt.rgba(Math.random(), Math.random(), Math.random(), 1)}
         }
 
-        MediaPlayer
+        MediaPlayers
         {
             id: player2
             objectName: "Player 2"
@@ -605,7 +605,7 @@ Item
             Tracer {color: Qt.rgba(Math.random(), Math.random(), Math.random(), 1)}
         }
 
-        MediaPlayer
+        MediaPlayers
         {
             id: player3
             objectName: "Player 3"
@@ -644,7 +644,7 @@ Item
             Tracer {color: Qt.rgba(Math.random(), Math.random(), Math.random(), 1)}
         }
 
-        MediaPlayer
+        MediaPlayers
         {
             id: player4
             objectName: "Player 4"
