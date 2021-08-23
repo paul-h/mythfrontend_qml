@@ -18,6 +18,12 @@ MDKAPI::~MDKAPI()
     unload();
 }
 
+bool MDKAPI::isAvailable(void)
+{
+    return m_MDK_version && m_mdkGetGlobalOptionString && m_mdkGetGlobalOptionInt32 &&
+           m_mdkSetGlobalOptionString && *m_mdkPlayerAPI_new && m_mdkPlayerAPI_delete;
+}
+
 bool MDKAPI::load(const QString &path)
 {
     if (path.isEmpty())
@@ -64,6 +70,27 @@ bool MDKAPI::load(const QString &path)
     if (!m_mdkPlayerAPI_delete)
     {
         gContext->m_logger->error(Verbose::GENERAL, "MDKAPI: Failed to find m_mdkPlayerAPI_delete");
+        return false;
+    }
+
+    m_mdkGetGlobalOptionString = (bool (*)(const char* key, const char** value))m_library.resolve("MDK_getGlobalOptionString");
+    if (!m_mdkGetGlobalOptionString)
+    {
+        gContext->m_logger->error(Verbose::GENERAL, "MDKAPI: Failed to find MDK_getGlobalOptionString");
+        return false;
+    }
+
+    m_mdkGetGlobalOptionInt32 = (bool (*)(const char* key, int* value))m_library.resolve("MDK_getGlobalOptionInt32");
+    if (!m_mdkGetGlobalOptionInt32)
+    {
+        gContext->m_logger->error(Verbose::GENERAL, "MDKAPI: Failed to find MDK_getGlobalOptionInt32");
+        return false;
+    }
+
+    m_mdkSetGlobalOptionString = (void (*)(const char* key, const char* value))m_library.resolve("MDK_setGlobalOptionString");
+    if (!m_mdkGetGlobalOptionString)
+    {
+        gContext->m_logger->error(Verbose::GENERAL, "MDKAPI: Failed to find MDK_setGlobalOptionString");
         return false;
     }
 
@@ -115,3 +142,29 @@ void MDKAPI::destroyPlayer(const mdkPlayerAPI **player)
     if (m_mdkPlayerAPI_delete)
         m_mdkPlayerAPI_delete(player);
 }
+
+QString MDKAPI::getFFMPEGVersion(void)
+{
+    int ffmpegVersion;
+    if (m_mdkGetGlobalOptionInt32("ffmpeg.version", &ffmpegVersion))
+    {
+        gContext->m_logger->info(Verbose::GENERAL, QString("MDKAPI: MDK ffmpeg version: %1").arg(ffmpegVersion));
+        return QString::number(ffmpegVersion);
+    }
+
+    return QString();
+}
+
+QString MDKAPI::getFFMPEGConfig(void)
+{
+    const char* ffmpegConfig;
+    if (m_mdkGetGlobalOptionString("ffmpeg.configuration", &ffmpegConfig))
+    {
+        QString config = QString::fromLocal8Bit(ffmpegConfig);
+        gContext->m_logger->info(Verbose::GENERAL, QString("MDKAPI: MDK ffmpeg config: %1").arg(config));
+        return QString(ffmpegConfig);
+    }
+
+    return QString();
+}
+

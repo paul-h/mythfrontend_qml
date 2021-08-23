@@ -95,7 +95,7 @@ signals:
     void positionChanged();
     void durationChanged();
     void playerStateChanged(PlayerState playerState);
-    void mediaStatusChanged(MediaStatus mediaStatus);
+    void mediaStatusChanged(MediaStatus mediaStatus, QString statusString);
     void playbackEnded();
 
 private:
