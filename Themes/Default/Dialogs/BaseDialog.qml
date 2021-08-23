@@ -18,8 +18,11 @@ FocusScope
     height: yscale(500)
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.verticalCenter: parent.verticalCenter
+    visible: false
 
     property var _activeFocusItem: null
+
+    onVisibleChanged: updateButtons()
 
     function show(focusItem)
     {
@@ -113,24 +116,21 @@ FocusScope
         {
             id: buttonsRow
 
-            function __update() 
+            x: 0; y: parent.height - height - yscale(15)
+            visible: false
+            spacing: xscale(10)
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            function __update()
             {
                 var i = 0;
 
-                while ((!visible) && (i < children.length)) 
+                while ((!visible) && (i < children.length))
                 {
-                    visible = (children[i].text !== "") && (children[i].iconSource !== "");
+                    visible = (children[i].text !== "");
                     i++;
                 }
             }
-
-            visible: false
-            onChildrenChanged: __update()
-            Component.onCompleted: __update()
-
-            x: 0; y: parent.height - height - yscale(15)
-            spacing: xscale(10)
-            anchors.horizontalCenter: parent.horizontalCenter
         }
 
         Rectangle
@@ -160,6 +160,7 @@ FocusScope
             {
                 target: modalDialog
                 focus: false
+                visible: false
             }
             StateChangeScript
             {
@@ -180,6 +181,7 @@ FocusScope
             {
                 target: modalDialog
                 focus: true
+                visible: true
             }
         }
     ]
@@ -202,4 +204,9 @@ FocusScope
             NumberAnimation { properties: "opacity"; easing.type: Easing.Linear; duration: 750 }
         }
     ]
+
+    function updateButtons()
+    {
+        buttonsRow.__update();
+    }
 }
