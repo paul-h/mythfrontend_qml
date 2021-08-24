@@ -38,6 +38,7 @@ echo Installing the MDK-SDK libraries
 cp -rf /tmp/mdk-sdk/lib/$ARCH/* /lib/mythqml/
 
 echo Cleaning up
+rm -rf /lib/mythqml/libffmpeg.so.4
 rm -rf /tmp/mdk-sdk
 rm /tmp/mdk-sdk-linux.tar.xz
 
