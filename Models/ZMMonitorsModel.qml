@@ -109,7 +109,6 @@ Item
                         {
                             log.error(Verbose.GENERAL, "ZMMonitorsModel: monitor failed to find index for: " + monitorId);
                             return;
-
                         }
 
                         if (monStatus !== root.monitorsStatus.get(index).status)
@@ -118,7 +117,7 @@ Item
                             root.monitorsStatus.get(index).status = monStatus;
 
                             if (monStatus === "Alarm")
-                                showNotification("ZoneMinder: " + root.monitorsStatus.get(index).name + " camera<br><font  color=\"red\"><b>ALARM</b></font>");
+                                window.showZMAlert(monitorId);
 
                             // emit the monitorStatus signal
                             root.monitorStatus(monitorId, monStatus);
