@@ -665,7 +665,7 @@ BaseScreen
                     feedNo = list[3];
                     feedChanged(feedSource, filter, feedNo);
                     getActivePlayer().feed.switchToFeed(feedSource, filter, feedNo);
-                    getActivePlayer().play();
+                    getActivePlayer().play(true);
                     getActivePlayer().showInfo(true);
                     getActivePlayer().updateBrowserURLList();
                     getActivePlayer().updateRadioFeedList();
@@ -904,7 +904,6 @@ BaseScreen
 
     function feedSourceLoaded()
     {
-        playerLayout.mediaPlayer1.stop();
-        playerLayout.mediaPlayer1.startPlayback();
+        playerLayout.mediaPlayer1.play();
     }
 }

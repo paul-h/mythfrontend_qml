@@ -1149,25 +1149,6 @@ FocusScope
             return undefined;
     }
 
-    function startPlayback()
-    {
-        if (feedSource.feedList === undefined ||
-                feedSource.feedList.get(feedSource.currentFeed).player === undefined ||
-                feedSource.feedList.get(feedSource.currentFeed).url === undefined)
-            return;
-
-        var newPlayer = feedSource.feedList.get(feedSource.currentFeed).player;
-        switchPlayer(newPlayer);
-
-        if (newPlayer !== "StreamLink" && newPlayer !== "StreamBuffer")
-        {
-            var newURL = feedSource.feedList.get(feedSource.currentFeed).url;
-            switchURL(newURL);
-        }
-
-        updateOSD();
-    }
-
     function switchPlayer(newPlayer)
     {
         streamLinkProcess.stop();
@@ -1365,11 +1346,31 @@ FocusScope
         }
     }
 
-    function play()
+    function startPlayback()
     {
-        if (!_playbackStarted)
+        if (feedSource.feedList === undefined ||
+                feedSource.feedList.get(feedSource.currentFeed).player === undefined ||
+                feedSource.feedList.get(feedSource.currentFeed).url === undefined)
+            return;
+
+        var newPlayer = feedSource.feedList.get(feedSource.currentFeed).player;
+        switchPlayer(newPlayer);
+
+        if (newPlayer !== "StreamLink" && newPlayer !== "StreamBuffer")
         {
-            _playbackStarted = true
+            var newURL = feedSource.feedList.get(feedSource.currentFeed).url;
+            switchURL(newURL);
+        }
+
+        _playbackStarted = true;
+
+        updateOSD();
+    }
+
+    function play(forceRestart)
+    {
+        if (forceRestart || !_playbackStarted)
+        {
             startPlayback();
         }
         else
@@ -1394,17 +1395,14 @@ FocusScope
         streamLinkProcess.stop();
         checkProcessTimer.running = false;
         streamLinkProcess.waitForFinished();
-        //_playbackStarted = false;
 
         if (getActivePlayer() === "VLC")
         {
             vlcPlayer.stop();
-            //vlcPlayer.source = "";
         }
         else if (getActivePlayer() === "QTAV")
         {
             qtAVPlayer.stop();
-            //qtAVPlayer.source = "";
         }
         else if (getActivePlayer() === "YOUTUBE")
             youtubePlayer.stop();
@@ -1413,7 +1411,6 @@ FocusScope
         else if (getActivePlayer() === "MDK")
         {
             mdkPlayer.stop();
-            //mdkPlayer.source = "";
         }
     }
 
@@ -1585,6 +1582,12 @@ FocusScope
         browsePanel.visible = false;
     }
 
+    function goToFeed(feedIndex)
+    {
+        feedSource.currentFeed = feedIndex;
+        play(true);
+    }
+
     function nextFeed()
     {
         if (feedSource.feedName === "Advent Calendar")
@@ -1599,8 +1602,7 @@ FocusScope
         else
             feedSource.currentFeed++;
 
-        _playbackStarted = false;
-        play();
+        play(true);
 
         updateOSD();
 
@@ -1621,8 +1623,7 @@ FocusScope
         else
             feedSource.currentFeed--;
 
-        _playbackStarted = false;
-        play();
+        play(true);
 
         updateOSD();
 

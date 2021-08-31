@@ -535,6 +535,10 @@ Window
                 {
                     showHelp();
                 }
+                else if (event.key === Qt.Key_Z)
+                {
+                    zmAlertDialog.show();
+                }
             }
 
             Behavior on opacity { NumberAnimation { duration: _fadeTime } }
@@ -1011,6 +1015,23 @@ Window
                 }
             }
         ]
+    }
+
+    ZMAlertDialog
+    {
+        id: zmAlertDialog
+        x: parent.width - width - xscale(75)
+        y:yscale(75)
+        anchors.horizontalCenter: undefined
+        anchors.verticalCenter: undefined
+
+        onStateChanged: if (state === "show") messageSound.play();
+    }
+
+    function showZMAlert(monitorId)
+    {
+        zmAlertDialog.alertedMonitorId = monitorId;
+        zmAlertDialog.show();
     }
 
     function sleep()
