@@ -113,7 +113,7 @@ Item
 
                         if (monStatus !== root.monitorsStatus.get(index).status)
                         {
-                            log.info(Verbose.MODEL, "ZMMonitorsModel: monitor " + root.monitorsStatus.get(index).monitorId + " status changed " + root.monitorsStatus.get(index).status + " -> " + monStatus);
+                            log.debug(Verbose.MODEL, "ZMMonitorsModel: monitor " + root.monitorsStatus.get(index).monitorId + " status changed " + root.monitorsStatus.get(index).status + " -> " + monStatus);
                             root.monitorsStatus.get(index).status = monStatus;
 
                             if (monStatus === "Alarm")
