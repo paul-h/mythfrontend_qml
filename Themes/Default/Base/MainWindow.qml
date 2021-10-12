@@ -54,8 +54,8 @@ Window
     Connections
     {
         target: eventListener
-        onKeyPressed: idleTimer.restart();
-        onMouseMoved:
+        function onKeyPressed() { idleTimer.restart(); }
+        function onMouseMoved()
         {
             if (mouseArea.showMouse)
             {
