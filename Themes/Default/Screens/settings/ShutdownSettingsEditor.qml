@@ -107,6 +107,24 @@ BaseScreen
         height: yscale(50)
         text: settings.shutdownCommand
         KeyNavigation.up: rebootCmdEdit
+        KeyNavigation.down: suspendCmdEdit
+    }
+
+    LabelText
+    {
+        x: xscale(30); y: yscale(300)
+        width: xscale(340)
+        text: "Suspend Command:"
+    }
+
+    BaseEdit
+    {
+        id: suspendCmdEdit
+        x: xscale(300); y: yscale(300)
+        width: parent.width - x - xscale(20)
+        height: yscale(50)
+        text: settings.suspendCommand
+        KeyNavigation.up: shutdownCmdEdit
         KeyNavigation.down: saveButton
     }
 
@@ -115,7 +133,7 @@ BaseScreen
         id: saveButton;
         x: parent.width - width - xscale(50); y: yscale(600);
         text: "Save";
-        KeyNavigation.up: shutdownCmdEdit
+        KeyNavigation.up: suspendCmdEdit
         KeyNavigation.down: frontendIdleTimeEdit
         onClicked: save()
     }
@@ -135,11 +153,13 @@ BaseScreen
         dbUtils.setSetting("LauncherIdleTime", settings.hostName, launcherIdleTimeEdit.text);
         dbUtils.setSetting("RebootCommand",   settings.hostName, rebootCmdEdit.text);
         dbUtils.setSetting("ShutdownCommand", settings.hostName, shutdownCmdEdit.text);
+        dbUtils.setSetting("SuspendCommand", settings.hostName, suspendCmdEdit.text);
 
         settings.frontendIdleTime = frontendIdleTimeEdit.text;
         settings.launcherIdleTime = launcherIdleTimeEdit.text;
         settings.rebootCommand   = rebootCmdEdit.text;
         settings.shutdownCommand = shutdownCmdEdit.text;
+        settings.suspendCommand = suspendCmdEdit.text;
 
         // guess which idleTime we need to use
         window.idleTime = (window.shutdownOnIdle ? settings.launcherIdleTime : settings.frontendIdleTime);

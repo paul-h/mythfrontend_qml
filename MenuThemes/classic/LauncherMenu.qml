@@ -58,7 +58,13 @@ ListModel
         loaderSource: "reboot"
         waterMark: "watermark/reboot.png"
     }
-        ListElement
+    ListElement
+    {
+        menutext:"Suspend"
+        loaderSource: "suspend"
+        waterMark: "images/suspend.png"
+    }
+    ListElement
     {
         menutext:"Exit"
         loaderSource: "quit"

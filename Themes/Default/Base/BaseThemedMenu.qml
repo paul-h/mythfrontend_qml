@@ -133,6 +133,9 @@ Item
                     if (settings.shutdownCommand !== "")
                         popupMenu.addMenuItem("", "Shutdown", "shutdown");
 
+                    if (settings.suspendCommand !== "")
+                        popupMenu.addMenuItem("", "Suspend", "suspend");
+
                     popupMenu.addMenuItem("", "Help...", "showhelp");
 
                     popupMenu.show(listView);
@@ -225,6 +228,10 @@ Item
                 else if (model.get(currentIndex).loaderSource === "shutdown")
                 {
                     shutdown();
+                }
+                else if (model.get(currentIndex).loaderSource === "suspend")
+                {
+                    suspend();
                 }
                 else if (model.get(currentIndex).loaderSource === "quit")
                 {
