@@ -16,7 +16,7 @@ Item
     Connections
     {
         target: window
-        onWmultChanged: updateText()
+        function onWmultChanged() { updateText() }
     }
 
     x: xscale(50); y: 0; width: xscale(300); height: yscale(50)
