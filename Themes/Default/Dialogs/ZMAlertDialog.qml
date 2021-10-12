@@ -38,7 +38,7 @@ BasePopup
     Connections
     {
         target: playerSources.zmCameraList
-        onMonitorStatus:
+        function onMonitorStatus(monitorId, status)
         {
             if (mediaPlayer.feed.feedName === "ZoneMinder Cameras")
             {
