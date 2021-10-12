@@ -90,7 +90,7 @@ FocusScope
     Connections
     {
         target: playerSources.zmCameraList
-        onMonitorStatus:
+        function onMonitorStatus(monitorId, status)
         {
             if (feedSource.feedName === "ZoneMinder Cameras")
             {
