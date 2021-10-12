@@ -57,7 +57,8 @@ Item
             {
                 property bool selected: ListView.isCurrentItem
 
-                width: parent.width; height: yscale(60)
+                width: parent ? parent.width : 0;
+                height: yscale(60)
                 TitleText
                 {
                     text: menutext
