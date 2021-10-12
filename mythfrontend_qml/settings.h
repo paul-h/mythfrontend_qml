@@ -62,6 +62,7 @@ class Settings : public QObject
     Q_PROPERTY(int     launcherIdleTime READ launcherIdleTime WRITE setLauncherIdleTime NOTIFY launcherIdleTimeChanged)
     Q_PROPERTY(QString rebootCommand READ rebootCommand WRITE setRebootCommand NOTIFY rebootCommandChanged)
     Q_PROPERTY(QString shutdownCommand READ shutdownCommand WRITE setShutdownCommand NOTIFY shutdownCommandChanged)
+    Q_PROPERTY(QString suspendCommand READ suspendCommand WRITE setSuspendCommand NOTIFY suspendCommandChanged)
 
     // auto start
     Q_PROPERTY(QString autoStartFrontend READ autoStartFrontend WRITE setAutoStartFrontend NOTIFY autoStartFrontendChanged)
@@ -106,6 +107,7 @@ class Settings : public QObject
      void launcherIdleTimeChanged(void);
      void rebootCommandChanged(void);
      void shutdownCommandChanged(void);
+     void suspendCommandChanged(void);
      void autoStartFrontendChanged(void);
 
   public:
@@ -231,6 +233,9 @@ class Settings : public QObject
     QString shutdownCommand(void);
     void    setShutdownCommand(const QString &shutdownCommand);
 
+    QString suspendCommand(void);
+    void    setSuspendCommand(const QString &suspendCommand);
+
     QString autoStartFrontend(void);
     void    setAutoStartFrontend(const QString &autoStartFrontend);
 
@@ -283,6 +288,7 @@ class Settings : public QObject
     int     m_launcherIdleTime;
     QString m_rebootCommand;
     QString m_shutdownCommand;
+    QString m_suspendCommand;
 
     QString m_autoStartFrontend;
 };

@@ -817,6 +817,10 @@ Window
             {
                 shutdown();
             }
+            else if (itemData === "suspend")
+            {
+                suspend();
+            }
             else if (itemData === "exit")
             {
                 quit();
@@ -1097,6 +1101,15 @@ Window
             busyDialog.timeOut = 10000;
             busyDialog.show();
             externalProcess.start(settings.rebootCommand);
+        }
+    }
+
+    function suspend()
+    {
+        if (settings.suspendCommand != "")
+        {
+            log.info(Verbose.GENERAL, "Suspending!!!!")
+            externalProcess.start(settings.suspendCommand);
         }
     }
 }

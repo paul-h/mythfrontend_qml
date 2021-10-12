@@ -83,6 +83,7 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     setLauncherIdleTime(gContext->m_databaseUtils->getSetting("LauncherIdleTime", hostName).toInt());
     setRebootCommand(gContext->m_databaseUtils->getSetting("RebootCommand", hostName));
     setShutdownCommand(gContext->m_databaseUtils->getSetting("ShutdownCommand", hostName));
+    setSuspendCommand(gContext->m_databaseUtils->getSetting("SuspendCommand", hostName));
 
     // auto start
     setAutoStartFrontend(gContext->m_databaseUtils->getSetting("AutoStartFrontend", hostName));
@@ -196,6 +197,12 @@ void Settings::setDefaultSettings(const QString &hostName)
     {
         setShutdownCommand("sudo /sbin/poweroff");
         gContext->m_databaseUtils->setSetting("ShutdownCommand", hostName, "sudo /sbin/poweroff");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("SuspendCommand", hostName) == "")
+    {
+        setShutdownCommand("systemctl suspend");
+        gContext->m_databaseUtils->setSetting("SuspendCommand", hostName, "systemctl suspend");
     }
 
     // auto start
@@ -634,6 +641,17 @@ void    Settings::setShutdownCommand(const QString &shutdownCommand)
 {
     m_shutdownCommand = shutdownCommand;
     emit shutdownCommandChanged();
+}
+
+QString Settings::suspendCommand(void)
+{
+    return m_suspendCommand;
+}
+
+void    Settings::setSuspendCommand(const QString &suspendCommand)
+{
+    m_suspendCommand = suspendCommand;
+    emit suspendCommandChanged();
 }
 
 QString Settings::autoStartFrontend(void)
