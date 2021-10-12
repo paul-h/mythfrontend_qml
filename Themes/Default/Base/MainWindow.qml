@@ -209,11 +209,18 @@ Window
                     var title = theme.radioStreams.get(x).title;
                     var url  = theme.radioStreams.get(x).url;
                     var logo  = theme.radioStreams.get(x).logo;
+
+                    if (!url.startsWith("http://") && !url.startsWith("https://") && !url.startsWith("file://"))
+                        url = "file://" + settings.configPath + "Themes/Pictures/" + settings.themeName + "/" + url;
+
+                    if (!logo.startsWith("http://") && !logo.startsWith("https://") && !logo.startsWith("file://"))
+                        logo = "file://" + settings.configPath + "Themes/Pictures/" + settings.themeName + "/" + logo;
+
                     radioPlayerDialog.addStream(title, url, logo);
                 }
 
                 if (radioPlayerDialog.radioFeedsEnabled)
-                    radioPlayerDialog.playFirst();
+                    radioPlayerDialog.playStream(dbUtils.getSetting(settings.themeName + "RadioStream", settings.hostName, ""));
             }
         }
     }
@@ -235,6 +242,9 @@ Window
                 screenBackground.setSlideShow(settings.configPath + "Themes/Pictures/" + settings.themeName);
                 screenBackground.showImage = false;
                 screenBackground.showSlideShow = true;
+
+                if (radioPlayerDialog.radioFeedsEnabled)
+                    radioPlayerDialog.playStream(dbUtils.getSetting(settings.themeName + "RadioStream", settings.hostName, ""));
             }
             else
             {
