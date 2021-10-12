@@ -416,6 +416,8 @@ BaseDialog
 
         trackArtistTitle = "";
         icon.source = streamList.get(streamList.currentItem).logo;
+
+        dbUtils.setSetting(settings.themeName + "RadioStream", settings.hostName, streamList.get(streamList.currentItem).title);
     }
 
     function next()
@@ -429,6 +431,8 @@ BaseDialog
 
         trackArtistTitle = "";
         icon.source = streamList.get(streamList.currentItem).logo;
+
+        dbUtils.setSetting(settings.themeName + "RadioStream", settings.hostName, streamList.get(streamList.currentItem).title);
     }
 
     function rewind()
@@ -487,6 +491,22 @@ BaseDialog
     {
         onoff.focus = true;
         streamList.currentItem = 0;
+        root.play();
+    }
+
+    function playStream(title)
+    {
+        streamList.currentItem = 0;
+
+        for (var x = 0; x < streamList.count; x++)
+        {
+            if (title === streamList.get(x).title)
+            {
+                streamList.currentItem = x;
+                break;
+            }
+        }
+
         root.play();
     }
 
