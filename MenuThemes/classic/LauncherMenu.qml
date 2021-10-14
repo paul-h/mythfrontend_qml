@@ -62,7 +62,7 @@ ListModel
     {
         menutext:"Suspend"
         loaderSource: "suspend"
-        waterMark: "images/suspend.png"
+        waterMark: "watermark/suspend.png"
     }
     ListElement
     {
