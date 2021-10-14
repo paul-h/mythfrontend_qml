@@ -219,7 +219,7 @@ Window
                     radioPlayerDialog.addStream(title, url, logo);
                 }
 
-                if (radioPlayerDialog.radioFeedsEnabled)
+                if (radioPlayerDialog.themePlayerEnabled)
                     radioPlayerDialog.playStream(dbUtils.getSetting(settings.themeName + "RadioStream", settings.hostName, ""));
             }
         }
@@ -243,7 +243,7 @@ Window
                 screenBackground.showImage = false;
                 screenBackground.showSlideShow = true;
 
-                if (radioPlayerDialog.radioFeedsEnabled)
+                if (radioPlayerDialog.themePlayerEnabled)
                     radioPlayerDialog.playStream(dbUtils.getSetting(settings.themeName + "RadioStream", settings.hostName, ""));
             }
             else

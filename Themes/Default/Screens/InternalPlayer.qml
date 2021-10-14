@@ -65,12 +65,12 @@ BaseScreen
     Connections
     {
         target: radioPlayerDialog
-        onAccepted:
+        function onAccepted()
         {
             _actionsEnabled = true;
         }
 
-        onCancelled:
+        function onCancelled()
         {
             _actionsEnabled = true;
         }
@@ -767,7 +767,7 @@ BaseScreen
             radioPlayerDialog.addStream(title, url, logo)
         }
 
-        if (radioPlayerDialog.radioFeedsEnabled)
+        if (radioPlayerDialog.radioPlayerEnabled)
             radioPlayerDialog.playFirst();
     }
 

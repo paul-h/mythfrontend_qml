@@ -9,7 +9,8 @@ BaseDialog
 {
     id: root
 
-    property bool radioFeedsEnabled: false
+    property bool radioPlayerEnabled: false
+    property bool themePlayerEnabled: false
 
     property var streamList: themeStreamList
 
@@ -20,7 +21,9 @@ BaseDialog
 
     property string trackArtistTitle: ""
 
+    property bool _enabled: false
     property bool _wasPlaying: false
+    property double savedPosition: 0.0
 
     title: "Radio Player"
     message: ""
@@ -29,23 +32,28 @@ BaseDialog
 
     Component.onCompleted:
     {
-        radioFeedsEnabled = (dbUtils.getSetting("RadioFeedsEnabled", settings.hostName, "false") == "true");
+        radioPlayerEnabled = (dbUtils.getSetting("RadioPlayerEnabled", settings.hostName, "true") == "true");
+        themePlayerEnabled = (dbUtils.getSetting("ThemePlayerEnabled", settings.hostName, "true") == "true");
+        _enabled = themePlayerEnabled;
     }
 
     Component.onDestruction:
     {
-        dbUtils.setSetting("RadioFeedsEnabled", settings.hostName, radioFeedsEnabled);
+        dbUtils.setSetting("RadioPlayerEnabled", settings.hostName, radioPlayerEnabled);
+        dbUtils.setSetting("ThemePlayerEnabled", settings.hostName, themePlayerEnabled);
     }
 
     ListModel
     {
         id: internalStreamList
+        objectName: "internalStreamList"
         property int currentItem: 0
     }
 
     ListModel
     {
         id: themeStreamList
+        objectName: "themeStreamList"
         property int currentItem: 0
     }
 
@@ -279,14 +287,16 @@ BaseDialog
                 height: yscale(50)
                 effectEnabled: false
                 focus: true
-                source: radioFeedsEnabled ? mythUtils.findThemeFile("images/player/on.png") : mythUtils.findThemeFile("images/player/off.png")
+                source: _enabled ? mythUtils.findThemeFile("images/player/on.png") : mythUtils.findThemeFile("images/player/off.png")
                 KeyNavigation.right: previous
                 KeyNavigation.left: record
                 onClicked:
                 {
-                    radioFeedsEnabled = !radioFeedsEnabled;
+                    _enabled = !_enabled;
 
-                    if (radioFeedsEnabled)
+                    streamList.objectName === "themeStreamList" ? themePlayerEnabled = _enabled : radioPlayerEnabled = _enabled;
+
+                    if (_enabled)
                         root.play();
                     else
                         root.stop();
@@ -299,7 +309,7 @@ BaseDialog
                 width: xscale(50)
                 height: yscale(50)
                 source: mythUtils.findThemeFile("images/player/previoustrack.png")
-                enabled: streamList.currentItem > 0 && radioFeedsEnabled
+                enabled: streamList.currentItem > 0 && _enabled
                 KeyNavigation.right: rewind
                 KeyNavigation.left: onoff
                 onClicked: root.next()
@@ -323,7 +333,7 @@ BaseDialog
                 width: xscale(50)
                 height: yscale(50)
                 focus: true
-                enabled: radioFeedsEnabled
+                enabled: _enabled
                 source: mythUtils.findThemeFile("images/player/play.png")
                 KeyNavigation.right: pause
                 KeyNavigation.left: rewind
@@ -335,7 +345,7 @@ BaseDialog
                 id: pause
                 width: xscale(50)
                 height: yscale(50)
-                enabled: radioFeedsEnabled
+                enabled: _enabled
                 source: mythUtils.findThemeFile("images/player/pause.png")
                 KeyNavigation.right: stop
                 KeyNavigation.left: play
@@ -347,7 +357,7 @@ BaseDialog
                 id: stop
                 width: xscale(50)
                 height: yscale(50)
-                enabled: isPlaying() && radioFeedsEnabled
+                enabled: isPlaying() && _enabled
                 source: mythUtils.findThemeFile("images/player/stop.png")
                 KeyNavigation.right: fastforward
                 KeyNavigation.left: pause
@@ -371,7 +381,7 @@ BaseDialog
                 id: next
                 width: xscale(50)
                 height: yscale(50)
-                enabled: streamList.currentItem < streamList.count - 1 && radioFeedsEnabled
+                enabled: streamList.currentItem < streamList.count - 1 && _enabled
                 source: mythUtils.findThemeFile("images/player/nexttrack.png")
                 KeyNavigation.right: record
                 KeyNavigation.left: fastforward
@@ -397,9 +407,15 @@ BaseDialog
     function switchStreamList(list)
     {
         if (list === "internal")
+        {
+            _enabled = radioPlayerEnabled;
             streamList = internalStreamList;
+        }
         else if (list === "theme")
+        {
+            _enabled = themePlayerEnabled;
             streamList = themeStreamList;
+        }
         else
             log.error(Verbose.GENERAL, "RadioPlayerDialog: switchStreamList() got bad list - " + list);
     }
@@ -519,6 +535,7 @@ BaseDialog
     {
         if (isPlaying())
         {
+            savedPosition = audioPlayer.position;
             _wasPlaying = true;
             root.stop();
         }
@@ -533,7 +550,10 @@ BaseDialog
         switchStreamList("theme");
 
         if (_wasPlaying)
+        {
             root.play();
+            audioPlayer.position = savedPosition;
+        }
     }
 
     function getMuted()
