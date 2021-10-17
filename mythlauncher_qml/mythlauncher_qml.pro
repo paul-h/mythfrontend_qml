@@ -1,5 +1,5 @@
 #app version
-VERSION = 0.0.10.alpha
+VERSION = 0.0.13.alpha
 BRANCH = master
 
 PREFIX = /usr
