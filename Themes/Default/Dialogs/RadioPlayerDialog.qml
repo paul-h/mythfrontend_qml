@@ -69,9 +69,11 @@ BaseDialog
             if (vol !== undefined && vol !== "" && vol >= 0 && vol <= 100)
                 volume = vol;
             else
-                volume = 80
+                volume = 80;
 
-            audio.mute = false
+            audio.mute = false;
+
+            playlist.mode = VlcPlaylist.Loop;
         }
 
         Component.onDestruction:
@@ -127,6 +129,8 @@ BaseDialog
                 if (root.state !== "show")
                     showNotification("Failed to play audio stream.<br>" + streamList.get(streamList.currentItem).title);
                 trackArtistTitle = "Error: Failed to play audio stream.";
+                playlist.mode = VlcPlaylist.Normal;
+
             }
         }
     }

@@ -13,9 +13,10 @@ QtObject
     property var    backgroundSlideShow:
     ListModel
     {
+        property double version: 1.1
         property string filename: "Autumn.tar.gz"
-        property string md5: "0f4a669b4697fb99dd822ee0908b6aa9"
-        property double size: 539.0
+        property string md5: "db788de5cac56281ee2e2a7ebb82378b"
+        property double size: 467.9
 
         ListElement
         {
@@ -110,22 +111,7 @@ QtObject
         ListElement
         {
             url: "https://mythqml.net/downloads/themes/SlideShowAUTUMN/Autumn.tar.gz.part19";
-            size: 25.0
-        }
-        ListElement
-        {
-            url: "https://mythqml.net/downloads/themes/SlideShowAUTUMN/Autumn.tar.gz.part20";
-            size: 25.0
-        }
-        ListElement
-        {
-            url: "https://mythqml.net/downloads/themes/SlideShowAUTUMN/Autumn.tar.gz.part21";
-            size: 25.0
-        }
-        ListElement
-        {
-            url: "https://mythqml.net/downloads/themes/SlideShowAUTUMN/Autumn.tar.gz.part22";
-            size: 14.0
+            size: 17.9
         }
     }
 
@@ -137,25 +123,25 @@ QtObject
         {
             title: "Soothing Nature";
             url: "soothing_nature.mp3";
-            logo: "snapshot101.png"
+            logo: "snapshot001.jpg"
         }
         ListElement
         {
             title: "Relaxing Autumn";
             url: "relaxing_autumn.webm";
-            logo: "snapshot102.png"
+            logo: "snapshot002.jpg"
         }
         ListElement
         {
             title: "Classical Autumn";
             url: "classical_autumn.mp3";
-            logo: "snapshot103.png"
+            logo: "snapshot003.jpg"
         }
         ListElement
         {
             title: "Piano Autumn";
             url: "piano_autumn.webm";
-            logo: "snapshot104.png"
+            logo: "snapshot004.jpg"
         }
     }
 

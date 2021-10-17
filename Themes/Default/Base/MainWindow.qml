@@ -170,6 +170,22 @@ Window
             {
                 dest = settings.configPath + "Themes/Pictures/" + settings.themeName + "/" + theme.backgroundSlideShow.filename;
 
+                // check for new slideshow version
+                var installedVersion = dbUtils.getSetting(settings.themeName + "Version", settings.hostName, "1.0");
+
+                if (theme.backgroundSlideShow.version > installedVersion)
+                {
+                    okCancelDialog.title = "New version of theme slideshow available";
+                    okCancelDialog.message = '<font  color="yellow"><b>Theme Name: </font></b>' + settings.themeName +
+                            '<br><font color="yellow"><b>Installed Version: </font></b>' + installedVersion +
+                            '<br><font  color="yellow"><b>New Version: </font></b>' + theme.backgroundSlideShow.version +
+                            '<br><br>Please wait while it is downloaded and installed.';
+                    okCancelDialog.show(stack.currentItem.defaultFocusItem);
+
+                    // remove the old slideshow archive, pictures and music tracks
+                    mythUtils.clearDir(settings.configPath + "Themes/Pictures/" + settings.themeName);
+                }
+
                 if (!mythUtils.fileExists(dest))
                 {
                     mythUtils.mkPath(settings.configPath + "Themes/Pictures/" + settings.themeName);
@@ -242,6 +258,8 @@ Window
                 screenBackground.setSlideShow(settings.configPath + "Themes/Pictures/" + settings.themeName);
                 screenBackground.showImage = false;
                 screenBackground.showSlideShow = true;
+
+                dbUtils.setSetting(settings.themeName + "Version", settings.hostName, theme.backgroundSlideShow.version);
 
                 if (radioPlayerDialog.themePlayerEnabled)
                     radioPlayerDialog.playStream(dbUtils.getSetting(settings.themeName + "RadioStream", settings.hostName, ""));
@@ -866,6 +884,18 @@ Window
 
         rejectButtonText: ""
         acceptButtonText: "Close"
+
+        width: xscale(600); height: yscale(300)
+    }
+
+    OkCancelDialog
+    {
+        id: okCancelDialog
+
+        title: appName
+
+        rejectButtonText: ""
+        acceptButtonText: "OK"
 
         width: xscale(600); height: yscale(300)
     }
