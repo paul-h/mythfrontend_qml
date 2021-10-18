@@ -79,6 +79,29 @@ bool MythUtils::removeFile(const QString& fileName)
     return QFile::remove(fileName);
 }
 
+void MythUtils::clearDir(const QString path)
+{
+    // for security only allow paths in the config directory
+    if (!path.startsWith((gContext->m_settings->configPath())))
+    {
+        gContext->m_logger->warning(Verbose::FILE, QString("MythUtils::clearDir: not allowed to clear this directory: '%1'").arg(path));
+        return;
+    }
+
+    QDir dir( path );
+
+    dir.setFilter(QDir::NoDotAndDotDot | QDir::Files);
+    foreach(QString dirItem, dir.entryList())
+        dir.remove(dirItem);
+
+    dir.setFilter(QDir::NoDotAndDotDot | QDir::Dirs);
+    foreach(QString dirItem, dir.entryList())
+    {
+        QDir subDir(dir.absoluteFilePath(dirItem));
+        subDir.removeRecursively();
+    }
+}
+
 bool MythUtils::mkPath(const QString &path)
 {
     QDir d;
