@@ -42,6 +42,12 @@ Window
 
     property int _fadeTime: 4000
 
+    property bool _savedShowImage: false
+    property bool _savedShowTime: false
+    property bool _savedShowTicker: false
+    property bool _savedShowVideo: false
+    property bool _savedShowSlideShow: false;
+
     Component.onCompleted:
     {
         eventListener.listenTo(window)
@@ -747,11 +753,19 @@ Window
     Process
     {
         id: externalProcess
+
+        property bool doSleep: true
+
         onFinished:
         {
             log.debug(Verbose.PROCESS, "External Process is finished");
-            busyDialog.hide();
-            wake();
+            if (doSleep)
+            {
+                busyDialog.hide();
+                wake();
+            }
+            else
+                doSleep = true;
         }
 
         onStateChanged:
@@ -759,7 +773,9 @@ Window
             if (state === Process.Running)
             {
                 log.debug(Verbose.PROCESS, "External Process is running");
-                sleep();
+
+                if (doSleep)
+                    sleep();
             }
         }
     }
@@ -1081,12 +1097,22 @@ Window
     function sleep()
     {
         log.info(Verbose.GENERAL, "Going to sleep....zzzzz");
+
+        _savedShowImage = screenBackground.showImage;
+        _savedShowTime = screenBackground.showTime;
+        _savedShowTicker = screenBackground.showTicker;
+        _savedShowVideo = screenBackground.showVideo;
+        _savedShowSlideShow = screenBackground.showSlideShow;
+
         screenBackground.showImage = true;
         screenBackground.showTime = false;
         screenBackground.showTicker =false;
         screenBackground.pauseVideo(true);
         screenBackground.showVideo = false;
-        //window.active = false;
+        screenBackground.showSlideShow = false;
+
+        radioPlayerDialog.suspendPlayback();
+
         idleTimer.stop();
         tickerUpdateTimer.stop();
     }
@@ -1094,12 +1120,15 @@ Window
     function wake()
     {
         log.info(Verbose.GENERAL, "Waking up.... \\0/");
-        screenBackground.showImage =false;
-        screenBackground.showTime = true;
-        screenBackground.showTicker = true;
-        screenBackground.showVideo= true;
+        screenBackground.showImage =_savedShowImage;
+        screenBackground.showTime = _savedShowTime;
+        screenBackground.showTicker = _savedShowTicker;
+        screenBackground.showVideo= _savedShowVideo;
         screenBackground.pauseVideo(false);
-        //window.active = false;
+        screenBackground.showSlideShow = _savedShowSlideShow;
+
+        radioPlayerDialog.resumePlayback();
+
         idleTimer.start();
         tickerUpdateTimer.start();
     }
@@ -1139,6 +1168,7 @@ Window
         if (settings.suspendCommand != "")
         {
             log.info(Verbose.GENERAL, "Suspending!!!!")
+            externalProcess.doSleep = false;
             externalProcess.start(settings.suspendCommand);
         }
     }
