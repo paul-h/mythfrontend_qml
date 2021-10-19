@@ -79,7 +79,7 @@ bool MythUtils::removeFile(const QString& fileName)
     return QFile::remove(fileName);
 }
 
-void MythUtils::clearDir(const QString path)
+void MythUtils::clearDir(const QString &path)
 {
     // for security only allow paths in the config directory
     if (!path.startsWith((gContext->m_settings->configPath())))
