@@ -18,15 +18,15 @@ BaseScreen
         setHelp("https://mythqml.net/help/web_browser.php#top");
         showTime(false);
         showTicker(false);
-        pauseVideo(false);
-        showVideo(true);
+        pauseVideo(true);
         muteAudio(true);
+        radioPlayerDialog.suspendPlayback();
     }
 
     Component.onDestruction:
     {
-        showVideo(true);
         pauseVideo(false);
+        radioPlayerDialog.resumePlayback();
     }
 
     onFullscreenChanged: { showVideo(!fullscreen);  pauseVideo(fullscreen); }
