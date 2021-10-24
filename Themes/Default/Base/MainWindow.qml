@@ -242,7 +242,10 @@ Window
                 }
 
                 if (radioPlayerDialog.themePlayerEnabled)
+                {
                     radioPlayerDialog.playStream(dbUtils.getSetting(settings.themeName + "RadioStream", settings.hostName, ""));
+                    showNotification("Playing audio stream.<br>" + radioPlayerDialog.streamList.get(radioPlayerDialog.streamList.currentItem).title);
+                }
             }
         }
     }
@@ -268,7 +271,10 @@ Window
                 dbUtils.setSetting(settings.themeName + "Version", settings.hostName, theme.backgroundSlideShow.version);
 
                 if (radioPlayerDialog.themePlayerEnabled)
+                {
                     radioPlayerDialog.playStream(dbUtils.getSetting(settings.themeName + "RadioStream", settings.hostName, ""));
+                    showNotification("Playing audio stream.<br>" + radioPlayerDialog.streamList.get(radioPlayerDialog.streamList.currentItem).title);
+                }
             }
             else
             {
