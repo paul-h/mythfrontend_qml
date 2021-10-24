@@ -94,6 +94,10 @@ BaseScreen
         }
         ListElement
         {
+            itemText: "SlideShowHALLOWEEN"
+        }
+        ListElement
+        {
             itemText: "SlideShowXMAS"
         }
     }
