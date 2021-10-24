@@ -39,6 +39,7 @@ BaseDialog
 
     Component.onDestruction:
     {
+        audioPlayer.stop();
         dbUtils.setSetting("RadioPlayerEnabled", settings.hostName, radioPlayerEnabled);
         dbUtils.setSetting("ThemePlayerEnabled", settings.hostName, themePlayerEnabled);
     }
@@ -105,7 +106,7 @@ BaseDialog
                 log.debug(Verbose.PLAYBACK, "AudioPlayer state: Playing - " + mrl);
                 muteTimer.start();
                 status.text = "Playing";
-                if (root.state !== "show")
+                if (root.state !== "show" && streamList == internalStreamList)
                     showNotification("Playing audio stream.<br>" + streamList.get(streamList.currentItem).title);
             }
             else if (state === VlcPlayer.Paused)
