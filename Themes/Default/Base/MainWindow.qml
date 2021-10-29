@@ -293,7 +293,7 @@ Window
     WebSocket
     {
         id: webSocket
-        url: settings.webSocketUrl
+        url: "ws://" + settings.masterIP + ":" + settings.websocketPort
         onTextMessageReceived:
         {
             log.debug(Verbose.WEBSOCKET, "WebSocket: Received message - " + message)
@@ -302,7 +302,14 @@ Window
         {
             if (webSocket.status == WebSocket.Error)
             {
-                log.error(Verbose.WEBSOCKET, "WebSocket: Error - " + webSocket.errorString)
+                log.error(Verbose.WEBSOCKET, "WebSocket: Error - " + webSocket.errorString + " (" + url + ")");
+
+                // the old server used a different port lets try that
+                if (settings.masterPort === settings.websocketPort)
+                {
+                    settings.websocketPort = settings.websocketPort + 5;
+                    log.error(Verbose.WEBSOCKET, "WebSocket: trying old websocket port (" + settings.websocketPort + ")");
+                }
             }
             else if (webSocket.status == WebSocket.Connecting)
             {

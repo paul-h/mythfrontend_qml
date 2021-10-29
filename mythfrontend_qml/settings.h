@@ -26,7 +26,7 @@ class Settings : public QObject
     Q_PROPERTY(QString qmlPath READ qmlPath WRITE setQmlPath NOTIFY qmlPathChanged)
     Q_PROPERTY(QString menuPath READ menuPath WRITE setMenuPath NOTIFY menuPathChanged)
 
-    Q_PROPERTY(QString webSocketUrl READ webSocketUrl WRITE setWebSocketUrl NOTIFY webSocketUrlChanged)
+    Q_PROPERTY(int websocketPort READ websocketPort WRITE setWebsocketPort NOTIFY websocketPortChanged)
     Q_PROPERTY(QString videoPath READ videoPath WRITE setVideoPath NOTIFY videoPathChanged)
     Q_PROPERTY(QString picturePath READ picturePath WRITE setPicturePath NOTIFY picturePathChanged)
     Q_PROPERTY(QString sdChannels READ sdChannels WRITE setSdChannels NOTIFY sdChannelsChanged)
@@ -83,7 +83,7 @@ class Settings : public QObject
      void sharePathChanged(void);
      void qmlPathChanged(void);
      void menuPathChanged(void);
-     void webSocketUrlChanged(void);
+     void websocketPortChanged(void);
      void videoPathChanged(void);
      void picturePathChanged(void);
      void sdChannelsChanged(void);
@@ -161,8 +161,8 @@ class Settings : public QObject
     QString menuPath(void);
     void    setMenuPath(const QString &menuPath);
 
-    QString webSocketUrl(void);
-    void    setWebSocketUrl(const QString &webSocketUrl);
+    int     websocketPort(void);
+    void    setWebsocketPort(int websocketPort);
 
     QString videoPath(void);
     void    setVideoPath(const QString &videoPath);
@@ -262,7 +262,7 @@ class Settings : public QObject
     QString m_youtubeSubListFile;
     QString m_youtubeAPIKey;
 
-    QString m_webSocketUrl;
+    int     m_websocketPort;
     QString m_videoPath;
     QString m_picturePath;
     QString m_sdChannels;

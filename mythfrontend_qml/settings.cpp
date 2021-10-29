@@ -44,9 +44,8 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     setYoutubeSubListFile(gContext->m_databaseUtils->getSetting("YoutubeSubListFile", hostName));
     setYoutubeAPIKey(gContext->m_databaseUtils->getSetting("YoutubeAPIKey", hostName));
 
-    // set the websocket url using the master backend as a starting point
-    QUrl url(QString("ws://%1:%2").arg(masterIP()).arg(masterPort() + 5));
-    setWebSocketUrl(url.toString());
+    // default the websocket port to the master backend port
+    setWebsocketPort(masterPort());
 
     // start fullscreen
     setStartFullscreen((gContext->m_databaseUtils->getSetting("StartFullScreen", hostName) == "true"));
@@ -380,15 +379,15 @@ void Settings::setMenuPath(const QString &menuPath)
     emit menuPathChanged();
 }
 
-QString Settings::webSocketUrl(void)
+int Settings::websocketPort(void)
 {
-    return m_webSocketUrl;
+    return m_websocketPort;
 }
 
-void Settings::setWebSocketUrl(const QString &webSocketUrl)
+void Settings::setWebsocketPort(int websocketPort)
 {
-    m_webSocketUrl = webSocketUrl;
-    emit webSocketUrlChanged();
+    m_websocketPort = websocketPort;
+    emit websocketPortChanged();
 }
 
 QString Settings::videoPath(void)
