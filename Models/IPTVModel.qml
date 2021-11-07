@@ -45,8 +45,10 @@ Item
                 var genre = jsonModel.model.get(x).category && jsonModel.model.get(x).category !== undefined ? jsonModel.model.get(x).category : "N/A"
                 var country = getCountries(jsonModel.model.get(x).countries);
                 var language = getLanguages(jsonModel.model.get(x).languages);
+                var xmltvid = jsonModel.model.get(x).tvg && jsonModel.model.get(x).tvg !== undefined ? jsonModel.model.get(x).tvg.id : ""
+                var xmltvurl = jsonModel.model.get(x).tvg && jsonModel.model.get(x).tvg !== undefined ? jsonModel.model.get(x).tvg.url : ""
 
-                listModel.append({"id": x, "title": title, "icon": icon, "player": "Internal", "url": url, "genre": genre, "countries": country, "languages": language});
+                listModel.append({"id": x, "title": title, "icon": icon, "player": "Internal", "url": url, "genre": genre, "countries": country, "languages": language, "xmltvid": xmltvid, "xmltvurl": xmltvurl});
 
                 if (genres.indexOf(genre) < 0)
                     genres.push(genre);
