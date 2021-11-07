@@ -76,6 +76,10 @@ BasePopup
         {
             mediaPlayer.showInfo();
         }
+        else if (event.key === Qt.Key_S)
+        {
+            takeSnapshot(root);
+        }
         else
             event.accepted = false;
     }
