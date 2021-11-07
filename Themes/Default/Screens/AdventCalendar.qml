@@ -90,6 +90,19 @@ BaseScreen
             showNotification("Test Mode is " + (testMode ? "enabled" : "disabled"));
             event.accepted = true;
         }
+        else if (event.key === Qt.Key_F6)
+        {
+            var player = calendarModel.model.get(calendarGrid.currentIndex).player;
+
+            if (player === "VLC")
+                calendarModel.model.get(calendarGrid.currentIndex).player = "YouTubeTV";
+            else if (player === "YouTubeTV")
+                calendarModel.model.get(calendarGrid.currentIndex).player = "YouTube";
+            else if (player === "YouTube")
+                calendarModel.model.get(calendarGrid.currentIndex).player = "VLC";
+
+            showNotification("Player is now: " + calendarModel.model.get(calendarGrid.currentIndex).player);
+        }
     }
 
     GridView
