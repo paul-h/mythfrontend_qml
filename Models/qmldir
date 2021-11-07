@@ -24,6 +24,7 @@ VideoMultiplexModel 1.0 VideoMultiplexModel.qml
 WebCamModel 1.0 WebCamModel.qml
 WebVideoModel 1.0 WebVideoModel.qml
 WhatsNewModel 1.0 WhatsNewModel.qml
+XMLTVModel 1.0 XMLTVModel.qml
 YoutubeFeedModel 1.0 YoutubeFeedModel.qml
 YoutubeSubListModel 1.0 YoutubeSubListModel.qml
 ZMDaemonCheckModel 1.0 ZMDaemonCheckModel.qml

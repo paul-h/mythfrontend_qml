@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtQuick.XmlListModel 2.0
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
@@ -39,6 +40,22 @@ BaseScreen
     {
         id: feedSource
         objectName: "IPTVViewer"
+    }
+
+    XMLTVModel
+    {
+        id: xmltvFeed
+
+        onLoaded: updateNowNext();
+        onStatusChanged:
+        {
+            if (status === XmlListModel.Error)
+            {
+                log.error(Verbose.GENERAL, "XMLTVModel: ERROR: " + errorString() + " - " + source);
+                programNow.info = "Failed to retrieve EPG data";
+                programNext.info = "Failed to retrieve EPG data"
+            }
+        }
     }
 
     Keys.onPressed:
@@ -263,6 +280,24 @@ BaseScreen
         horizontalAlignment: Text.AlignRight
         verticalAlignment: Text.AlignBottom
         fontColor: "grey"
+    }
+
+    RichText
+    {
+        id: programNow
+        x: xscale(30)
+        y: yscale(500)
+        width: _xscale(700)
+        label: "Now: "
+    }
+
+    RichText
+    {
+        id: programNext
+        x: xscale(30)
+        y: yscale(606)
+        width: _xscale(910)
+        label: "Next: "
     }
 
     Footer
@@ -544,5 +579,75 @@ BaseScreen
 
         // icon
         channelIcon.source = getIconURL(iptvGrid.model.get(iptvGrid.currentIndex).icon);
+
+        // grab the epg if available
+        if (iptvGrid.model.get(iptvGrid.currentIndex).xmltvurl !== "")
+        {
+            programNow.info = "Retrieving Details...";
+            programNext.info = "Retrieving Details..."
+            xmltvFeed.source = iptvGrid.model.get(iptvGrid.currentIndex).xmltvurl;
+        }
+        else
+        {
+            programNow.info = "N/A";
+            programNext.info = "N/A"
+
+        }
+    }
+
+    function updateNowNext()
+    {
+        var now = new Date(Date.now());
+
+        for (var x = 0; x < xmltvFeed.count; x++)
+        {
+            if (iptvGrid.model.get(iptvGrid.currentIndex).xmltvid === xmltvFeed.get(x).channel)
+            {
+                var year = xmltvFeed.get(x).progStart.substring(0, 4);
+                var month = xmltvFeed.get(x).progStart.substring(4, 6);
+                var day =xmltvFeed.get(x).progStart.substring(6, 8);
+                var hour = xmltvFeed.get(x).progStart.substring(8, 10);
+                var minute = xmltvFeed.get(x).progStart.substring(10, 12);
+                var dtStart = new Date(Date.UTC(year, month - 1, day, hour, minute, 0, 0));
+                year = xmltvFeed.get(x).progEnd.substring(0, 4);
+                month = xmltvFeed.get(x).progEnd.substring(4, 6);
+                day =xmltvFeed.get(x).progEnd.substring(6, 8);
+                hour = xmltvFeed.get(x).progEnd.substring(8, 10);
+                minute = xmltvFeed.get(x).progEnd.substring(10, 12);
+                var dtEnd = new Date(Date.UTC(year, month - 1, day, hour, minute, 0, 0));
+
+                if (dtStart <= now && dtEnd > now)
+                {
+                    programNow.info = xmltvFeed.get(x).title + " (" + dtStart.toLocaleTimeString(Qt.locale(), "hh:mm") + " - " + dtEnd.toLocaleTimeString(Qt.locale(), "hh:mm") + ")";
+
+                    if (x + 1 < xmltvFeed.count)
+                    {
+                        year = xmltvFeed.get(x + 1).progStart.substring(0, 4);
+                        month = xmltvFeed.get(x + 1).progStart.substring(4, 6);
+                        day =xmltvFeed.get(x + 1).progStart.substring(6, 8);
+                        hour = xmltvFeed.get(x + 1).progStart.substring(8, 10);
+                        minute = xmltvFeed.get(x + 1).progStart.substring(10, 12);
+                        dtStart = new Date(Date.UTC(year, month - 1, day, hour, minute, 0, 0));
+
+                        year = xmltvFeed.get(x + 1).progEnd.substring(0, 4);
+                        month = xmltvFeed.get(x + 1).progEnd.substring(4, 6);
+                        day =xmltvFeed.get(x + 1).progEnd.substring(6, 8);
+                        hour = xmltvFeed.get(x + 1).progEnd.substring(8, 10);
+                        minute = xmltvFeed.get(x + 1).progEnd.substring(10, 12);
+                        dtEnd = new Date(Date.UTC(year, month - 1, day, hour, minute, 0, 0));
+
+                        programNext.info = xmltvFeed.get(x + 1).title + " (" + dtStart.toLocaleTimeString(Qt.locale(), "hh:mm") + " - " + dtEnd.toLocaleTimeString(Qt.locale(), "hh:mm") + ")";
+                    }
+                    else
+                        programNext.info = "N/A"
+
+                    return;
+                }
+            }
+        }
+
+        // if we get here we didn't find a program
+        programNow.info = "N/A";
+        programNext.info = "N/A"
     }
 }
