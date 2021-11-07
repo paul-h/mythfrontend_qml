@@ -98,7 +98,9 @@ Item
 
             for (var x = 0; x < count; x++)
             {
-                listModel.append({"day": get(x).day, "title": get(x).title, "icon": get(x).icon, "url": get(x).url, "player": get(x).player, "duration": get(x).duration, "opened": false});
+                // use the VLC player by default
+                var player = get(x).player === "Internal" ? "VLC" : get(x).player;
+                listModel.append({"day": get(x).day, "title": get(x).title, "icon": get(x).icon, "url": get(x).url, "player": player, "duration": get(x).duration, "opened": false});
             }
 
             // send loaded signal
