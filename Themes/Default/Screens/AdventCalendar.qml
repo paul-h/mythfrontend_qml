@@ -62,10 +62,22 @@ BaseScreen
         {
             showTitle(true, calendarList.get(calendarModel.calendarIndex).title);
 
+            var date = new Date;
+
             for (var i = 0; i < model.count; i++)
             {
-                var day = dbUtils.getSetting("Advent" + calendarIndex + "Day" + i, settings.hostName);
-                model.get(i).opened = (day === "opened");
+                // if we are in November or December close all windows that should be closed
+                if (date.getMonth() == 10 || (date.getMonth() == 11 && i > date.getDate()))
+                {
+                    model.get(i).opened = false;
+                    dbUtils.setSetting("Advent" + calendarModel.calendarIndex + "Day" + i, settings.hostName,  "closed");
+                }
+                else
+                {
+
+                    var day = dbUtils.getSetting("Advent" + calendarIndex + "Day" + i, settings.hostName);
+                    model.get(i).opened = (day === "opened");
+                }
             }
         }
     }
