@@ -1,7 +1,7 @@
 import re
 
 from streamlink.plugin import Plugin
-from streamlink.plugin.api import http, useragents, validate
+from streamlink.plugin.api import useragents, validate
 
 class Skyline(Plugin):
     _url_re = re.compile(r'https://www.skylinewebcams.com\/en\/webcam\/.+')
@@ -12,7 +12,7 @@ class Skyline(Plugin):
         return Skyline._url_re.match(url)
 
     def _get_streams(self):
-        res = http.get(self.url, headers={'User-Agent': useragents.FIREFOX})
+        res = self.session.http.get(self.url, headers={'User-Agent': useragents.FIREFOX})
 
         match = self._video_data_re.search(res.text)
         if match is None:
