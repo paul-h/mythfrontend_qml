@@ -74,7 +74,6 @@ BaseScreen
                 }
                 else
                 {
-
                     var day = dbUtils.getSetting("Advent" + calendarIndex + "Day" + i, settings.hostName);
                     model.get(i).opened = (day === "opened");
                 }
@@ -84,11 +83,30 @@ BaseScreen
 
     Keys.onPressed:
     {
-        if (event.key === Qt.Key_F5)
+        event.accepted = true;
+
+        if (event.key === Qt.Key_F1)
+        {
+            // red
+            if (calendarModel.model.get(calendarGrid.currentIndex).opened)
+                closeWindow();
+            else
+                openWindow();
+        }
+        else if (event.key === Qt.Key_F2)
+        {
+            // green
+            showSwitchAdventMenu();
+        }
+        else if (event.key === Qt.Key_Left && ((currentIndex % 6) === 0 && previousFocusItem))
+        {
+            escapeSound.play();
+            previousFocusItem.focus = true;
+        }
+        else if (event.key === Qt.Key_F5)
         {
             testMode = !testMode;
             showNotification("Test Mode is " + (testMode ? "enabled" : "disabled"));
-            event.accepted = true;
         }
         else if (event.key === Qt.Key_F6)
         {
@@ -103,6 +121,12 @@ BaseScreen
 
             showNotification("Player is now: " + calendarModel.model.get(calendarGrid.currentIndex).player);
         }
+        else if (event.key === Qt.Key_M)
+        {
+            showMenu();
+        }
+        else
+            event.accepted = false;
     }
 
     GridView
@@ -118,15 +142,58 @@ BaseScreen
         Component
         {
             id: calendarDelegate
-            Image
+            Item
             {
-                id: wrapper
+                id: delegate
+                property bool isOpen: opened
+                property string iconURL: icon
+
                 x: xscale(5)
                 y: yscale(5)
-                opacity: 1.0
                 width: calendarGrid.cellWidth - 10; height: calendarGrid.cellHeight - 10
-                source: opened ? icon : mythUtils.findThemeFile("images/advent_calendar/day" + day + ".png")
-             }
+
+                Image
+                {
+                    id: image
+                    anchors.fill: parent
+                    opacity: 1.0
+                    source: delegate.iconURL
+                }
+                Image
+                {
+                    id: calwindow
+                    anchors.fill: parent
+
+                    source: mythUtils.findThemeFile("images/advent_calendar/day" + day + ".png")
+                    transform:
+                    Rotation
+                    {
+                        id: winRot
+                        origin.x: 0
+                        origin.y: calwindow.height / 2
+                        axis { x: 0; y: 1; z: 0 }
+                        angle: delegate.isOpen ? -90 : 0
+                        Behavior on angle
+                        {
+                            NumberAnimation
+                            {
+                                easing.type: Easing.InOutQuad
+                                duration: 1500
+                                onRunningChanged:
+                                {
+                                    if (!running && delegate.isOpen)
+                                        playDialog.show(calendarGrid);
+
+                                    if (running)
+                                        delegate.z = 99;
+                                    else
+                                        delegate.z = 0;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         highlight: Rectangle { z: 99; color: "red"; opacity: 0.4; radius: 5 }
@@ -137,38 +204,6 @@ BaseScreen
         Keys.onReturnPressed:
         {
             openWindow();
-        }
-
-        Keys.onPressed:
-        {
-            event.accepted = true;
-
-            if (event.key === Qt.Key_M)
-            {
-                showMenu();
-            }
-            else if (event.key === Qt.Key_F1)
-            {
-                // red
-                if (calendarModel.model.get(calendarGrid.currentIndex).opened)
-                    closeWindow();
-                else
-                    openWindow();
-            }
-            else if (event.key === Qt.Key_F2)
-            {
-                showSwitchAdventMenu();
-            }
-            else if (event.key === Qt.Key_Left && ((currentIndex % 6) === 0 && previousFocusItem))
-            {
-                event.accepted = true;
-                escapeSound.play();
-                previousFocusItem.focus = true;
-            }
-            else
-            {
-                event.accepted = false;
-            }
         }
 
         onCurrentIndexChanged:
@@ -211,7 +246,6 @@ BaseScreen
             {
                 calendarModel.calendarIndex = itemData;
                 showTitle(true, calendarModel.calendarList.get(calendarModel.calendarIndex).title);
-                //calendarModel.source = calendarModel.calendarList.get(calendarModel.calendarIndex).url
             }
         }
 
@@ -311,15 +345,21 @@ BaseScreen
         }
         else
         {
-            calendarModel.model.get(calendarGrid.currentIndex).opened = true
-            footer.redText = "Close Window";
             openSound.play();
-            playDialog.show();
+
+            if (!calendarModel.model.get(calendarGrid.currentIndex).opened)
+            {
+                calendarModel.model.get(calendarGrid.currentIndex).opened = true
+                footer.redText = "Close Window";
+            }
+            else
+                playDialog.show();
         }
     }
 
     function closeWindow()
     {
+        closeSound.play();
         calendarModel.model.get(calendarGrid.currentIndex).opened = false;
         footer.redText = "Open Window";
     }
