@@ -201,7 +201,7 @@ BaseScreen
                     asynchronous: true
                     anchors.fill: parent
                     anchors.margins: xscale(5)
-                    source: IconURL ? settings.masterBackend + "Guide/GetChannelIcon?ChanId=" + ChanId : mythUtils.findThemeFile("images/grid_noimage.png");
+                    source: icon ? icon : mythUtils.findThemeFile("images/grid_noimage.png");
                     onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/grid_noimage.png");
                 }
             }
