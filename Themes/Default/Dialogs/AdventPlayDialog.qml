@@ -53,5 +53,22 @@ BaseDialog
             }
         }
     ]
+
+    Keys.onPressed:
+    {
+        event.accepted = true;
+
+        if (event.key === Qt.Key_P)
+        {
+            playDialog.state = "";
+            playDialog.accepted();
+        }
+        else
+        {
+            // eat all key presses except these
+            if (event.key === Qt.Key_Up || event.key === Qt.Key_Down || event.key === Qt.Key_Enter)
+                event.accepted = false
+        }
+    }
 }
 
