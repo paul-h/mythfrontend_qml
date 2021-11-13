@@ -160,6 +160,7 @@ void Context::init()
 
 void Context::cleanUp(void)
 {
+    delete gMDKAPI;
     delete m_engine;
     delete m_settings;
     delete m_databaseUtils;
@@ -167,6 +168,14 @@ void Context::cleanUp(void)
     delete m_eventListener;
     delete m_urlInterceptor;
     delete m_logger;
+
+    m_engine = nullptr;
+    m_settings = nullptr;
+    m_databaseUtils = nullptr;
+    m_mythUtils = nullptr;
+    m_eventListener = nullptr;
+    m_urlInterceptor = nullptr;
+    m_logger = nullptr;
 }
 
 bool Context::initMythDB(void)
