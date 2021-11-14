@@ -83,8 +83,7 @@ Rectangle
             img2.item.loadNextSlide();
 
             img1.item.asynchronous = true;
-            if (root.visible)
-                mtimer.start();
+             mtimer.start();
         }
     }
 
@@ -92,6 +91,7 @@ Rectangle
     Timer
     {
         id: mtimer
+        running: root.visible
         interval: slideDuration - fadeDuration
         repeat: true
         triggeredOnStart: true

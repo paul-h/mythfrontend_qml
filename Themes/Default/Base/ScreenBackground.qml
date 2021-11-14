@@ -74,7 +74,7 @@ Item
     Image
     {
         id: background
-        visible: !videoPlayer.playbackStarted
+        visible: !(videoPlayer.visible && !videoPlayer.playbackStarted)
         anchors.fill: parent
         source: mythUtils.findThemeFile(theme.backgroundImage)
     }
@@ -111,6 +111,8 @@ Item
                 stop();
             }
         }
+
+        onVisibleChanged: { if (visible) play(); else stop(); }
     }
 
     // screen title

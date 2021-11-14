@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtQuick.Controls 1.4
 import Base 1.0
 import Models 1.0
 
@@ -177,9 +178,27 @@ BaseScreen
         dbUtils.setSetting("StartFullScreen", settings.hostName, startFullscreenCheck.checked);
         dbUtils.setSetting("MythQLayout",      settings.hostName, mythQLayoutCheck.checked);
 
-        screenBackground.pauseVideo(true);
+        settings.themeName       = themeModel.get(themeSelector.currentIndex).itemText;
+        settings.startFullscreen = startFullscreenCheck.checked;
+        settings.mythQLayout = mythQLayoutCheck.checked;
 
-        // force a full restart of the app
-        Qt.exit(1000);
+        // update the theme path and reload the theme
+        settings.qmlPath = settings.sharePath + "qml/Themes/" + settings.themeName + "/";
+        loadTheme();
+
+        // since we can't control when a screen will get detroyed set a flag telling each screen not to restore any showing flags
+        for (var x = stack.depth - 1; x >= 0 ; x--)
+        {
+            var screen = stack.get(x, StackView.DontLoad);
+
+            if (screen)
+                screen.reloadingTheme = true;
+        }
+
+        // force the stack to reload the main menu
+        stack.clear();
+        stack.createInitialItem();
+
+        returnSound.play();
     }
 }
