@@ -7,14 +7,16 @@ Item
     property var    defaultFocusItem: undefined
     property var    previousFocusItem: undefined
 
+    property bool reloadingTheme: false
+
     property bool   oldShowTitle: false
     property string oldTitle: ""
 
-    property bool   oldShowTicker: false
-    property bool   oldShowTime: false
-    property bool   oldShowVideo: false
-    property bool   oldShowImage: false
-    property bool   oldMuteAudio: false
+    property bool oldShowTicker: false
+    property bool oldShowTime: false
+    property bool oldShowVideo: false
+    property bool oldShowImage: false
+    property bool oldMuteAudio: false
 
     property string oldHelpURL: ""
 
@@ -114,7 +116,8 @@ Item
 
     function showVideo(show)
     {
-        screenBackground.showVideo = show && theme.backgroundVideo != "";
+        console.log("baseScreen.showVideo: show = " + show);
+        screenBackground.showVideo = (show && theme.backgroundVideo != undefined);
     }
 
     function showImage(show)
@@ -167,6 +170,13 @@ Item
 
     Component.onDestruction:
     {
+        if (reloadingTheme)
+        {
+            console.log("BaseScreen IS NOT restoring flags");
+            return;
+        }
+
+        console.log("BaseScreen IS restoring flags");
         screenBackground.showTitle = oldShowTitle;
         screenBackground.title = oldTitle;
 

@@ -34,6 +34,7 @@ Window
 
     property double wmult: width / 1280
     property double hmult: height / 720
+    property var theme: Theme {}
     property int soundEffectsVolume: 100
     property int backgroundVideoVolume: 100
     property int radioPlayerVolume: 100
@@ -128,124 +129,6 @@ Window
                     showNotification("Downloading the background slideshow.<br>Received " + received.toFixed(1) + "Mb of " + total.toFixed(1) + "Mb<br>Please Wait....", settings.osdTimeoutLong);
                 else
                     showNotification("Downloading the background slideshow.<br>Received " + received.toFixed(1) + "Mb<br>Please Wait....", settings.osdTimeoutLong);
-            }
-        }
-    }
-
-    Theme
-    {
-        id: theme
-
-        Component.onCompleted:
-        {
-            if (playStartupEffect)
-                startupSound.play();
-
-            log.info(Verbose.GUI, "loading theme from: " + settings.qmlPath + "Theme.qml");
-
-            var dest;
-
-            if (theme.backgroundVideo != undefined)
-            {
-                dest = settings.configPath + "Themes/Videos/" + theme.backgroundVideo.filename;
-
-                if (!mythUtils.fileExists(dest))
-                {
-                    mythUtils.mkPath(settings.configPath + "Themes/Videos");
-
-                    screenBackground.showVideo = false;
-                    screenBackground.showImage = true;
-                    screenBackground.showSlideShow = false;
-
-                    log.info(Verbose.GUI, "MainWindow: Downloading theme background video to - " + dest);
-
-                    // start the download
-                    themeDownloader.destination = dest;
-                    themeDownloader.start(theme.backgroundVideo);
-                }
-                else
-                {
-                    log.info(Verbose.GUI, "MainWindow: starting background video");
-                    screenBackground.setVideo("file://" + settings.configPath + "Themes/Videos/" + theme.backgroundVideo.filename);
-                    screenBackground.showVideo = showVideoBackground;
-                    screenBackground.showImage = !showVideoBackground;
-                    screenBackground.showSlideShow = false;
-                }
-            }
-            else if (theme.backgroundSlideShow != undefined)
-            {
-                dest = settings.configPath + "Themes/Pictures/" + settings.themeName + "/" + theme.backgroundSlideShow.filename;
-
-                // check for new slideshow version
-                var installedVersion = dbUtils.getSetting(settings.themeName + "Version", settings.hostName, "1.0");
-
-                if (theme.backgroundSlideShow.version > installedVersion)
-                {
-                    okCancelDialog.title = "New version of theme slideshow available";
-                    okCancelDialog.message = '<font  color="yellow"><b>Theme Name: </font></b>' + settings.themeName +
-                            '<br><font color="yellow"><b>Installed Version: </font></b>' + installedVersion +
-                            '<br><font  color="yellow"><b>New Version: </font></b>' + theme.backgroundSlideShow.version +
-                            '<br><br>Please wait while it is downloaded and installed.';
-                    okCancelDialog.show(stack.currentItem.defaultFocusItem);
-
-                    // remove the old slideshow archive, pictures and music tracks
-                    mythUtils.clearDir(settings.configPath + "Themes/Pictures/" + settings.themeName);
-                }
-
-                if (!mythUtils.fileExists(dest))
-                {
-                    mythUtils.mkPath(settings.configPath + "Themes/Pictures/" + settings.themeName);
-
-                    screenBackground.showVideo = false;
-                    screenBackground.showImage = true;
-                    screenBackground.showSlideShow = false;
-
-                    log.info(Verbose.GUI, "MainWindow: Downloading theme background slideshow to - " + dest);
-
-                    themeDownloader.destination = dest;
-                    themeDownloader.start(theme.backgroundSlideShow);
-                }
-                else
-                {
-                    log.info(Verbose.GUI, "MainWindow: starting background slideshow");
-                    screenBackground.setSlideShow(settings.configPath + "Themes/Pictures/" + settings.themeName);
-                    screenBackground.showVideo = false;
-                    screenBackground.showImage = !showVideoBackground;
-                    screenBackground.showSlideShow = showVideoBackground;
-                }
-            }
-            else
-            {
-                screenBackground.showVideo = false;
-                screenBackground.showImage = true;
-                screenBackground.showSlideShow = false;
-            }
-
-            // load any radio streams defined by the theme
-            if (theme.radioStreams && theme.radioStreams.count > 0)
-            {
-                radioPlayerDialog.clearStreams();
-
-                for (var x = 0; x < theme.radioStreams.count; x++)
-                {
-                    var title = theme.radioStreams.get(x).title;
-                    var url  = theme.radioStreams.get(x).url;
-                    var logo  = theme.radioStreams.get(x).logo;
-
-                    if (!url.startsWith("http://") && !url.startsWith("https://") && !url.startsWith("file://"))
-                        url = "file://" + settings.configPath + "Themes/Pictures/" + settings.themeName + "/" + url;
-
-                    if (!logo.startsWith("http://") && !logo.startsWith("https://") && !logo.startsWith("file://"))
-                        logo = "file://" + settings.configPath + "Themes/Pictures/" + settings.themeName + "/" + logo;
-
-                    radioPlayerDialog.addStream(title, url, logo);
-                }
-
-                if (radioPlayerDialog.themePlayerEnabled)
-                {
-                    radioPlayerDialog.playStream(dbUtils.getSetting(settings.themeName + "RadioStream", settings.hostName, ""));
-                    showNotification("Playing audio stream.<br>" + radioPlayerDialog.streamList.get(radioPlayerDialog.streamList.currentItem).title);
-                }
             }
         }
     }
@@ -476,10 +359,12 @@ Window
             id: screenBackground
             showImage: true
             showVideo: false
+            showSlideShow: false
             showTicker: true
             Component.onCompleted:
             {
                 tickerProcess.start(settings.sharePath.replace("file://", "") + "/qml/Scripts/ticker-grabber.py", [settings.configPath + "ticker.xml"]);
+                loadTheme();
             }
         }
 
@@ -519,10 +404,7 @@ Window
 
             Component.onCompleted:
             {
-                if (settings.mythQLayout)
-                    stack.push(createThemedPanel());
-                else
-                    stack.push(createThemedMenu());
+                createInitialItem();
             }
 
             onCurrentItemChanged:
@@ -589,6 +471,14 @@ Window
             }
 
             Behavior on opacity { NumberAnimation { duration: _fadeTime } }
+
+            function createInitialItem()
+            {
+                if (settings.mythQLayout)
+                    stack.push(createThemedPanel());
+                else
+                    stack.push(createThemedMenu());
+            }
 
             function createThemedMenu()
             {
@@ -689,6 +579,166 @@ Window
         id: notificationTimer
         interval: 6000; running: false; repeat: false
         onTriggered: notificationPanel.visible = false;
+    }
+
+    function loadTheme()
+    {
+        log.info(Verbose.GUI, "loading theme from: " + settings.qmlPath + "Theme.qml");
+
+        var component = Qt.createComponent(settings.qmlPath + "Theme.qml");
+
+        while (component.status != Component.Ready && component.status != Component.Error)
+        {
+            log.debug(Verbose.GUI, "waiting for component to load! Status: " + component.status);
+        }
+
+        if (component.status == Component.Ready)
+        {
+            theme = component.createObject(window);
+
+            if (theme == null)
+            {
+                // Error Handling
+                log.error(Verbose.GUI, "Error creating theme");
+                return null
+            }
+
+            // find any theme sound effects
+            upSound.source = mythUtils.findThemeFile("sounds/pock.wav");
+            downSound.source = mythUtils.findThemeFile("sounds/pock.wav");
+            leftSound.source = mythUtils.findThemeFile("sounds/pock.wav");
+            rightSound.source = mythUtils.findThemeFile("sounds/pock.wav");
+            returnSound.source = mythUtils.findThemeFile("sounds/poguck.wav");
+            escapeSound.source = mythUtils.findThemeFile("sounds/pock.wav");
+            messageSound.source = mythUtils.findThemeFile("sounds/message.wav");
+            errorSound.source = mythUtils.findThemeFile("sounds/downer.wav");
+            startupSound.source = mythUtils.findThemeFile("sounds/welcome.wav");
+
+            if (playStartupEffect)
+                startupSound.play();
+
+            var dest;
+
+            if (theme.backgroundVideo != undefined)
+            {
+                dest = settings.configPath + "Themes/Videos/" + theme.backgroundVideo.filename;
+
+                if (!mythUtils.fileExists(dest))
+                {
+                    mythUtils.mkPath(settings.configPath + "Themes/Videos");
+
+                    screenBackground.showVideo = false;
+                    screenBackground.showImage = true;
+                    screenBackground.showSlideShow = false;
+                    screenBackground.setVideo("");
+
+                    log.info(Verbose.GUI, "MainWindow: Downloading theme background video to - " + dest);
+
+                    // start the download
+                    themeDownloader.destination = dest;
+                    themeDownloader.start(theme.backgroundVideo);
+                }
+                else
+                {
+                    log.info(Verbose.GUI, "MainWindow: starting background video");
+                    screenBackground.showVideo = showVideoBackground;
+                    screenBackground.setVideo("file://" + settings.configPath + "Themes/Videos/" + theme.backgroundVideo.filename);
+                    screenBackground.showImage = !showVideoBackground;
+                    screenBackground.showSlideShow = false;
+                }
+            }
+            else if (theme.backgroundSlideShow != undefined)
+            {
+                dest = settings.configPath + "Themes/Pictures/" + settings.themeName + "/" + theme.backgroundSlideShow.filename;
+
+                // check for new slideshow version
+                var installedVersion = dbUtils.getSetting(settings.themeName + "Version", settings.hostName, "1.0");
+
+                if (theme.backgroundSlideShow.version > installedVersion)
+                {
+                    okCancelDialog.title = "New version of theme slideshow available";
+                    okCancelDialog.message = '<font  color="yellow"><b>Theme Name: </font></b>' + settings.themeName +
+                            '<br><font color="yellow"><b>Installed Version: </font></b>' + installedVersion +
+                            '<br><font  color="yellow"><b>New Version: </font></b>' + theme.backgroundSlideShow.version +
+                            '<br><br>Please wait while it is downloaded and installed.';
+                    okCancelDialog.show(stack.currentItem.defaultFocusItem);
+
+                    // remove the old slideshow archive, pictures and music tracks
+                    mythUtils.clearDir(settings.configPath + "Themes/Pictures/" + settings.themeName);
+                }
+
+                if (!mythUtils.fileExists(dest))
+                {
+                    mythUtils.mkPath(settings.configPath + "Themes/Pictures/" + settings.themeName);
+
+                    screenBackground.showVideo = false;
+                    screenBackground.showImage = true;
+                    screenBackground.showSlideShow = false;
+
+                    log.info(Verbose.GUI, "MainWindow: Downloading theme background slideshow to - " + dest);
+
+                    themeDownloader.destination = dest;
+                    themeDownloader.start(theme.backgroundSlideShow);
+                }
+                else
+                {
+                    log.info(Verbose.GUI, "MainWindow: starting background slideshow");
+                    screenBackground.setSlideShow(settings.configPath + "Themes/Pictures/" + settings.themeName);
+                    screenBackground.showVideo = false;
+                    screenBackground.showImage = !showVideoBackground;
+                    screenBackground.showSlideShow = showVideoBackground;
+                    screenBackground.setVideo("");
+                }
+            }
+            else
+            {
+                screenBackground.showVideo = false;
+                screenBackground.showImage = true;
+                screenBackground.showSlideShow = false;
+                screenBackground.setVideo("");
+            }
+
+            // load any radio streams defined by the theme
+            if (theme.radioStreams && theme.radioStreams.count > 0)
+            {
+                radioPlayerDialog.clearStreams();
+
+                for (var x = 0; x < theme.radioStreams.count; x++)
+                {
+                    var title = theme.radioStreams.get(x).title;
+                    var url  = theme.radioStreams.get(x).url;
+                    var logo  = theme.radioStreams.get(x).logo;
+
+                    if (!url.startsWith("http://") && !url.startsWith("https://") && !url.startsWith("file://"))
+                        url = "file://" + settings.configPath + "Themes/Pictures/" + settings.themeName + "/" + url;
+
+                    if (!logo.startsWith("http://") && !logo.startsWith("https://") && !logo.startsWith("file://"))
+                        logo = "file://" + settings.configPath + "Themes/Pictures/" + settings.themeName + "/" + logo;
+
+                    radioPlayerDialog.addStream(title, url, logo);
+                }
+
+                if (radioPlayerDialog.themePlayerEnabled)
+                {
+                    radioPlayerDialog.playStream(dbUtils.getSetting(settings.themeName + "RadioStream", settings.hostName, ""));
+                    showNotification("Playing audio stream.<br>" + radioPlayerDialog.streamList.get(radioPlayerDialog.streamList.currentItem).title);
+                }
+            }
+            else
+            {
+                radioPlayerDialog.clearStreams();
+                radioPlayerDialog.stop();
+            }
+
+            return theme;
+        }
+        else if (component.status == Component.Error)
+        {
+            // Error Handling
+            log.error(Verbose.GUI, "Error loading component:", component.errorString());
+        }
+
+        return null;
     }
 
     function showHelp()
