@@ -642,7 +642,12 @@ Window
                 {
                     log.info(Verbose.GUI, "MainWindow: starting background video");
                     screenBackground.showVideo = showVideoBackground;
-                    screenBackground.setVideo("file://" + settings.configPath + "Themes/Videos/" + theme.backgroundVideo.filename);
+
+                    if (showVideoBackground)
+                        screenBackground.setVideo("file://" + settings.configPath + "Themes/Videos/" + theme.backgroundVideo.filename);
+                    else
+                        screenBackground.setVideo("");
+
                     screenBackground.showImage = !showVideoBackground;
                     screenBackground.showSlideShow = false;
                 }
