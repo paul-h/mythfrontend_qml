@@ -116,7 +116,6 @@ Item
 
     function showVideo(show)
     {
-        console.log("baseScreen.showVideo: show = " + show);
         screenBackground.showVideo = (show && theme.backgroundVideo != undefined);
     }
 
@@ -172,11 +171,9 @@ Item
     {
         if (reloadingTheme)
         {
-            console.log("BaseScreen IS NOT restoring flags");
             return;
         }
 
-        console.log("BaseScreen IS restoring flags");
         screenBackground.showTitle = oldShowTitle;
         screenBackground.title = oldTitle;
 
