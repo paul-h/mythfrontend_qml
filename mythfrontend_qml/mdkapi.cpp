@@ -109,6 +109,9 @@ bool MDKAPI::unload(void)
     m_mdkPlayerAPI_new = nullptr;
     m_mdkPlayerAPI_delete = nullptr;
     m_MDK_version = nullptr;
+    m_mdkGetGlobalOptionString = nullptr;
+    m_mdkGetGlobalOptionInt32 = nullptr;
+    m_mdkSetGlobalOptionString = nullptr;
 
     if (m_library.isLoaded())
     {

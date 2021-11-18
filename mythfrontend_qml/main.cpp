@@ -1,3 +1,7 @@
+// c++
+#include <stdio.h>
+#include <unistd.h>
+
 // qt
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
@@ -23,113 +27,114 @@
 
 Context *gContext = nullptr;
 MDKAPI  *gMDKAPI = nullptr;
+QFile outFile("log_file.txt");
 
 int main(int argc, char *argv[])
 {
-    const int RESTART_CODE = 1000;
-    int res;
+//    outFile.open(QIODevice::WriteOnly | QIODevice::Append);
 
-    do
-    {
-        QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-        QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+//    // redirect stdout
+//    dup2(outFile.handle(), STDOUT_FILENO);
 
-        QGuiApplication *app = new QGuiApplication(argc, argv);
+//    // redirect stderr
+//    dup2(STDOUT_FILENO, STDERR_FILENO);
 
-        QtWebEngine::initialize();
 
-        QCoreApplication::setApplicationName("mythfrontend_qml");
-        QCoreApplication::setApplicationVersion(APP_VERSION);
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
-        QCommandLineParser parser;
-        parser.setApplicationDescription("Experimental MythTV client");
-        parser.addHelpOption();
-        parser.addVersionOption();
+    QGuiApplication *app = new QGuiApplication(argc, argv);
 
-        // add loglevel option
-        QCommandLineOption logLevelOption(QStringList() << "l" << "loglevel",
-                                          QCoreApplication::translate("main", "Set log level one of CRITICAL, ERROR, WARNING, NOTICE, INFO or DEBUG."),
-                                          QCoreApplication::translate("main", "loglevel"));
-        parser.addOption(logLevelOption);
+    QtWebEngine::initialize();
 
-        // add verbose option
-        QCommandLineOption verboseOption(QStringList() << "d" << "verbose",
-                                         QCoreApplication::translate("main", "Set verbose levels one or more of ALL, GENERAL, MODEL, PROCESS, GUI, "
+    QCoreApplication::setApplicationName("mythfrontend_qml");
+    QCoreApplication::setApplicationVersion(APP_VERSION);
+
+    QCommandLineParser parser;
+    parser.setApplicationDescription("Experimental MythTV client");
+    parser.addHelpOption();
+    parser.addVersionOption();
+
+    // add loglevel option
+    QCommandLineOption logLevelOption(QStringList() << "l" << "loglevel",
+                                      QCoreApplication::translate("main", "Set log level one of CRITICAL, ERROR, WARNING, NOTICE, INFO or DEBUG."),
+                                      QCoreApplication::translate("main", "loglevel"));
+    parser.addOption(logLevelOption);
+
+    // add verbose option
+    QCommandLineOption verboseOption(QStringList() << "d" << "verbose",
+                                     QCoreApplication::translate("main", "Set verbose levels one or more of ALL, GENERAL, MODEL, PROCESS, GUI, "
                                                                              "DATABASE, FILE, WEBSOCKET, SERVICESAPI, PLAYBACK, NETWORK, LIBVLC."),
-                                         QCoreApplication::translate("main", "verbose"));
-        parser.addOption(verboseOption);
+                                     QCoreApplication::translate("main", "verbose"));
+    parser.addOption(verboseOption);
 
-        // Process the command line arguments given by the user
-        parser.process(*app);
+    // Process the command line arguments given by the user
+    parser.process(*app);
 
-        QString logLevel = parser.value(logLevelOption);
-        QString verbose = parser.value(verboseOption);
+    QString logLevel = parser.value(logLevelOption);
+    QString verbose = parser.value(verboseOption);
 
-        // create the context
-        gContext = new Context("MythFrontendQML", logLevel, verbose);
+    // create the context
+    gContext = new Context("MythFrontendQML", logLevel, verbose);
 
-        // attempt to connect to the local mythqml database
-        if (!gContext->initMythQMLDB())
-            return 1;
+    // attempt to connect to the local mythqml database
+    if (!gContext->initMythQMLDB())
+        return 1;
 
-        gContext->init();
+    gContext->init();
 
-        // attempt to connect to the MythTV database using our stored credentials
-        if (!gContext->initMythDB())
+    // attempt to connect to the MythTV database using our stored credentials
+    if (!gContext->initMythDB())
+    {
+        // failed so try to get the DB credentials from the config.xml
+        if (!gContext->loadMythDBSettings())
         {
-            // failed so try to get the DB credentials from the config.xml
-            if (!gContext->loadMythDBSettings())
-            {
-                // failed to open MythTV database using stored/default credentials or from the mythtv config.xml file
-                gContext->m_logger->error(Verbose::GENERAL, "Failed to open the MythTV database - Please make sure the "
+            // failed to open MythTV database using stored/default credentials or from the mythtv config.xml file
+            gContext->m_logger->error(Verbose::GENERAL, "Failed to open the MythTV database - Please make sure the "
                                                             "Mysql settings are correct on the Myth Backend settings page");
-            }
         }
+    }
 
-        // these are frontend only
+    // these are frontend only
 
-        // recordings model
-        qmlRegisterType<RecordingsModel>("RecordingsModel", 1, 0, "RecordingsModel");
+    // recordings model
+    qmlRegisterType<RecordingsModel>("RecordingsModel", 1, 0, "RecordingsModel");
 
-        //ZoneMinder Events model
-        qmlRegisterType<ZMEventsModel>("ZMEventsModel", 1, 0, "ZMEventsModel");
+    //ZoneMinder Events model
+    qmlRegisterType<ZMEventsModel>("ZMEventsModel", 1, 0, "ZMEventsModel");
 
-        // create the radio streams model
-        SqlQueryModel *radioStreamsModel = new SqlQueryModel(gContext->m_engine);
-        radioStreamsModel->setQuery("SELECT intid, broadcaster, channel, description, "
+    // create the radio streams model
+    SqlQueryModel *radioStreamsModel = new SqlQueryModel(gContext->m_engine);
+    radioStreamsModel->setQuery("SELECT intid, broadcaster, channel, description, "
                                     "url1, url2, url3, url4, url5, logourl, country, "
                                     "language, genre, metaformat, format "
                                     "FROM music_radios ORDER BY broadcaster, channel", gContext->m_mythDB);
-        gContext->m_engine->rootContext()->setContextProperty("radioStreamsModel", radioStreamsModel);
+    gContext->m_engine->rootContext()->setContextProperty("radioStreamsModel", radioStreamsModel);
 
-        // create the radio streams database model
-        SqlQueryModel *radioStreamsDBModel = new SqlQueryModel(gContext->m_engine);
-        radioStreamsDBModel->setQuery("SELECT intid, broadcaster, channel, description, "
+    // create the radio streams database model
+    SqlQueryModel *radioStreamsDBModel = new SqlQueryModel(gContext->m_engine);
+    radioStreamsDBModel->setQuery("SELECT intid, broadcaster, channel, description, "
                                       "url1, url2, url3, url4, url5, logourl, country, "
                                       "language, genre, metaformat "
                                       "FROM music_streams ORDER BY broadcaster, channel", gContext->m_mythDB);
-        gContext->m_engine->rootContext()->setContextProperty("radioStreamsDBModel", radioStreamsDBModel);
+    gContext->m_engine->rootContext()->setContextProperty("radioStreamsDBModel", radioStreamsDBModel);
 
-        // create the news feed model
-        SqlQueryModel *rssFeedsModel = new SqlQueryModel(gContext->m_engine);
-        rssFeedsModel->setQuery("SELECT name, url, ico, updated, podcast FROM newssites ORDER BY name", gContext->m_mythDB);
-        gContext->m_engine->rootContext()->setContextProperty("rssFeedsModel", rssFeedsModel);
+    // create the news feed model
+    SqlQueryModel *rssFeedsModel = new SqlQueryModel(gContext->m_engine);
+    rssFeedsModel->setQuery("SELECT name, url, ico, updated, podcast FROM newssites ORDER BY name", gContext->m_mythDB);
+    gContext->m_engine->rootContext()->setContextProperty("rssFeedsModel", rssFeedsModel);
 
-        // create the tv channels model
-        SqlQueryModel *dbChannelsModel = new SqlQueryModel(gContext->m_engine);
-        dbChannelsModel->setQuery("SELECT chanid, channum, callsign, name, icon, xmltvid FROM channel ORDER BY cast(channum as unsigned);", gContext->m_mythDB);
-        gContext->m_engine->rootContext()->setContextProperty("dbChannelsModel", dbChannelsModel);
+    // create the tv channels model
+    SqlQueryModel *dbChannelsModel = new SqlQueryModel(gContext->m_engine);
+    dbChannelsModel->setQuery("SELECT chanid, channum, callsign, name, icon, xmltvid FROM channel ORDER BY cast(channum as unsigned);", gContext->m_mythDB);
+    gContext->m_engine->rootContext()->setContextProperty("dbChannelsModel", dbChannelsModel);
 
-        // load the main screen
-        //    gContext->m_engine->load(QUrl(QString(SHAREPATH) + "qml/main.qml"));
+    gContext->m_engine->clearComponentCache();
+    gContext->m_engine->load(QUrl(QString(SHAREPATH) + "qml/main.qml"));
+    app->exec();
 
-        QObject::connect(app, &QCoreApplication::aboutToQuit, gContext, &Context::cleanUp);
+    delete gContext;
+    delete app;
 
-
-        gContext->m_engine->load(QUrl(QString(SHAREPATH) + "qml/main.qml"));
-        res = app->exec();
-        delete app;
-    } while (res == RESTART_CODE);
-
-    return res;
+    return 0;
 }
