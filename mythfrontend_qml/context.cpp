@@ -169,6 +169,7 @@ void Context::cleanUp(void)
     delete m_urlInterceptor;
     delete m_logger;
 
+    gMDKAPI = nullptr;
     m_engine = nullptr;
     m_settings = nullptr;
     m_databaseUtils = nullptr;

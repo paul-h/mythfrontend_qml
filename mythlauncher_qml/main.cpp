@@ -11,37 +11,45 @@ MDKAPI  *gMDKAPI = nullptr;
 
 int main(int argc, char *argv[])
 {
+//    outFile.open(QIODevice::WriteOnly | QIODevice::Append);
+
+//    // redirect stdout
+//    dup2(outFile.handle(), STDOUT_FILENO);
+
+//    // redirect stderr
+//    dup2(STDOUT_FILENO, STDERR_FILENO);
+
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
-     QGuiApplication app(argc, argv);
+    QGuiApplication *app = new QGuiApplication(argc, argv);
 
-     QCoreApplication::setApplicationName("mythlauncher_qml");
-     QCoreApplication::setApplicationVersion(APP_VERSION);
+    QCoreApplication::setApplicationName("mythlauncher_qml");
+    QCoreApplication::setApplicationVersion(APP_VERSION);
 
-     QCommandLineParser parser;
-     parser.setApplicationDescription("Experimental MythTV launcher");
-     parser.addHelpOption();
-     parser.addVersionOption();
+    QCommandLineParser parser;
+    parser.setApplicationDescription("Experimental MythTV launcher");
+    parser.addHelpOption();
+    parser.addVersionOption();
 
-     // add loglevel option
-     QCommandLineOption logLevelOption(QStringList() << "l" << "loglevel",
-                                       QCoreApplication::translate("main", "Set log level one of CRITICAL, ERROR, WARNING, NOTICE, INFO or DEBUG."),
-                                       QCoreApplication::translate("main", "loglevel"));
-     parser.addOption(logLevelOption);
+    // add loglevel option
+    QCommandLineOption logLevelOption(QStringList() << "l" << "loglevel",
+                                      QCoreApplication::translate("main", "Set log level one of CRITICAL, ERROR, WARNING, NOTICE, INFO or DEBUG."),
+                                      QCoreApplication::translate("main", "loglevel"));
+    parser.addOption(logLevelOption);
 
-     // add verbose option
-     QCommandLineOption verboseOption(QStringList() << "d" << "verbose",
-                                      QCoreApplication::translate("main", "Set verbose levels one or more of ALL, GENERAL, MODEL, PROCESS, GUI, "
+    // add verbose option
+    QCommandLineOption verboseOption(QStringList() << "d" << "verbose",
+                                     QCoreApplication::translate("main", "Set verbose levels one or more of ALL, GENERAL, MODEL, PROCESS, GUI, "
                                                                           "DATABASE, FILE, WEBSOCKET, SERVICESAPI, PLAYBACK, NETWORK, LIBVLC."),
-                                      QCoreApplication::translate("main", "verbose"));
-     parser.addOption(verboseOption);
+                                     QCoreApplication::translate("main", "verbose"));
+    parser.addOption(verboseOption);
 
-     // Process the command line arguments given by the user
-     parser.process(app);
+    // Process the command line arguments given by the user
+    parser.process(*app);
 
-     QString logLevel = parser.value(logLevelOption);
-     QString verbose = parser.value(verboseOption);
+    QString logLevel = parser.value(logLevelOption);
+    QString verbose = parser.value(verboseOption);
 
     // create the context
     gContext = new Context("MythLauncherQML", logLevel, verbose);
@@ -66,5 +74,10 @@ int main(int argc, char *argv[])
 
     gContext->m_engine->load(QUrl(QString(SHAREPATH) + "qml/launcher.qml"));
 
-    return app.exec();
+    app->exec();
+
+    delete gContext;
+    delete app;
+
+    return 0;
 }
