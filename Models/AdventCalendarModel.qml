@@ -7,7 +7,7 @@ Item
     id: root
 
     property var calendarList: adventCalendarsModel
-    property int calendarIndex: 0
+    property int calendarIndex: dbUtils.getSetting("AdventIndex", settings.hostName, "0");
     property var model: listModel
 
     signal loaded();
