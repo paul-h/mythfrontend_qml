@@ -7,7 +7,7 @@ Item
     id: root
 
     property var calendarList: adventCalendarsModel
-    property int calendarIndex: 3
+    property int calendarIndex: 0
     property var model: listModel
 
     signal loaded();
@@ -16,7 +16,12 @@ Item
     {
         // sanity check index
         if (calendarIndex >= 0 && calendarIndex < adventCalendarsModel.count)
-            calendarModel.source = adventCalendarsModel.get(calendarIndex).url + "&v=" + version + "&s=" + systemid
+        {
+            if (!adventCalendarsModel.get(calendarIndex).url.startsWith("file://"))
+                calendarModel.source = adventCalendarsModel.get(calendarIndex).url + "&v=" + version + "&s=" + systemid;
+            else
+                calendarModel.source = adventCalendarsModel.get(calendarIndex).url;
+        }
     }
 
     ListModel
@@ -34,6 +39,8 @@ Item
 
         query: "/items/item"
         XmlRole { name: "id"; query: "id/number()" }
+        XmlRole { name: "status"; query: "title/string()" }
+        XmlRole { name: "dateadded"; query: "xs:dateTime(dateadded)" }
         XmlRole { name: "title"; query: "title/string()" }
         XmlRole { name: "description"; query: "description/string()" }
         XmlRole { name: "url"; query: "url/string()" }
@@ -45,7 +52,10 @@ Item
                 log.debug(Verbose.MODEL, "AdventCalendarsModel: READY - Found " + count + " advent calendars");
                 loaded();
 
-                calendarModel.source = adventCalendarsModel.get(root.calendarIndex).url + "&v=" + version + "&s=" + systemid
+                if (!adventCalendarsModel.get(calendarIndex).url.startsWith("file://"))
+                    calendarModel.source = adventCalendarsModel.get(calendarIndex).url + "&v=" + version + "&s=" + systemid;
+                else
+                    calendarModel.source = adventCalendarsModel.get(calendarIndex).url;
             }
 
             if (status === XmlListModel.Loading)
@@ -106,5 +116,16 @@ Item
             // send loaded signal
             loaded();
         }
+    }
+
+    function findIndexFromCalendarId(id)
+    {
+        for (var x = 0; x < adventCalendarsModel.count; x++)
+        {
+            if (adventCalendarsModel.get(x).id === id)
+                return x;
+        }
+
+        return 0;
     }
 }
