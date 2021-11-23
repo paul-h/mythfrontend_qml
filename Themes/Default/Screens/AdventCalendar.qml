@@ -4,6 +4,7 @@ import QtQuick 2.5
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
+import SortFilterProxyModel 0.2
 
 BaseScreen
 {
@@ -13,14 +14,9 @@ BaseScreen
 
     Component.onCompleted:
     {
-        showTitle(true, "Advent Calendar 2020");
+        showTitle(true, "Advent Calendar 2021");
         showTicker(false);
         setHelp("https://mythqml.net/help/advent_calendar.php#top");
-
-        var index = dbUtils.getSetting("AdventIndex", settings.hostName, "");
-
-        if (index !== "")
-            calendarModel.calendarIndex = index;
     }
 
     Component.onDestruction:
@@ -58,8 +54,31 @@ BaseScreen
     AdventCalendarModel
     {
         id: calendarModel
+        property bool checkForNew: true
+
         onLoaded:
         {
+            if (checkForNew)
+            {
+                checkForNew = false;
+
+                var index = dbUtils.getSetting("AdventIndex", settings.hostName, "");
+
+                // check to see if we should switch to a new calendar
+                var lastCheck = new Date(Date.parse(dbUtils.getSetting("AdventLastUpdate", settings.hostName, "2016-12-01T00:00:00.000")));
+                var lastUpdate = calendarModel.calendarList.get(calendarModel.calendarList.count - 1).dateadded;
+
+                if (lastCheck < lastUpdate)
+                {
+                    index = calendarModel.calendarList.count - 1;
+                    dbUtils.setSetting("AdventLastUpdate", settings.hostName, lastUpdate);
+                    dbUtils.setSetting("AdventIndex", settings.hostName, index);
+                }
+
+                if (index !== calendarModel.calendarIndex)
+                    calendarModel.calendarIndex = index;
+            }
+
             showTitle(true, calendarList.get(calendarModel.calendarIndex).title);
 
             var date = new Date;
@@ -79,6 +98,14 @@ BaseScreen
                 }
             }
         }
+    }
+
+    SortFilterProxyModel
+    {
+        id: calendarSortModel
+        sourceModel: calendarModel.calendarList
+
+        sorters:  StringSorter { roleName: "dateadded"; sortOrder: Qt.DescendingOrder }
     }
 
     Keys.onPressed:
@@ -310,8 +337,11 @@ BaseScreen
         popupMenu.clearMenuItems();
 
         popupMenu.addMenuItem("", "Switch Advent Calendar");
-        for (var x = 0; x < calendarModel.calendarList.count; x++)
-            popupMenu.addMenuItem("0", calendarModel.calendarList.get(x).title, x, (x === calendarModel.calendarIndex ? true : false));
+        for (var x = 0; x < calendarSortModel.count; x++)
+        {
+            var index = calendarModel.findIndexFromCalendarId(calendarSortModel.get(x).id);
+            popupMenu.addMenuItem("0", calendarSortModel.get(x).title, index, (calendarSortModel.get(x).id === calendarModel.calendarList.get(calendarModel.calendarIndex).id ? true : false));
+        }
 
         if (calendarModel.model.get(calendarGrid.currentIndex).opened)
             popupMenu.addMenuItem("", "Close Window");
@@ -328,8 +358,11 @@ BaseScreen
         popupMenu.message = "Switch Advent Calendar";
         popupMenu.clearMenuItems();
 
-        for (var x = 0; x < calendarModel.calendarList.count; x++)
-            popupMenu.addMenuItem("", calendarModel.calendarList.get(x).title, x, (x === calendarModel.calendarIndex ? true : false));
+        for (var x = 0; x < calendarSortModel.count; x++)
+        {
+            var index = calendarModel.findIndexFromCalendarId(calendarSortModel.get(x).id);
+            popupMenu.addMenuItem("0", calendarSortModel.get(x).title, index, (calendarSortModel.get(x).id === calendarModel.calendarList.get(calendarModel.calendarIndex).id ? true : false));
+        }
 
         popupMenu.show();
     }
