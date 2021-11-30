@@ -361,7 +361,7 @@ BaseScreen
         for (var x = 0; x < calendarSortModel.count; x++)
         {
             var index = calendarModel.findIndexFromCalendarId(calendarSortModel.get(x).id);
-            popupMenu.addMenuItem("0", calendarSortModel.get(x).title, index, (calendarSortModel.get(x).id === calendarModel.calendarList.get(calendarModel.calendarIndex).id ? true : false));
+            popupMenu.addMenuItem("", calendarSortModel.get(x).title, index, (calendarSortModel.get(x).id === calendarModel.calendarList.get(calendarModel.calendarIndex).id ? true : false));
         }
 
         popupMenu.show();
