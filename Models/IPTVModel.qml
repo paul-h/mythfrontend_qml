@@ -42,7 +42,7 @@ Item
                 var title = jsonModel.model.get(x).name;
                 var url = jsonModel.model.get(x).url;
                 var icon = jsonModel.model.get(x).logo && jsonModel.model.get(x).logo !== undefined ? jsonModel.model.get(x).logo : "";
-                var genre = jsonModel.model.get(x).category && jsonModel.model.get(x).category !== undefined ? jsonModel.model.get(x).category : "N/A"
+                var genre = getCategories(jsonModel.model.get(x).categories);
                 var country = getCountries(jsonModel.model.get(x).countries);
                 var language = getLanguages(jsonModel.model.get(x).languages);
                 var xmltvid = jsonModel.model.get(x).tvg && jsonModel.model.get(x).tvg !== undefined ? jsonModel.model.get(x).tvg.id : ""
@@ -50,8 +50,14 @@ Item
 
                 listModel.append({"id": x, "title": title, "icon": icon, "player": "Internal", "url": url, "genre": genre, "countries": country, "languages": language, "xmltvid": xmltvid, "xmltvurl": xmltvurl});
 
-                if (genres.indexOf(genre) < 0)
-                    genres.push(genre);
+                var splitGenres = genre.split(",");
+                for (var y = 0; y < splitGenres.length; y++)
+                {
+                    genre = splitGenres[y].trim();
+
+                    if (genres.indexOf(genre) < 0)
+                        genres.push(genre);
+                }
 
                 var splitCountries = country.split(",");
                 for (var y = 0; y < splitCountries.length; y++)
@@ -91,6 +97,24 @@ Item
                 listModel.languageList.append({"item": languages[x]});
 
             listModel.loadingStatus(XmlListModel.Ready);
+        }
+
+        function getCategories(categories)
+        {
+            var result = "";
+
+            if (!categories || categories === undefined || categories.count == 0)
+                return "Unknown"
+
+            for (var x = 0; x < categories.count; x++)
+            {
+                if (result.length === 0)
+                    result = categories.get(x).name;
+                else
+                    result = result + ", " + categories.get(x).name;
+            }
+
+            return result
         }
 
         function getCountries(countries)
