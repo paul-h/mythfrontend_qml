@@ -14,6 +14,8 @@ Item
 
     property ListModel monitorsStatus: ListModel {}
 
+    property bool showAlertDialog: true
+
     signal loaded();
     signal loadingStatus(int status);
     signal monitorStatus(int monitorId, string status);
@@ -116,7 +118,7 @@ Item
                             log.debug(Verbose.MODEL, "ZMMonitorsModel: monitor " + root.monitorsStatus.get(index).monitorId + " status changed " + root.monitorsStatus.get(index).status + " -> " + monStatus);
                             root.monitorsStatus.get(index).status = monStatus;
 
-                            if (monStatus === "Alarm")
+                            if (monStatus === "Alarm" && root.showAlertDialog)
                                 window.showZMAlert(monitorId);
 
                             // emit the monitorStatus signal
