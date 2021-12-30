@@ -29,6 +29,7 @@ Window
     property bool shutdownOnIdle: false
     property bool showVideoBackground: true
     property bool playStartupEffect: true
+    property bool showZMAlerts: true
 
     property int idleTime: settings.frontendIdleTime
 
@@ -1163,6 +1164,9 @@ Window
 
     function showZMAlert(monitorId)
     {
+        if (!window.showZMAlerts)
+            return;
+
         // are we already showing the alert dialog for this monitor
         if (zmAlertDialog.alertedMonitorId === monitorId && zmAlertDialog.state === "show")
             return;
