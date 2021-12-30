@@ -949,6 +949,10 @@ Window
             {
                 radioPlayerDialog.show();
             }
+            else if (itemData === "zoneminder")
+            {
+                zmAlertDialog.show();
+            }
             else if (itemData === "showhelp")
             {
                 showHelp();
@@ -1148,18 +1152,37 @@ Window
     ZMAlertDialog
     {
         id: zmAlertDialog
+
+        property var lastAlert: new Date()
+
         x: parent.width - width - xscale(75)
         y:yscale(75)
         anchors.horizontalCenter: undefined
         anchors.verticalCenter: undefined
-
-        onStateChanged: if (state === "show") messageSound.play();
     }
 
     function showZMAlert(monitorId)
     {
-        zmAlertDialog.alertedMonitorId = monitorId;
-        zmAlertDialog.show();
+        // are we already showing the alert dialog for this monitor
+        if (zmAlertDialog.alertedMonitorId === monitorId && zmAlertDialog.state === "show")
+            return;
+
+        // if we are already showing the alert dialog just switch to the new alarmed monitor
+        if (zmAlertDialog.state === "show")
+        {
+            zmAlertDialog.alertedMonitorId = monitorId;
+            zmAlertDialog.show();
+            return;
+        }
+
+        // we need to show the alert dialog
+        var now = new Date();
+        if (now - zmAlertDialog.lastAlert > 60 * 1000)
+        {
+            messageSound.play()
+            zmAlertDialog.alertedMonitorId = monitorId;
+            zmAlertDialog.show();
+        }
     }
 
     function sleep()

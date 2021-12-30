@@ -60,6 +60,13 @@ BasePopup
         onTriggered: hide();
     }
 
+    Timer
+    {
+        id: notificationTimer
+        interval: 6000; running: false; repeat: false
+        onTriggered: notificationPanel.visible = false;
+    }
+
     Keys.onPressed:
     {
         event.accepted = true;
@@ -71,6 +78,13 @@ BasePopup
         else if (event.key === Qt.Key_F2)
         {
             mediaPlayer.nextFeed();
+        }
+        else if (event.key === Qt.Key_F3)
+        {
+            playerSources.zmCameraList.showAlertDialog = !playerSources.zmCameraList.showAlertDialog;
+            notificationText.text = 'ZoneMinder alerts are <font color=' + (playerSources.zmCameraList.showAlertDialog ? '"green"><b>enabled' : '"red"><b>disabled') + '</font></b>';
+            notificationPanel.visible = true;
+            notificationTimer.start();
         }
         else if (event.key === Qt.Key_I)
         {
@@ -92,6 +106,24 @@ BasePopup
         {
             id: mediaPlayer
             anchors.fill: parent
+        }
+
+        BaseBackground
+        {
+            id: notificationPanel
+            x: xscale(10); y: yscale(10); width: parent.width - xscale(20); height: parent.height - yscale(20)
+            visible: false
+
+            InfoText
+            {
+                id: notificationText
+                anchors.fill: parent
+                horizontalAlignment: Text.AlignHCenter
+                multiline: true
+                textFormat: TextEdit.RichText
+                fontPixelSize: xscale(30)
+                fontColor: "white"
+            }
         }
     }
 }

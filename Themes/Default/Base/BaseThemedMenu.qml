@@ -123,6 +123,7 @@ Item
                     popupMenu.clearMenuItems();
 
                     popupMenu.addMenuItem("", "Radio...", "radioplayer");
+                    popupMenu.addMenuItem("", "ZoneMinder...", "zoneminder");
                     popupMenu.addMenuItem("", "Volume...", "volume");
                     popupMenu.addMenuItem("", "Show Version...", "version");
                     popupMenu.addMenuItem("", "Exit", "exit");
