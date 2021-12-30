@@ -13,6 +13,7 @@ MainWindow
     shutdownOnIdle: true
     showVideoBackground: false
     playStartupEffect: false
+    showZMAlerts: false
 
     idleTime: settings.launcherIdleTime
 
