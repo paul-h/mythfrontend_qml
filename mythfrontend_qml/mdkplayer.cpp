@@ -215,9 +215,9 @@ void QmlMDKPlayer::setPlayerState(PlayerState newState)
 float QmlMDKPlayer::volume(void)
 {
     if (!m_playerAPI)
-        return m_volume;
+        return 1.0;
 
-    return 1.0;
+    return m_volume;
 }
 
 void QmlMDKPlayer::setVolume(float volume)
