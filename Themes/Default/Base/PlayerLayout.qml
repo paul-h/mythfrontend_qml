@@ -92,7 +92,6 @@ Item
             PropertyChanges { target: root; y: 0; height: parent.height; }
             PropertyChanges { target: browserPanel; width: 0 }
             PropertyChanges { target: videoTitle1; height: 0 }
-            PropertyChanges { target: playerArea; x: 0; y: 0; width: parent.width; height: parent.height }
             StateChangeScript { script: doShowHeader(false); }
         },
         State
