@@ -28,7 +28,6 @@ FocusScope
     property bool muteAudio: false
     property bool showRailcamApproach: false
     property bool showRailcamDiagram: false
-    property bool showFeedBrowser: false
 
     // private properties
     property int _mediaStatus: MediaPlayers.MediaStatus.Unknown
@@ -36,6 +35,7 @@ FocusScope
     property bool _playbackStarted: false
     property double _wmult: width / 1280
     property double _hmult: height / 720
+    property int _browserIndex: 1
 
     signal playbackEnded()
     signal activeFeedChanged()
@@ -898,13 +898,6 @@ FocusScope
             y: _yscale(10)
             width: _xscale(100)
             height: _yscale(100)
-            source:
-            {
-                if (!feedSource.feedList.get(feedSource.currentFeed))
-                   return mythUtils.findThemeFile("images/grid_noimage.png");
-                else
-                    getIconURL(feedSource.feedList.get(feedSource.currentFeed).icon);
-            }
 
             onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/grid_noimage.png")
         }
@@ -914,21 +907,9 @@ FocusScope
             id: b_title
             x: b_icon.width + _xscale(15)
             y: _yscale(5)
-            width: parent.width - currFeed.width - b_icon.width - _xscale(25)
+            width: parent.width - b_currFeed.width - b_icon.width - _xscale(25)
             height: _yscale(50)
             fontPixelSize: (_xscale(24) + _yscale(24)) / 2
-            text:
-            {
-                if (!feedSource.feedList.get(feedSource.currentFeed))
-                   return "";
-                else if (feedSource.feedList.get(feedSource.currentFeed).title !== undefined)
-                    return feedSource.feedList.get(feedSource.currentFeed).title
-                else if (feedSource.feedList.get(feedSource.currentFeed).url !== undefined)
-                    return feedSource.feedList.get(feedSource.currentFeed).url
-                else
-                    return ""
-            }
-
             verticalAlignment: Text.AlignTop
         }
 
@@ -940,9 +921,29 @@ FocusScope
             width: _xscale(240)
             height: _yscale(50)
             fontPixelSize: (_xscale(16) + _yscale(16)) / 2
-            text: feedSource.currentFeed + 1 + " of " + feedSource.feedCount + " (" + feedSource.feedName + ")"
+            text: _browserIndex + 1 + " of " + feedSource.feedCount + " (" + feedSource.feedName + ")"
 
             horizontalAlignment: Text.AlignRight
+        }
+
+        InfoText
+        {
+            id: b_description
+            x: b_icon.width + _xscale(15)
+            y: _yscale(25)
+            width: parent.width - b_currFeed.width - b_icon.width - _xscale(25)
+            height: _yscale(70)
+            verticalAlignment: Text.AlignTop
+            multiline: true
+        }
+
+        InfoText
+        {
+            id: b_category
+            x: b_icon.width + _xscale(15)
+            y: _yscale(75);
+            width: parent.width - b_currFeed.width - b_icon.width - _xscale(25)
+            fontColor: "grey"
         }
 
         Footer
@@ -986,6 +987,7 @@ FocusScope
         visible: false
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
+        fontPixelSize: (_xscale(20) + _yscale(20)) / 2
         text: "Loading..."
     }
 
@@ -1535,7 +1537,15 @@ FocusScope
 
     function toggleInfo()
     {
-        showInfo(false);
+        if (!infoPanel.visible && !browsePanel.visible)
+            showInfo(false);
+        else if (infoPanel.visible && !browsePanel.visible)
+            showFeedBrowser();
+        else
+        {
+            hideInfo();
+            hideFeedBrowser();
+        }
     }
 
     function showInfo(restart)
@@ -1572,9 +1582,63 @@ FocusScope
 
     function showFeedBrowser()
     {
+        _browserIndex = feedSource.currentFeed;
         hideInfo();
-
+        updateBrowserFeed();
         browsePanel.visible = true;
+    }
+
+    function showingFeedBrowser()
+    {
+        return browsePanel.visible
+    }
+
+    function previousBrowserFeed()
+    {
+        _browserIndex--;
+
+        if (_browserIndex < 0)
+            _browserIndex = feedSource.feedList.count - 1;
+
+        updateBrowserFeed();
+    }
+
+    function nextBrowserFeed()
+    {
+        _browserIndex++;
+
+        if (_browserIndex >= feedSource.feedList.count)
+            _browserIndex = 0;
+
+        updateBrowserFeed();
+    }
+
+    function updateBrowserFeed()
+    {
+        if (!feedSource.feedList.get(_browserIndex))
+            b_icon.source = mythUtils.findThemeFile("images/grid_noimage.png");
+        else
+            b_icon.source = getIconURL(feedSource.feedList.get(_browserIndex).icon);
+
+        if (!feedSource.feedList.get(_browserIndex))
+            b_title.text = "";
+        else if (feedSource.feedList.get(_browserIndex).title !== undefined)
+            b_title.text = feedSource.feedList.get(_browserIndex).title
+        else if (feedSource.feedList.get(_browserIndex).url !== undefined)
+            b_title.text = feedSource.feedList.get(_browserIndex).url
+        else
+            b_title.text = ""
+
+        if (!feedSource.feedList.get(_browserIndex))
+            b_category.text = "";
+        else
+            b_category.text = feedSource.feedList.get(_browserIndex).categories
+
+        if (!feedSource.feedList.get(_browserIndex))
+            b_description.text = "";
+        else
+            b_description.text = feedSource.feedList.get(_browserIndex).description
+
     }
 
     function hideFeedBrowser()
@@ -1582,10 +1646,18 @@ FocusScope
         browsePanel.visible = false;
     }
 
+    function selectFeedBrowser()
+    {
+        goToFeed(_browserIndex);
+    }
+
     function goToFeed(feedIndex)
     {
+        stop();
         feedSource.currentFeed = feedIndex;
         play(true);
+        updateOSD();
+        showInfo(true);
     }
 
     function nextFeed()

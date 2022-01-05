@@ -92,7 +92,9 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            if (isPanel)
+            if (getActivePlayer().showingFeedBrowser())
+                getActivePlayer().hideFeedBrowser();
+            else if (isPanel)
             {
                 root.handleEscape();
             }
@@ -112,14 +114,26 @@ BaseScreen
     {
         shortcut: "Down"
         enabled: _actionsEnabled  && (playerLayout.activeItem.objectName !== "Browser")
-        onTriggered: changeFocus("down");
+        onTriggered:
+        {
+            if (getActivePlayer().showingFeedBrowser())
+                getActivePlayer().nextBrowserFeed();
+            else
+                changeFocus("down");
+        }
     }
 
     Action
     {
         shortcut: "Up"
         enabled: _actionsEnabled && (playerLayout.activeItem.objectName !== "Browser")
-        onTriggered: changeFocus("up");
+        onTriggered:
+        {
+            if (getActivePlayer().showingFeedBrowser())
+                getActivePlayer().previousBrowserFeed();
+            else
+                changeFocus("up");
+        }
     }
 
     Action
@@ -535,7 +549,12 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            if (playerLayout.showChat)
+            if (getActivePlayer().showingFeedBrowser())
+            {
+                getActivePlayer().selectFeedBrowser();
+                feedChanged(getActivePlayer().feed.feedName, getActivePlayer().feed.currentFilter, getActivePlayer().feed.currentFeed);
+            }
+            else if (playerLayout.showChat)
             {
                 updateBrowser();
             }
