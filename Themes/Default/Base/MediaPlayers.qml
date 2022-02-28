@@ -930,11 +930,12 @@ FocusScope
         {
             id: b_description
             x: b_icon.width + _xscale(15)
-            y: _yscale(25)
+            y: _yscale(32)
             width: parent.width - b_currFeed.width - b_icon.width - _xscale(25)
-            height: _yscale(70)
+            height: _yscale(60)
             verticalAlignment: Text.AlignTop
             multiline: true
+            fontPixelSize: _xscale(13)
         }
 
         InfoText
@@ -1550,6 +1551,9 @@ FocusScope
 
     function showInfo(restart)
     {
+        if (browsePanel.visible)
+            return;
+
         // don't show the info panel if it's to small to see
         if (infoPanel.width < 400)
             return;
