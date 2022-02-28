@@ -151,7 +151,7 @@ BaseScreen
             title: ""
             icon: ""
             url: ""
-            player: "Internal"
+            player: "VLC"
             duration: ""
         }
     }
