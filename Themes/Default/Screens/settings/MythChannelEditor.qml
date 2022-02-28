@@ -363,7 +363,7 @@ BaseScreen
         KeyNavigation.right: channelList;
     }
 
-    MediaPlayer
+    MediaPlayers
     {
         id: mediaPlayer
 
