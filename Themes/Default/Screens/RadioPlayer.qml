@@ -162,7 +162,7 @@ BaseScreen
 
             for (var i = 0; i < streamList.model.count; i++)
             {
-                var itemUrl = streamList.model.get(streamList.currentIndex).url1;
+                var itemUrl = streamList.model.get(i).url1;
 
                 if (itemUrl === url)
                 {
