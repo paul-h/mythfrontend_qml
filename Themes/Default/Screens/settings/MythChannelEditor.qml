@@ -158,6 +158,8 @@ BaseScreen
 
     Keys.onPressed:
     {
+        event.accepted = true;
+
         if (event.key === Qt.Key_F1)
         {
             // RED - sort (ChanNum, ChannelName, CallSign, VideoSource, MplexId)
@@ -234,6 +236,8 @@ BaseScreen
             // BLUE - Edit Channel
             // TODO
         }
+        else
+            event.accepted = false;
     }
 
     BaseBackground { x: xscale(15); y: yscale(50); width: parent.width - yscale(30); height: yscale(220) }
