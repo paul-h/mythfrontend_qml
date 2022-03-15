@@ -2,6 +2,7 @@ import QtQuick 2.10
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.0
 import QtWebEngine 1.5
+import QtQuick.XmlListModel 2.0
 import Base 1.0
 import Process 1.0
 import Models 1.0
@@ -69,10 +70,48 @@ FocusScope
         return y * _hmult
     }
 
+    Timer
+    {
+        id: updateTimer
+        interval: 1000; repeat: true
+        running: (feedSource.feedName === "Live TV")
+        onTriggered:
+        {
+            // update now/next program once per minute at 00 seconds
+            var now = new Date(Date.now());
+            if (now.getSeconds() === 0)
+                 getNowNext();
+            else
+                updateTimeIndicator();
+        }
+    }
+
+    ProgramListModel
+    {
+        id: guideModel
+        startTime:
+        {
+            var now = new Date();
+            var now2 = new Date(Date.now() + (now.getTimezoneOffset() * 60 * 1000));
+            return Qt.formatDateTime(now2, "yyyy-MM-ddThh:mm:ss");
+        }
+        endTime:
+        {
+            var now = new Date();
+            var now2 = new Date(Date.now() + (now.getTimezoneOffset() * 60 * 1000));
+            now2.setDate(now2.getDate() + 1);
+            return Qt.formatDateTime(now2, "yyyy-MM-ddThh:mm:ss");
+        }
+
+        onStatusChanged: if (status == XmlListModel.Ready) updateNowNext()
+    }
+
     FeedSource
     {
         id: feedSource
         objectName: parent.objectName
+
+        Component.onCompleted: getNowNext();
     }
 
     Process
@@ -689,10 +728,9 @@ FocusScope
     {
         id: infoPanel
         x: xscale(10);
-        y: parent.height - _yscale(160) - yscale(10);
-        opacity: 0.75
+        y: parent.height - ((feedSource.feedName === "Live TV") ? _yscale(330) : _yscale(160)) - yscale(10);
         width: parent.width - xscale(20);
-        height: _yscale(160)
+        height: (feedSource.feedName === "Live TV") ? _yscale(330) : _yscale(160)
 
         visible: false
 
@@ -717,6 +755,131 @@ FocusScope
             fontPixelSize: (_xscale(24) + _yscale(24)) / 2
 
             verticalAlignment: Text.AlignTop
+        }
+
+        Item
+        {
+            id: nowNextInfo
+
+            x: 0
+            y: _yscale(110)
+            width: parent.width
+            height: parent.height - y
+
+            visible: (feedSource.feedName === "Live TV")
+
+            RichText
+            {
+                id: programTitle
+                x: _xscale(30)
+                y: 0
+                width: _xscale(700)
+                height: _yscale(25)
+                labelFontPixelSize: (_xscale(16) + _yscale(16)) / 2
+                infoFontPixelSize: (_xscale(16) + _yscale(16)) / 2
+                label: "Now: "
+            }
+
+            InfoText
+            {
+                id: programDesc
+                x: _xscale(30); y: _yscale(45)
+                width: parent.width - _xscale(60); height: _yscale(75)
+                verticalAlignment: Text.AlignTop
+                fontPixelSize: (_xscale(14) + _yscale(14)) / 2
+                multiline: true
+            }
+
+            InfoText
+            {
+                id: programStatus
+                x: parent.width - _xscale(296); y: _yscale(150); width: _xscale(266); height: _yscale(25)
+                horizontalAlignment: Text.AlignRight
+                fontColor: if (text === "Recording") "red"; else theme.infoFontColor;
+                fontPixelSize: (_xscale(16) + _yscale(16)) / 2
+            }
+
+            InfoText
+            {
+                id: programCategory
+                x: xscale(20); y: _yscale(150); width: _xscale(220); height: _yscale(25)
+                fontColor: "grey"
+                fontPixelSize: (_xscale(16) + _yscale(16)) / 2
+            }
+
+            InfoText
+            {
+                id: programEpisode
+                x: _xscale(315); y: _yscale(150); width: _xscale(320); height: _yscale(25)
+                horizontalAlignment: Text.AlignHCenter
+                fontColor: "grey"
+                fontPixelSize: (_xscale(16) + _yscale(16)) / 2
+            }
+
+            InfoText
+            {
+                id: programFirstAired
+                x: _xscale(650); y: _yscale(150); width: _xscale(280); height: _yscale(25)
+                fontColor: "grey"
+                horizontalAlignment: Text.AlignRight
+                fontPixelSize: (_xscale(16) + _yscale(16)) / 2
+            }
+
+            InfoText
+            {
+                id: programLength
+                x: parent.width - _xscale(120); y: 0; width: _xscale(90)
+                height: _yscale(25)
+                fontColor: "grey"
+                horizontalAlignment: Text.AlignRight
+                fontPixelSize: (_xscale(16) + _yscale(16)) / 2
+            }
+
+            RichText
+            {
+                id: programNext
+                x: _xscale(30)
+                y: _yscale(106)
+                width: _xscale(910)
+                height: _yscale(25)
+                label: "Next: "
+                labelFontPixelSize: (_xscale(16) + _yscale(16)) / 2
+                infoFontPixelSize: (_xscale(16) + _yscale(16)) / 2
+            }
+
+            Item
+            {
+                id: timeIndictor
+
+                property int position: 0
+                property int length: 100
+
+                x: programLength.x -_xscale(120)
+                y: _yscale(8)
+                width: _xscale(100)
+                height: yscale(8)
+
+                Rectangle
+                {
+                    anchors.fill: parent
+                    color: "white"
+                }
+
+                Rectangle
+                {
+                    x: 0; y: 0; height: parent.height;
+                    width: (parent.width / timeIndictor.length) * timeIndictor.position
+                    color: "red"
+                }
+            }
+
+            Image
+            {
+                id: recordingIcon
+                x: _xscale(900); y: _yscale(130); width: xscale(32); height: yscale(32)
+                source: mythUtils.findThemeFile("images/recording.png")
+                visible: (guideModel.count > 0 && guideModel.get(0).RecordingStatus === "Recording")
+            }
         }
 
         InfoText
@@ -1802,6 +1965,14 @@ FocusScope
             browserURLList.append({"title": "RailCam - On the cameras tomorrow", "url": "http://news.railcam.uk/index.php/category/tomorrow/", "width" : 500, "zoom": 1.0});
         }
 
+        // if the feed is LiveTV see if we can find any info for the current program
+        if (guideModel.count > 0)
+        {
+            var searchTitle = guideModel.get(0).Title;
+            browserURLList.append({"title": "IMDb", "url": "https://www.imdb.com/find?q=" + searchTitle, "width" : 500, "zoom": 1.0});
+            browserURLList.append({"title": "Rotten Tomatoes", "url": "https://www.rottentomatoes.com/search?search=" + searchTitle, "width" : 500, "zoom": 1.0});
+        }
+
         // TODO add other web urls here
     }
 
@@ -1904,6 +2075,9 @@ FocusScope
             icon.source = mythUtils.findThemeFile("images/grid_noimage.png");
         else
             icon.source = getIconURL(feedSource.feedList.get(feedSource.currentFeed).icon);
+
+        if (feedSource.feedName === "Live TV")
+            getNowNext();
     }
 
     function getIconURL(iconURL)
@@ -1939,5 +2113,119 @@ FocusScope
     function sendReturn()
     {
         mythUtils.sendKeyEvent(window, Qt.Key_Return);
+    }
+
+    function getNowNext()
+    {
+        // get now/next program
+        var now = new Date();
+        var now2 = new Date(Date.now() + (now.getTimezoneOffset() * 60 * 1000));
+
+        // work around a MythTV services API bug
+        if (now2.getSeconds() === 0)
+            now2.setSeconds(1);
+
+        guideModel.startTime = Qt.formatDateTime(now2, "yyyy-MM-ddThh:mm:ss");
+
+        now2.setDate(now2.getDate() + 1);
+        guideModel.endTime = Qt.formatDateTime(now2, "yyyy-MM-ddThh:mm:ss");
+        if (feedSource.feedList.get(feedSource.currentFeed))
+            guideModel.chanId =  feedSource.feedList.get(feedSource.currentFeed).ChanId != undefined ? feedSource.feedList.get(feedSource.currentFeed).ChanId : -1;
+        guideModel.load();
+    }
+
+    function updateNowNext()
+    {
+        if (guideModel.count > 0)
+        {
+            // update the timeIndictor
+            var dtStart = Date.parse(guideModel.get(0).StartTime);
+            var dtEnd = Date.parse(guideModel.get(0).EndTime);
+            var dtNow = Date.now();
+
+            var position = dtNow - dtStart;
+            var length = dtEnd - dtStart;
+
+            timeIndictor.position = position;
+            timeIndictor.length = length;
+
+            var startDate = new Date(dtStart);
+            var endDate = new Date(dtEnd);
+
+            programTitle.info = guideModel.get(0).Title + " (" + startDate.toLocaleTimeString(Qt.locale(), "hh:mm") + " - " + endDate.toLocaleTimeString(Qt.locale(), "hh:mm") + ")";
+
+            programLength.text = length / 60000 + " mins";
+
+            if (guideModel.get(0).SubTitle !== "")
+               programDesc.text = "\"" + guideModel.get(0).SubTitle + "\"  " + guideModel.get(0).Description
+            else
+               programDesc.text = guideModel.get(0).Description
+
+            var state = guideModel.get(0).RecordingStatus;
+            if (state === "Unknown")
+                programStatus.text = "Not Recording";
+            else
+                programStatus.text = guideModel.get(0).RecordingStatus
+
+            programCategory.text = guideModel.get(0).Category
+
+            var season = guideModel.get(0).Season
+            var episode = guideModel.get(0).Episode
+            var total = guideModel.get(0).TotalEpisodes
+            var res = ""
+
+            if (season > 0)
+                res = "Season: " + season + " ";
+            if (episode > 0)
+            {
+                res += " Episode: " + episode;
+
+                if (total > 0)
+                    res += "/" + total;
+            }
+
+            programEpisode.text = res;
+
+            if (guideModel.get(0).AirDate !== undefined)
+                programFirstAired.text = "First Aired: " + Qt.formatDateTime(guideModel.get(0).AirDate, "dd/MM/yyyy");
+            else
+                programFirstAired.text = ""
+
+            // update next program
+            startDate = new Date(Date.parse(guideModel.get(1).StartTime));
+            endDate = new Date(Date.parse(guideModel.get(1).EndTime));
+            programNext.info = guideModel.get(1).Title + " (" + startDate.toLocaleTimeString(Qt.locale(), "hh:mm") + " - " + endDate.toLocaleTimeString(Qt.locale(), "hh:mm") + ")";
+        }
+        else
+        {
+            programTitle.info = "No guide data available for this channel"
+            programDesc.text = "N/A"
+            programStatus.text = "N/A";
+            programCategory.text = "Unknown"
+            programEpisode.text = "";
+            programFirstAired.text = ""
+            programLength.text = ""
+            programNext.info = ""
+
+            timeIndictor.position = 0;
+            timeIndictor.length = 100;
+
+        }
+    }
+
+    function updateTimeIndicator()
+    {
+        if (guideModel.count > 0)
+        {
+            var dtStart = Date.parse(guideModel.get(0).StartTime);
+            var dtEnd = Date.parse(guideModel.get(0).EndTime);
+            var dtNow = Date.now();
+
+            var position = dtNow - dtStart;
+            var length = dtEnd - dtStart;
+
+            timeIndictor.position = position;
+            timeIndictor.length = length;
+        }
     }
 }
