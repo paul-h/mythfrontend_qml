@@ -117,14 +117,21 @@ Item
     function doShowHeader(show)
     {
         player1.showBorder = show;
+        parent.showTitle(show)
+        parent.showTime(show);
+
+        if ((layout === 3 || layout === 4 || layout === 5) && !showBrowser)
+            parent.showTicker(show);
+        else
+            parent.showTicker(false);
     }
 
     Item
     {
         id: playerArea
-        x: browserPanel.width + xscale(10)
+        x: browserPanel.width ? browserPanel.width + xscale(10) : 0
         y: 0
-        width: parent.width - x - xscale(10)
+        width: parent.width - x
         height: parent.height
 
         states:
