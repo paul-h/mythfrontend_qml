@@ -382,7 +382,7 @@ BaseScreen
         id: recordingIcon
         x: _xscale(900); y: yscale(630); width: xscale(32); height: yscale(32)
         source: mythUtils.findThemeFile("images/recording.png")
-        visible: guideModel.get(0).RecordingStatus === "Recording"
+        visible: guideModel.count > 0 ?  guideModel.get(0).RecordingStatus === "Recording" : false
     }
 
     Footer
@@ -478,7 +478,7 @@ BaseScreen
             if (!currentItem)
                 return;
 
-            title.text = currentItem.title;
+            title.text = currentItem.title != undefined ? currentItem.title : "";
 
             // icon
             channelIcon.source = currentItem.IconURL ? settings.masterBackend + "Guide/GetChannelIcon?ChanId=" + currentItem.ChanId : mythUtils.findThemeFile("images/grid_noimage.png");
@@ -508,7 +508,7 @@ BaseScreen
 
         now2.setDate(now2.getDate() + 1);
         guideModel.endTime = Qt.formatDateTime(now2, "yyyy-MM-ddThh:mm:ss");
-        guideModel.chanId = channelGrid.model.get(channelGrid.currentIndex).ChanId;
+        guideModel.chanId = channelGrid.model.get(channelGrid.currentIndex).ChanId != undefined ? channelGrid.model.get(channelGrid.currentIndex).ChanId : -1;
         guideModel.load();
     }
 
