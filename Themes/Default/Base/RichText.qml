@@ -9,6 +9,8 @@ Item
     property int    horizontalAlignment: Text.AlignLeft
     property int    verticalAlignment: Text.AlignVCenter
     property bool   multiline: false
+    property int    labelFontPixelSize: Math.ceil(xscale(theme.labelFontPixelSize))
+    property int    infoFontPixelSize: Math.ceil(xscale(theme.infoFontPixelSize))
 
     onLabelChanged: updateText();
     onInfoChanged: updateText();
@@ -45,9 +47,9 @@ Item
 
     function updateText()
     {
-        text.text = '<p style="font-family: ' + theme.labelFontFamily +  '; font-size: ' + Math.ceil(xscale(theme.labelFontPixelSize)) + 'px; color: ' + theme.labelFontColor + '"> ' +
+        text.text = '<p style="font-family: ' + theme.labelFontFamily +  '; font-size: ' + (labelFontPixelSize > 0 ? labelFontPixelSize : 16) + 'px; color: ' + theme.labelFontColor + '"> ' +
                     (theme.labelFontBold ? '<b>' : '') + label + (theme.labelFontBold ? '</b>' : '') +
-                    '<span style="font-family: ' + theme.infoFontFamily +  '; font-size: ' + Math.ceil(xscale(theme.infoFontPixelSize)) + 'px; color: ' + theme.infoFontColor  +  '" >' +
+                    '<span style="font-family: ' + theme.infoFontFamily +  '; font-size: ' + (infoFontPixelSize > 0 ? infoFontPixelSize : 16) + 'px; color: ' + theme.infoFontColor  +  '" >' +
                     (theme.infoFontBold ? '<b>' : '') + info + (theme.infoFontBold ? '</b>' : '') + '</span></p>';
     }
 }
