@@ -3,6 +3,7 @@
 
 // mdk
 #include "mdk/c/MediaInfo.h"
+#include "mdk/global.h"
 
 // mythqml
 #include "context.h"
@@ -364,4 +365,19 @@ void QmlMDKPlayer::renderVideo()
         return;
 
     m_playerAPI->renderVideo(m_playerAPI->object, nullptr);
+}
+
+void QmlMDKPlayer::setFillMode(int fillMode)
+{
+    if (!m_playerAPI)
+        return;
+
+    float aspectRatio = mdk::IgnoreAspectRatio;
+
+    if (fillMode == 1) // PreserveAspectFit
+        aspectRatio = mdk::KeepAspectRatio;
+    else if (fillMode == 2) // PreserveAspectCrop
+        aspectRatio = mdk::KeepAspectRatioCrop;
+
+    m_playerAPI->setAspectRatio(m_playerAPI->object, aspectRatio, nullptr);
 }

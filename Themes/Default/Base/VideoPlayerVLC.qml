@@ -178,4 +178,9 @@ FocusScope
         mediaplayer.muted = !mediaplayer.muted;
         log.debug(Verbose.PLAYBACK, "VideoPlayerVLC: toggleMute - muted is now: " + mediaplayer.muted)
     }
+
+    function setFillMode(mode)
+    {
+        showMessage("FillMode is not supported by this player", settings.osdTimeoutMedium);
+    }
 }

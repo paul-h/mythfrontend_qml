@@ -236,4 +236,9 @@ Item
     {
         showMessage("Deinterlacers are not supported by this player", settings.osdTimeoutMedium);
     }
+
+    function setFillMode(mode)
+    {
+        showMessage("FillMode is not supported by this player", settings.osdTimeoutMedium);
+    }
 }

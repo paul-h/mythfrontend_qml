@@ -229,4 +229,16 @@ FocusScope
 
         showMessage("Deinterlacer: " + mediaplayer.deinterlacers[mediaplayer.currentDeinterlacer], settings.osdTimeoutMedium);
     }
+
+    function setFillMode(mode)
+    {
+        mediaplayer.setFillMode(mode);
+
+        if (mode === VideoPlayerMDK.FillMode.Stretch)
+            showMessage("Fill Mode: Stretch", settings.osdTimeoutMedium);
+        else if (mode === VideoPlayerMDK.FillMode.PreserveAspectFit)
+            showMessage("Fill Mode: Fit", settings.osdTimeoutMedium);
+        else if (mode === VideoPlayerMDK.FillMode.PreserveAspectCrop)
+            showMessage("Fill Mode: Crop", settings.osdTimeoutMedium);
+    }
 }

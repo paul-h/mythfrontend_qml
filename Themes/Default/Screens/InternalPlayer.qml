@@ -446,6 +446,16 @@ BaseScreen
 
     Action
     {
+        shortcut: "A" // switch fill mode
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            getActivePlayer().toggleFillMode();
+        }
+    }
+
+    Action
+    {
         shortcut: "F11" // take snapshot of the active video player (possibly for a video thumbnail image)
         enabled: _actionsEnabled
         onTriggered:
