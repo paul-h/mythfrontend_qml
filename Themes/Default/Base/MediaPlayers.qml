@@ -37,6 +37,7 @@ FocusScope
     property double _wmult: width / 1280
     property double _hmult: height / 720
     property int _browserIndex: 1
+    property int _fillMode: MediaPlayers.FillMode.Stretch
 
     signal playbackEnded()
     signal activeFeedChanged()
@@ -58,6 +59,13 @@ FocusScope
         Stopped,
         Paused,
         Playing
+    }
+
+    enum FillMode
+    {
+        Stretch,
+        PreserveAspectFit,
+        PreserveAspectCrop
     }
 
     function _xscale(x)
@@ -333,7 +341,7 @@ FocusScope
         anchors.fill: parent
         anchors.margins: playerBorder.border.width
 
-        fillMode: VideoOutput.Stretch
+        fillMode: VideoOutput.PreserveAspectFit
 
         onShowMessage: root.showMessage(message, timeOut)
         onMediaStatusChanged: root.mediaStatusChanged(mediaStatus)
@@ -1661,7 +1669,30 @@ FocusScope
             youtubePlayer.setVolume(volume);
         else if (getActivePlayer() === "MDK")
             mdkPlayer.setVolume(volume);
+    }
 
+    function toggleFillMode()
+    {
+        if (_fillMode === MediaPlayers.FillMode.Stretch)
+            _fillMode = MediaPlayers.FillMode.PreserveAspectFit;
+        else if (_fillMode === MediaPlayers.FillMode.PreserveAspectFit)
+            _fillMode = MediaPlayers.FillMode.PreserveAspectCrop;
+        else if (_fillMode === MediaPlayers.FillMode.PreserveAspectCrop)
+            _fillMode = MediaPlayers.FillMode.Stretch;
+
+        setFillMode(_fillMode);
+    }
+
+    function setFillMode(mode)
+    {
+        if (getActivePlayer() === "VLC")
+            vlcPlayer.setFillMode(mode);
+        else if (getActivePlayer() === "QTAV")
+            qtAVPlayer.setFillMode(mode);
+        else if (getActivePlayer() === "YOUTUBE")
+            youtubePlayer.setFillMode(mode);
+        else if (getActivePlayer() === "MDK")
+            mdkPlayer.setFillMode(mode);
     }
 
     function skipBack(time)

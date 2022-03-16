@@ -54,6 +54,8 @@ public:
     Q_INVOKABLE void stop();
     Q_INVOKABLE void pause();
     
+    Q_INVOKABLE void setFillMode(int fillMode);
+
     Q_INVOKABLE void setPlaybackRate(float rate);
     Q_INVOKABLE float getPlaybackRate(void);
     Q_INVOKABLE void seek(qint64 ms);
