@@ -1966,7 +1966,7 @@ FocusScope
         }
 
         // if the feed is LiveTV see if we can find any info for the current program
-        if (guideModel.count > 0)
+        if (feedSource.feedName === "Live TV" && guideModel.count > 0)
         {
             var searchTitle = guideModel.get(0).Title;
             browserURLList.append({"title": "IMDb", "url": "https://www.imdb.com/find?q=" + searchTitle, "width" : 500, "zoom": 1.0});
