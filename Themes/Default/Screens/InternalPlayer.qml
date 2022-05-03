@@ -735,8 +735,12 @@ BaseScreen
     {
         var found = false;
         var i = playerLayout.activeItem;
+        var prev_i = undefined;
+
         do
         {
+            prev_i = i;
+
             if (direction === "left")
                 i = i.KeyNavigation.left;
             else if (direction === "right")
@@ -746,12 +750,12 @@ BaseScreen
             else if (direction === "down")
                 i = i.KeyNavigation.down;
 
-            if (i.visible && i !== playerLayout.activeItem)
+            if (i !== undefined && i.visible && i !== playerLayout.activeItem)
             {
                 i.focus = true;
                 return;
             }
-        } while (i !== undefined && i !== playerLayout.activeItem);
+        } while (i !== undefined && i !== playerLayout.activeItem && prev_i !== i);
     }
 
     function updateBrowser()
