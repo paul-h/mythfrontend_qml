@@ -26,7 +26,7 @@ BaseScreen
 
     property bool isFullScreen: width === window.width
 
-    property bool _actionsEnabled: playerLayout.browser.focus || playerLayout.mediaPlayer1.focus || playerLayout.mediaPlayer2.focus || playerLayout.mediaPlayer3.focus || playerLayout.mediaPlayer4.focus;
+    property bool _actionsEnabled: !window.showingZMAlerts && (playerLayout.browser.focus || playerLayout.mediaPlayer1.focus || playerLayout.mediaPlayer2.focus || playerLayout.mediaPlayer3.focus || playerLayout.mediaPlayer4.focus);
 
     signal feedChanged(string feedSource, string filter, int index)
 

@@ -30,6 +30,7 @@ Window
     property bool showVideoBackground: true
     property bool playStartupEffect: true
     property bool showZMAlerts: true
+    property bool showingZMAlerts: (zmAlertDialog.state === "show")
 
     property int idleTime: settings.frontendIdleTime
 
