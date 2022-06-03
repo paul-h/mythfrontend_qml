@@ -40,7 +40,7 @@ BaseDialog
         id: listRow
         ListItem
         {
-            width: parent.width; height: yscale(50)
+            width: itemList.width; height: yscale(50)
             ListText
             {
                 x: xscale(20); y: 0
@@ -76,6 +76,8 @@ BaseDialog
             KeyNavigation.down: itemList;
             KeyNavigation.left: itemList;
             KeyNavigation.right: itemList;
+
+            onTextChanged: if (itemList.count > 0) itemList.currentIndex = 0; else itemList.currentIndex = -1;
         }
 
         ButtonList
@@ -86,7 +88,7 @@ BaseDialog
 
             x: xscale(20); y: yscale(60)
             width: parent.width - xscale(40);
-            height: parent.height - yscale(60);
+            height: parent.height - yscale(70);
 
             KeyNavigation.up: searchEdit;
             KeyNavigation.down: acceptButton;
