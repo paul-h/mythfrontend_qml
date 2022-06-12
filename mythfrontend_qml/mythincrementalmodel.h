@@ -20,7 +20,7 @@ public:
     ~MythIncrementalModel(void) override;
 
     Q_PROPERTY(int totalAvailable READ totalAvailable NOTIFY totalAvailableChanged)
-    Q_PROPERTY(int loadAll READ loadAll WRITE setLoadAll NOTIFY loadAllChanged)
+    Q_PROPERTY(bool loadAll READ loadAll WRITE setLoadAll NOTIFY loadAllChanged)
 
     Q_INVOKABLE void reload(void);
     Q_INVOKABLE QVariant getData(int row, int role = Qt::DisplayRole) const;
@@ -41,7 +41,7 @@ public:
     int totalAvailable(void) { return m_totalAvailable; }
 
     bool loadAll(void) { return m_loadAll; }
-    void setLoadAll(bool loadAll) { m_loadAll = loadAll; }
+    void setLoadAll(bool loadAll) {m_loadAll = loadAll; startDownload();}
 
   signals:
      void totalAvailableChanged(void);
