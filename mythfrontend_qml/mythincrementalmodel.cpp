@@ -66,7 +66,7 @@ QVariant MythIncrementalModel::getData(int row, int role) const
             return QVariant();
         }
 
-        int count = qMin(m_count, m_totalAvailable - row);
+        int count = m_loadAll ? m_totalAvailable - row : qMin(m_count, m_totalAvailable - row);
         for (int x = 0; x < count; x++)
         {
             m_pendingDownloads.append(row + x);
@@ -302,7 +302,7 @@ void MythIncrementalModel::addIntData(RowData* row, const QJsonValue &node, cons
         return;
     }
 
-    int data = node.toObject()[roleName].toString().toInt();
+    int data = node.toObject()[roleName].toInt();
     (*row)[m_roleMap[roleName]].setValue(data);
 }
 

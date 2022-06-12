@@ -79,7 +79,7 @@ BaseScreen
     ZMLoadModel
     {
         id: zmLoadModel
-        onLoaded: load.info = zmLoadModel.load1 + ", " + zmLoadModel.load5 + ", " + zmLoadModel.load15
+        onLoaded: load.info = Number.parseFloat(zmLoadModel.load1).toFixed(2) + ", " + Number.parseFloat(zmLoadModel.load5).toFixed(2) + ", " + Number.parseFloat(zmLoadModel.load15).toFixed(2)
     }
 
     ZMDaemonCheckModel
@@ -163,7 +163,7 @@ BaseScreen
             {
                 x: _xscale(920)
                 width: _xscale(90); height: yscale(50)
-                text: totalevents
+                text: isNaN(totalevents) ? 0 : totalevents
                 horizontalAlignment: Text.AlignRight
             }
             ListText
