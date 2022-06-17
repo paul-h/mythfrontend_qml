@@ -38,8 +38,8 @@ Item
         XmlRole { name: "device"; query: "Monitor/Device/string()" }
         XmlRole { name: "channel"; query: "Monitor/Channel/string()" }
         XmlRole { name: "host"; query: "Monitor/Host/string()" }
-        XmlRole { name: "totalevents"; query: "Monitor/TotalEvents/number()"; isKey: true }
-        XmlRole { name: "totaleventsdiskspace"; query: "Monitor/TotalEventDiskSpace/number()"; isKey: true }
+        XmlRole { name: "totalevents"; query: "Event_Summary/TotalEvents/number()"; isKey: true }
+        XmlRole { name: "totaleventsdiskspace"; query: "Event_Summary/TotalEventDiskSpace/number()"; isKey: true }
 
 
         XmlRole { name: "title"; query: "Monitor/Name/string()" }
@@ -132,7 +132,7 @@ Item
 
     function get(index)
     {
-        return zmMonitorsModel.get(x);
+        return zmMonitorsModel.get(index);
     }
 
     function lookupMonitorIndex(id)
@@ -271,5 +271,25 @@ Item
             }
         }
         http.send(params);
+    }
+
+    function reload()
+    {
+        zmMonitorsModel.reload();
+    }
+
+    function expandNode(tree, path, node)
+    {
+        console.log("expandNode ZMCameras: " + path);
+
+        node.expanded  = true
+
+        for (x = 0; x < zmMonitorsModel.count; x++)
+        {
+            var mon = zmMonitorsModel.get(x);
+            node.subNodes.append({"parent": node, "itemTitle": mon.title, "itemData": String(mon.id), "checked": false, "expanded": true, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.ZoneMinder_Camera,
+                                   "url":  mon.url, "player": mon.player
+                                 })
+        }
     }
 }
