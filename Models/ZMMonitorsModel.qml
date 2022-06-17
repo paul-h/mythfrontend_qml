@@ -35,6 +35,7 @@ Item
         XmlRole { name: "name"; query: "Monitor/Name/string()" }
         XmlRole { name: "monfunction"; query: "Monitor/Function/string()"; isKey: true }
         XmlRole { name: "monenabled"; query: "xs:boolean(Monitor/Enabled)"; isKey: true }
+        XmlRole { name: "path"; query: "Monitor/Path/string()" }
         XmlRole { name: "device"; query: "Monitor/Device/string()" }
         XmlRole { name: "channel"; query: "Monitor/Channel/string()" }
         XmlRole { name: "host"; query: "Monitor/Host/string()" }

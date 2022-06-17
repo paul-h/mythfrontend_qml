@@ -157,7 +157,7 @@ BaseScreen
             {
                 x: _xscale(360)
                 width: _xscale(560); height: yscale(50)
-                text: if (host !== "") host; else device + " (" + channel + ")";
+                text: if (path !== "") path; else device + " (" + channel + ")";
             }
             ListText
             {
