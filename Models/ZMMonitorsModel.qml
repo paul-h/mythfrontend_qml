@@ -234,22 +234,22 @@ Item
 
                     switch (statusCode)
                     {
-                        case -1:
+                        case 0 :
                             result = "Unknown";
                             break;
-                        case 0:
+                        case 1:
                             result = "Idle";
                             break;
-                        case 1:
+                        case 2:
                             result = "Pre Alarm";
                             break;
-                        case 2:
+                        case 3:
                             result = "Alarm";
                             break;
-                        case 3:
+                        case 4:
                             result = "Alert";
                             break;
-                        case 4:
+                        case 5:
                             result = "Tape";
                             break;
                         default:
