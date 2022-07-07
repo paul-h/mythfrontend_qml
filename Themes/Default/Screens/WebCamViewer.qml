@@ -134,7 +134,8 @@ BaseScreen
         }
         else if (event.key === Qt.Key_F5)
         {
-            playerSources.webcamList.reload();
+            savedID = webcamGrid.model.get(webcamGrid.currentIndex).id;
+            playerSources.webcamList.models[feedSource.webcamListIndex].model.reload();
         }
         else if (event.key === Qt.Key_F6)
         {
