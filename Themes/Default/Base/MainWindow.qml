@@ -858,6 +858,10 @@ Window
         {
             whatsNewTimer.stop();
             checkWhatsNew();
+
+            // if the user added a jumpto commandline parameter try to jump to it
+            if (jumpto !== "")
+                handleJumpTo(jumpto);
         }
     }
 
@@ -1266,6 +1270,138 @@ Window
             log.info(Verbose.GENERAL, "Suspending!!!!")
             externalProcess.doSleep = false;
             externalProcess.start(settings.suspendCommand);
+        }
+    }
+
+    JumpModel {id: jumpModel}
+
+    function handleJumpTo(message)
+    {
+        message = message.replace('Jump To: ', '');
+        message = message.toLowerCase();
+        log.debug(Verbose.GENERAL, "Looking for jumpPoint: " + message);
+
+        for (var x = 0; x < jumpModel.count; x++)
+        {
+            var jumpPoints = jumpModel.get(x).jumpText.split("|");
+
+            for (var y = 0; y < jumpPoints.length; y++)
+            {
+                if (message === jumpPoints[y].toLowerCase())
+                {
+
+                    log.debug(Verbose.GENERAL, "handleJumpTo: jump point was found");
+
+                    // jump back to the main menu
+                    while (stack.depth > 1)
+                    {
+                        stack.pop(null, StackView.Immediate);
+                    }
+
+                    // perform the jump
+                    if (jumpModel.get(x).loaderSource === "ThemedMenu.qml")
+                    {
+                        menuLoader.source = settings.menuPath + jumpModel.get(x).menuSource;
+                        stack.push({item: mythUtils.findThemeFile("Screens/ThemedMenu.qml"), properties:{model: menuLoader.item}});
+                    }
+                    else if (jumpModel.get(x).loaderSource === "WebBrowser.qml")
+                    {
+                        var url = jumpModel.get(x).url
+                        var zoom = xscale(jumpModel.get(x).zoom)
+                        var fullscreen = jumpModel.get(x).fullscreen
+                        stack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: url, fullscreen: fullscreen, zoomFactor: zoom}});
+                    }
+                    else if (jumpModel.get(x).loaderSource === "InternalPlayer.qml")
+                    {
+                        var layout = jumpModel.get(x).layout
+                        var feedSource = jumpModel.get(x).feedSource
+                        stack.push({item: mythUtils.findThemeFile("Screens/InternalPlayer.qml"), properties:{layout: layout, defaultFeedSource: feedSource, defaultCurrentFeed: 0}});
+                    }
+                    else if (jumpModel.get(x).loaderSource === "External Program")
+                    {
+                        var dialogMessage = jumpModel.get(x).menutext + " will start shortly.\nPlease Wait.....";
+                        var timeOut = 10000;
+                        showBusyDialog(dialogMessage, timeOut);
+                        var command = jumpModel.get(x).exec
+                        externalProcess.start(command, []);
+                    }
+                    else
+                    {
+                        stack.push({item: mythUtils.findThemeFile("Screens/" + jumpModel.get(x).loaderSource)})
+                    }
+
+                    return;
+                }
+            }
+        }
+
+        // if we get here we didn't find the jump point
+        log.debug(Verbose.GENERAL, "handleJumpTo: jump point was not found");
+    }
+
+    function handleKeypress(message)
+    {
+        message = message.replace('Key Press: ', '');
+        message = message.toLowerCase();
+        log.debug(Verbose.GENERAL, "Looking for keypress: " + message);
+
+        if (message === "back" || message === "escape")
+            mythUtils.sendKeyEvent(window, Qt.Key_Escape);
+        else if (message === "up")
+            mythUtils.sendKeyEvent(window, Qt.Key_Up);
+        else if (message === "down")
+            mythUtils.sendKeyEvent(window, Qt.Key_Down);
+        else if (message === "left")
+            mythUtils.sendKeyEvent(window, Qt.Key_Left);
+        else if (message === "right")
+            mythUtils.sendKeyEvent(window, Qt.Key_Right);
+        else if (message === "page up")
+            mythUtils.sendKeyEvent(window, Qt.Key_PageUp);
+        else if (message === "page down")
+            mythUtils.sendKeyEvent(window, Qt.Key_PageDown);
+        else if (message === "red")
+            mythUtils.sendKeyEvent(window, Qt.Key_F1);
+        else if (message === "green")
+            mythUtils.sendKeyEvent(window, Qt.Key_F2);
+        else if (message === "yellow")
+            mythUtils.sendKeyEvent(window, Qt.Key_F3);
+        else if (message === "blue")
+            mythUtils.sendKeyEvent(window, Qt.Key_F4);
+        else if (message ==="ok" || message === "select" || message === "return")
+            mythUtils.sendKeyEvent(window, Qt.Key_Return);
+
+
+    }
+
+    function handleSearch(message)
+    {
+        log.debug(Verbose.GENERAL, "handleSearch: " + message);
+
+        for (var x = stack.depth - 1; x >= 0 ; x--)
+        {
+            var screen = stack.get(x, StackView.DontLoad);
+
+            if (screen)
+            {
+                if (screen.handleSearch(message))
+                    break;
+            }
+        }
+    }
+
+    function handleCommand(message)
+    {
+        log.debug(Verbose.GENERAL, "handleCommand: " + message);
+
+        for (var x = stack.depth - 1; x >= 0 ; x--)
+        {
+            var screen = stack.get(x, StackView.DontLoad);
+
+            if (screen)
+            {
+                if (screen.handleCommand(message))
+                    break;
+            }
         }
     }
 }
