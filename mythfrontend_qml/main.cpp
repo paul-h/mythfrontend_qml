@@ -68,6 +68,13 @@ int main(int argc, char *argv[])
                                      QCoreApplication::translate("main", "verbose"));
     parser.addOption(verboseOption);
 
+    // add jump option
+    QCommandLineOption jumpOption(QStringList() << "j" << "jumpto",
+                                     QCoreApplication::translate("main", "Jump to a screen on startup. Useful for testing to quickly jump to a screen. "
+                                                                         "The name of th jump must match ones from JumpModel"),
+                                     QCoreApplication::translate("main", "verbose"));
+    parser.addOption(jumpOption);
+
     // Process the command line arguments given by the user
     parser.process(*app);
 
@@ -128,6 +135,10 @@ int main(int argc, char *argv[])
     SqlQueryModel *dbChannelsModel = new SqlQueryModel(gContext->m_engine);
     dbChannelsModel->setQuery("SELECT chanid, channum, callsign, name, icon, xmltvid FROM channel ORDER BY cast(channum as unsigned);", gContext->m_mythDB);
     gContext->m_engine->rootContext()->setContextProperty("dbChannelsModel", dbChannelsModel);
+
+    // create the optional jumpto property
+    QString jumpto = parser.value(jumpOption);
+    gContext->m_engine->rootContext()->setContextProperty("jumpto", QString(jumpto));
 
     gContext->m_engine->clearComponentCache();
     gContext->m_engine->load(QUrl(QString(SHAREPATH) + "qml/main.qml"));
