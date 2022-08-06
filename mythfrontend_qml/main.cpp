@@ -18,6 +18,7 @@
 #include "recordingsmodel.h"
 #include "zmeventsmodel.h"
 #include "sqlquerymodel.h"
+#include "svgimage.h"
 
 // shared
 #include "context.h"
@@ -101,6 +102,9 @@ int main(int argc, char *argv[])
                                                             "Mysql settings are correct on the Myth Backend settings page");
         }
     }
+
+    // register our QML types
+    qmlRegisterType<SvgImage>("SvgImage", 1, 0, "SvgImage");
 
     // these are frontend only
 
