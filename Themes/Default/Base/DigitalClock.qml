@@ -5,6 +5,8 @@ Item
     id: clock
     property string format: "ddd MMMM d yyyy , hh:mm ap"
     property alias horizontalAlignment: time.horizontalAlignment
+    property alias timeText: time
+
     width: 200
     height: 40
 
