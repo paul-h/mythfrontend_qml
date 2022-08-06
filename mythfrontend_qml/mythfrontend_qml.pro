@@ -22,7 +22,7 @@ packagesExist(libVLCQtQml) {
 # for MDK SDK
 INCLUDEPATH += ../mdk-sdk/
 
-QT += qml quick sql xml webengine
+QT += qml quick sql xml webengine svg
 CONFIG += c++11
 
 TEMPLATE = app
@@ -44,9 +44,9 @@ QMAKE_CLEAN += $(TARGET)
 # Input
 HEADERS += sqlquerymodel.h databaseutils.h urlinterceptor.h settings.h mythutils.h process.h downloadmanager.h
 HEADERS += mythincrementalmodel.h recordingsmodel.h zmeventsmodel.h eventlistener.h context.h logger.h
-HEADERS += mdkapi.h mdkplayer.h
+HEADERS += mdkapi.h mdkplayer.h svgimage.h
 
 SOURCES += main.cpp
 SOURCES += sqlquerymodel.cpp databaseutils.cpp urlinterceptor.cpp settings.cpp mythutils.cpp downloadmanager.cpp
 SOURCES += mythincrementalmodel.cpp recordingsmodel.cpp zmeventsmodel.cpp context.cpp logger.cpp
-SOURCES += mdkapi.cpp mdkplayer.cpp
+SOURCES += mdkapi.cpp mdkplayer.cpp svgimage.cpp
