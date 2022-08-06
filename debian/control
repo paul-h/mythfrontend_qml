@@ -14,6 +14,7 @@ Build-Depends:  debhelper (>= 9),
                 qtscript5-dev,
                 qtdeclarative5-dev,
                 qtwebengine5-dev,
+                libqt5svg5-dev,
                 dh-python | python-central,
                 libvlccore-dev,
                 libvlc-dev,
@@ -42,7 +43,8 @@ Depends: python3,
          vlc,
          libqt5sql5-mysql,
          libqt5sql5-sqlite,
-         libqt5xml5
+         libqt5xml5,
+         libqt5svg5
 Description: Personal video recorder application (QML client)
  NOTE: THIS SOFTWARE IS STILL IN ALPHA PRODUCTION AND IS NOT FULLY FUNCTIONAL.
  .
