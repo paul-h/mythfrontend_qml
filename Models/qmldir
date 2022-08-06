@@ -6,6 +6,7 @@ ChannelsModel 1.0 ChannelsModel.qml
 EncodersModel 1.0 EncodersModel.qml
 JSONListModel 1.0 JSONListModel.qml
 jsonpath 1.0 jsonpath.js
+JumpModel 1.0 JumpModel.qml
 MusicTracksModel 1.0 MusicTracksModel.qml
 MythMetadataXMLModel 1.0 MythMetadataXMLModel.qml
 PlayerSourcesModel 1.0 PlayerSourcesModel.qml
