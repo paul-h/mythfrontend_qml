@@ -5,7 +5,7 @@
 class SvgImage : public QQuickPaintedItem {
     Q_OBJECT
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
-    QML_ELEMENT
+    //QML_ELEMENT
 
    public:
     explicit SvgImage(QQuickItem* parent = 0);
