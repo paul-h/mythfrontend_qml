@@ -45,8 +45,15 @@ const QString &SvgImage::source()
 
 void SvgImage::setSource(const QString &source)
 {
-    m_source = source;
-    m_renderer = new QSvgRenderer(source, this);
-    emit sourceChanged(source);
+    QString src = source;
+
+    // remove file:// schema if present
+    if (src.startsWith("file://"))
+        src = src.remove("file://");
+
+    m_source = src;
+    m_renderer = new QSvgRenderer(src, this);
+    m_renderer->setViewBox(QRect(0, 0 ,width(), height()));
+    emit sourceChanged(src);
     m_timer->start(m_refreshRate);
 }
