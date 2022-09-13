@@ -71,4 +71,84 @@ XmlListModel
 
         http.send();
     }
+
+    function getPlaylistsForChannel(channelId, callback)
+    {
+        var key = settings.youtubeAPIKey;
+        var part = "snippet%2CcontentDetails";
+        var maxResults = 50;
+
+        var http = new XMLHttpRequest();
+        var url = "https://youtube.googleapis.com/youtube/v3/playlists"
+        var params = "?part=" + part + "&channelId=" + channelId + "&maxResults=" + maxResults + "&key=" + key;
+
+        http.open("GET", url + params, true);
+
+        // Send the proper header information along with the request
+        http.setRequestHeader("Accept", "application/xml");
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        http.setRequestHeader("Content-length", params.length);
+
+        http.onreadystatechange = function()
+        {
+            if (http.readyState == 4)
+            {
+                if (http.status == 200)
+                {
+                    console.log(http.responseText);
+                    if (typeof callback === "function")
+                    {
+                        callback.apply(http);
+                    }
+                }
+                else
+                {
+                    console.log("getPlaylistsForChannel: " + http.status + "\n" + http.responseText);
+                    return;
+                }
+            }
+        }
+
+        http.send();
+    }
+
+    function getPlaylistItemsForPlaylist(playlistId, callback)
+    {
+        var key = settings.youtubeAPIKey;
+        var part = "snippet%2CcontentDetails"
+        var maxResults = 50;
+
+        var http = new XMLHttpRequest();
+        var url = "https://youtube.googleapis.com/youtube/v3/playlistItems"
+        var params = "?part=" + part + "&playlistId=" + playlistId + "&maxResults=" + maxResults + "&key=" + key;
+
+        http.open("GET", url + params, true);
+
+        // Send the proper header information along with the request
+        http.setRequestHeader("Accept", "application/xml");
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        http.setRequestHeader("Content-length", params.length);
+
+        http.onreadystatechange = function()
+        {
+            if (http.readyState == 4)
+            {
+                if (http.status == 200)
+                {
+                    console.log(http.responseText);
+                    if (typeof callback === "function")
+                    {
+                        callback.apply(http);
+                    }
+                }
+                else
+                {
+                    console.log("getPlaylistItemsForPlaylist: " + http.status + "\n" + http.responseText);
+                    return;
+                }
+            }
+        }
+
+        http.send();
+    }
 }
