@@ -26,6 +26,12 @@ ListModel
     }
     ListElement
     {
+        menutext: "Virgin Tivo Settings"
+        loaderSource:"settings/TivoSettingsEditor.qml"
+        waterMark: "watermark/keys.png"
+    }
+    ListElement
+    {
         menutext: "Shutdown Settings"
         loaderSource: "settings/ShutdownSettingsEditor.qml"
         waterMark: "watermark/keys.png"
