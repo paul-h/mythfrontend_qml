@@ -28,6 +28,11 @@ ListModel
     }
     ListElement
     {
+        jumpText: "YouTube Subscriptions|YouTube Subs"
+        loaderSource: "YouTubeFeeds.qml"
+    }
+    ListElement
+    {
         jumpText: "WebCam Viewer|Webcams"
         loaderSource:"WebCamViewer.qml"
     }
@@ -35,7 +40,11 @@ ListModel
     {
         jumpText: "Web Video Viewer|Web Videos"
         loaderSource:"WebVideoViewer.qml"
-        waterMark: "watermark/video.png"
+    }
+    ListElement
+    {
+        jumpText: "IPTV|IPTV Channel Viewer"
+        loaderSource:"IPTVViewer.qml"
     }
 
     // Music
