@@ -74,6 +74,11 @@ function timeOff(timeto)
     return e
 }
 
+function addSeconds(date, seconds)
+{
+    return new Date(date.getTime() + (seconds * 1000));
+}
+
 function addDays(date, days)
 {
   var result = new Date(date);
