@@ -86,6 +86,11 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
 
     // auto start
     setAutoStartFrontend(gContext->m_databaseUtils->getSetting("AutoStartFrontend", hostName));
+
+    // tivo
+    setTivoIP(gContext->m_databaseUtils->getSetting("TivoIP", hostName));
+    setTivoControlPort(gContext->m_databaseUtils->getSetting("TivoControlPort", hostName));
+    setTivoVideoURL(gContext->m_databaseUtils->getSetting("TivoVideoURL", hostName));
 }
 
 void Settings::setDefaultSettings(const QString &hostName)
@@ -209,6 +214,13 @@ void Settings::setDefaultSettings(const QString &hostName)
     {
         setAutoStartFrontend("QML_Frontend");
         gContext->m_databaseUtils->setSetting("AutoStartFrontend", hostName, "QML_Frontend");
+    }
+
+    // tivo
+    if (gContext->m_databaseUtils->getSetting("TivoControlPort", hostName) == "")
+    {
+        setTivoControlPort("31339");
+        gContext->m_databaseUtils->setSetting("TivoControlPort", hostName, "31339");
     }
 }
 
@@ -662,5 +674,38 @@ void Settings::setAutoStartFrontend(const QString &autoStartFrontend)
 {
     m_autoStartFrontend = autoStartFrontend;
     emit autoStartFrontendChanged();
+}
+
+QString Settings::tivoIP(void)
+{
+    return m_tivoIP;
+}
+
+void Settings::setTivoIP(const QString &tivoIP)
+{
+    m_tivoIP = tivoIP;
+    emit tivoIPChanged();
+}
+
+QString Settings::tivoControlPort(void)
+{
+    return m_tivoControlPort;
+}
+
+void Settings::setTivoControlPort(const QString &tivoControlPort)
+{
+    m_tivoControlPort = tivoControlPort;
+    emit tivoControlPortChanged();
+}
+
+QString Settings::tivoVideoURL(void)
+{
+    return m_tivoVideoURL;
+}
+
+void Settings::setTivoVideoURL(const QString &tivoVideoURL)
+{
+    m_tivoVideoURL = tivoVideoURL;
+    emit tivoVideoURLChanged();
 }
 

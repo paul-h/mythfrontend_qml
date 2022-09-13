@@ -67,6 +67,11 @@ class Settings : public QObject
     // auto start
     Q_PROPERTY(QString autoStartFrontend READ autoStartFrontend WRITE setAutoStartFrontend NOTIFY autoStartFrontendChanged)
 
+    // tivo
+    Q_PROPERTY(QString tivoIP READ tivoIP WRITE setTivoIP NOTIFY tivoIPChanged)
+    Q_PROPERTY(QString tivoControlPort READ tivoControlPort WRITE setTivoControlPort NOTIFY tivoControlPortChanged)
+    Q_PROPERTY(QString tivoVideoURL READ tivoVideoURL WRITE setTivoVideoURL NOTIFY tivoVideoURLChanged)
+
    signals:
      void mysqlIPChanged(void);
      void mysqlPortChanged(void);
@@ -109,6 +114,9 @@ class Settings : public QObject
      void shutdownCommandChanged(void);
      void suspendCommandChanged(void);
      void autoStartFrontendChanged(void);
+     void tivoIPChanged(void);
+     void tivoControlPortChanged(void);
+     void tivoVideoURLChanged(void);
 
   public:
     Settings(const QString &hostName, const QString &theme);
@@ -239,6 +247,15 @@ class Settings : public QObject
     QString autoStartFrontend(void);
     void    setAutoStartFrontend(const QString &autoStartFrontend);
 
+    QString tivoIP(void);
+    void    setTivoIP(const QString &tivoIP);
+
+    QString tivoControlPort(void);
+    void    setTivoControlPort(const QString &tivoControlPort);
+
+    QString tivoVideoURL(void);
+    void    setTivoVideoURL(const QString &tivoVideoURL);
+
   private:
     // Mysql Database
     QString m_mysqlIP;
@@ -291,4 +308,8 @@ class Settings : public QObject
     QString m_suspendCommand;
 
     QString m_autoStartFrontend;
+
+    QString m_tivoIP;
+    QString m_tivoControlPort;
+    QString m_tivoVideoURL;
 };
