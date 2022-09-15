@@ -91,6 +91,10 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     setTivoIP(gContext->m_databaseUtils->getSetting("TivoIP", hostName));
     setTivoControlPort(gContext->m_databaseUtils->getSetting("TivoControlPort", hostName));
     setTivoVideoURL(gContext->m_databaseUtils->getSetting("TivoVideoURL", hostName));
+
+    //schedules direct
+    setSDUserName(gContext->m_databaseUtils->getSetting("SdUserName", hostName));
+    setSDPassword(gContext->m_databaseUtils->getSetting("SdPassword", hostName));
 }
 
 void Settings::setDefaultSettings(const QString &hostName)
@@ -709,3 +713,23 @@ void Settings::setTivoVideoURL(const QString &tivoVideoURL)
     emit tivoVideoURLChanged();
 }
 
+QString Settings::sdUserName(void)
+{
+    return m_sdUserName;
+}
+
+void Settings::setSDUserName(const QString &sdUserName)
+{
+    m_sdUserName = sdUserName;
+    emit sdUserNameChanged();
+}
+
+QString Settings::sdPassword(void)
+{
+    return m_sdPassword;
+}
+void Settings::setSDPassword(const QString &sdPassword)
+{
+    m_sdPassword = sdPassword;
+    emit sdPasswordChanged();
+}

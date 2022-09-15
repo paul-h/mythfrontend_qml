@@ -32,6 +32,12 @@ ListModel
     }
     ListElement
     {
+        menutext: "Schedules Direct Settings"
+        loaderSource:"settings/SDSettingsEditor.qml"
+        waterMark: "watermark/keys.png"
+    }
+    ListElement
+    {
         menutext: "Shutdown Settings"
         loaderSource: "settings/ShutdownSettingsEditor.qml"
         waterMark: "watermark/keys.png"
