@@ -22,6 +22,13 @@ ListModel
     }
     ListElement
     {
+        menutext: "Watch TiVo"
+        loaderSource: "TivoTVChannelViewer.qml"
+        waterMark: "watermark/tivo.svg"
+        feedSource: "Live TV"
+    }
+    ListElement
+    {
         menutext: "IPTV"
         loaderSource:"IPTVViewer.qml"
         waterMark: "watermark/stream.png"

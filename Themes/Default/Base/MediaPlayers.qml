@@ -22,7 +22,7 @@ FocusScope
     property int streamlinkPort: Util.randomIntFromRange(4000, 65536)
     property string commandlog
 
-    // one of Internal, VLC, MDK, QtAV, WebBrowser, YouTube, YouTubeTV, RailCam, StreamLink, StreamBuffer
+    // one of Internal, VLC, MDK, QtAV, WebBrowser, YouTube, YouTubeTV, RailCam, StreamLink, StreamBuffer, Tivo
     property string player: ""
 
     property bool showBorder: true
@@ -352,6 +352,21 @@ FocusScope
     {
         id: mdkPlayer
 
+        visible: false
+        enabled: visible
+        anchors.fill: parent
+        anchors.margins: playerBorder.border.width
+
+        //fillMode: VideoOutput.Stretch
+
+        onShowMessage: root.showMessage(message, timeOut)
+        onMediaStatusChanged: root.mediaStatusChanged(mediaStatus)
+        onPlaybackStatusChanged: root.playbackStatusChanged(playbackStatus)
+    }
+
+    VideoPlayerTivo
+    {
+        id: tivoPlayer
         visible: false
         enabled: visible
         anchors.fill: parent
@@ -1303,6 +1318,8 @@ FocusScope
             return "QTAV";
         else if (mdkPlayer.visible === true)
             return "MDK";
+        else if (tivoPlayer.visible === true)
+            return "TIVO";
         else
             return "NONE";
     }
@@ -1319,6 +1336,8 @@ FocusScope
             return qtAVPlayer;
         else if (mdkPlayer.visible === true)
             return mdkPlayer;
+        else if (tivoPlayer.visible === true)
+            return mdkPlayer;
         else
             return undefined;
     }
@@ -1334,6 +1353,7 @@ FocusScope
         qtAVPlayer.stop();
         webPlayer.url = "about:blank";
         mdkPlayer.stop();
+        tivoPlayer.stop();
         activeFeedChanged();
         showMessage("", 0);
 
@@ -1345,6 +1365,7 @@ FocusScope
             vlcPlayer.visible = false;
             qtAVPlayer.visible = false;
             mdkPlayer.visible = false;
+            tivoPlayer.visible = false;
 
             commandlog = "";
 
@@ -1403,6 +1424,7 @@ FocusScope
             vlcPlayer.visible = true;
             qtAVPlayer.visible = false;
             mdkPlayer.visible = false;
+            tivoPlayer.visible = false;
         }
         else if (newPlayer === "FFMPEG" || newPlayer === "QtAV")
         {
@@ -1411,6 +1433,7 @@ FocusScope
             vlcPlayer.visible = false;
             qtAVPlayer.visible = true;
             mdkPlayer.visible = false;
+            tivoPlayer.visible = false;
         }
         else if (newPlayer === "MDK")
         {
@@ -1419,6 +1442,16 @@ FocusScope
             vlcPlayer.visible = false;
             qtAVPlayer.visible = false;
             mdkPlayer.visible = true;
+            tivoPlayer.visible = false;
+        }
+        else if (newPlayer === "TIVO")
+        {
+            youtubePlayer.visible = false;
+            webPlayer.visible = false;
+            vlcPlayer.visible = false;
+            qtAVPlayer.visible = false;
+            mdkPlayer.visible = false;
+            tivoPlayer.visible = true;
         }
         else if (newPlayer === "WebBrowser" || newPlayer === "RailCam")
         {
@@ -1427,6 +1460,7 @@ FocusScope
             vlcPlayer.visible = false;
             qtAVPlayer.visible = false;
             mdkPlayer.visible = false;
+            tivoPlayer.visible = false;
         }
         else if (newPlayer === "YouTube")
         {
@@ -1436,6 +1470,7 @@ FocusScope
             vlcPlayer.visible = false;
             qtAVPlayer.visible = false;
             mdkPlayer.visible = false;
+            tivoPlayer.visible = false;
         }
         else if (newPlayer === "YouTubeTV")
         {
@@ -1445,6 +1480,7 @@ FocusScope
             vlcPlayer.visible = false;
             qtAVPlayer.visible = false;
             mdkPlayer.visible = false;
+            tivoPlayer.visible = false;
         }
         else
         {
@@ -1512,6 +1548,11 @@ FocusScope
         else if (root.player === "MDK")
         {
             mdkPlayer.source = newURL;
+        }
+        else if (root.player === "TIVO")
+        {
+            //tivoPlayer.source = newURL;
+            tivoPlayer.changeChannel(newURL);
         }
         else
         {

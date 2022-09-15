@@ -16,6 +16,10 @@ Item
     property alias filters: feedProxyModel.filters
     property alias sorters: feedProxyModel.sorters
 
+    // shared
+    property string category: ""
+    property string sort: "title"
+
     // Live TV
     property alias sourceId: channelsModel.sourceId
     property alias channelGroupId: channelsModel.channelGroupId
@@ -23,8 +27,6 @@ Item
     // Webcams/WebVideos
     property int webcamListIndex: 0
     property int webvideoListIndex: 0
-    property string category: ""
-    property string sort: "title"
     property string  webcamFilterFavorite: "Any"
     property string  webvideoFilterFavorite: "Any"
 
@@ -32,6 +34,9 @@ Item
     property string country: ""
     property string language: ""
     property string genre: ""
+
+    // Tivo TV
+    property string definition: "";
 
     // private
     property bool _switchingFeed: false
@@ -44,6 +49,7 @@ Item
     onGenreChanged: iptvGenre.pattern = genre
     onCountryChanged: iptvCountry.pattern = country
     onLanguageChanged: iptvLanguage.pattern = language
+    onDefinitionChanged: tivoDefinition.pattern = definition
 
     onWebcamListIndexChanged:
     {
@@ -78,6 +84,8 @@ Item
                 filter = ""
             else if (feedName === "IPTV")
                 filter = sort + "," + genre + "," + country + "," + language;
+            else if (feedName === "Tivo TV")
+                filter = category + "," + definition + "," + sort;
             else
                 log.error(Verbose.PLAYBACK, "FeedSource: onSortChanged Error - unknown feed: " + feedName);
 
@@ -261,11 +269,34 @@ Item
         }
     ]
 
+    property list<QtObject> tivoFilter:
+    [
+        AllOf
+        {
+            RegExpFilter
+            {
+                id: tivoCategory
+                roleName: "Category"
+                pattern: ""
+                caseSensitivity: Qt.CaseInsensitive
+            }
+            RegExpFilter
+            {
+                id: tivoDefinition
+                roleName: "Definition"
+                pattern: ""
+                caseSensitivity: Qt.CaseInsensitive
+            }
+        }
+    ]
     property list<QtObject> chanNumSorter:
     [
         RoleSorter { roleName: "ChanNum"; ascendingOrder: true}
     ]
-
+    property list<QtObject> chanNoSorter:
+    [
+        RoleSorter { roleName: "ChanNo"; ascendingOrder: true}
+    ]
     property list<QtObject> nameSorter:
     [
         RoleSorter { roleName: "Name"; ascendingOrder: true}
@@ -339,6 +370,8 @@ Item
             switchToAdventCalendar(filter, currFeed);
         else if (feed === "IPTV")
             switchToIPTV(filter, currFeed);
+        else if (feed === "Tivo TV")
+            switchToTivoTV(filter, currFeed);
         else
             log.error(Verbose.PLAYBACK, "FeedSource: switchToFeed Error - unknown feed: " + feed);
 
@@ -582,6 +615,41 @@ Item
 
             feedList.sourceModel = playerSources.adhocList;
             handleModelStatusChange(XmlListModel.Ready);
+        }
+    }
+
+    function switchToTivoTV(filterList, currFeed)
+    {
+        feedName = "Tivo TV";
+        currentFeed = currFeed;
+        currentFilter = filterList;
+
+        var list = filterList.split(",");
+
+        if (list.length === 3)
+        {
+            tivoCategory.pattern = list[0];
+            tivoDefinition.pattern = list[1];
+            sort = list[2];
+        }
+
+        filters = tivoFilter;
+
+        if (sort === "Name")
+            sorters = nameSorter;
+        else if (sort === "ChanNo")
+            sorters = chanNoSorter;
+        else
+            sorters = chanNoSorter;
+
+        if (feedList.sourceModel !== playerSources.tivoChannelList.model)
+        {
+            if (feedList.sourceModel)
+                feedList.sourceModel.loadingStatus.disconnect(handleModelStatusChange);
+
+            feedList.sourceModel = playerSources.tivoChannelList.model;
+            handleModelStatusChange(XmlListModel.Ready);
+            //playerSources.tivoChannelList.loadingStatus.connect(handleModelStatusChange);
         }
     }
 

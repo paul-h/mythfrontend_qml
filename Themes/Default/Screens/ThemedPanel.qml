@@ -96,25 +96,6 @@ BaseScreen
         }
     }
 
-    InternalPlayer
-    {
-        id: internalPlayer
-        objectName: "panelplayer"
-
-        x: 0
-        y: yscale(300)
-        z: 100
-        width: panel1.width - xscale(3)
-        height: width / 1.77777777
-
-        previousFocusItem: buttonList
-
-        Behavior on x { NumberAnimation { easing.type: Easing.InOutQuad; duration: 1000 }}
-        Behavior on y { NumberAnimation { easing.type: Easing.InOutQuad; duration: 1000 }}
-        Behavior on width { NumberAnimation { easing.type: Easing.InOutQuad; duration: 1000 }}
-        Behavior on height { NumberAnimation { easing.type: Easing.InOutQuad; duration: 1000 }}
-    }
-
     Rectangle
     {
         id: playerBorder
@@ -462,6 +443,25 @@ BaseScreen
                 }
             }
         }
+    }
+
+    InternalPlayer
+    {
+        id: internalPlayer
+        objectName: "panelplayer"
+
+        x: 0
+        y: yscale(300)
+        z: 100
+        width: panel1.width - xscale(3)
+        height: width / 1.77777777
+
+        previousFocusItem: buttonList
+
+        Behavior on x { NumberAnimation { easing.type: Easing.InOutQuad; duration: 1000 }}
+        Behavior on y { NumberAnimation { easing.type: Easing.InOutQuad; duration: 1000 }}
+        Behavior on width { NumberAnimation { easing.type: Easing.InOutQuad; duration: 1000 }}
+        Behavior on height { NumberAnimation { easing.type: Easing.InOutQuad; duration: 1000 }}
     }
 
     // from InernalPlayer feedChanged signal
