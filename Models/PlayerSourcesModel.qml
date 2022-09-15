@@ -14,6 +14,7 @@ Item
     property var zmCameraList: zmMonitorsModel
     property var iptvList: iptvModel.model
     property var adhocList: undefined
+    property var tivoChannelList: tivoChannelsModel
 
     // live tv
     property var videoSourceList: videoSourceModel
@@ -190,7 +191,18 @@ Item
         id: videosModel
     }
 
+    /* ------------------------------------------------ Tivo TV -----------------------------------------------------------*/
+    SDJsonModel
+    {
+        id: sdJsonModel
+    }
 
+    TivoChannelsModel
+    {
+        id: tivoChannelsModel
+    }
+
+    /* -----------------------------------------------------------------------------------------------------------------*/
     function findEncoder(sourceId)
     {
         for (var x = 0; x < encodersModel.count; x++)
@@ -213,7 +225,6 @@ Item
         return -1;
     }
 
-    /* -----------------------------------------------------------------------------------------------------------------*/
     function getFeedList(feedSource)
     {
         if (feedSource === "Live TV")
@@ -228,6 +239,8 @@ Item
             return recordingList;
         else if (feedSource === "ZoneMinder Cameras")
             return zmCameraList;
+        else if (feedSource === "Tivo TV")
+            return tivoChannelList;
 
         return channelList;
     }
