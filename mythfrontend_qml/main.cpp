@@ -19,6 +19,7 @@
 #include "zmeventsmodel.h"
 #include "sqlquerymodel.h"
 #include "svgimage.h"
+#include "telnet.h"
 
 // shared
 #include "context.h"
@@ -109,6 +110,8 @@ int main(int argc, char *argv[])
     // these are frontend only
 
     // recordings model
+    qmlRegisterType<Telnet>("Telnet", 1, 0, "Telnet");
+
     qmlRegisterType<RecordingsModel>("RecordingsModel", 1, 0, "RecordingsModel");
 
     //ZoneMinder Events model
