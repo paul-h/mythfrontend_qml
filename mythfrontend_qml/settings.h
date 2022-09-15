@@ -72,6 +72,10 @@ class Settings : public QObject
     Q_PROPERTY(QString tivoControlPort READ tivoControlPort WRITE setTivoControlPort NOTIFY tivoControlPortChanged)
     Q_PROPERTY(QString tivoVideoURL READ tivoVideoURL WRITE setTivoVideoURL NOTIFY tivoVideoURLChanged)
 
+    // schedules direct
+    Q_PROPERTY(QString sdUserName READ sdUserName WRITE setSDUserName NOTIFY sdUserNameChanged)
+    Q_PROPERTY(QString sdPassword READ sdPassword WRITE setSDPassword NOTIFY sdPasswordChanged)
+
    signals:
      void mysqlIPChanged(void);
      void mysqlPortChanged(void);
@@ -117,6 +121,8 @@ class Settings : public QObject
      void tivoIPChanged(void);
      void tivoControlPortChanged(void);
      void tivoVideoURLChanged(void);
+     void sdUserNameChanged(void);
+     void sdPasswordChanged(void);
 
   public:
     Settings(const QString &hostName, const QString &theme);
@@ -256,6 +262,12 @@ class Settings : public QObject
     QString tivoVideoURL(void);
     void    setTivoVideoURL(const QString &tivoVideoURL);
 
+    QString sdUserName(void);
+    void    setSDUserName(const QString &sdUserName);
+
+    QString sdPassword(void);
+    void    setSDPassword(const QString &sdPassword);
+
   private:
     // Mysql Database
     QString m_mysqlIP;
@@ -312,4 +324,7 @@ class Settings : public QObject
     QString m_tivoIP;
     QString m_tivoControlPort;
     QString m_tivoVideoURL;
+
+    QString m_sdUserName;
+    QString m_sdPassword;
 };
