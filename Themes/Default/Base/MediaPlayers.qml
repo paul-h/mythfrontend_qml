@@ -24,6 +24,7 @@ FocusScope
 
     // one of Internal, VLC, MDK, QtAV, WebBrowser, YouTube, YouTubeTV, RailCam, StreamLink, StreamBuffer, Tivo
     property string player: ""
+    property var videoPlayer: undefined
 
     property bool showBorder: true
     property bool muteAudio: false
@@ -41,6 +42,12 @@ FocusScope
 
     signal playbackEnded()
     signal activeFeedChanged()
+
+    Component.onDestruction:
+    {
+        if (videoPlayer !== undefined)
+            videoPlayer.destroy();
+    }
 
     enum MediaStatus
     {
@@ -167,7 +174,7 @@ FocusScope
                 else if (commandlog.includes("Starting server, access with one of:"))
                 {
                     checkProcessTimer.stop();
-                    qtAVPlayer.visible = true;
+                    videoPlayer.visible = true;
                     switchURL("http://127.0.1.1:" + streamlinkPort + "/");
                 }
             }
@@ -184,7 +191,7 @@ FocusScope
                 else if (commandlog.includes("Press [q] to stop, [?] for help"))
                 {
                     checkProcessTimer.stop();
-                    qtAVPlayer.visible = true;
+                    videoPlayer.visible = true;
                     delay(5000, root.playStream);
                 }
             }
@@ -228,155 +235,6 @@ FocusScope
         httpCacheType: WebEngineProfile.DiskHttpCache
         persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
         //httpUserAgent: "Mozilla/5.0 (SMART-TV; Linux; Tizen 5.0) AppleWebKit/538.1 (KHTML, like Gecko) Version/5.0 NativeTVAds Safari/538.1"
-    }
-
-    WebEngineView
-    {
-        id: webPlayer
-        visible: false
-        enabled: visible
-        anchors.fill: parent
-        anchors.margins: playerBorder.border.width
-        settings.pluginsEnabled: true
-        settings.javascriptEnabled: true
-        settings.javascriptCanOpenWindows: true
-        audioMuted: false;
-
-        Component.onCompleted: settings.playbackRequiresUserGesture = false;
-
-        onNewViewRequested:
-        {
-            var website = request.requestedUrl.toString();
-            var zoom = zoomFactor;
-            if (isPanel)
-                panelStack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: website, zoomFactor: zoom}});
-            else
-                stack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: website, zoomFactor: zoom}});
-        }
-        onFullScreenRequested: request.accept();
-        onNavigationRequested: request.action = WebEngineNavigationRequest.AcceptRequest;
-        profile: youtubeWebProfile
-
-        onLoadingChanged:
-        {
-            if (loadRequest.status === WebEngineLoadRequest.LoadSucceededStatus)
-            {
-                var feedurl = loadRequest.url.toString();
-
-                if (feedurl !== "")
-                {
-                    // hack to defeat Chrome's Web Audio autoplay policy
-                    if (feedurl.includes("railcam.co.uk"))
-                    {
-                        runJavaScript("document.getElementsByClassName(\"drawer-icon media-control-icon\")[0].click();");
-                    }
-                    else if (feedurl.includes("www.youtube.com/tv#/watch/video/control"))
-                    {
-                        // hack to make sure non embeddable Youtube videos start playing automatically in the TV player
-                        tabDelay.delay(1750, sendTab);
-                        returnDelay.delay(1900, sendReturn);
-                    }
-                }
-            }
-        }
-    }
-
-//    WebEngineView
-//    {
-//        id: browser
-//        x: 0
-//        y: 0
-//        width: 300;
-//        height: 720;
-//        z: 99
-//        zoomFactor: parent.width / xscale(1280)
-//        visible: false
-//        enabled: visible
-
-//        settings.pluginsEnabled: true
-
-//        profile:  WebEngineProfile
-//                  {
-//                      storageName: "YouTube"
-//                      offTheRecord: false
-//                      httpCacheType: WebEngineProfile.DiskHttpCache
-//                      persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
-//                      httpUserAgent: "Mozilla/5.0 (SMART-TV; Linux; Tizen 5.0) AppleWebKit/538.1 (KHTML, like Gecko) Version/5.0 NativeTVAds Safari/538.1"
-//                  }
-//    }
-
-    VideoPlayerYT
-    {
-        id: youtubePlayer
-        visible: false
-        enabled: visible
-        anchors.fill: parent
-        anchors.margins: playerBorder.border.width
-
-        onShowMessage: root.showMessage(message, timeOut)
-        onMediaStatusChanged: root.mediaStatusChanged(mediaStatus)
-        onPlaybackStatusChanged: root.playbackStatusChanged(playbackStatus)
-    }
-
-    VideoPlayerQmlVLC
-    {
-        id: vlcPlayer
-
-        visible: false
-        enabled: visible
-        anchors.fill: parent
-        anchors.margins: playerBorder.border.width
-
-        onShowMessage: root.showMessage(message, timeOut);
-        onMediaStatusChanged: root.mediaStatusChanged(mediaStatus)
-        onPlaybackStatusChanged: root.playbackStatusChanged(playbackStatus)
-    }
-
-    VideoPlayerQtAV
-    {
-        id: qtAVPlayer
-
-        visible: false
-        enabled: visible
-        anchors.fill: parent
-        anchors.margins: playerBorder.border.width
-
-        fillMode: VideoOutput.PreserveAspectFit
-
-        onShowMessage: root.showMessage(message, timeOut)
-        onMediaStatusChanged: root.mediaStatusChanged(mediaStatus)
-        onPlaybackStatusChanged: root.playbackStatusChanged(playbackStatus)
-    }
-
-    VideoPlayerMDK
-    {
-        id: mdkPlayer
-
-        visible: false
-        enabled: visible
-        anchors.fill: parent
-        anchors.margins: playerBorder.border.width
-
-        //fillMode: VideoOutput.Stretch
-
-        onShowMessage: root.showMessage(message, timeOut)
-        onMediaStatusChanged: root.mediaStatusChanged(mediaStatus)
-        onPlaybackStatusChanged: root.playbackStatusChanged(playbackStatus)
-    }
-
-    VideoPlayerTivo
-    {
-        id: tivoPlayer
-        visible: false
-        enabled: visible
-        anchors.fill: parent
-        anchors.margins: playerBorder.border.width
-
-        //fillMode: VideoOutput.Stretch
-
-        onShowMessage: root.showMessage(message, timeOut)
-        onMediaStatusChanged: root.mediaStatusChanged(mediaStatus)
-        onPlaybackStatusChanged: root.playbackStatusChanged(playbackStatus)
     }
 
     ListModel
@@ -915,16 +773,10 @@ FocusScope
             fontPixelSize: (_xscale(16) + _yscale(16)) / 2
             text:
             {
-                if (getActivePlayer() === "VLC")
-                    return "Position: " + Util.milliSecondsToString(vlcPlayer.getPosition()) + " / " + Util.milliSecondsToString(vlcPlayer.getDuration())
-                else if (getActivePlayer() === "QTAV")
-                    return "Position: " + Util.milliSecondsToString(qtAVPlayer.getPosition()) + " / " + Util.milliSecondsToString(qtAVPlayer.getDuration())
-                else if (getActivePlayer() === "YOUTUBE")
-                    return "Position: " + Util.milliSecondsToString(youtubePlayer.getPosition()) + " / " + Util.milliSecondsToString(youtubePlayer.getDuration())
-                else if (getActivePlayer() === "MDK")
-                    return "Position: " + Util.milliSecondsToString(mdkPlayer.getPosition()) + " / " + Util.milliSecondsToString(mdkPlayer.getDuration())
+                if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK")
+                    return "Position: " + Util.milliSecondsToString(videoPlayer.getPosition()) + " / " + Util.milliSecondsToString(videoPlayer.getDuration())
                 else
-                    return "Position: " + "N/A"
+                    return "Position: N/A"
             }
         }
 
@@ -938,16 +790,10 @@ FocusScope
             fontPixelSize: (_xscale(16) + _yscale(16)) / 2
             text:
             {
-                if (getActivePlayer() === "VLC")
-                    return Util.milliSecondsToString(vlcPlayer.getDuration() - vlcPlayer.getPosition())
-                else if (getActivePlayer() === "QTAV")
-                    return Util.milliSecondsToString(qtAVPlayer.getDuration() - qtAVPlayer.getPosition())
-                else if (getActivePlayer() === "YOUTUBE")
-                    return Util.milliSecondsToString(youtubePlayer.getDuration() - youtubePlayer.getPosition())
-                else if (getActivePlayer() === "MDK")
-                    return Util.milliSecondsToString(mdkPlayer.getDuration() - mdkPlayer.getPosition())
+                if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK")
+                    return Util.milliSecondsToString(videoPlayer.getDuration() - videoPlayer.getPosition())
                 else
-                    "Remaining :" + "N/A"
+                    "Remaining : N/A"
             }
 
             horizontalAlignment: Text.AlignRight
@@ -974,7 +820,7 @@ FocusScope
             width: _xscale(240)
             height: _yscale(50)
             fontPixelSize: (_xscale(16) + _yscale(16)) / 2
-            text: getActivePlayer();
+            text: player;
 
             horizontalAlignment: Text.AlignRight
         }
@@ -1045,14 +891,8 @@ FocusScope
                     {
                         var position = 1;
 
-                        if (getActivePlayer() === "VLC")
-                            position = vlcPlayer.getPosition() / vlcPlayer.getDuration();
-                        else if (getActivePlayer() === "QTAV")
-                            position = qtAVPlayer.getPosition() / qtAVPlayer.getDuration();
-                        else if (getActivePlayer() === "YOUTUBE")
-                            position = youtubePlayer.getPosition() / youtubePlayer.getDuration();
-                        else if (getActivePlayer() === "MDK")
-                            position = mdkPlayer.getPosition() / mdkPlayer.getDuration();
+                        if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK")
+                            position = videoPlayer.getPosition() / videoPlayer.getDuration();
 
                         return (parent.width - anchors.leftMargin - anchors.rightMargin) * position;
                     }
@@ -1306,66 +1146,27 @@ FocusScope
         }
     }
 
-    function getActivePlayer()
-    {
-        if (webPlayer.visible === true)
-            return "BROWSER";
-        else if (youtubePlayer.visible === true)
-            return "YOUTUBE";
-        else if (vlcPlayer.visible === true)
-            return "VLC";
-        else if (qtAVPlayer.visible === true)
-            return "QTAV";
-        else if (mdkPlayer.visible === true)
-            return "MDK";
-        else if (tivoPlayer.visible === true)
-            return "TIVO";
-        else
-            return "NONE";
-    }
-
-    function getActivePlayerItem()
-    {
-        if (webPlayer.visible === true)
-            return webPlayer;
-        else if (youtubePlayer.visible === true)
-            return youtubePlayer;
-        else if (vlcPlayer.visible === true)
-            return vlcPlayer;
-        else if (qtAVPlayer.visible === true)
-            return qtAVPlayer;
-        else if (mdkPlayer.visible === true)
-            return mdkPlayer;
-        else if (tivoPlayer.visible === true)
-            return mdkPlayer;
-        else
-            return undefined;
-    }
-
     function switchPlayer(newPlayer)
     {
         streamLinkProcess.stop();
         checkProcessTimer.running = false;
         streamLinkProcess.waitForFinished();
 
-        youtubePlayer.stop();
-        vlcPlayer.stop();
-        qtAVPlayer.stop();
-        webPlayer.url = "about:blank";
-        mdkPlayer.stop();
-        tivoPlayer.stop();
+        if (player === "WebBrowser" || player === "RailCam" || player === "YouTubeTV")
+            videoPlayer.url = "about:blank";
+        else
+        {
+            if (videoPlayer !== undefined)
+                videoPlayer.stop();
+        }
+
         activeFeedChanged();
         showMessage("", 0);
 
         // we always need to restart the StreamLink/StreamBuffer process even if it is already running
         if (newPlayer === "StreamLink" || newPlayer === "StreamBuffer")
         {
-            youtubePlayer.visible = false;
-            webPlayer.visible = false;
-            vlcPlayer.visible = false;
-            qtAVPlayer.visible = false;
-            mdkPlayer.visible = false;
-            tivoPlayer.visible = false;
+            videoPlayer.visible = false;
 
             commandlog = "";
 
@@ -1419,68 +1220,33 @@ FocusScope
 
         if (newPlayer === "VLC")
         {
-            youtubePlayer.visible = false;
-            webPlayer.visible = false;
-            vlcPlayer.visible = true;
-            qtAVPlayer.visible = false;
-            mdkPlayer.visible = false;
-            tivoPlayer.visible = false;
+            createVLCPlayer();
         }
         else if (newPlayer === "FFMPEG" || newPlayer === "QtAV")
         {
-            youtubePlayer.visible = false;
-            webPlayer.visible = false;
-            vlcPlayer.visible = false;
-            qtAVPlayer.visible = true;
-            mdkPlayer.visible = false;
-            tivoPlayer.visible = false;
+            createQtAVPlayer();
         }
         else if (newPlayer === "MDK")
         {
-            youtubePlayer.visible = false;
-            webPlayer.visible = false;
-            vlcPlayer.visible = false;
-            qtAVPlayer.visible = false;
-            mdkPlayer.visible = true;
-            tivoPlayer.visible = false;
+            createMDKPlayer();
         }
         else if (newPlayer === "TIVO")
         {
-            youtubePlayer.visible = false;
-            webPlayer.visible = false;
-            vlcPlayer.visible = false;
-            qtAVPlayer.visible = false;
-            mdkPlayer.visible = false;
-            tivoPlayer.visible = true;
+            createTivoPlayer();
         }
         else if (newPlayer === "WebBrowser" || newPlayer === "RailCam")
         {
-            youtubePlayer.visible = false;
-            webPlayer.visible = true;
-            vlcPlayer.visible = false;
-            qtAVPlayer.visible = false;
-            mdkPlayer.visible = false;
-            tivoPlayer.visible = false;
+            createWebPlayer();
         }
         else if (newPlayer === "YouTube")
         {
             // this uses the embedded YouTube player
-            youtubePlayer.visible = true;
-            webPlayer.visible = false;
-            vlcPlayer.visible = false;
-            qtAVPlayer.visible = false;
-            mdkPlayer.visible = false;
-            tivoPlayer.visible = false;
+            createYoutubePlayer();
         }
         else if (newPlayer === "YouTubeTV")
         {
             // this uses the YouTube TV web player
-            youtubePlayer.visible = false;
-            webPlayer.visible = true;
-            vlcPlayer.visible = false;
-            qtAVPlayer.visible = false;
-            mdkPlayer.visible = false;
-            tivoPlayer.visible = false;
+            createWebPlayer();
         }
         else
         {
@@ -1512,24 +1278,24 @@ FocusScope
 
         if (root.player === "VLC" || root.player === "Internal")
         {
-            vlcPlayer.source = newURL;
+            videoPlayer.source = newURL;
         }
         else if (root.player === "FFMPEG" || root.player === "QtAV")
         {
-            qtAVPlayer.stop();
-            qtAVPlayer.source = newURL;
+            videoPlayer.stop();
+            videoPlayer.source = newURL;
             // we have to fake a loading signal because QtAV does not send one
             mediaStatusChanged(MediaPlayers.MediaStatus.Loading);
         }
         else if (root.player === "WebBrowser" || root.player === "RailCam")
         {
-            webPlayer.profile = mythqmlWebProfile;
-            webPlayer.url = newURL;
+            videoPlayer.profile = mythqmlWebProfile;
+            videoPlayer.url = newURL;
         }
         else if (root.player === "YouTubeTV")
         {
-            webPlayer.profile = youtubeWebProfile;
-            webPlayer.url = newURL;
+            videoPlayer.profile = youtubeWebProfile;
+            videoPlayer.url = newURL;
         }
         else if (root.player === "YouTube")
         {
@@ -1538,21 +1304,21 @@ FocusScope
             if (pos > 0)
                     videoID = "'" + newURL.slice(pos + 1, pos + 12) + "'";
 
-            youtubePlayer.source = videoID;
+            videoPlayer.source = videoID;
         }
         else if (root.player === "StreamLink" || root.player === "StreamBuffer")
         {
-            qtAVPlayer.source = newURL;
-            qtAVPlayer.play();
+            videoPlayer.source = newURL;
+            videoPlayer.play();
         }
         else if (root.player === "MDK")
         {
-            mdkPlayer.source = newURL;
+            videoPlayer.source = newURL;
         }
         else if (root.player === "TIVO")
         {
             //tivoPlayer.source = newURL;
-            tivoPlayer.changeChannel(newURL);
+            videoPlayer.changeChannel(newURL);
         }
         else
         {
@@ -1590,15 +1356,9 @@ FocusScope
         }
         else
         {
-            if (getActivePlayer() === "VLC")
-                vlcPlayer.play();
-            else if (getActivePlayer() === "QTAV")
-                qtAVPlayer.play();
-            else if (getActivePlayer() === "YOUTUBE")
-                youtubePlayer.play();
-            else if (getActivePlayer() === "MDK")
-                mdkPlayer.play();
-            else if (getActivePlayer() === "BROWSER")
+            if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
+                videoPlayer.play();
+            else if (player === "BROWSER")
             {
                 // nothing to do
             }
@@ -1611,34 +1371,16 @@ FocusScope
         checkProcessTimer.running = false;
         streamLinkProcess.waitForFinished();
 
-        if (getActivePlayer() === "VLC")
-        {
-            vlcPlayer.stop();
-        }
-        else if (getActivePlayer() === "QTAV")
-        {
-            qtAVPlayer.stop();
-        }
-        else if (getActivePlayer() === "YOUTUBE")
-            youtubePlayer.stop();
-        else if (getActivePlayer() === "BROWSER")
-            webPlayer.url = "about:blank";
-        else if (getActivePlayer() === "MDK")
-        {
-            mdkPlayer.stop();
-        }
+        if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
+            videoPlayer.stop();
+        else if (videoPlayer === "BROWSER")
+            videoPlayer.url = "about:blank";
     }
 
     function togglePaused()
     {
-        if (getActivePlayer() === "VLC")
-            vlcPlayer.togglePaused();
-        else if (getActivePlayer() === "QTAV")
-            qtAVPlayer.togglePaused();
-        else if (getActivePlayer() === "YOUTUBE")
-            youtubePlayer.togglePaused();
-        else if (getActivePlayer() === "MDK")
-            mdkPlayer.togglePaused();
+        if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
+            videoPlayer.togglePaused();
     }
 
     function toggleOnline()
@@ -1657,59 +1399,35 @@ FocusScope
     {
         root.muteAudio = !root.muteAudio;
 
-        if (getActivePlayer() === "VLC")
-            vlcPlayer.setMute(root.muteAudio);
-        else if (getActivePlayer() === "QTAV")
-            qtAVPlayer.setMute(root.muteAudio);
-        else if (getActivePlayer() === "BROWSER")
+        if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
+            videoPlayer.setMute(root.muteAudio);
+        else if (player === "BROWSER")
         {
-            webPlayer.audioMuted = root.muteAudio;
-            webPlayer.triggerWebAction(WebEngineView.ToggleMediaMute);
+            videoPlayer.audioMuted = root.muteAudio;
+            videoPlayer.triggerWebAction(WebEngineView.ToggleMediaMute);
         }
-        else if (getActivePlayer() === "YOUTUBE")
-            youtubePlayer.setMute(root.muteAudio);
-        else if (getActivePlayer() === "MDK")
-            mdkPlayer.setMute(root.muteAudio);
 
         showMessage("Mute: " + (root.muteAudio ? "On" : "Off"), settings.osdTimeoutMedium);
     }
 
     function changeVolume(amount)
     {
-        if (getActivePlayer() === "VLC")
-            vlcPlayer.changeVolume(amount);
-        else if (getActivePlayer() === "QTAV")
-            qtAVPlayer.changeVolume(amount);
-        else if (getActivePlayer() === "YOUTUBE")
-            youtubePlayer.changeVolume(amount);
-        else if (getActivePlayer() === "MDK")
-            mdkPlayer.changeVolume(amount);
+        if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
+            videoPlayer.changeVolume(amount);
     }
 
     function getVolume()
     {
-        if (getActivePlayer() === "VLC")
-            return vlcPlayer.getVolume();
-        else if (getActivePlayer() === "QTAV")
-            return qtAVPlayer.getVolume();
-        else if (getActivePlayer() === "YOUTUBE")
-            return youtubePlayer.getVolume();
-        else if (getActivePlayer() === "MDK")
-            return mdkPlayer.getVolume();
+        if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
+            return videoPlayer.getVolume();
 
         return undefined
     }
 
     function setVolume(volume)
     {
-        if (getActivePlayer() === "VLC")
-            vlcPlayer.setVolume(volume);
-        else if (getActivePlayer() === "QTAV")
-            qtAVPlayer.setVolume(volume);
-        else if (getActivePlayer() === "YOUTUBE")
-            youtubePlayer.setVolume(volume);
-        else if (getActivePlayer() === "MDK")
-            mdkPlayer.setVolume(volume);
+        if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
+            videoPlayer.setVolume(volume);
     }
 
     function toggleFillMode()
@@ -1726,49 +1444,26 @@ FocusScope
 
     function setFillMode(mode)
     {
-        if (getActivePlayer() === "VLC")
-            vlcPlayer.setFillMode(mode);
-        else if (getActivePlayer() === "QTAV")
-            qtAVPlayer.setFillMode(mode);
-        else if (getActivePlayer() === "YOUTUBE")
-            youtubePlayer.setFillMode(mode);
-        else if (getActivePlayer() === "MDK")
-            mdkPlayer.setFillMode(mode);
+        if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
+            videoPlayer.setFillMode(mode);
     }
 
     function skipBack(time)
     {
-        if (getActivePlayer() === "VLC")
-            vlcPlayer.skipBack(time);
-        else if (getActivePlayer() === "QTAV")
-            qtAVPlayer.skipBack(time);
-        else if (getActivePlayer() === "YOUTUBE")
-            youtubePlayer.skipBack(time);
-        else if (getActivePlayer() === "MDK")
-            mdkPlayer.skipBack(time);
+        if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
+            videoPlayer.skipBack(time);
     }
 
     function skipForward(time)
     {
-        if (getActivePlayer() === "VLC")
-            vlcPlayer.skipForward(time);
-        else if (getActivePlayer() === "QTAV")
-            qtAVPlayer.skipForward(time);
-        else if (getActivePlayer() === "YOUTUBE")
-            youtubePlayer.skipForward(time);
-        else if (getActivePlayer() === "MDK")
-            mdkPlayer.skipForward(time);
+        if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
+            videoPlayer.skipForward(time);
     }
 
     function toggleInterlacer()
     {
-        if (getActivePlayer() === "VLC")
-            vlcPlayer.toggleInterlacer();
-        else if (getActivePlayer() === "QTAV")
-            qtAVPlayer.toggleInterlacer();
-        else if (getActivePlayer() === "MDK")
-            mdkPlayer.toggleInterlacer();
-
+        if (player === "VLC" || player === "QTAV" || player === "MDK"|| player === "TIVO")
+            videoPlayer.toggleInterlacer();
     }
 
     function toggleInfo()
@@ -2299,5 +1994,160 @@ FocusScope
             timeIndictor.position = position;
             timeIndictor.length = length;
         }
+    }
+
+    function createWebPlayer()
+    {
+        var player = createPlayer(playerRect, mythUtils.findThemeFile("Base/VideoPlayerWeb.qml"),
+                                  {
+                                      "id": "webPlayer",
+                                      "anchors.fill" : playerRect,
+                                      "anchors.margins" : playerBorder.border.width,
+                                      "audioMuted" : false,
+                                      "profile" : youtubeWebProfile
+                                  });
+
+        if (player === undefined)
+        {
+            log.error(Verbose.GUI, "createWebPlayer: failed to create Web player");
+        }
+
+        return player;
+    }
+
+    function createYoutubePlayer()
+    {
+        var player = createPlayer(playerRect, mythUtils.findThemeFile("Base/VideoPlayerYT.qml"),
+                                  {
+                                    "id" : "youtubePlayer",
+                                    "anchors.fill" : playerRect,
+                                    "anchors.margins" : playerBorder.border.width
+                                  });
+
+        if (player === undefined)
+        {
+            log.error(Verbose.GUI, "createQmlVLCPlayer: failed to create Youtube player");
+        }
+
+        player.showMessage.connect(root.showMessage);
+        player.mediaStatusChanged.connect(root.mediaStatusChanged);
+        player.playbackStatusChanged.connect(root.playbackStatusChanged);
+
+        return player;
+    }
+
+    function createVLCPlayer()
+    {
+        var player = createPlayer(playerRect, mythUtils.findThemeFile("Base/VideoPlayerQmlVLC.qml"),
+                                  {
+                                    "id" : "vlcPlayer",
+                                    "anchors.fill" : playerRect,
+                                    "anchors.margins" : playerBorder.border.width
+                                  });
+
+        if (player === undefined)
+        {
+            log.error(Verbose.GUI, "createQmlVLCPlayer: failed to create QmlVLC player");
+        }
+
+        player.showMessage.connect(root.showMessage);
+        player.mediaStatusChanged.connect(root.mediaStatusChanged);
+        player.playbackStatusChanged.connect(root.playbackStatusChanged);
+
+        return player;
+    }
+
+    function createQtAVPlayer()
+    {
+        var player = createPlayer(playerRect, mythUtils.findThemeFile("Base/VideoPlayerQtAV.qml"),
+                                  {
+                                    "id" : "qtAVPlayer",
+                                    "anchors.fill" : playerRect,
+                                    "anchors.margins" : playerBorder.border.width,
+                                    "fillMode": VideoOutput.PreserveAspectFit
+                                  });
+
+        if (player === undefined)
+        {
+            log.error(Verbose.GUI, "createQtAVPlayer: failed to create QtAV player");
+        }
+
+        player.showMessage.connect(root.showMessage);
+        player.mediaStatusChanged.connect(root.mediaStatusChanged);
+        player.playbackStatusChanged.connect(root.playbackStatusChanged);
+
+        return player;
+    }
+
+    function createMDKPlayer()
+    {
+        var player = createPlayer(playerRect, mythUtils.findThemeFile("Base/VideoPlayerMDK.qml"),
+                                  {
+                                    "id" : "mdkPlayer",
+                                    "anchors.fill" : playerRect,
+                                    "anchors.margins" : playerBorder.border.width
+                                  });
+
+        if (player === undefined)
+        {
+            log.error(Verbose.GUI, "createMDKPlayer: failed to create Tivo player");
+        }
+
+        player.showMessage.connect(root.showMessage);
+        player.mediaStatusChanged.connect(root.mediaStatusChanged);
+        player.playbackStatusChanged.connect(root.playbackStatusChanged);
+
+        return player;
+    }
+
+    function createTivoPlayer()
+    {
+        var player = createPlayer(playerRect, mythUtils.findThemeFile("Base/VideoPlayerTivo.qml"),
+                                  {
+                                    "id" : "tivoPlayer",
+                                    "anchors.fill" : root,
+                                    "anchors.margins" : playerBorder.border.width
+                                  });
+
+        if (player === undefined)
+        {
+            log.error(Verbose.GUI, "createTivoPlayer: failed to create Tivo player");
+        }
+
+        player.showMessage.connect(root.showMessage);
+        player.mediaStatusChanged.connect(root.mediaStatusChanged);
+        player.playbackStatusChanged.connect(root.playbackStatusChanged);
+
+        return player;
+    }
+
+    function createPlayer(parent, source, properties)
+    {
+        if (videoPlayer !== undefined)
+        {
+            videoPlayer.destroy();
+            videoPlayer = undefined;
+        }
+
+        var component = Qt.createComponent(source);
+
+        if (component.status === Component.Error)
+        {
+            log.error(Verbose.GUI, "createPlayer: componant creation failed with error: " + component.errorString());
+            return undefined;
+        }
+
+        if (component.status === Component.Ready)
+        {
+            var object = component.createObject(parent, properties);
+            videoPlayer = object;
+            return object;
+        }
+        else
+        {
+            log.error(Verbose.GUI, "createThemedMenu: component not ready");
+        }
+
+        return undefined;
     }
 }

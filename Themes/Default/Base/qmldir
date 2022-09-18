@@ -53,3 +53,4 @@ VideoPlayerVLC 1.0 VideoPlayerVLC.qml
 VideoPlayerYT 1.0 VideoPlayerYT.qml
 VideoPlayerMDK 1.0 VideoPlayerMDK.qml
 VideoPlayerTivo 1.0 VideoPlayerTivo.qml
+VideoPlayerWeb 1.0 VideoPlayerWeb.qml

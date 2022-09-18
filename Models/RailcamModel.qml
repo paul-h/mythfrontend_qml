@@ -40,9 +40,6 @@ Item
         if (mediaPlayer === undefined)
             return;
 
-        if (mediaPlayer.getActivePlayer() === undefined)
-            return
-
         var minidiagramURL = mediaPlayer.getLink("railcam_minidiagram");
         var diagramURL = mediaPlayer.getLink("railcam_diagram");
         var approachURL = mediaPlayer.getLink("railcam_approach");
