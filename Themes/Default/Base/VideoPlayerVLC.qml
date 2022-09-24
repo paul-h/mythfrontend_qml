@@ -9,8 +9,6 @@ FocusScope
 {
     id: root
     property alias source: mediaplayer.url
-    //property alias muted: mediaplayer.muted
-    property alias volume: mediaplayer.volume
     property alias audioTrack: mediaplayer.audioTrack
     property bool loop: false
 
@@ -171,6 +169,16 @@ FocusScope
     function setVolume(volume)
     {
         mediaPlayer.volume = volume / 100;
+    }
+
+    function getMute()
+    {
+        return mediaplayer.muted
+    }
+
+    function setMute(mute)
+    {
+        mediaplayer.muted = mute;
     }
 
     function toggleMute()

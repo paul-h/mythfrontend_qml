@@ -7,7 +7,9 @@ Item
 
     property alias url: webPlayer.url
     property alias profile: webPlayer.profile
-    property alias audioMuted: webPlayer.audioMuted
+
+    // private properties
+    property int _volume: 100
 
     anchors.fill: parent
 
@@ -60,8 +62,61 @@ Item
         }
     }
 
+    // most of these are NOOP for now
+    function play()
+    {
+    }
+
     function stop()
     {
-
+        webPlayer.url = "about:blank";
     }
+
+    function togglePause()
+    {
+    }
+
+    function getPosition()
+    {
+        return 0;
+    }
+
+    function getDuration()
+    {
+        return 0;
+    }
+
+    function getMute()
+    {
+        return webPlayer.audioMuted;
+    }
+
+    function toggleMute()
+    {
+        webPlayer.audioMuted = !webPlayer.audioMuted;
+        webPlayer.triggerWebAction(WebEngineView.ToggleMediaMute);
+    }
+
+    function setMute(mute)
+    {
+        webPlayer.audioMuted = mute;
+        webPlayer.triggerWebAction(WebEngineView.ToggleMediaMute);
+    }
+
+    function changeVolume(amount)
+    {
+        root._volume = amount;
+    }
+
+    function getVolume()
+    {
+        return root._volume;
+    }
+
+    function setVolume(volume)
+    {
+        console.log("VideoWebPlayer setVolumn: " + volume);
+        root._volume = volume;
+    }
+
 }

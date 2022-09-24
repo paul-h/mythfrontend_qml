@@ -6,14 +6,15 @@ FocusScope
 {
     id: root
     property alias source: mediaplayer.mrl
-    property alias volume: mediaplayer.volume
     property bool loop: false
     property bool playbackStarted: false
-    property bool muteAudio: false
 
     signal showMessage(string message, int timeOut)
     signal mediaStatusChanged(int mediaStatus)
     signal playbackStatusChanged(int playbackStatus)
+
+    // private property
+    property bool _muteAudio: false
 
     Rectangle
     {
@@ -101,8 +102,8 @@ FocusScope
                 // keep checking the mute status until we get the result we want
                 if (mediaplayer.audio.mute != -1)
                 {
-                    if (mediaplayer.audio.mute != root.muteAudio)
-                        mediaplayer.audio.mute = root.muteAudio;
+                    if (mediaplayer.audio.mute != root._muteAudio)
+                        mediaplayer.audio.mute = root._muteAudio;
                     else
                         running = false;
                 }
@@ -186,14 +187,14 @@ FocusScope
         mediaplayer.volume = volume;
     }
 
-    function getMuted()
+    function getMute()
     {
-        return root.muteAudio;
+        return root._muteAudio;
     }
 
     function setMute(mute)
     {
-        root.muteAudio = mute;
+        root._muteAudio = mute;
 
         if (mute !== mediaplayer.audio.mute)
             mediaplayer.audio.mute = mute;
@@ -201,9 +202,9 @@ FocusScope
 
     function toggleMute()
     {
-        root.muteAudio = !root.muteAudio;
+        root._muteAudio = !root._muteAudio;
 
-        mediaplayer.audio.mute = root.muteAudio;
+        mediaplayer.audio.mute = root._muteAudio;
     }
 
     function getPosition()
