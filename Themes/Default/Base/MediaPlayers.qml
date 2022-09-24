@@ -1273,9 +1273,6 @@ FocusScope
         if (feedSource.feedName == "ZoneMinder Cameras")
             newURL += "&connkey=" + Util.randomIntFromRange(0, 999999);
 
-        //webPlayer.visible = false;
-        //webPlayer.url = "";
-
         if (root.player === "VLC" || root.player === "Internal")
         {
             videoPlayer.source = newURL;
@@ -1351,18 +1348,9 @@ FocusScope
     function play(forceRestart)
     {
         if (forceRestart || !_playbackStarted)
-        {
             startPlayback();
-        }
         else
-        {
-            if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
-                videoPlayer.play();
-            else if (player === "BROWSER")
-            {
-                // nothing to do
-            }
-        }
+            videoPlayer.play();
     }
 
     function stop()
@@ -1379,8 +1367,7 @@ FocusScope
 
     function togglePaused()
     {
-        if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
-            videoPlayer.togglePaused();
+        videoPlayer.togglePaused();
     }
 
     function toggleOnline()
@@ -1399,35 +1386,27 @@ FocusScope
     {
         root.muteAudio = !root.muteAudio;
 
-        if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
-            videoPlayer.setMute(root.muteAudio);
-        else if (player === "BROWSER")
-        {
-            videoPlayer.audioMuted = root.muteAudio;
-            videoPlayer.triggerWebAction(WebEngineView.ToggleMediaMute);
-        }
+        videoPlayer.setMute(root.muteAudio);
 
         showMessage("Mute: " + (root.muteAudio ? "On" : "Off"), settings.osdTimeoutMedium);
     }
 
     function changeVolume(amount)
     {
-        if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
-            videoPlayer.changeVolume(amount);
+
+        videoPlayer.changeVolume(amount);
+
+        dbUtils.setSetting("Video" + objectName.replace(" ", "") + "Volume", settings.hostName, videoPlayer.getVolume());
     }
 
     function getVolume()
     {
-        if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
-            return videoPlayer.getVolume();
-
-        return undefined
+        return videoPlayer.getVolume();
     }
 
     function setVolume(volume)
     {
-        if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
-            videoPlayer.setVolume(volume);
+        videoPlayer.setVolume(volume);
     }
 
     function toggleFillMode()
@@ -2123,8 +2102,18 @@ FocusScope
 
     function createPlayer(parent, source, properties)
     {
+        var muted = false;
+        var volume = dbUtils.getSetting("Video" + objectName.replace(" ", "") + "Volume", settings.hostName, "100");
+
+        // sanity check the volume
+        if (volume < 0 || volume > 100)
+            volume = 100;
+
         if (videoPlayer !== undefined)
         {
+            muted = videoPlayer.getMute();
+            volume = videoPlayer.getVolume();
+
             videoPlayer.destroy();
             videoPlayer = undefined;
         }
@@ -2141,6 +2130,10 @@ FocusScope
         {
             var object = component.createObject(parent, properties);
             videoPlayer = object;
+
+            videoPlayer.setMute(muted);
+            videoPlayer.setVolume(volume);
+
             return object;
         }
         else

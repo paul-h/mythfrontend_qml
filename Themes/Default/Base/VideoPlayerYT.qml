@@ -8,9 +8,9 @@ Item
     property string source: ""
     property bool loop: false
     property bool playbackStarted: false
-    property bool muteAudio: false
+
     property int playerState: -1
-    property int volume: 0
+
     property int position: 0
     property int duration: 0
 
@@ -18,6 +18,9 @@ Item
     signal playbackStatusChanged(int playbackStatus)
     signal showMessage(string message, int timeOut)
 
+    // private properties
+    property bool _muteAudio: false
+    property int _volume: 100
     property bool _playerLoaded: false
 
     onPlayerStateChanged:
@@ -90,6 +93,8 @@ Item
             {
                 _playerLoaded = true;
                 runJavaScript("loadVideo(" + root.source + ")");
+                browser.runJavaScript("changeVolume(" + root._volume + ");");
+                browser.runJavaScript("setMute(" + root._muteAudio + ");");
                 statusUpdateTimer.start();
                 setSize(width, height);
             }
@@ -109,7 +114,7 @@ Item
             browser.runJavaScript("getPlayerState();", function (result) { root.playerState = result;});
             browser.runJavaScript("getPosition();", function (result) { root.position = result * 1000;});
             browser.runJavaScript("getDuration();", function (result) { root.duration = result * 1000;});
-            browser.runJavaScript("getVolume();", function (result) { root.volume = result;});
+            browser.runJavaScript("getVolume();", function (result) { root._volume = result;});
         }
     }
 
@@ -171,29 +176,32 @@ Item
             return;
 
         if (amount < 0)
-            root.volume = Math.max(0, root.volume + amount);
+            root._volume = Math.max(0, root._volume + amount);
         else
-            root.volume = Math.min(100, root.volume + amount);
+            root._volume = Math.min(100, root._volume + amount);
 
-        browser.runJavaScript("changeVolume(" + root.volume + ");");
+        if (_playerLoaded)
+            browser.runJavaScript("changeVolume(" + root._volume + ");");
 
-        showMessage("Volume: " + root.volume + "%", settings.osdTimeoutMedium);
+        showMessage("Volume: " + root._volume + "%", settings.osdTimeoutMedium);
     }
 
     function getVolume()
     {
-        return root.volume;
+        return root._volume;
     }
 
     function setVolume(volume)
     {
-        root.volume = volume;
-        browser.runJavaScript("changeVolume(" + root.volume + ");");
+        root._volume = volume;
+
+        if (_playerLoaded)
+            browser.runJavaScript("changeVolume(" + root._volume + ");");
     }
 
-    function getMuted()
+    function getMute()
     {
-        return root.muteAudio;
+        return root._muteAudio;
     }
 
     function setMute(mute)
@@ -201,7 +209,7 @@ Item
         if (!_playerLoaded)
             return;
 
-        root.muteAudio = mute;
+        root._muteAudio = mute;
 
         browser.runJavaScript("setMute(" + mute + ");");
     }
@@ -211,9 +219,9 @@ Item
         if (!_playerLoaded)
             return;
 
-        root.muteAudio = !root.muteAudio;
+        root._muteAudio = !root._muteAudio;
 
-        browser.runJavaScript("setMute(" + root.muteAudio + ");");
+        browser.runJavaScript("setMute(" + root._muteAudio + ");");
     }
 
     function getPosition()

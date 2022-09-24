@@ -13,10 +13,8 @@ FocusScope
     property int channel: -1
 
     property alias source: mediaplayer.source
-    property alias volume: mediaplayer.volume
     property bool loop: false
     property bool playbackStarted: false
-    property bool muteAudio: false
 
     signal showMessage(string message, int timeOut)
     signal mediaStatusChanged(int mediaStatus)
@@ -265,9 +263,9 @@ FocusScope
         mediaplayer.volume = volume / 100;
     }
 
-    function getMuted()
+    function getMute()
     {
-        return root.muteAudio;
+        return mediaplayer.muted;
     }
 
     function setMute(mute)

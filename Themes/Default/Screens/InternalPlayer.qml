@@ -45,18 +45,6 @@ BaseScreen
 
         setLayout(layout);
 
-        // set the default volume
-        var volume = dbUtils.getSetting("VideoPlayerVolume", settings.hostName, "100");
-
-        // sanity check the volume
-        if (volume < 0 || volume > 100)
-            volume = 100;
-
-        playerLayout.mediaPlayer1.setVolume(volume);
-        playerLayout.mediaPlayer2.setVolume(volume);
-        playerLayout.mediaPlayer3.setVolume(volume);
-        playerLayout.mediaPlayer4.setVolume(volume);
-
         getActivePlayer().showInfo(true);
         getActivePlayer().updateRadioFeedList();
         updateRadioFeed();
@@ -931,8 +919,6 @@ BaseScreen
     function changeVolume(amount)
     {
         getActivePlayer().changeVolume(amount);
-        var volume = getActivePlayer().getVolume();
-        dbUtils.setSetting("VideoPlayerVolume", settings.hostName, volume)
     }
 
     function feedSourceLoaded()

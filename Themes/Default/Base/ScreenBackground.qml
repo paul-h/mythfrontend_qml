@@ -12,7 +12,7 @@ Item
     property alias showVideo: videoPlayer.visible
     property alias showTicker: ticker.visible
     property alias showBusyIndicator: busyIndicator.running
-    property bool  muteAudio: videoPlayer.muteAudio
+    property bool  muteAudio: videoPlayer.getMute()
     property string helpURL: ""
 
     property bool  screenSaverMode: true
@@ -94,10 +94,11 @@ Item
         anchors.fill: parent
         visible: false
         loop: true;
-        volume: window.backgroundVideoVolume
 
         Component.onCompleted:
         {
+            setVolume(window.backgroundVideoVolume);
+
             if (showVideo)
             {
                 setLoopMode(true);

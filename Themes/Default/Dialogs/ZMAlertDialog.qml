@@ -9,7 +9,7 @@ BasePopup
 {
     id: root
 
-    property int alertedMonitorId: 2
+    property int alertedMonitorId: -1
 
     width: xscale(330)
     height: width / (16 / 9)
@@ -18,6 +18,9 @@ BasePopup
 
     function show(focusItem)
     {
+        if (alertedMonitorId === -1)
+            alertedMonitorId = playerSources.zmCameraList.model.get(0).id;
+
         var index = -1;
 
         for (var x = 0; x < mediaPlayer.feed.feedCount; x++)

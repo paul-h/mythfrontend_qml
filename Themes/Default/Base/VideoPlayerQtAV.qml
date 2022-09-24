@@ -9,9 +9,7 @@ import "../../../Util.js" as Util
 FocusScope
 {
     id: root
-    //property alias playlist: mediaplayer.playlist
     property alias source: mediaplayer.source
-    property alias volume: mediaplayer.volume
     property alias fillMode: mediaplayer.fillMode
 
     property bool loop: false
@@ -200,7 +198,7 @@ FocusScope
         mediaplayer.volume = volume / 100;
     }
 
-    function getMuted()
+    function getMute()
     {
         return mediaplayer.muted;
     }
