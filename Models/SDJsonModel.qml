@@ -86,7 +86,7 @@ Item
                     var json = JSON.parse(http.responseText)
                     if (json.code === 0)
                     {
-                        log.info(Verbose.MODEL, "SDJsonModel getToken: token is: " + json.token)
+                        log.debug(Verbose.MODEL, "SDJsonModel getToken: token is: " + json.token)
                         root.token = json.token
 
                         //getStatus(debugStatusCallback);
