@@ -115,7 +115,6 @@ Item
 
     function setVolume(volume)
     {
-        console.log("VideoWebPlayer setVolumn: " + volume);
         root._volume = volume;
     }
 
