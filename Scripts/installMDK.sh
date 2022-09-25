@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # mdk-sdk version to install
-MDK_VERSION="v0.15.0"
+MDK_VERSION="v0.16.0"
 
 # default architecture
 ARCH="amd64"
@@ -32,13 +32,13 @@ tar -x -f /tmp/mdk-sdk-linux.tar.xz -C /tmp
 
 echo Making sure the install directory exists and is empty
 mkdir -p "/lib/mythqml"
-rm -rf "/lib/mythqml/*"
+rm -rf /lib/mythqml/*
 
 echo Installing the MDK-SDK libraries
 cp -rf /tmp/mdk-sdk/lib/$ARCH/* /lib/mythqml/
 
 echo Cleaning up
-rm -rf /lib/mythqml/libffmpeg.so.4
+rm /lib/mythqml/libffmpeg.so.*
 rm -rf /tmp/mdk-sdk
 rm /tmp/mdk-sdk-linux.tar.xz
 
