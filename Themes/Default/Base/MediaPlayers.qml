@@ -1166,6 +1166,9 @@ FocusScope
         // we always need to restart the StreamLink/StreamBuffer process even if it is already running
         if (newPlayer === "StreamLink" || newPlayer === "StreamBuffer")
         {
+            if (player !== "FFMPEG" && player !== "QtAV")
+                createQtAVPlayer();
+
             videoPlayer.visible = false;
 
             commandlog = "";
