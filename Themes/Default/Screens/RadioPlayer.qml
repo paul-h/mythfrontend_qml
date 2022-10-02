@@ -28,11 +28,15 @@ BaseScreen
         showTime(false);
         showTicker(false);
         muteAudio(true);
+
+        radioPlayerDialog.suspendPlayback();
     }
 
     Component.onDestruction:
     {
         muteAudio(false);
+
+        radioPlayerDialog.resumePlayback();
     }
 
     Keys.onPressed:
