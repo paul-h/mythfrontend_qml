@@ -95,6 +95,14 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     //schedules direct
     setSDUserName(gContext->m_databaseUtils->getSetting("SdUserName", hostName));
     setSDPassword(gContext->m_databaseUtils->getSetting("SdPassword", hostName));
+
+    // weather
+    setWeatherCurrentConditions(gContext->m_databaseUtils->getSetting("WeatherCurrentConditions", hostName));
+    setWeatherBBCForecast(gContext->m_databaseUtils->getSetting("WeatherBBCForecast", hostName));
+    setWeatherMetOfficeForecast(gContext->m_databaseUtils->getSetting("WeatherMetOfficeForecast", hostName));
+    setWeatherLightningMap(gContext->m_databaseUtils->getSetting("WeatherLightningMap", hostName));
+    setWeatherRainRadar(gContext->m_databaseUtils->getSetting("WeatherRainRadar", hostName));
+    setWeatherVideoForecast(gContext->m_databaseUtils->getSetting("WeatherVideoForecast", hostName));
 }
 
 void Settings::setDefaultSettings(const QString &hostName)
@@ -226,6 +234,55 @@ void Settings::setDefaultSettings(const QString &hostName)
         setTivoControlPort("31339");
         gContext->m_databaseUtils->setSetting("TivoControlPort", hostName, "31339");
     }
+
+    // weather
+    if (gContext->m_databaseUtils->getSetting("WeatherCurrentConditions", hostName) == "")
+    {
+        setWeatherCurrentConditions("http://192.168.1.33/weewx/ss/index.html");
+        gContext->m_databaseUtils->setSetting("WeatherCurrentConditions", hostName, "http://192.168.1.33/weewx/ss/index.html");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("WeatherBBCForecast", hostName) == "")
+    {
+        setWeatherCurrentConditions("https://www.bbc.co.uk/weather/0/2644547");
+        gContext->m_databaseUtils->setSetting("WeatherBBCForecast", hostName, "https://www.bbc.co.uk/weather/0/2644547");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("WeatherMetOfficeForecast", hostName) == "")
+    {
+        setWeatherCurrentConditions("https://www.metoffice.gov.uk/public/weather/forecast/gcw16xq5y");
+        gContext->m_databaseUtils->setSetting("WeatherMetOfficeForecast", hostName, "https://www.metoffice.gov.uk/public/weather/forecast/gcw16xq5y");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("WeatherLightningMap", hostName) == "")
+    {
+        setWeatherCurrentConditions("https://www.lightningmaps.org/blitzortung/europe/index.php?bo_page=archive&bo_map=uk&bo_animation=now");
+        gContext->m_databaseUtils->setSetting("WeatherLightningMap", hostName, "https://www.lightningmaps.org/blitzortung/europe/index.php?bo_page=archive&bo_map=uk&bo_animation=now");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("WeatherRainRadar", hostName) == "")
+    {
+        setWeatherCurrentConditions("https://embed.windy.com/embed2.html?lat=53.6953&lon=-2.69348&zoom=7&level=surface&overlay=radar&menu=&message=&marker=&calendar=&pressure=&type=map&location=coordinates&detail=&detailLat=37.2747&detailLon=-122.02298&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1");
+        gContext->m_databaseUtils->setSetting("WeatherRainRadar", hostName, "https://embed.windy.com/embed2.html?lat=53.6953&lon=-2.69348&zoom=7&level=surface&overlay=radar&menu=&message=&marker=&calendar=&pressure=&type=map&location=coordinates&detail=&detailLat=37.2747&detailLon=-122.02298&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("WeatherVideoForecast", hostName) == "")
+    {
+        setWeatherCurrentConditions("https://players.brightcove.net/2310970326001/rkbBbpMdNx_default/index.html?playlistId=2320300299001&autoplay");
+        gContext->m_databaseUtils->setSetting("WeatherVideoForecast", hostName, "https://players.brightcove.net/2310970326001/rkbBbpMdNx_default/index.html?playlistId=2320300299001&autoplay");
+    }
+}
+
+// general get/set methods
+
+QString Settings::getSetting(const QString &setting)
+{
+    return gContext->m_databaseUtils->getSetting(setting, m_hostName);
+}
+
+void Settings::setSetting(const QString &setting, const QString &value)
+{
+    gContext->m_databaseUtils->setSetting(setting, m_hostName, value);
 }
 
 // Mysql Database
@@ -733,3 +790,70 @@ void Settings::setSDPassword(const QString &sdPassword)
     m_sdPassword = sdPassword;
     emit sdPasswordChanged();
 }
+
+QString Settings::weatherCurrentConditions(void)
+{
+    return m_weatherCurrentConditions;
+}
+
+void    Settings::setWeatherCurrentConditions(const QString &currentConditions)
+{
+     m_weatherCurrentConditions = currentConditions;
+     emit weatherCurrentConditionsChanged();
+}
+
+QString Settings::weatherBBCForecast(void)
+{
+    return m_weatherBBCForecast;
+}
+
+void    Settings::setWeatherBBCForecast(const QString &BBCForecast)
+{
+    m_weatherBBCForecast = BBCForecast;
+    emit weatherBBCForecastChanged();
+}
+
+QString Settings::weatherMetOfficeForecast(void)
+{
+    return m_weatherMetOfficeForecast;
+}
+
+void    Settings::setWeatherMetOfficeForecast(const QString &metOfficeForecast)
+{
+    m_weatherMetOfficeForecast = metOfficeForecast;
+    emit weatherMetOfficeForecastChanged();
+}
+
+QString Settings::weatherLightningMap(void)
+{
+    return m_weatherLightningMap;
+}
+
+void    Settings::setWeatherLightningMap(const QString &lightningMap)
+{
+    m_weatherLightningMap = lightningMap;
+    emit weatherLightningMapChanged();
+}
+
+QString Settings::weatherRainRadar(void)
+{
+    return m_weatherRainRadar;
+}
+
+void    Settings::setWeatherRainRadar(const QString &rainRadar)
+{
+    m_weatherRainRadar = rainRadar;
+    emit weatherRainRadarChanged();
+}
+
+QString Settings::weatherVideoForecast(void)
+{
+    return m_weatherVideoForecast;
+}
+
+void    Settings::setWeatherVideoForecast(const QString &videoForecast)
+{
+    m_weatherVideoForecast = videoForecast;
+    emit weatherVideoForecastChanged();
+}
+

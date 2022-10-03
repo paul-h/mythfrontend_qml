@@ -7,6 +7,11 @@
 class Settings : public QObject
 {
     Q_OBJECT
+
+    // general get/set methods
+    Q_INVOKABLE QString getSetting(const QString &setting);
+    Q_INVOKABLE void setSetting(const QString &setting, const QString &value);
+
     // mysql DB
     Q_PROPERTY(QString mysqlIP READ mysqlIP WRITE setMysqlIP NOTIFY mysqlIPChanged)
     Q_PROPERTY(int     mysqlPort READ mysqlPort WRITE setMysqlPort NOTIFY mysqlPortChanged)
@@ -76,6 +81,14 @@ class Settings : public QObject
     Q_PROPERTY(QString sdUserName READ sdUserName WRITE setSDUserName NOTIFY sdUserNameChanged)
     Q_PROPERTY(QString sdPassword READ sdPassword WRITE setSDPassword NOTIFY sdPasswordChanged)
 
+    // weather
+    Q_PROPERTY(QString weatherCurrentConditions READ weatherCurrentConditions WRITE setWeatherCurrentConditions NOTIFY weatherCurrentConditionsChanged)
+    Q_PROPERTY(QString weatherBBCForecast READ weatherBBCForecast WRITE setWeatherBBCForecast NOTIFY weatherBBCForecastChanged)
+    Q_PROPERTY(QString weatherMetOfficeForecast READ weatherMetOfficeForecast WRITE setWeatherMetOfficeForecast NOTIFY weatherMetOfficeForecastChanged)
+    Q_PROPERTY(QString weatherLightningMap READ weatherLightningMap WRITE setWeatherLightningMap NOTIFY weatherLightningMapChanged)
+    Q_PROPERTY(QString weatherRainRadar READ weatherRainRadar WRITE setWeatherRainRadar NOTIFY weatherRainRadarChanged)
+    Q_PROPERTY(QString weatherVideoForecast READ weatherVideoForecast WRITE setWeatherVideoForecast NOTIFY weatherVideoForecastChanged)
+
    signals:
      void mysqlIPChanged(void);
      void mysqlPortChanged(void);
@@ -123,6 +136,12 @@ class Settings : public QObject
      void tivoVideoURLChanged(void);
      void sdUserNameChanged(void);
      void sdPasswordChanged(void);
+     void weatherCurrentConditionsChanged(void);
+     void weatherBBCForecastChanged(void);
+     void weatherMetOfficeForecastChanged(void);
+     void weatherLightningMapChanged(void);
+     void weatherRainRadarChanged(void);
+     void weatherVideoForecastChanged(void);
 
   public:
     Settings(const QString &hostName, const QString &theme);
@@ -268,6 +287,24 @@ class Settings : public QObject
     QString sdPassword(void);
     void    setSDPassword(const QString &sdPassword);
 
+    QString weatherCurrentConditions(void);
+    void    setWeatherCurrentConditions(const QString &currentConditions);
+
+    QString weatherBBCForecast(void);
+    void    setWeatherBBCForecast(const QString &BBCForecast);
+
+    QString weatherMetOfficeForecast(void);
+    void    setWeatherMetOfficeForecast(const QString &metOfficeForecast);
+
+    QString weatherLightningMap(void);
+    void    setWeatherLightningMap(const QString &lightningMap);
+
+    QString weatherRainRadar(void);
+    void    setWeatherRainRadar(const QString &rainRadar);
+
+    QString weatherVideoForecast(void);
+    void    setWeatherVideoForecast(const QString &videoForecast);
+
   private:
     // Mysql Database
     QString m_mysqlIP;
@@ -327,4 +364,11 @@ class Settings : public QObject
 
     QString m_sdUserName;
     QString m_sdPassword;
+
+    QString m_weatherCurrentConditions;
+    QString m_weatherBBCForecast;
+    QString m_weatherMetOfficeForecast;
+    QString m_weatherLightningMap;
+    QString m_weatherRainRadar;
+    QString m_weatherVideoForecast;
 };
