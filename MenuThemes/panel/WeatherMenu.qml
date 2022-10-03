@@ -8,10 +8,16 @@ ListModel
 
     ListElement
     {
+        menutext: "Current Conditions (VC)"
+        loaderSource: "weather/CurrentConditions.qml"
+        waterMark: "watermark/weather.png"
+    }
+    ListElement
+    {
         menutext: "Current Conditions"
         loaderSource:"WebBrowser.qml"
         waterMark: "watermark/weather.png"
-        url: "http://192.168.1.33/weewx/ss/index.html"
+        url: "setting://WeatherCurrentConditions"
         zoom: 1.0
     }
     ListElement
@@ -19,7 +25,7 @@ ListModel
         menutext: "BBC Forecast"
         loaderSource:"WebBrowser.qml"
         waterMark: "watermark/weather.png"
-        url: "https://www.bbc.co.uk/weather/0/2644547"
+        url: "setting://WeatherBBCForecast"
         zoom: 1.0
     }
     ListElement
@@ -27,7 +33,7 @@ ListModel
         menutext: "Met Office Forecast"
         loaderSource:"WebBrowser.qml"
         waterMark: "watermark/weather.png"
-        url: "https://www.metoffice.gov.uk/public/weather/forecast/gcw16xq5y"
+        url: "setting://WeatherMetOfficeForecast"
         zoom: 1.0
     }
     ListElement
@@ -35,7 +41,7 @@ ListModel
         menutext: "Lightning Map"
         loaderSource: "WebBrowser.qml"
         waterMark: "watermark/weather.png"
-        url: "https://www.lightningmaps.org/blitzortung/europe/index.php?bo_page=archive&bo_map=uk&bo_animation=now"
+        url: "setting://WeatherLightningMap"
         zoom: 1.25
     }
     ListElement
@@ -43,7 +49,7 @@ ListModel
         menutext:"Rain Radar"
         loaderSource: "WebBrowser.qml"
         waterMark: "watermark/weather.png"
-        url: "http://192.168.1.33/weewx/simple/radar.html"
+        url: "setting://WeatherRainRadar"
         zoom: 1.0
     }
     ListElement
@@ -51,7 +57,7 @@ ListModel
         menutext: "Met Office Video Forecast"
         loaderSource:"WebBrowser.qml"
         waterMark: "watermark/weather.png"
-        url: "https://players.brightcove.net/2310970326001/rkbBbpMdNx_default/index.html?playlistId=2320300299001&autoplay"
+        url: "setting://WeatherVideoForecast"
         zoom: 1.0
         fullscreen: true
     }
