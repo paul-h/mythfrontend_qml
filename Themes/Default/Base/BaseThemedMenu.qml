@@ -206,6 +206,13 @@ Item
                     var url = model.get(currentIndex).url
                     var zoom = xscale(model.get(currentIndex).zoom)
                     var fullscreen = model.get(currentIndex).fullscreen
+
+                    if (url.startsWith("setting://"))
+                    {
+                        var setting = url.replace("setting://", "");
+                        url = dbUtils.getSetting(setting, settings.hostName, "");
+                    }
+
                     stack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: url, fullscreen: fullscreen, zoomFactor: zoom}});
                 }
                 else if (model.get(currentIndex).loaderSource === "InternalPlayer.qml")

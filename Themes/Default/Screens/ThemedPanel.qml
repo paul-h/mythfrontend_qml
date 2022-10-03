@@ -562,6 +562,13 @@ BaseScreen
             var url = button_list.model.get(button_list.currentIndex).url
             var zoom = xscale(button_list.model.get(button_list.currentIndex).zoom)
             var fullscreen = button_list.model.get(button_list.currentIndex).fullscreen
+
+            if (url.startsWith("setting://"))
+            {
+                var setting = url.replace("setting://", "");
+                url = dbUtils.getSetting(setting, settings.hostName, "");
+            }
+
             panelStack.pop();
             panelStack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: url, fullscreen: fullscreen, zoomFactor: zoom}});
         }
