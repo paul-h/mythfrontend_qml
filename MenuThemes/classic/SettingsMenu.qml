@@ -44,6 +44,12 @@ ListModel
     }
     ListElement
     {
+        menutext: "Weather Settings"
+        loaderSource:"settings/WeatherSettingsEditor.qml"
+        waterMark: "watermark/keys.png"
+    }
+    ListElement
+    {
         menutext: "ZoneMinder Settings"
         loaderSource: "zoneminder/ZMSettingsEditor.qml"
         waterMark: "watermark/keys.png"
