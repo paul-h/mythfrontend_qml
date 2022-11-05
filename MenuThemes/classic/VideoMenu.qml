@@ -26,6 +26,14 @@ ListModel
     }
     ListElement
     {
+        menutext: "DVD Player"
+        loaderSource:"External Program"
+        waterMark: "watermark/dvd.png"
+        exec: "setting://DvdCommand"
+        parameters: "setting://DvdParameters"
+    }
+    ListElement
+    {
         menutext: "Feed Sources Settings"
         loaderSource: "settings/FeedSettingsEditor.qml"
         waterMark: "watermark/keys.png"

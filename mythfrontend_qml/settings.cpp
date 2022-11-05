@@ -103,6 +103,10 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     setWeatherLightningMap(gContext->m_databaseUtils->getSetting("WeatherLightningMap", hostName));
     setWeatherRainRadar(gContext->m_databaseUtils->getSetting("WeatherRainRadar", hostName));
     setWeatherVideoForecast(gContext->m_databaseUtils->getSetting("WeatherVideoForecast", hostName));
+
+    // dvd
+    setDvdCommand(gContext->m_databaseUtils->getSetting("DvdCommand", hostName));
+    setDvdParameters(gContext->m_databaseUtils->getSetting("DvdParameters", hostName));
 }
 
 void Settings::setDefaultSettings(const QString &hostName)
@@ -270,6 +274,18 @@ void Settings::setDefaultSettings(const QString &hostName)
     {
         setWeatherCurrentConditions("https://players.brightcove.net/2310970326001/rkbBbpMdNx_default/index.html?playlistId=2320300299001&autoplay");
         gContext->m_databaseUtils->setSetting("WeatherVideoForecast", hostName, "https://players.brightcove.net/2310970326001/rkbBbpMdNx_default/index.html?playlistId=2320300299001&autoplay");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("DvdCommand", hostName) == "")
+    {
+        setDvdCommand("/usr/bin/cvlc");
+        gContext->m_databaseUtils->setSetting("DvdCommand", hostName, "/usr/bin/cvlc");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("DvdParameters", hostName) == "")
+    {
+        setDvdParameters("--play-and-exit --fullscreen --key-quit Esc --key-leave-fullscreen Ctrl+F dvd:///dev/sr0");
+        gContext->m_databaseUtils->setSetting("DvdParameters", hostName, "--play-and-exit --fullscreen --key-quit Esc --global-key-vol-mute F9 --global-key-vol-up ] --global-key-vol-down [ --key-play-pause P --global-key-jump+medium > --global-key-jump-medium < --global-key-jump-long PageDown --global-key-jump+long PageUp --global-key-leave-fullscreen Ctrl+F dvd:///dev/sr0");
     }
 }
 
@@ -855,5 +871,27 @@ void    Settings::setWeatherVideoForecast(const QString &videoForecast)
 {
     m_weatherVideoForecast = videoForecast;
     emit weatherVideoForecastChanged();
+}
+
+QString Settings::dvdCommand(void)
+{
+    return m_dvdCommand;
+}
+
+void Settings::setDvdCommand(const QString &dvdCommand)
+{
+    m_dvdCommand = dvdCommand;
+    emit dvdCommandChanged();
+}
+
+QString Settings::dvdParameters(void)
+{
+    return m_dvdParameters;
+}
+
+void Settings::setDvdParameters(const QString &dvdParameters)
+{
+    m_dvdParameters = dvdParameters;
+    emit dvdParametersChanged();
 }
 

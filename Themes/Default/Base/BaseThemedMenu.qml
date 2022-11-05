@@ -226,8 +226,23 @@ Item
                     var message = model.get(currentIndex).menutext + " will start shortly.\nPlease Wait.....";
                     var timeOut = 10000;
                     showBusyDialog(message, timeOut);
-                    var command = model.get(currentIndex).exec
-                    externalProcess.start(command, []);
+
+                    var command = model.get(currentIndex).exec;
+                    if (command.startsWith("setting://"))
+                    {
+                        var setting = command.replace("setting://", "");
+                        command = dbUtils.getSetting(setting, settings.hostName, "");
+                    }
+
+                    var parameters = model.get(currentIndex).parameters;
+                    if (parameters.startsWith("setting://"))
+                    {
+                        var setting = parameters.replace("setting://", "");
+                        parameters = dbUtils.getSetting(setting, settings.hostName, "");
+                    }
+                    parameters = parameters.split(" ");
+
+                    externalProcess.start(command, parameters);
                 }
                 else if (model.get(currentIndex).loaderSource === "reboot")
                 {
