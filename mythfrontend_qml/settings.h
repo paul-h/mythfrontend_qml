@@ -89,6 +89,10 @@ class Settings : public QObject
     Q_PROPERTY(QString weatherRainRadar READ weatherRainRadar WRITE setWeatherRainRadar NOTIFY weatherRainRadarChanged)
     Q_PROPERTY(QString weatherVideoForecast READ weatherVideoForecast WRITE setWeatherVideoForecast NOTIFY weatherVideoForecastChanged)
 
+    // dvd player
+    Q_PROPERTY(QString dvdCommand READ dvdCommand WRITE setDvdCommand NOTIFY dvdCommandChanged)
+    Q_PROPERTY(QString dvdParameters READ dvdParameters WRITE setDvdParameters NOTIFY dvdParametersChanged)
+
    signals:
      void mysqlIPChanged(void);
      void mysqlPortChanged(void);
@@ -142,6 +146,8 @@ class Settings : public QObject
      void weatherLightningMapChanged(void);
      void weatherRainRadarChanged(void);
      void weatherVideoForecastChanged(void);
+     void dvdCommandChanged(void);
+     void dvdParametersChanged(void);
 
   public:
     Settings(const QString &hostName, const QString &theme);
@@ -305,6 +311,12 @@ class Settings : public QObject
     QString weatherVideoForecast(void);
     void    setWeatherVideoForecast(const QString &videoForecast);
 
+    QString dvdCommand(void);
+    void    setDvdCommand(const QString &dvdCommand);
+
+    QString dvdParameters(void);
+    void    setDvdParameters(const QString &dvdParameters);
+
   private:
     // Mysql Database
     QString m_mysqlIP;
@@ -371,4 +383,7 @@ class Settings : public QObject
     QString m_weatherLightningMap;
     QString m_weatherRainRadar;
     QString m_weatherVideoForecast;
+
+    QString m_dvdCommand;
+    QString m_dvdParameters;
 };

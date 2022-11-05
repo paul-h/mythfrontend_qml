@@ -26,6 +26,12 @@ ListModel
     }
     ListElement
     {
+        menutext: "DVD Settings"
+        loaderSource: "settings/DVDSettingsEditor.qml"
+        waterMark: "watermark/keys.png"
+    }
+    ListElement
+    {
         menutext: "Virgin Tivo Settings"
         loaderSource:"settings/TivoSettingsEditor.qml"
         waterMark: "watermark/keys.png"
