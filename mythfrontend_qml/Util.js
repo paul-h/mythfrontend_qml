@@ -291,3 +291,13 @@ function removeExtension(path)
 
     return ""
 }
+
+function monthToString(idx)
+{
+    var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+    if (idx >= 0 && idx < months.length)
+        return months[idx];
+
+    return "Invalid";
+}

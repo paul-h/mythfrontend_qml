@@ -107,6 +107,9 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     // dvd
     setDvdCommand(gContext->m_databaseUtils->getSetting("DvdCommand", hostName));
     setDvdParameters(gContext->m_databaseUtils->getSetting("DvdParameters", hostName));
+
+    // data sources
+    setEnergyDataDir(gContext->m_databaseUtils->getSetting("EnergyDataDir", hostName));
 }
 
 void Settings::setDefaultSettings(const QString &hostName)
@@ -895,3 +898,13 @@ void Settings::setDvdParameters(const QString &dvdParameters)
     emit dvdParametersChanged();
 }
 
+QString Settings::energyDataDir(void)
+{
+    return m_energyDataDir;
+}
+
+void Settings::setEnergyDataDir(const QString &energyDataDir)
+{
+    m_energyDataDir = energyDataDir;
+    emit energyDataDirChanged();
+}

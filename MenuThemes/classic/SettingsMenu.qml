@@ -26,6 +26,12 @@ ListModel
     }
     ListElement
     {
+        menutext: "Data Sources Settings"
+        loaderSource: "settings/DataSettingsEditor.qml"
+        waterMark: "watermark/keys.png"
+    }
+    ListElement
+    {
         menutext: "DVD Settings"
         loaderSource: "settings/DVDSettingsEditor.qml"
         waterMark: "watermark/keys.png"

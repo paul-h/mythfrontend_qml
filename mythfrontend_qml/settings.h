@@ -93,61 +93,65 @@ class Settings : public QObject
     Q_PROPERTY(QString dvdCommand READ dvdCommand WRITE setDvdCommand NOTIFY dvdCommandChanged)
     Q_PROPERTY(QString dvdParameters READ dvdParameters WRITE setDvdParameters NOTIFY dvdParametersChanged)
 
+    // data sources
+    Q_PROPERTY(QString energyDataDir READ energyDataDir WRITE setEnergyDataDir NOTIFY energyDataDirChanged)
+
    signals:
-     void mysqlIPChanged(void);
-     void mysqlPortChanged(void);
-     void mysqlUserChanged(void);
-     void mysqlPasswordChanged(void);
-     void mysqlDBNameChanged(void);
-     void themeNameChanged(void);
-     void hostNameChanged(void);
-     void masterIPChanged(void);
-     void masterPortChanged(void);
-     void masterBackendChanged(void);
-     void securityPinChanged(void);
-     void configPathChanged(void);
-     void sharePathChanged(void);
-     void qmlPathChanged(void);
-     void menuPathChanged(void);
-     void websocketPortChanged(void);
-     void videoPathChanged(void);
-     void picturePathChanged(void);
-     void sdChannelsChanged(void);
-     void vboxFreeviewIPChanged(void);
-     void vboxFreesatIPChanged(void);
-     void hdmiEncoderChanged(void);
-     void showTextBorderChanged(void);
-     void startFullscreenChanged(void);
-     void mythQLayoutChanged(void);
-     void webcamListFileChanged(void);
-     void webvideoListFileChanged(void);
-     void youtubeSubListFileChanged(void);
-     void youtubeAPIKeyChanged(void);
-     void osdTimeoutShortChanged(void);
-     void osdTimeoutMediumChanged(void);
-     void osdTimeoutLongChanged(void);
-     void zmIPChanged(void);
-     void zmUserNameChanged(void);
-     void zmPasswordChanged(void);
-     void frontendIdleTimeChanged(void);
-     void launcherIdleTimeChanged(void);
-     void rebootCommandChanged(void);
-     void shutdownCommandChanged(void);
-     void suspendCommandChanged(void);
-     void autoStartFrontendChanged(void);
-     void tivoIPChanged(void);
-     void tivoControlPortChanged(void);
-     void tivoVideoURLChanged(void);
-     void sdUserNameChanged(void);
-     void sdPasswordChanged(void);
-     void weatherCurrentConditionsChanged(void);
-     void weatherBBCForecastChanged(void);
-     void weatherMetOfficeForecastChanged(void);
-     void weatherLightningMapChanged(void);
-     void weatherRainRadarChanged(void);
-     void weatherVideoForecastChanged(void);
-     void dvdCommandChanged(void);
-     void dvdParametersChanged(void);
+    void mysqlIPChanged(void);
+    void mysqlPortChanged(void);
+    void mysqlUserChanged(void);
+    void mysqlPasswordChanged(void);
+    void mysqlDBNameChanged(void);
+    void themeNameChanged(void);
+    void hostNameChanged(void);
+    void masterIPChanged(void);
+    void masterPortChanged(void);
+    void masterBackendChanged(void);
+    void securityPinChanged(void);
+    void configPathChanged(void);
+    void sharePathChanged(void);
+    void qmlPathChanged(void);
+    void menuPathChanged(void);
+    void websocketPortChanged(void);
+    void videoPathChanged(void);
+    void picturePathChanged(void);
+    void sdChannelsChanged(void);
+    void vboxFreeviewIPChanged(void);
+    void vboxFreesatIPChanged(void);
+    void hdmiEncoderChanged(void);
+    void showTextBorderChanged(void);
+    void startFullscreenChanged(void);
+    void mythQLayoutChanged(void);
+    void webcamListFileChanged(void);
+    void webvideoListFileChanged(void);
+    void youtubeSubListFileChanged(void);
+    void youtubeAPIKeyChanged(void);
+    void osdTimeoutShortChanged(void);
+    void osdTimeoutMediumChanged(void);
+    void osdTimeoutLongChanged(void);
+    void zmIPChanged(void);
+    void zmUserNameChanged(void);
+    void zmPasswordChanged(void);
+    void frontendIdleTimeChanged(void);
+    void launcherIdleTimeChanged(void);
+    void rebootCommandChanged(void);
+    void shutdownCommandChanged(void);
+    void suspendCommandChanged(void);
+    void autoStartFrontendChanged(void);
+    void tivoIPChanged(void);
+    void tivoControlPortChanged(void);
+    void tivoVideoURLChanged(void);
+    void sdUserNameChanged(void);
+    void sdPasswordChanged(void);
+    void weatherCurrentConditionsChanged(void);
+    void weatherBBCForecastChanged(void);
+    void weatherMetOfficeForecastChanged(void);
+    void weatherLightningMapChanged(void);
+    void weatherRainRadarChanged(void);
+    void weatherVideoForecastChanged(void);
+    void dvdCommandChanged(void);
+    void dvdParametersChanged(void);
+    void energyDataDirChanged(void);
 
   public:
     Settings(const QString &hostName, const QString &theme);
@@ -317,6 +321,9 @@ class Settings : public QObject
     QString dvdParameters(void);
     void    setDvdParameters(const QString &dvdParameters);
 
+    QString energyDataDir(void);
+    void    setEnergyDataDir(const QString &energyDataDir);
+
   private:
     // Mysql Database
     QString m_mysqlIP;
@@ -386,4 +393,6 @@ class Settings : public QObject
 
     QString m_dvdCommand;
     QString m_dvdParameters;
+
+    QString m_energyDataDir;
 };

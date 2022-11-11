@@ -29,6 +29,12 @@ ListModel
     }
     ListElement
     {
+        menutext: "Data Sources Settings"
+        loaderSource: "settings/DataSettingsEditor.qml"
+        waterMark: "watermark/keys.png"
+    }
+    ListElement
+    {
         menutext: "Shutdown Settings"
         panelSource: "settings/ShutdownSettingsEditor.qml"
         loaderSource: "settings/ShutdownSettingsEditor.qml"
