@@ -26,7 +26,7 @@ ListModel
     }
     ListElement
     {
-        menutext: "DVD Player"
+        menutext: "Play DVD"
         loaderSource:"External Program"
         waterMark: "watermark/dvd.png"
         exec: "setting://DvdCommand"

@@ -71,6 +71,12 @@ ListModel
     }
     ListElement
     {
+        menutext: "Energy Consumption"
+        loaderSource: "EnergyConsumption.qml"
+        waterMark: "watermark/energy_consumption.png"
+    }
+    ListElement
+    {
         menutext: "What's New"
         loaderSource: "WhatsNew.qml"
         waterMark: "watermark/whatsnew.png"
