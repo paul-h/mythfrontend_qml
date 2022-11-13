@@ -3,6 +3,7 @@ import QtCharts 2.15
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
+import FileIO 1.0
 import "../../../Util.js" as Util
 
 BaseScreen
@@ -10,7 +11,7 @@ BaseScreen
     defaultFocusItem: chartView
 
     property int monthIdx: 0
-    property string fuel: "Electric"
+    property string fuel: "Both"
     property string show: "Cost"
 
     Component.onCompleted:
@@ -78,6 +79,13 @@ BaseScreen
         }
         else
             event.accepted = false;
+    }
+
+    FileIO
+    {
+        id: jsonFile
+        source: ""
+        onError: console.log(msg)
     }
 
     JSONListModel
@@ -286,6 +294,8 @@ BaseScreen
     {
         id: chartView
         title: "Energy Usage for January 2020"
+        titleFont: Qt.font({pointSize: xscale(12), bold:true});
+        titleColor: theme.labelFontColor
         x: xscale(10)
         y: yscale(130)
         width: parent.width - xscale(20)
@@ -298,6 +308,7 @@ BaseScreen
         {
             id: dateAxis
             titleText: "Date"
+            titleFont: Qt.font({pointSize: xscale(12), bold:true});
         }
 
         ValueAxis
@@ -306,6 +317,8 @@ BaseScreen
             min: 0
             max: 1
             titleText: "Electric [£]"
+            titleFont: Qt.font({pointSize: xscale(12), bold:true});
+            labelsFont: Qt.font({pointSize: xscale(12), bold: false});
         }
 
         BarSeries
@@ -313,20 +326,28 @@ BaseScreen
             id: myBarSeries
             axisX: dateAxis
             axisY: valueAxis
+            labelsAngle: 270
+            labelsVisible: true
             BarSet
             {
                 id: year2020Set
                 label: "2020"
+                labelFont: Qt.font({pointSize: xscale(5), bold: true});
+                labelColor: "black"
             }
             BarSet
             {
                 id: year2021Set
                 label: "2021"
+                labelFont: Qt.font({pointSize: xscale(5), bold: true});
+                labelColor: "black"
             }
             BarSet
             {
                 id: year2022Set
                 label: "2022"
+                labelFont: Qt.font({pointSize: xscale(5), bold: true});
+                labelColor: "black"
             }
         }
     }
@@ -336,15 +357,15 @@ BaseScreen
         id: footer
         redText: "Previous Month"
         greenText: "Next Month"
-        yellowText: "Fuel (Electric)"
+        yellowText: "Fuel (Both)"
         blueText: "Showing (Cost)"
     }
 
     function loadData(month)
     {
-        usageData2020Model.source = "";
-        usageData2021Model.source = "";
-        usageData2022Model.source = "";
+        usageData2020Model.json = "";
+        usageData2021Model.json = "";
+        usageData2022Model.json = "";
 
         year2020Set.remove(0, year2020Set.count);
         year2021Set.remove(0, year2021Set.count);
@@ -353,8 +374,25 @@ BaseScreen
         dateAxis.clear();
         valueAxis.max = 1;
 
-        usageData2020Model.source = settings.energyDataDir + "/2020_" + (month < 10 ? "0" : "") + month +".json";
-        usageData2021Model.source = settings.energyDataDir + "/2021_" + (month < 10 ? "0" : "") + month +".json";
-        usageData2022Model.source = settings.energyDataDir + "/2022_" + (month < 10 ? "0" : "") + month +".json";
+        // load 2020
+        jsonFile.source = settings.energyDataDir + "/2020_" + (month < 10 ? "0" : "") + month +".json";
+        var json = jsonFile.read();
+        json = json.replace(/"tou": null/g, '"tou": false');
+        json = json.replace(/: null/g, ':""');
+        usageData2020Model.json = json;
+
+        // load 2021
+        jsonFile.source = settings.energyDataDir + "/2021_" + (month < 10 ? "0" : "") + month +".json";
+        json = jsonFile.read();
+        json = json.replace(/"tou": null/g, '"tou": false');
+        json = json.replace(/: null/g, ':""');
+        usageData2021Model.json = json;
+
+        // load 2022
+        jsonFile.source = settings.energyDataDir + "/2022_" + (month < 10 ? "0" : "") + month +".json";
+        json = jsonFile.read();
+        json = json.replace(/"tou": null/g, '"tou": false');
+        json = json.replace(/: null/g, ':""');
+        usageData2022Model.json = json;
     }
 }
