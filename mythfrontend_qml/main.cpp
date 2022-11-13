@@ -3,7 +3,7 @@
 #include <unistd.h>
 
 // qt
-#include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQmlComponent>
@@ -20,6 +20,7 @@
 #include "sqlquerymodel.h"
 #include "svgimage.h"
 #include "telnet.h"
+#include "fileio.h"
 
 // shared
 #include "context.h"
@@ -45,7 +46,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
-    QGuiApplication *app = new QGuiApplication(argc, argv);
+    QGuiApplication *app = new QApplication(argc, argv);
 
     QtWebEngine::initialize();
 
@@ -106,6 +107,7 @@ int main(int argc, char *argv[])
 
     // register our QML types
     qmlRegisterType<SvgImage>("SvgImage", 1, 0, "SvgImage");
+    qmlRegisterType<FileIO, 1>("FileIO", 1, 0, "FileIO");
 
     // these are frontend only
 
