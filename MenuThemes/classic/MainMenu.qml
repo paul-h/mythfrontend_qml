@@ -72,8 +72,9 @@ ListModel
     ListElement
     {
         menutext: "Energy Consumption"
-        loaderSource: "EnergyConsumption.qml"
+        loaderSource: "ThemedMenu.qml"
         waterMark: "watermark/energy_consumption.png"
+        menuSource: "EnergyConsumptionMenu.qml"
     }
     ListElement
     {

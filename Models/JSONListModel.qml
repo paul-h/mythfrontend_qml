@@ -81,6 +81,7 @@ Item
 
                 // convert null to empty string to stop QT spamming the logs
                 str = str.replace(/:null/g, ':""');
+                str = str.replace(/: null/g, ':""');
 
                 json = str;
             }
