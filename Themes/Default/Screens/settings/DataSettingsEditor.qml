@@ -50,7 +50,7 @@ BaseScreen
         x: xscale(300); y: yscale(100)
         width: parent.width - x - xscale(20)
         height: yscale(50)
-        text: settings.energyDataDirectory
+        text: settings.energyDataDir
         KeyNavigation.up: saveButton
         KeyNavigation.down: saveButton
     }
