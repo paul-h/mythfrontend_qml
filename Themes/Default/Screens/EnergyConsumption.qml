@@ -308,7 +308,8 @@ BaseScreen
         {
             id: dateAxis
             titleText: "Date"
-            titleFont: Qt.font({pointSize: xscale(12), bold:true});
+            titleFont: Qt.font({pointSize: xscale(10), bold: false});
+            labelsFont: Qt.font({pointSize: xscale(10), bold: false});
         }
 
         ValueAxis
@@ -317,8 +318,8 @@ BaseScreen
             min: 0
             max: 1
             titleText: "Electric [£]"
-            titleFont: Qt.font({pointSize: xscale(12), bold:true});
-            labelsFont: Qt.font({pointSize: xscale(12), bold: false});
+            titleFont: Qt.font({pointSize: xscale(10), bold:false});
+            labelsFont: Qt.font({pointSize: xscale(10), bold: false});
         }
 
         BarSeries
@@ -328,26 +329,29 @@ BaseScreen
             axisY: valueAxis
             labelsAngle: 270
             labelsVisible: true
+            labelsPosition: AbstractBarSeries.LabelsCenter
+            barWidth: 0.7
+
             BarSet
             {
                 id: year2020Set
                 label: "2020"
-                labelFont: Qt.font({pointSize: xscale(5), bold: true});
-                labelColor: "black"
+                labelFont: Qt.font({pointSize: xscale(8), bold: true});
+                labelColor: "white"
             }
             BarSet
             {
                 id: year2021Set
                 label: "2021"
-                labelFont: Qt.font({pointSize: xscale(5), bold: true});
-                labelColor: "black"
+                labelFont: Qt.font({pointSize: xscale(8), bold: true});
+                labelColor: "white"
             }
             BarSet
             {
                 id: year2022Set
                 label: "2022"
-                labelFont: Qt.font({pointSize: xscale(5), bold: true});
-                labelColor: "black"
+                labelFont: Qt.font({pointSize: xscale(8), bold: true});
+                labelColor: "white"
             }
         }
     }
