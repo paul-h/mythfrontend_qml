@@ -288,7 +288,7 @@ void Settings::setDefaultSettings(const QString &hostName)
     if (gContext->m_databaseUtils->getSetting("DvdParameters", hostName) == "")
     {
         setDvdParameters("--play-and-exit --fullscreen --key-quit Esc --key-leave-fullscreen Ctrl+F dvd:///dev/sr0");
-        gContext->m_databaseUtils->setSetting("DvdParameters", hostName, "--play-and-exit --fullscreen --key-quit Esc --global-key-vol-mute F9 --global-key-vol-up ] --global-key-vol-down [ --key-play-pause P --global-key-jump+medium > --global-key-jump-medium < --global-key-jump-long PageDown --global-key-jump+long PageUp --global-key-leave-fullscreen Ctrl+F dvd:///dev/sr0");
+        gContext->m_databaseUtils->setSetting("DvdParameters", hostName, "--play-and-exit|--fullscreen|--global-key-quit|Esc|--global-key-vol-mute|F9|--global-key-vol-up|]|--global-key-vol-down|[|--key-play-pause|P|--global-key-jump-medium|<|--global-key-jump+medium|>|--global-key-jump-long|Page Down|--global-key-jump+long|Page Up|--global-key-leave-fullscreen|Ctrl+F|dvd:///dev/sr0");
     }
 }
 
