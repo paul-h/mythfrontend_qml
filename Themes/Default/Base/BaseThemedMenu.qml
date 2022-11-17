@@ -240,7 +240,7 @@ Item
                         var setting = parameters.replace("setting://", "");
                         parameters = dbUtils.getSetting(setting, settings.hostName, "");
                     }
-                    parameters = parameters.split(" ");
+                    parameters = parameters.split("|");
 
                     externalProcess.start(command, parameters);
                 }
