@@ -223,9 +223,8 @@ Item
                 }
                 else if (model.get(currentIndex).loaderSource === "External Program")
                 {
-                    var message = model.get(currentIndex).menutext + " will start shortly.\nPlease Wait.....";
-                    var timeOut = 10000;
-                    showBusyDialog(message, timeOut);
+                    if (model.get(currentIndex).exec === undefined)
+                        return;
 
                     var command = model.get(currentIndex).exec;
                     if (command.startsWith("setting://"))
@@ -234,13 +233,23 @@ Item
                         command = dbUtils.getSetting(setting, settings.hostName, "");
                     }
 
-                    var parameters = model.get(currentIndex).parameters;
-                    if (parameters.startsWith("setting://"))
+                    var parameters;
+                    if (model.get(currentIndex).parameters !== undefined)
                     {
-                        var setting = parameters.replace("setting://", "");
-                        parameters = dbUtils.getSetting(setting, settings.hostName, "");
+                        parameters = model.get(currentIndex).parameters;
+                        if (parameters.startsWith("setting://"))
+                        {
+                            var setting = parameters.replace("setting://", "");
+                            parameters = dbUtils.getSetting(setting, settings.hostName, "");
+                        }
+                        parameters = parameters.split("|");
                     }
-                    parameters = parameters.split("|");
+                    else
+                        parameters = [];
+
+                    var message = model.get(currentIndex).menutext + " will start shortly.\nPlease Wait.....";
+                    var timeOut = 10000;
+                    showBusyDialog(message, timeOut);
 
                     externalProcess.start(command, parameters);
                 }
