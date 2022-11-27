@@ -31,6 +31,7 @@ public:
     bool initMythDB(void);
     bool initMythQMLDB(void);
     bool loadMythDBSettings(void);
+    QString getOSVersion();
     QString systemID(void);
 
     QString m_appName;
