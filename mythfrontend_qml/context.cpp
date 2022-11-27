@@ -107,6 +107,9 @@ void Context::init()
     // create branch property
     m_engine->rootContext()->setContextProperty("branch", QString(GIT_BRANCH));
 
+    // create the OS version property
+    m_engine->rootContext()->setContextProperty("osversion", getOSVersion());
+
     // create the Qt version property
     m_engine->rootContext()->setContextProperty("qtversion", QString(qVersion()));
 
@@ -355,4 +358,30 @@ QString Context::systemID(void)
     m_logger->debug(Verbose::GENERAL, "Context: SystemID - " + m_systemID);
 
     return m_systemID;
+}
+
+QString Context::getOSVersion(void)
+{
+    // try to get the  OS version from /etc/os-release
+    if (!QFile::exists("/etc/os-release"))
+        return QString("Unknown");
+
+    QFile inputFile("/etc/os-release");
+    if (inputFile.open(QIODevice::ReadOnly))
+    {
+       QTextStream in(&inputFile);
+       while (!in.atEnd())
+       {
+          QString line = in.readLine();
+          if (line.startsWith("PRETTY_NAME="))
+          {
+              line = line.remove("PRETTY_NAME=");
+              line = line.remove("\"");
+              return line;
+          }
+       }
+       inputFile.close();
+    }
+
+    return QString("Unknown");
 }
