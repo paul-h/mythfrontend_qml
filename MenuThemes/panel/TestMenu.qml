@@ -2,7 +2,7 @@ import QtQuick 2.0
 
 ListModel
 {
-    id: zoneminderMenu
+    id: testMenu
     property string logo: "title/title_setup.png"
     property string title: "Test Menu"
 
@@ -44,12 +44,6 @@ ListModel
     }
     ListElement
     {
-        menutext:"QtAV Player Test"
-        loaderSource: "tests/TestQtAv.qml"
-        waterMark: "watermark/setup.png"
-    }
-    ListElement
-    {
         menutext:"QmlVlc Player Test"
         loaderSource: "tests/TestQmlVlc.qml"
         waterMark: "watermark/setup.png"
@@ -60,4 +54,9 @@ ListModel
         loaderSource: "tests/TestVlcQt.qml"
         waterMark: "watermark/setup.png"
     }
-}
+    ListElement
+    {
+        menutext:"MDK SDK Player Test"
+        loaderSource: "tests/TestMDK.qml"
+        waterMark: "watermark/setup.png"
+    }}

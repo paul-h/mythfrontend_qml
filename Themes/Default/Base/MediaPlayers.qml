@@ -6,7 +6,6 @@ import QtQuick.XmlListModel 2.0
 import Base 1.0
 import Process 1.0
 import Models 1.0
-import QtAV 1.5
 import SortFilterProxyModel 0.2
 import mythqml.net 1.0
 import MDKPlayer 1.0
@@ -22,7 +21,7 @@ FocusScope
     property int streamlinkPort: Util.randomIntFromRange(4000, 65536)
     property string commandlog
 
-    // one of Internal, VLC, MDK, QtAV, WebBrowser, YouTube, YouTubeTV, RailCam, StreamLink, StreamBuffer, Tivo
+    // one of Internal, VLC, MDK, WebBrowser, YouTube, YouTubeTV, RailCam, StreamLink, StreamBuffer, Tivo
     property string player: ""
     property var videoPlayer: undefined
 
@@ -773,7 +772,7 @@ FocusScope
             fontPixelSize: (_xscale(16) + _yscale(16)) / 2
             text:
             {
-                if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK")
+                if (player === "VLC" || player === "YOUTUBE" || player === "MDK")
                     return "Position: " + Util.milliSecondsToString(videoPlayer.getPosition()) + " / " + Util.milliSecondsToString(videoPlayer.getDuration())
                 else
                     return "Position: N/A"
@@ -790,7 +789,7 @@ FocusScope
             fontPixelSize: (_xscale(16) + _yscale(16)) / 2
             text:
             {
-                if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK")
+                if (player === "VLC" || player === "YOUTUBE" || player === "MDK")
                     return Util.milliSecondsToString(videoPlayer.getDuration() - videoPlayer.getPosition())
                 else
                     "Remaining : N/A"
@@ -891,7 +890,7 @@ FocusScope
                     {
                         var position = 1;
 
-                        if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK")
+                        if (player === "VLC" || player === "YOUTUBE" || player === "MDK")
                             position = videoPlayer.getPosition() / videoPlayer.getDuration();
 
                         return (parent.width - anchors.leftMargin - anchors.rightMargin) * position;
@@ -1166,8 +1165,8 @@ FocusScope
         // we always need to restart the StreamLink/StreamBuffer process even if it is already running
         if (newPlayer === "StreamLink" || newPlayer === "StreamBuffer")
         {
-            if (player !== "FFMPEG" && player !== "QtAV")
-                createQtAVPlayer();
+            if (player !== "FFMPEG" && player !== "MDK")
+                createMDKPlayer();
 
             videoPlayer.visible = false;
 
@@ -1214,10 +1213,18 @@ FocusScope
         if (newPlayer === root.player)
             return;
 
-        // if the player is Internal we can use any of VLC, QtAV or MDK players
+        // if the player is Internal we can use VLC or MDK players
         if (newPlayer === "Internal")
         {
             newPlayer = dbUtils.getSetting("InternalPlayer", settings.hostName, "VLC");
+
+            // the QtAV player is no longer supported
+            if (newPlayer === "QtAV")
+            {
+                newPlayer = "MDK";
+                dbUtils.setSetting("InternalPlayer", settings.hostName, "MDK");
+            }
+
             log.info(Verbose.PLAYBACK, "MediaPlayers: switchPlayer -  using " + newPlayer + " for the Internal player");
         }
 
@@ -1225,11 +1232,7 @@ FocusScope
         {
             createVLCPlayer();
         }
-        else if (newPlayer === "FFMPEG" || newPlayer === "QtAV")
-        {
-            createQtAVPlayer();
-        }
-        else if (newPlayer === "MDK")
+        else if (newPlayer === "FFMPEG" || newPlayer === "MDK")
         {
             createMDKPlayer();
         }
@@ -1280,13 +1283,13 @@ FocusScope
         {
             videoPlayer.source = newURL;
         }
-        else if (root.player === "FFMPEG" || root.player === "QtAV")
-        {
-            videoPlayer.stop();
-            videoPlayer.source = newURL;
-            // we have to fake a loading signal because QtAV does not send one
-            mediaStatusChanged(MediaPlayers.MediaStatus.Loading);
-        }
+//        else if (root.player === "FFMPEG" || root.player === "QtAV")
+//        {
+//            videoPlayer.stop();
+//            videoPlayer.source = newURL;
+//            // we have to fake a loading signal because QtAV does not send one
+//            mediaStatusChanged(MediaPlayers.MediaStatus.Loading);
+//        }
         else if (root.player === "WebBrowser" || root.player === "RailCam")
         {
             videoPlayer.profile = mythqmlWebProfile;
@@ -1311,7 +1314,7 @@ FocusScope
             videoPlayer.source = newURL;
             videoPlayer.play();
         }
-        else if (root.player === "MDK")
+        else if (root.player === "FFMPEG" || root.player === "MDK")
         {
             videoPlayer.source = newURL;
         }
@@ -1362,7 +1365,7 @@ FocusScope
         checkProcessTimer.running = false;
         streamLinkProcess.waitForFinished();
 
-        if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
+        if (player === "VLC" || player === "FFMPEG" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
             videoPlayer.stop();
         else if (videoPlayer === "BROWSER")
             videoPlayer.url = "about:blank";
@@ -1426,25 +1429,25 @@ FocusScope
 
     function setFillMode(mode)
     {
-        if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
+        if (player === "VLC" || player === "FFMPEG" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
             videoPlayer.setFillMode(mode);
     }
 
     function skipBack(time)
     {
-        if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
+        if (player === "VLC" || player === "FFMPEG" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
             videoPlayer.skipBack(time);
     }
 
     function skipForward(time)
     {
-        if (player === "VLC" || player === "QTAV" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
+        if (player === "VLC" || player === "FFMPEG" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
             videoPlayer.skipForward(time);
     }
 
     function toggleInterlacer()
     {
-        if (player === "VLC" || player === "QTAV" || player === "MDK"|| player === "TIVO")
+        if (player === "VLC" || player === "FFMPEG" || player === "MDK"|| player === "TIVO")
             videoPlayer.toggleInterlacer();
     }
 
@@ -2030,28 +2033,6 @@ FocusScope
         if (player === undefined)
         {
             log.error(Verbose.GUI, "createQmlVLCPlayer: failed to create QmlVLC player");
-        }
-
-        player.showMessage.connect(root.showMessage);
-        player.mediaStatusChanged.connect(root.mediaStatusChanged);
-        player.playbackStatusChanged.connect(root.playbackStatusChanged);
-
-        return player;
-    }
-
-    function createQtAVPlayer()
-    {
-        var player = createPlayer(playerRect, mythUtils.findThemeFile("Base/VideoPlayerQtAV.qml"),
-                                  {
-                                    "id" : "qtAVPlayer",
-                                    "anchors.fill" : playerRect,
-                                    "anchors.margins" : playerBorder.border.width,
-                                    "fillMode": VideoOutput.PreserveAspectFit
-                                  });
-
-        if (player === undefined)
-        {
-            log.error(Verbose.GUI, "createQtAVPlayer: failed to create QtAV player");
         }
 
         player.showMessage.connect(root.showMessage);

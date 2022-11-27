@@ -2,7 +2,7 @@ import QtQuick 2.0
 
 ListModel
 {
-    id: zoneminderMenu
+    id: testMenu
     property string logo: "title/title_setup.png"
     property string title: "Test Menu"
 
@@ -38,8 +38,8 @@ ListModel
     }
     ListElement
     {
-        menutext:"QtAV Player Test"
-        loaderSource: "tests/TestQtAv.qml"
+        menutext: "Sliding Panel"
+        loaderSource: "tests/TestPage5.qml"
         waterMark: "watermark/setup.png"
     }
     ListElement

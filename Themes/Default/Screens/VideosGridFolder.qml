@@ -13,7 +13,7 @@ BaseScreen
     defaultFocusItem: videoList
     property alias folder: folderModel.folder
 
-    // one of VLC, QtAV or MDK
+    // one of VLC or MDK
     property string _playerToUse: dbUtils.getSetting("InternalPlayer", settings.hostName, "VLC");
 
     Component.onCompleted:
@@ -22,6 +22,13 @@ BaseScreen
         setHelp("https://mythqml.net/help/videos_folder.php#top");
         showTime(false);
         showTicker(false);
+
+        // we no longer support QtAV player
+        if (_playerToUse === "QtAV")
+        {
+            dbUtils.setSetting("InternalPlayer", settings.hostName, "MDK");
+            _playerToUse = "MDK";
+        }
     }
 
     ListModel
@@ -57,12 +64,6 @@ BaseScreen
         else if (event.key === Qt.Key_F5)
         {
             if (_playerToUse === "VLC")
-            {
-                _playerToUse = "QtAV";
-                dbUtils.setSetting("InternalPlayer", settings.hostName, "QtAV");
-                showNotification("Using QtAV player for internal playback");
-            }
-            else if (_playerToUse === "QtAV")
             {
                 _playerToUse = "MDK";
                 dbUtils.setSetting("InternalPlayer", settings.hostName, "MDK");
