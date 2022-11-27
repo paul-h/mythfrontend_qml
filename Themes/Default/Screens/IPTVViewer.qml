@@ -13,7 +13,7 @@ BaseScreen
 
     defaultFocusItem: iptvGrid
 
-    // one of VLC, QtAV or MDK
+    // one of VLC or MDK
     property string _playerToUse: dbUtils.getSetting("InternalPlayer", settings.hostName, "VLC");
 
     Component.onCompleted:
@@ -27,6 +27,13 @@ BaseScreen
         setHelp("https://mythqml.net/help/iptv_channelviewer.php#top");
 
         feedSource.sort = "Title"
+
+        // we no longer support QtAV player
+        if (_playerToUse === "QtAV")
+        {
+            dbUtils.setSetting("InternalPlayer", settings.hostName, "MDK");
+            _playerToUse = "MDK";
+        }
 
         var filter = feedSource.sort + "," + feedSource.genre + "," + feedSource.country + "," + feedSource.language;
         feedSource.switchToFeed("IPTV", filter, 0);
@@ -124,12 +131,6 @@ BaseScreen
         else if (event.key === Qt.Key_F5)
         {
             if (_playerToUse === "VLC")
-            {
-                _playerToUse = "QtAV";
-                dbUtils.setSetting("InternalPlayer", settings.hostName, "QtAV");
-                showNotification("Using QtAV player for internal playback");
-            }
-            else if (_playerToUse === "QtAV")
             {
                 _playerToUse = "MDK";
                 dbUtils.setSetting("InternalPlayer", settings.hostName, "MDK");

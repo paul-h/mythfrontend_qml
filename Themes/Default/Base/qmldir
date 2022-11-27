@@ -47,7 +47,6 @@ TitleText 1.0 TitleText.qml
 Tracer 1.0 Tracer.qml
 Theme 1.0 Theme.qml
 TreeButtonList 1.0 TreeButtonList.qml
-VideoPlayerQtAV 1.0 VideoPlayerQtAV.qml
 VideoPlayerQmlVLC 1.0 VideoPlayerQmlVLC.qml
 VideoPlayerVLC 1.0 VideoPlayerVLC.qml
 VideoPlayerYT 1.0 VideoPlayerYT.qml
