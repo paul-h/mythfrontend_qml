@@ -21,6 +21,10 @@ BaseScreen
         showTicker(false);
         muteAudio(true);
 
+        // show current month by default
+        var currentDate = new Date();
+        monthIdx = currentDate.getMonth();
+
         loadData(monthIdx + 1);
     }
 
@@ -295,7 +299,7 @@ BaseScreen
         id: chartView
         title: "Energy Usage for January 2020"
         titleFont: Qt.font({pointSize: xscale(12), bold:true});
-        titleColor: theme.labelFontColor
+        titleColor: "magenta"
         x: xscale(10)
         y: yscale(130)
         width: parent.width - xscale(20)

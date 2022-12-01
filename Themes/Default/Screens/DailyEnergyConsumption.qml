@@ -10,7 +10,7 @@ BaseScreen
 {
     defaultFocusItem: chartView
 
-    property var currentDate: new Date("2022-11-01");
+    property var currentDate: new Date();
     property string fuel: "Both"
     property string show: "Cost"
 
@@ -21,6 +21,30 @@ BaseScreen
         showTicker(false);
         muteAudio(true);
 
+        // find the last day with data
+        var tries = 0;
+
+        while (tries < 31)
+        {
+            var day = currentDate.getDate() < 10 ? "0" + currentDate.getDate() : currentDate.getDate();
+            var month = currentDate.getMonth() < 9 ? "0" + currentDate.getMonth() + 1: currentDate.getMonth() + 1;
+            var year = currentDate.getFullYear();
+            var source = settings.energyDataDir + "/daily/" + year + "_" + month + "_" + day + ".json";
+
+            jsonFile.source = source;
+
+            if (jsonFile.fileExists())
+            {
+                loadData(currentDate);
+                return;
+            }
+
+            currentDate = Util.addDays(currentDate, -1);
+            tries++;
+        }
+
+        // not found so use a default of 2022/11/01
+        currentDate: new Date("2022-11-01");
         loadData(currentDate);
     }
 
@@ -119,7 +143,7 @@ BaseScreen
         id: chartView
         title: ""
         titleFont: Qt.font({pointSize: xscale(12), bold:true});
-        titleColor: theme.labelFontColor
+        titleColor: "magenta"
         x: xscale(10)
         y: yscale(130)
         width: parent.width - xscale(20)
