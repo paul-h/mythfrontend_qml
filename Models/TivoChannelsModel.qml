@@ -26,7 +26,7 @@ Item
         XmlRole { name: "SDId"; query: "SDId/string()" }
 
         XmlRole { name: "title"; query: "concat(ChanNo/string(), xs:string(' - '), Name/string())" }
-        XmlRole { name: "player"; query: "xs:string('TIVO')" }
+        XmlRole { name: "player"; query: "xs:string('Tivo')" }
         XmlRole { name: "url"; query: "ChanNo/number()" }
         XmlRole { name: "icon"; query: "Icon/string()" }
 
