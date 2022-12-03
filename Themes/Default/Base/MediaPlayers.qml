@@ -772,7 +772,7 @@ FocusScope
             fontPixelSize: (_xscale(16) + _yscale(16)) / 2
             text:
             {
-                if (player === "VLC" || player === "YOUTUBE" || player === "MDK")
+                if (player === "VLC" || player === "YouTube" || player === "MDK")
                     return "Position: " + Util.milliSecondsToString(videoPlayer.getPosition()) + " / " + Util.milliSecondsToString(videoPlayer.getDuration())
                 else
                     return "Position: N/A"
@@ -789,7 +789,7 @@ FocusScope
             fontPixelSize: (_xscale(16) + _yscale(16)) / 2
             text:
             {
-                if (player === "VLC" || player === "YOUTUBE" || player === "MDK")
+                if (player === "VLC" || player === "YouTube" || player === "MDK")
                     return Util.milliSecondsToString(videoPlayer.getDuration() - videoPlayer.getPosition())
                 else
                     "Remaining : N/A"
@@ -890,7 +890,7 @@ FocusScope
                     {
                         var position = 1;
 
-                        if (player === "VLC" || player === "YOUTUBE" || player === "MDK")
+                        if (player === "VLC" || player === "YouTube" || player === "MDK")
                             position = videoPlayer.getPosition() / videoPlayer.getDuration();
 
                         return (parent.width - anchors.leftMargin - anchors.rightMargin) * position;
@@ -1236,7 +1236,7 @@ FocusScope
         {
             createMDKPlayer();
         }
-        else if (newPlayer === "TIVO")
+        else if (newPlayer === "Tivo")
         {
             createTivoPlayer();
         }
@@ -1318,7 +1318,7 @@ FocusScope
         {
             videoPlayer.source = newURL;
         }
-        else if (root.player === "TIVO")
+        else if (root.player === "Tivo")
         {
             //tivoPlayer.source = newURL;
             videoPlayer.changeChannel(newURL);
@@ -1365,9 +1365,9 @@ FocusScope
         checkProcessTimer.running = false;
         streamLinkProcess.waitForFinished();
 
-        if (player === "VLC" || player === "FFMPEG" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
+        if (player === "VLC" || player === "FFMPEG" || player === "YouTube" || player === "MDK"|| player === "TIVO")
             videoPlayer.stop();
-        else if (videoPlayer === "BROWSER")
+        else if (videoPlayer === "WebBrowser")
             videoPlayer.url = "about:blank";
     }
 
@@ -1429,25 +1429,25 @@ FocusScope
 
     function setFillMode(mode)
     {
-        if (player === "VLC" || player === "FFMPEG" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
+        if (player === "VLC" || player === "FFMPEG" || player === "YouTube" || player === "MDK"|| player === "Tivo")
             videoPlayer.setFillMode(mode);
     }
 
     function skipBack(time)
     {
-        if (player === "VLC" || player === "FFMPEG" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
+        if (player === "VLC" || player === "FFMPEG" || player === "YouTube" || player === "MDK"|| player === "Tivo" || player === "WebBrowser")
             videoPlayer.skipBack(time);
     }
 
     function skipForward(time)
     {
-        if (player === "VLC" || player === "FFMPEG" || player === "YOUTUBE" || player === "MDK"|| player === "TIVO")
+        if (player === "VLC" || player === "FFMPEG" || player === "YouTube" || player === "MDK"|| player === "Tivo" || player === "WebBrowser")
             videoPlayer.skipForward(time);
     }
 
     function toggleInterlacer()
     {
-        if (player === "VLC" || player === "FFMPEG" || player === "MDK"|| player === "TIVO")
+        if (player === "VLC" || player === "FFMPEG" || player === "MDK"|| player === "Tivo")
             videoPlayer.toggleInterlacer();
     }
 

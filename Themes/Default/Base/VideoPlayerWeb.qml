@@ -72,6 +72,14 @@ Item
         webPlayer.url = "about:blank";
     }
 
+    function skipBack(time)
+    {
+    }
+
+    function skipForward(time)
+    {
+    }
+
     function togglePause()
     {
     }
