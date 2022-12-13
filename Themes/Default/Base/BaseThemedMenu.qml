@@ -174,7 +174,7 @@ Item
                             window.radioPlayerVolume += 1;
 
                         dbUtils.setSetting("RadioPlayerVolume", settings.hostName, window.radioPlayerVolume);
-                        radioPlayerDialog.volume = window.radioPlayerVolume * 100;
+                        radioPlayerDialog.volume = window.radioPlayerVolume;
 
                         showNotification("Radio Player Volume: " + radioPlayerDialog.volume + "%");
                     }
