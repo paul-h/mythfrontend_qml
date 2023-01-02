@@ -4,6 +4,7 @@ CaptureCardModel 1.0 CaptureCardModel.qml
 ChannelGroupsModel 1.0 ChannelGroupsModel.qml
 ChannelsModel 1.0 ChannelsModel.qml
 EncodersModel 1.0 EncodersModel.qml
+FuelBillsModel 1.0 FuelBillsModel.qml
 JSONListModel 1.0 JSONListModel.qml
 jsonpath 1.0 jsonpath.js
 JumpModel 1.0 JumpModel.qml
