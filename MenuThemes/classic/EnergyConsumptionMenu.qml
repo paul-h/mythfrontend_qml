@@ -18,4 +18,10 @@ ListModel
         loaderSource:"EnergyConsumption.qml"
         waterMark: "watermark/energy_consumption.png"
     }
+    ListElement
+    {
+        menutext: "Energy Bill Viewer"
+        loaderSource:"EnergyBills.qml"
+        waterMark: "watermark/energy_consumption.png"
+    }
 }
