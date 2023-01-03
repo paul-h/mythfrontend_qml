@@ -1162,8 +1162,8 @@ Window
 
         property var lastAlert: new Date()
 
-        x: parent.width - width - xscale(75)
-        y:yscale(75)
+        x: parent.width - width - xscale(50)
+        y:yscale(50)
         anchors.horizontalCenter: undefined
         anchors.verticalCenter: undefined
     }

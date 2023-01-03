@@ -60,6 +60,8 @@ BaseScreen
             event.accepted = true;
             downSound.play();
 
+            popupMenu.title = "Menu"
+            popupMenu.message = "Main Menu Options"
             popupMenu.clearMenuItems();
             popupMenu.addMenuItem("", "Show Version...", "version");
             popupMenu.addMenuItem("", "Exit", "exit");
