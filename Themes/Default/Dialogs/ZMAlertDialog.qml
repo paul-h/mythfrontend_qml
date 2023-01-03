@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Base 1.0
+import Dialogs 1.0
 import QtGraphicalEffects 1.12
 import QmlVlc 0.1
 import "../../../Models"
@@ -56,6 +57,43 @@ BasePopup
         }
     }
 
+    Connections
+    {
+        target: popupMenu
+        function onItemSelected(itemText, itemData)
+        {
+            mediaPlayer.focus = true;
+
+            if (itemText == "Next Camera")
+            {
+                mediaPlayer.nextFeed();
+            }
+            else if (itemText == "Previous Camera")
+            {
+                mediaPlayer.previousFeed();
+            }
+            else if (itemText == "Enable Alerts")
+            {
+                playerSources.zmCameraList.showAlertDialog = true;
+                notificationText.text = 'ZoneMinder alerts are <font color=' + (playerSources.zmCameraList.showAlertDialog ? '"green"><b>enabled' : '"red"><b>disabled') + '</font></b>';
+                notificationPanel.visible = true;
+                notificationTimer.start();
+            }
+            else if (itemText == "Disable Alerts")
+            {
+                playerSources.zmCameraList.showAlertDialog = false;
+                notificationText.text = 'ZoneMinder alerts are <font color=' + (playerSources.zmCameraList.showAlertDialog ? '"green"><b>enabled' : '"red"><b>disabled') + '</font></b>';
+                notificationPanel.visible = true;
+                notificationTimer.start();
+            }
+            else if (itemText == "Close")
+            {
+                hide();
+            }
+
+        }
+    }
+
     Timer
     {
         id: hideTimer
@@ -96,6 +134,25 @@ BasePopup
         else if (event.key === Qt.Key_S)
         {
             takeSnapshot(root);
+        }
+        else if (event.key === Qt.Key_M)
+        {
+            popupMenu.title = "Menu";
+            popupMenu.message = "ZoneMinder Alert Options";
+
+            popupMenu.clearMenuItems();
+
+            popupMenu.addMenuItem("", "Previous Camera");
+            popupMenu.addMenuItem("", "Next Camera");
+
+            if (playerSources.zmCameraList.showAlertDialog)
+                popupMenu.addMenuItem("", "Disable Alerts");
+            else
+                popupMenu.addMenuItem("", "Enable Alerts");
+
+            popupMenu.addMenuItem("", "Close");
+
+            popupMenu.show();
         }
         else
             event.accepted = false;
