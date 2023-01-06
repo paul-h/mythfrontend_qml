@@ -87,6 +87,12 @@ Item
         visible:  false
     }
 
+    Snow
+    {
+        visible: (theme.backgroundSnow !== undefined && theme.backgroundSnow)
+        enabled: visible
+    }
+
     // background video
     VideoPlayerQmlVLC
     {

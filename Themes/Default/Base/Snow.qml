@@ -10,6 +10,7 @@ Item
     ParticleSystem
     {
         id: particleSystem
+        running: root.visible
     }
 
     Emitter
@@ -19,8 +20,8 @@ Item
                 lifeSpan: 20000
                 velocity: PointDirection { y:0; yVariation: 40; }
                 acceleration: PointDirection { y: 8 }
-                size: 10
-                endSize: 10
+                size: xscale(10)
+                endSize: xscale(10)
                 sizeVariation: 2
                 width: parent.width
                 height: 1
@@ -32,12 +33,13 @@ Item
         system: particleSystem
         anchors.fill: parent
         xVariance: 25;
-        pace: 250;
+        pace: 300;
     }
 
     ImageParticle
     {
-        source: mythUtils.findThemeFile("images/snowflake.png")
+        //source: mythUtils.findThemeFile("images/snowflake.png")
+        source: mythUtils.findThemeFile("images/snow.png")
         system: particleSystem
         color: "#ffffff"
         colorVariation: 0.2

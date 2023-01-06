@@ -9,6 +9,7 @@ QtObject
     // screen background
     property string backgroundImage: "background.png"
     property var    backgroundVideo:  undefined
+    property bool   backgroundSnow: true
 
     property var    backgroundSlideShow:
     ListModel
