@@ -91,6 +91,7 @@ Item
     {
         visible: (theme.backgroundSnow !== undefined && theme.backgroundSnow)
         enabled: visible
+        imageSource: (theme.particleImage !== undefined ? mythUtils.findThemeFile(theme.particleImage) : mythUtils.findThemeFile("images/snowflake.png"))
     }
 
     // background video
