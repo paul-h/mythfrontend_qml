@@ -4,6 +4,9 @@ import QtQuick.Particles 2.0
 Item
 {
     id: root
+
+    property alias imageSource: imageParticle.source
+
     x: 0; y: 0
     width: parent.width; height: parent.height
 
@@ -38,7 +41,7 @@ Item
 
     ImageParticle
     {
-        //source: mythUtils.findThemeFile("images/snowflake.png")
+        id: imageParticle
         source: mythUtils.findThemeFile("images/snow.png")
         system: particleSystem
         color: "#ffffff"
