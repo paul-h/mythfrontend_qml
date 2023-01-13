@@ -468,6 +468,7 @@ Window
                 }
                 else if (event.key === Qt.Key_Z)
                 {
+                    zmAlertDialog.autoHide = false;
                     zmAlertDialog.show();
                 }
             }
@@ -957,6 +958,7 @@ Window
             }
             else if (itemData === "zoneminder")
             {
+                zmAlertDialog.autoHide = false;
                 zmAlertDialog.show();
             }
             else if (itemData === "showhelp")
@@ -1160,7 +1162,7 @@ Window
     {
         id: zmAlertDialog
 
-        property var lastAlert: new Date()
+        property var lastAlert: Date.now()
 
         x: parent.width - width - xscale(50)
         y:yscale(50)
@@ -1186,11 +1188,14 @@ Window
         }
 
         // we need to show the alert dialog
-        var now = new Date();
+        var now = Date.now();
+
         if (now - zmAlertDialog.lastAlert > 60 * 1000)
         {
             messageSound.play()
+            zmAlertDialog.autoHide = true;
             zmAlertDialog.alertedMonitorId = monitorId;
+            zmAlertDialog.lastAlert = Date.now();
             zmAlertDialog.show();
         }
     }

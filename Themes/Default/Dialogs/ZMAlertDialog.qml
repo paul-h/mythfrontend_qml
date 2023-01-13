@@ -11,6 +11,7 @@ BasePopup
     id: root
 
     property int alertedMonitorId: -1
+    property bool autoHide: false
 
     width: xscale(330)
     height: width / (16 / 9)
@@ -44,7 +45,7 @@ BasePopup
         target: playerSources.zmCameraList
         function onMonitorStatus(monitorId, status)
         {
-            if (mediaPlayer.feed.feedName === "ZoneMinder Cameras")
+            if (autoHide && mediaPlayer.feed.feedName === "ZoneMinder Cameras")
             {
                 if (mediaPlayer.feed.feedList.get(mediaPlayer.feed.currentFeed).id === monitorId)
                 {
@@ -97,8 +98,8 @@ BasePopup
     Timer
     {
         id: hideTimer
-        interval: 5000; running: false; repeat: false
-        onTriggered: hide();
+        interval: 5000; running: root.autoHide; repeat: false
+        onTriggered: { popupMenu.hide(); hide(); }
     }
 
     Timer
