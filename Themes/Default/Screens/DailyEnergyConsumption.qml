@@ -27,7 +27,7 @@ BaseScreen
         while (tries < 31)
         {
             var day = currentDate.getDate() < 10 ? "0" + currentDate.getDate() : currentDate.getDate();
-            var month = currentDate.getMonth() < 9 ? "0" + currentDate.getMonth() + 1: currentDate.getMonth() + 1;
+            var month = currentDate.getMonth() < 9 ? "0" + (currentDate.getMonth() + 1) : currentDate.getMonth() + 1;
             var year = currentDate.getFullYear();
             var source = settings.energyDataDir + "/daily/" + year + "_" + month + "_" + day + ".json";
 
@@ -215,7 +215,7 @@ BaseScreen
     function loadData(date)
     {
         var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-        var month = date.getMonth() < 9 ? "0" + date.getMonth() + 1: date.getMonth() + 1;
+        var month = date.getMonth() < 9 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
         var year = date.getFullYear();
 
         dailyUsageModel.source = "";
