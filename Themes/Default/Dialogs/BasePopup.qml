@@ -10,11 +10,17 @@ FocusScope
     signal accepted
     signal cancelled
 
+    property int actualX: (window.width / 2) - (width / 2)
+    property int actualY: (window.height / 2) - (height / 2)
+    property int hiddenX: window.width
+    property int hiddenY: y
+
+    y: (window.height / 2) - (height / 2)
+    x: (window.width / 2) - (width / 2)
     width: xscale(500)
     height: yscale(500)
-    anchors.horizontalCenter: parent.horizontalCenter
-    anchors.verticalCenter: parent.verticalCenter
-    visible: false
+
+    visible: true
 
     property var _activeFocusItem: null
 
@@ -69,16 +75,14 @@ FocusScope
         State
         {
             name: ""
-            PropertyChanges
-            {
-                target: modalDialog
-                opacity: 0
-            }
+
             PropertyChanges
             {
                 target: modalDialog
                 focus: false
-                visible: false
+                visible: true
+                x: hiddenX
+                y: hiddenY
             }
             StateChangeScript
             {
@@ -89,17 +93,14 @@ FocusScope
         State
         {
             name: "show"
-            PropertyChanges
-            {
-                target: modalDialog
-                opacity: 1
-            }
 
             PropertyChanges
             {
                 target: modalDialog
                 focus: true
                 visible: true
+                x: actualX
+                y: actualY
             }
         }
     ]
@@ -108,18 +109,12 @@ FocusScope
     [
         Transition
         {
-            from: ""
-            to: "show"
+            from: "*"
+            to: "*"
             SequentialAnimation
             {
-                NumberAnimation { properties: "opacity"; easing.type: Easing.Linear; duration: 750 }
+                NumberAnimation { properties: "x,y,opacity"; easing.type: Easing.Linear; duration: 450 }
             }
-        },
-        Transition
-        {
-            from: "show"
-            to: ""
-            NumberAnimation { properties: "opacity"; easing.type: Easing.Linear; duration: 750 }
         }
     ]
 }
