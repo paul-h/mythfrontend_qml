@@ -19,6 +19,8 @@ FocusScope
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.verticalCenter: parent.verticalCenter
     visible: false
+    scale: 0
+    opacity: 0
 
     property var _activeFocusItem: null
 
@@ -54,7 +56,6 @@ FocusScope
     {
         id: dialog
 
-        opacity: 0
         anchors.fill: parent
 
         BaseDialogBackground
@@ -151,16 +152,14 @@ FocusScope
         State
         {
             name: ""
-            PropertyChanges
-            {
-                target: dialog
-                opacity: 0
-            }
+
             PropertyChanges
             {
                 target: modalDialog
                 focus: false
-                visible: false
+                visible: true
+                scale: 0
+                opacity: 0
             }
             StateChangeScript
             {
@@ -171,17 +170,14 @@ FocusScope
         State
         {
             name: "show"
-            PropertyChanges
-            {
-                target: dialog
-                opacity: 1
-            }
 
             PropertyChanges
             {
                 target: modalDialog
                 focus: true
                 visible: true
+                scale: 1
+                opacity: 1
             }
         }
     ]
@@ -190,18 +186,9 @@ FocusScope
     [
         Transition
         {
-            from: ""
-            to: "show"
-            SequentialAnimation
-            {
-                NumberAnimation { properties: "opacity"; easing.type: Easing.Linear; duration: 750 }
-            }
-        },
-        Transition
-        {
-            from: "show"
-            to: ""
-            NumberAnimation { properties: "opacity"; easing.type: Easing.Linear; duration: 750 }
+            from: "*"
+            to: "*"
+            NumberAnimation { properties: "scale,opacity,x,y"; easing.type: Easing.Linear; duration: 400 }
         }
     ]
 
