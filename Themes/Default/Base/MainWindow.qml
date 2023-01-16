@@ -1164,10 +1164,12 @@ Window
 
         property var lastAlert: Date.now()
 
-        x: parent.width - width - xscale(50)
-        y:yscale(50)
-        anchors.horizontalCenter: undefined
-        anchors.verticalCenter: undefined
+        x: window.width
+        y: yscale(50)
+        actualX: parent.width - width - xscale(25)
+        actualY: yscale(50)
+        hiddenX: window.width
+        hiddenY: yscale(50)
     }
 
     function showZMAlert(monitorId)
