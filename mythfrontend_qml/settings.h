@@ -88,6 +88,10 @@ class Settings : public QObject
     Q_PROPERTY(QString weatherLightningMap READ weatherLightningMap WRITE setWeatherLightningMap NOTIFY weatherLightningMapChanged)
     Q_PROPERTY(QString weatherRainRadar READ weatherRainRadar WRITE setWeatherRainRadar NOTIFY weatherRainRadarChanged)
     Q_PROPERTY(QString weatherVideoForecast READ weatherVideoForecast WRITE setWeatherVideoForecast NOTIFY weatherVideoForecastChanged)
+    Q_PROPERTY(QString wuStationId READ wuStationId WRITE setWuStationId NOTIFY wuStationIdChanged)
+    Q_PROPERTY(QString wuAPIKey READ wuAPIKey WRITE setWuAPIKey NOTIFY wuAPIKeyChanged)
+    Q_PROPERTY(QString vcLocation READ vcLocation WRITE setVcLocation NOTIFY vcLocationChanged)
+    Q_PROPERTY(QString vcAPIKey READ vcAPIKey WRITE setVcAPIKey NOTIFY vcAPIKeyChanged)
 
     // dvd player
     Q_PROPERTY(QString dvdCommand READ dvdCommand WRITE setDvdCommand NOTIFY dvdCommandChanged)
@@ -102,6 +106,7 @@ class Settings : public QObject
     void mysqlUserChanged(void);
     void mysqlPasswordChanged(void);
     void mysqlDBNameChanged(void);
+
     void themeNameChanged(void);
     void hostNameChanged(void);
     void masterIPChanged(void);
@@ -112,45 +117,62 @@ class Settings : public QObject
     void sharePathChanged(void);
     void qmlPathChanged(void);
     void menuPathChanged(void);
+
     void websocketPortChanged(void);
     void videoPathChanged(void);
     void picturePathChanged(void);
     void sdChannelsChanged(void);
-    void vboxFreeviewIPChanged(void);
-    void vboxFreesatIPChanged(void);
-    void hdmiEncoderChanged(void);
-    void showTextBorderChanged(void);
     void startFullscreenChanged(void);
     void mythQLayoutChanged(void);
     void webcamListFileChanged(void);
     void webvideoListFileChanged(void);
     void youtubeSubListFileChanged(void);
     void youtubeAPIKeyChanged(void);
+
+    void vboxFreeviewIPChanged(void);
+    void vboxFreesatIPChanged(void);
+
+    void hdmiEncoderChanged(void);
+
+    void showTextBorderChanged(void);
+
     void osdTimeoutShortChanged(void);
     void osdTimeoutMediumChanged(void);
     void osdTimeoutLongChanged(void);
+
     void zmIPChanged(void);
     void zmUserNameChanged(void);
     void zmPasswordChanged(void);
+
     void frontendIdleTimeChanged(void);
     void launcherIdleTimeChanged(void);
     void rebootCommandChanged(void);
     void shutdownCommandChanged(void);
     void suspendCommandChanged(void);
+
     void autoStartFrontendChanged(void);
+
     void tivoIPChanged(void);
     void tivoControlPortChanged(void);
     void tivoVideoURLChanged(void);
+
     void sdUserNameChanged(void);
     void sdPasswordChanged(void);
+
     void weatherCurrentConditionsChanged(void);
     void weatherBBCForecastChanged(void);
     void weatherMetOfficeForecastChanged(void);
     void weatherLightningMapChanged(void);
     void weatherRainRadarChanged(void);
     void weatherVideoForecastChanged(void);
+    void wuStationIdChanged(void);
+    void wuAPIKeyChanged(void);
+    void vcLocationChanged(void);
+    void vcAPIKeyChanged(void);
+
     void dvdCommandChanged(void);
     void dvdParametersChanged(void);
+
     void energyDataDirChanged(void);
 
   public:
@@ -315,6 +337,18 @@ class Settings : public QObject
     QString weatherVideoForecast(void);
     void    setWeatherVideoForecast(const QString &videoForecast);
 
+    QString wuStationId(void);
+    void    setWuStationId(const QString &stationId);
+
+    QString wuAPIKey(void);
+    void    setWuAPIKey(const QString &apiKey);
+
+    QString vcLocation(void);
+    void    setVcLocation(const QString &location);
+
+    QString vcAPIKey(void);
+    void    setVcAPIKey(const QString &apiKey);
+
     QString dvdCommand(void);
     void    setDvdCommand(const QString &dvdCommand);
 
@@ -390,6 +424,10 @@ class Settings : public QObject
     QString m_weatherLightningMap;
     QString m_weatherRainRadar;
     QString m_weatherVideoForecast;
+    QString m_wuStationId;
+    QString m_wuAPIKey;
+    QString m_vcLocation;
+    QString m_vcAPIKey;
 
     QString m_dvdCommand;
     QString m_dvdParameters;
