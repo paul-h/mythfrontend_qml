@@ -18,7 +18,7 @@ FocusScope
     height: yscale(500)
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.verticalCenter: parent.verticalCenter
-    visible: false
+    visible: scale != 0
     scale: 0
     opacity: 0
 
@@ -157,7 +157,6 @@ FocusScope
             {
                 target: modalDialog
                 focus: false
-                visible: true
                 scale: 0
                 opacity: 0
             }
@@ -175,7 +174,6 @@ FocusScope
             {
                 target: modalDialog
                 focus: true
-                visible: true
                 scale: 1
                 opacity: 1
             }
