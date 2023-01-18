@@ -103,6 +103,10 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     setWeatherLightningMap(gContext->m_databaseUtils->getSetting("WeatherLightningMap", hostName));
     setWeatherRainRadar(gContext->m_databaseUtils->getSetting("WeatherRainRadar", hostName));
     setWeatherVideoForecast(gContext->m_databaseUtils->getSetting("WeatherVideoForecast", hostName));
+    setWuStationId(gContext->m_databaseUtils->getSetting("WUStationId", hostName));
+    setWuAPIKey(gContext->m_databaseUtils->getSetting("WUAPIKey", hostName));
+    setVcLocation(gContext->m_databaseUtils->getSetting("VCLocation", hostName));
+    setVcAPIKey(gContext->m_databaseUtils->getSetting("VCAPIKey", hostName));
 
     // dvd
     setDvdCommand(gContext->m_databaseUtils->getSetting("DvdCommand", hostName));
@@ -815,7 +819,7 @@ QString Settings::weatherCurrentConditions(void)
     return m_weatherCurrentConditions;
 }
 
-void    Settings::setWeatherCurrentConditions(const QString &currentConditions)
+void Settings::setWeatherCurrentConditions(const QString &currentConditions)
 {
      m_weatherCurrentConditions = currentConditions;
      emit weatherCurrentConditionsChanged();
@@ -826,7 +830,7 @@ QString Settings::weatherBBCForecast(void)
     return m_weatherBBCForecast;
 }
 
-void    Settings::setWeatherBBCForecast(const QString &BBCForecast)
+void Settings::setWeatherBBCForecast(const QString &BBCForecast)
 {
     m_weatherBBCForecast = BBCForecast;
     emit weatherBBCForecastChanged();
@@ -837,7 +841,7 @@ QString Settings::weatherMetOfficeForecast(void)
     return m_weatherMetOfficeForecast;
 }
 
-void    Settings::setWeatherMetOfficeForecast(const QString &metOfficeForecast)
+void Settings::setWeatherMetOfficeForecast(const QString &metOfficeForecast)
 {
     m_weatherMetOfficeForecast = metOfficeForecast;
     emit weatherMetOfficeForecastChanged();
@@ -848,7 +852,7 @@ QString Settings::weatherLightningMap(void)
     return m_weatherLightningMap;
 }
 
-void    Settings::setWeatherLightningMap(const QString &lightningMap)
+void Settings::setWeatherLightningMap(const QString &lightningMap)
 {
     m_weatherLightningMap = lightningMap;
     emit weatherLightningMapChanged();
@@ -859,7 +863,7 @@ QString Settings::weatherRainRadar(void)
     return m_weatherRainRadar;
 }
 
-void    Settings::setWeatherRainRadar(const QString &rainRadar)
+void Settings::setWeatherRainRadar(const QString &rainRadar)
 {
     m_weatherRainRadar = rainRadar;
     emit weatherRainRadarChanged();
@@ -870,10 +874,54 @@ QString Settings::weatherVideoForecast(void)
     return m_weatherVideoForecast;
 }
 
-void    Settings::setWeatherVideoForecast(const QString &videoForecast)
+void Settings::setWeatherVideoForecast(const QString &videoForecast)
 {
     m_weatherVideoForecast = videoForecast;
     emit weatherVideoForecastChanged();
+}
+
+QString Settings::wuStationId(void)
+{
+    return m_wuStationId;
+}
+
+void Settings::setWuStationId(const QString &stationId)
+{
+    m_wuStationId = stationId;
+    emit wuStationIdChanged();
+}
+
+QString Settings::wuAPIKey(void)
+{
+    return m_wuAPIKey;
+}
+
+void Settings::setWuAPIKey(const QString &apiKey)
+{
+    m_wuAPIKey = apiKey;
+    emit wuAPIKeyChanged();
+}
+
+QString Settings::vcLocation(void)
+{
+    return m_vcLocation;
+}
+
+void Settings::setVcLocation(const QString &location)
+{
+    m_vcLocation = location;
+    emit vcLocationChanged();
+}
+
+QString Settings::vcAPIKey(void)
+{
+    return m_vcAPIKey;
+}
+
+void Settings::setVcAPIKey(const QString &apiKey)
+{
+    m_vcAPIKey = apiKey;
+    emit vcAPIKeyChanged();
 }
 
 QString Settings::dvdCommand(void)
