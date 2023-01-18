@@ -208,13 +208,16 @@ BaseScreen
 
     function findArticleImage(index)
     {
-        if (feedModel.get(index) && feedModel.get(index).image !== "")
+        if (!feedModel.get(index))
+            return mythUtils.findThemeFile("images/grid_noimage.png");
+
+        if (feedModel.get(index).image !== "")
             return feedModel.get(index).image;
-        else if (feedModel.get(index) && feedModel.get(index).mediaContentUrl !== "")
+        else if (feedModel.get(index).mediaContentUrl !== "")
             return feedModel.get(index).mediaContentUrl;
-        else if (feedModel.get(index) && feedModel.get(index).mediaContentUrl2 !== "")
+        else if (feedModel.get(index).mediaContentUrl2 !== "")
             return feedModel.get(index).mediaContentUrl2;
-        else if (feedModel.get(index) && feedModel.get(index).enclosureType === "image" && feedModel.get(index).enclosureUrl !== "")
+        else if (feedModel.get(index).enclosureType === "image" && feedModel.get(index).enclosureUrl !== "")
             return feedModel.get(index).enclosureUrl;
         else if (rssFeedsModel.data(rssFeedsModel.index(feedList.currentIndex, 2)) !== "")
             return rssFeedsModel.data(rssFeedsModel.index(feedList.currentIndex, 2))
