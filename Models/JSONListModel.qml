@@ -14,6 +14,10 @@ Item
     property string json: ""
     property string query: ""
 
+    property alias workerSource: workerScript.source
+    property var parser: undefined
+    property var parserData: undefined
+
     property ListModel model : jsonModel
     property alias count: jsonModel.count
 
@@ -24,6 +28,25 @@ Item
         id: jsonModel
 
         signal loadingStatus(int status);
+    }
+
+    WorkerScript
+    {
+        id: workerScript
+        source: ""
+
+        onMessage:
+        {
+            if (messageObject.status === "Ready")
+            {
+                jsonModel.loadingStatus(XmlListModel.Ready);
+                loaded();
+            }
+            else if (messageObject.status === "Loading")
+            {
+                jsonModel.loadingStatus(XmlListModel.Loading);
+            }
+        }
     }
 
     onSourceChanged:
@@ -44,15 +67,23 @@ Item
             return;
 
         var objectArray = parseJSONString(json, query);
-        for ( var key in objectArray )
+
+        if (parser !== undefined)
         {
-            var jo = objectArray[key];
-            jsonModel.append( jo );
+            parser(objectArray, jsonModel, workerScript, parserData);
         }
+        else
+        {
+            for ( const key in objectArray )
+            {
+                var jo = objectArray[key];
+                jsonModel.append( jo );
+            }
 
-        loaded();
+            loaded();
 
-        jsonModel.loadingStatus(XmlListModel.Ready);
+            jsonModel.loadingStatus(XmlListModel.Ready);
+        }
     }
 
     function parseJSONString(jsonString, jsonPathQuery)
@@ -92,5 +123,10 @@ Item
     function reload()
     {
         doLoad();
+    }
+
+    function get(index)
+    {
+        return jsonModel.get(index);
     }
 }
