@@ -12,7 +12,7 @@ Item
     property var webcamList: webcamModel
     property var webvideoList: webvideoModel
     property var zmCameraList: zmMonitorsModel
-    property var iptvList: iptvModel.model
+    property var iptvList: iptvModel
     property var adhocList: undefined
     property var tivoChannelList: tivoChannelsModel
 
