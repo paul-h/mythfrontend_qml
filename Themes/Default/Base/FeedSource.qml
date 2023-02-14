@@ -589,14 +589,14 @@ Item
         else
             sorters = idSorter;
 
-        if (feedList.sourceModel !== playerSources.iptvList)
+        if (feedList.sourceModel !== playerSources.iptvList.model)
         {
             if (feedList.sourceModel)
                 feedList.sourceModel.loadingStatus.disconnect(handleModelStatusChange);
 
-            feedList.sourceModel = playerSources.iptvList;
+            feedList.sourceModel = playerSources.iptvList.model;
             handleModelStatusChange(XmlListModel.Ready);
-            //playerSources.iptvList.loadingStatus.connect(handleModelStatusChange);
+            //playerSources.iptvList.model.loadingStatus.connect(handleModelStatusChange);
         }
     }
 
