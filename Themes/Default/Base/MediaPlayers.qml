@@ -1064,6 +1064,13 @@ FocusScope
         }
     }
 
+    function hideMessage()
+    {
+        messageText.text = "";
+        messagePanel.visible = false;
+        messageTimer.stop();
+    }
+
     function mediaStatusChanged(mediaStatus)
     {
         if (mediaStatus === _mediaStatus)
@@ -1137,7 +1144,7 @@ FocusScope
         }
         else if (playbackStatus === MediaPlayers.PlaybackStatus.Playing)
         {
-            showMessage("", 0)
+            hideMessage();
         }
         else if (playbackStatus === MediaPlayers.PlaybackStatus.Paused)
         {
@@ -1160,7 +1167,7 @@ FocusScope
         }
 
         activeFeedChanged();
-        showMessage("", 0);
+        hideMessage();
 
         // we always need to restart the StreamLink/StreamBuffer process even if it is already running
         if (newPlayer === "StreamLink" || newPlayer === "StreamBuffer")
@@ -1183,8 +1190,6 @@ FocusScope
 
                 command = "streamlink"
                 parameters = ["--plugin-dirs", pluginPath, "--player-external-http", "--player-external-http-port", streamlinkPort, url, "best"]
-
-
             }
             else
             {
