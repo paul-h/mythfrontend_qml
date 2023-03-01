@@ -67,6 +67,9 @@ public:
     Q_INVOKABLE void setProperty(const QString &key, const QString &value);
     Q_INVOKABLE QString getProperty(const QString &key, const QString &defaultValue);
 
+    Q_INVOKABLE void record(const QString &filename, const QString &format);
+    Q_INVOKABLE bool isRecording() { return m_recording; }
+
     bool isAvailable(void);
 
     PlayerState playerState(void);
@@ -111,6 +114,7 @@ private:
     qint64        m_duration;
     bool          m_muted;
     float         m_volume;
+    bool          m_recording;
 };
 
 #endif // QMLMDKPLAYER_H

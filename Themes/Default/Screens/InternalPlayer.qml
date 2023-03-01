@@ -573,6 +573,19 @@ BaseScreen
         }
     }
 
+    Action
+    {
+        shortcut: "R" // record
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            if (getActivePlayer().isRecording())
+                getActivePlayer().stopRecording();
+            else
+                getActivePlayer().startRecording(settings.configPath + "recording.mkv", "");
+        }
+    }
+
     PlayerLayout
     {
         id: playerLayout

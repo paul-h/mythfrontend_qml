@@ -1433,6 +1433,32 @@ FocusScope
             videoPlayer.setFillMode(mode);
     }
 
+    function stopRecording()
+    {
+        if (player === "MDK")
+        {
+            videoPlayer.stopRecording();
+            showMessage("Recording Stopped");
+        }
+    }
+
+    function startRecording(filename, format)
+    {
+        if (player === "MDK")
+        {
+            videoPlayer.startRecording(filename, format);
+            showMessage("Recording Started");
+        }
+    }
+
+    function isRecording()
+    {
+        if (player === "MDK")
+            return videoPlayer.isRecording();
+
+        return false;
+    }
+
     function skipBack(time)
     {
         if (player === "VLC" || player === "FFMPEG" || player === "YouTube" || player === "MDK"|| player === "Tivo" || player === "WebBrowser")
