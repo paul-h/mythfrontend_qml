@@ -239,4 +239,19 @@ FocusScope
         else if (mode === VideoPlayerMDK.FillMode.PreserveAspectCrop)
             showMessage("Fill Mode: Crop", settings.osdTimeoutMedium);
     }
+
+    function startRecording(filename, format)
+    {
+        mediaplayer.record(filename, format);
+    }
+
+    function stopRecording()
+    {
+        mediaplayer.record(null, null);
+    }
+
+    function isRecording()
+    {
+        return mediaplayer.isRecording();
+    }
 }

@@ -60,7 +60,7 @@ public:
 
 QmlMDKPlayer::QmlMDKPlayer(QQuickItem *parent): QQuickFramebufferObject(parent),
     m_isAvailable(false), m_playerAPI(nullptr), m_updateTimer(new QTimer),m_mediaStatus(MediaStatusNoMedia),
-    m_playbackState(PlayerStateStopped), m_position(0), m_duration(0), m_muted(false), m_volume(1.0)
+    m_playbackState(PlayerStateStopped), m_position(0), m_duration(0), m_muted(false), m_volume(1.0), m_recording(false)
 {
     if (!gMDKAPI->isAvailable())
     {
@@ -380,4 +380,21 @@ void QmlMDKPlayer::setFillMode(int fillMode)
         aspectRatio = mdk::KeepAspectRatioCrop;
 
     m_playerAPI->setAspectRatio(m_playerAPI->object, aspectRatio, nullptr);
+}
+
+void QmlMDKPlayer::record(const QString &filename, const QString &format)
+{
+    if (!m_playerAPI)
+        return;
+
+    if (!filename.isEmpty())
+    {
+        m_playerAPI->record(m_playerAPI->object, filename.toLocal8Bit().data(), format.isEmpty() ? nullptr :  format.toLocal8Bit().data());
+        m_recording = true;
+    }
+    else
+    {
+        m_playerAPI->record(m_playerAPI->object, nullptr, nullptr);
+        m_recording = false;
+    }
 }
