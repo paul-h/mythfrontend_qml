@@ -772,7 +772,7 @@ FocusScope
             fontPixelSize: (_xscale(16) + _yscale(16)) / 2
             text:
             {
-                if (player === "VLC" || player === "YouTube" || player === "MDK")
+                if (videoPlayer !== undefined && (player === "VLC" || player === "YouTube" || player === "MDK"))
                     return "Position: " + Util.milliSecondsToString(videoPlayer.getPosition()) + " / " + Util.milliSecondsToString(videoPlayer.getDuration())
                 else
                     return "Position: N/A"
@@ -789,7 +789,7 @@ FocusScope
             fontPixelSize: (_xscale(16) + _yscale(16)) / 2
             text:
             {
-                if (player === "VLC" || player === "YouTube" || player === "MDK")
+                if (videoPlayer !== undefined && (player === "VLC" || player === "YouTube" || player === "MDK"))
                     return Util.milliSecondsToString(videoPlayer.getDuration() - videoPlayer.getPosition())
                 else
                     "Remaining : N/A"
@@ -890,7 +890,7 @@ FocusScope
                     {
                         var position = 1;
 
-                        if (player === "VLC" || player === "YouTube" || player === "MDK")
+                        if (videoPlayer !== undefined && (player === "VLC" || player === "YouTube" || player === "MDK"))
                             position = videoPlayer.getPosition() / videoPlayer.getDuration();
 
                         return (parent.width - anchors.leftMargin - anchors.rightMargin) * position;
@@ -1147,6 +1147,8 @@ FocusScope
 
     function switchPlayer(newPlayer)
     {
+        log.debug(Verbose.PLAYBACK, "MediaPlayers: switchPlayer -  newPlayer is: " + newPlayer);
+
         streamLinkProcess.stop();
         checkProcessTimer.running = false;
         streamLinkProcess.waitForFinished();
@@ -2094,7 +2096,7 @@ FocusScope
         var player = createPlayer(playerRect, mythUtils.findThemeFile("Base/VideoPlayerTivo.qml"),
                                   {
                                     "id" : "tivoPlayer",
-                                    "anchors.fill" : root,
+                                    "anchors.fill" : playerRect,
                                     "anchors.margins" : playerBorder.border.width
                                   });
 
@@ -2132,7 +2134,7 @@ FocusScope
 
         if (component.status === Component.Error)
         {
-            log.error(Verbose.GUI, "createPlayer: componant creation failed with error: " + component.errorString());
+            log.error(Verbose.GUI, "createPlayer: component creation failed with error: " + component.errorString());
             return undefined;
         }
 
