@@ -4,7 +4,6 @@
 #include <QQmlContext>
 #include <QQmlComponent>
 #include <QHostInfo>
-#include <QtWebEngine>
 #include <QUrl>
 #include <QDomDocument>
 #include <QFile>
@@ -65,8 +64,6 @@ Context::~Context(void)
 void Context::init()
 {
     m_engine = new QQmlApplicationEngine;
-
-    QtWebEngine::initialize();
 
     QCoreApplication::setApplicationName(m_appName);
     QCoreApplication::setAttribute(Qt::AA_X11InitThreads);
