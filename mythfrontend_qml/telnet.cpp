@@ -13,12 +13,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #include <QDebug>
 #include <QStringList>
 
+// mythqml
+#include "context.h"
+
 Telnet::Telnet(QObject *parent) :
     QObject(parent)
 {
     emit versionChanged();
 
-    qDebug() << "here we go";
+    gContext->m_logger->debug(Verbose::TELNET, "Telnet: constructor called");
+
     m_data = "N/A";
     m_connected = false;
     m_connecting = false;
@@ -36,6 +40,8 @@ Telnet::Telnet(QObject *parent) :
 
 Telnet::~Telnet()
 {
+    gContext->m_logger->debug(Verbose::TELNET, "Telnet: destructor called");
+    disconnectTelnet();
 }
 
 QString Telnet::readVersion()
@@ -45,14 +51,18 @@ QString Telnet::readVersion()
 
 void Telnet::connectToTelnet(QString host)
 {
+    m_host = host;
+
     qint16 port = 23;
 
     QStringList hostPort = host.split(":");
     if (hostPort.count() == 2)
         port = hostPort.at(1).toInt();
 
-    qDebug() << "Connecting to" << host << port;
+    gContext->m_logger->info(Verbose::TELNET, QString("Telnet: Connecting to %1 - %2").arg(hostPort.at(0)).arg(port));
+
     t->connectToHost(hostPort.at(0), port);
+
     m_connecting = true;
     emit connectingChanged();
 }
@@ -60,7 +70,7 @@ void Telnet::connectToTelnet(QString host)
 
 void Telnet::telnetConnected()
 {
-    qDebug() << "telnet connected";
+    gContext->m_logger->info(Verbose::TELNET, "Telnet: connected");
 
     m_connected = true;
     emit connectedChanged();
@@ -70,7 +80,7 @@ void Telnet::telnetConnected()
 
 void Telnet::disconnectTelnet()
 {
-    qDebug() << "disconnect";
+    gContext->m_logger->info(Verbose::TELNET, "Telnet: disconnected");
 
     t->close();
     m_connected = false;
@@ -79,14 +89,15 @@ void Telnet::disconnectTelnet()
 
 void Telnet::telnetError(QAbstractSocket::SocketError err)
 {
-    qDebug() << "error:" << err;
+    gContext->m_logger->info(Verbose::TELNET, QString("Telnet: error - %1").arg(err));
+
     m_connecting = false;
     emit connectingChanged();
 }
 
 void Telnet::telnetReceive(const QString &data)
 {
-    qDebug() << "receive:" << data;
+    gContext->m_logger->info(Verbose::TELNET, QString("Telnet: received - %1").arg(data));
 
     m_data = data;
     emit dataChanged();
@@ -94,6 +105,10 @@ void Telnet::telnetReceive(const QString &data)
 
 void Telnet::telnetSend(QString data)
 {
-    qDebug() << "send:" << data;
+    gContext->m_logger->info(Verbose::TELNET, QString("Telnet: send - %1").arg(data));
+
+    if (!m_connected)
+        connectToTelnet(m_host);
+
     t->sendData(data.append("\r"));
 }

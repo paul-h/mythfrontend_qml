@@ -61,6 +61,8 @@ void Logger::setVerbose(const QString &verbose)
             v |= Verbose::NETWORK;
         else if (verboseList[x].trimmed().toLower() == "libvlc")
             v |= Verbose::LIBVLC;
+        else if (verboseList[x].trimmed().toLower() == "telnet")
+            v |= Verbose::TELNET;
         else
             error(Verbose::GENERAL, QString("Logger::setVerbose - got bad verbose '%1'").arg(verboseList[x]));
     }
@@ -299,6 +301,9 @@ QString Logger::verboseToStr(Verbose verbose)
 
     if (verbose & Verbose::SERVICESAPI)
         verboseList.append("SERVICESAPI");
+
+    if (verbose & Verbose::TELNET)
+        verboseList.append("TELNET");
 
     if (verbose & Verbose::WEBSOCKET)
         verboseList.append("WEBSOCKET");
