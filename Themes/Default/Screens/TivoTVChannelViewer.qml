@@ -24,9 +24,12 @@ BaseScreen
     property var _nowProgJson: undefined
     property var _nextProgJson: undefined
 
+    property bool _startingUp: true
+
     property bool videoPlayerFullscreen: false
 
     property var nextProgObj
+
     signal feedSelected(string feedSource, string filter, int index)
 
     Component.onCompleted:
@@ -450,6 +453,15 @@ BaseScreen
                 if (playerSources.tivoChannelList.get(x).ChanNo === channel)
                 {
                     programStatus.text = playerSources.tivoChannelList.get(x).ChanNo + " - " + playerSources.tivoChannelList.get(x).Name;
+
+                    // if this is the first channel change select the channel in the grid
+                    if (_startingUp)
+                    {
+                        _startingUp = false;
+                        channelGrid.currentIndex = x;
+                        updateChannelDetails();
+                    }
+
                     return;
                 }
             }
