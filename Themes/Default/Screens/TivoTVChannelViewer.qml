@@ -622,9 +622,21 @@ BaseScreen
                     var nowProgID = program.programID;
                     root._nowScheduleJson = program;
 
-                    var nextProgram = json[day].programs[x + 1];
-                    root._nextScheduleJson = nextProgram;
-                    var nextProgID = nextProgram.programID;
+                    var nextProgram;
+                    var nextProgID;
+
+                    if (json[day].programs.length <= x + 1)
+                    {
+                        nextProgram = json[day + 1].programs[0];
+                        root._nextScheduleJson = nextProgram;
+                        nextProgID = nextProgram.programID;
+                    }
+                    else
+                    {
+                        nextProgram = json[day].programs[x + 1];
+                        root._nextScheduleJson = nextProgram;
+                        nextProgID = nextProgram.programID;
+                    }
 
                     sdAPI.getPrograms([nowProgID, nextProgID], updateNowNext);
                     found =  true;
