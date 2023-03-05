@@ -46,9 +46,9 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
-    QGuiApplication *app = new QApplication(argc, argv);
-
     QtWebEngine::initialize();
+
+    QGuiApplication *app = new QApplication(argc, argv);
 
     QCoreApplication::setApplicationName("mythfrontend_qml");
     QCoreApplication::setApplicationVersion(APP_VERSION);
@@ -67,14 +67,14 @@ int main(int argc, char *argv[])
     // add verbose option
     QCommandLineOption verboseOption(QStringList() << "d" << "verbose",
                                      QCoreApplication::translate("main", "Set verbose levels one or more of ALL, GENERAL, MODEL, PROCESS, GUI, "
-                                                                             "DATABASE, FILE, WEBSOCKET, SERVICESAPI, PLAYBACK, NETWORK, LIBVLC."),
+                                                                             "DATABASE, FILE, WEBSOCKET, SERVICESAPI, PLAYBACK, NETWORK, LIBVLC, TELNET."),
                                      QCoreApplication::translate("main", "verbose"));
     parser.addOption(verboseOption);
 
     // add jump option
     QCommandLineOption jumpOption(QStringList() << "j" << "jumpto",
                                      QCoreApplication::translate("main", "Jump to a screen on startup. Useful for testing to quickly jump to a screen. "
-                                                                         "The name of th jump must match ones from JumpModel"),
+                                                                         "The name of the jump must match ones from JumpModel"),
                                      QCoreApplication::translate("main", "verbose"));
     parser.addOption(jumpOption);
 

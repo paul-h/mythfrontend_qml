@@ -42,6 +42,7 @@ public slots:
 private:
 
     QtTelnet* t;
+    QString m_host;
     QString m_data;
     bool m_connected;
     bool m_connecting;
