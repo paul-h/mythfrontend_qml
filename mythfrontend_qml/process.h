@@ -55,6 +55,11 @@ public:
         return QProcess::waitForFinished(msecs);
     }
 
+    Q_INVOKABLE bool waitForStarted(int msecs = 30000)
+    {
+        return QProcess::waitForFinished(msecs);
+    }
+
     Q_INVOKABLE int exitCode()
     {
         return QProcess::exitCode();
