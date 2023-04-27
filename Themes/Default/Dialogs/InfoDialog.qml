@@ -56,6 +56,7 @@ BaseDialog
                     wrapMode: TextEdit.WordWrap
                     textFormat: TextEdit.RichText
                     readOnly: true
+                    background.opacity: 0.0
                 }
 
             ScrollBar.vertical: ScrollBar { }
