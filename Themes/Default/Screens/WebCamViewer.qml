@@ -74,6 +74,10 @@ BaseScreen
         if (!checkedForUpdates)
             return;
 
+        var link;
+        var parts;
+        var x;
+
         event.accepted = true;
 
         if (event.key === Qt.Key_M)
@@ -82,8 +86,51 @@ BaseScreen
 
             popupMenu.addMenuItem("", "Switch WebCam List");
             popupMenu.addMenuItem("", "Reload");
-            for (var x = 0; x < playerSources.webcamList.webcamList.count; x++)
+            for (x = 0; x < playerSources.webcamList.webcamList.count; x++)
                 popupMenu.addMenuItem("0", playerSources.webcamList.webcamList.get(x).title, x, (feedSource.webcamListIndex == x ? true : false));
+
+            // add website
+            if (getLink("website0") !== undefined)
+            {
+                popupMenu.addMenuItem("", "Related Websites");
+
+                for (x = 0; x < 10; x++)
+                {
+                    link = getLink("website" + x);
+                    if (link !== undefined)
+                    {
+                        parts = link.split("|");
+                        if (parts.length === 4)
+                        {
+                            var title = parts[0];
+                            var width = parseInt(parts[1]);
+                            var zoom = parseFloat(parts[2]);
+                            var actualurl = parts[3];
+                            popupMenu.addMenuItem("2", title, "webpage|" + link, false);
+                        }
+                    }
+                }
+            }
+
+            // add videos
+            if (getLink("video0") !== undefined)
+            {
+                popupMenu.addMenuItem("", "Related Videos");
+
+                for (x = 0; x < 10; x++)
+                {
+                    link = getLink("video" + x);
+                    if (link !== undefined)
+                    {
+                        parts = link.split("|");
+                        if (parts.length >= 3)
+                        {
+                            var title = parts[0];
+                            popupMenu.addMenuItem("3", title, "video|" + link, false);
+                        }
+                    }
+                }
+            }
 
             popupMenu.show();
         }
@@ -342,6 +389,13 @@ BaseScreen
         source: mythUtils.findThemeFile("images/radio.webp")
     }
 
+    Image
+    {
+        id: videoIcon
+        x: _xscale(800); y: yscale(635); width: xscale(32); height: yscale(32)
+        source: mythUtils.findThemeFile("images/video.png")
+    }
+
     Footer
     {
         id: footer
@@ -388,6 +442,20 @@ BaseScreen
         }
     }
 
+    ListModel
+    {
+        id: mediaModel
+        ListElement
+        {
+            no: "1"
+            title: ""
+            icon: ""
+            url: ""
+            player: "YouTubeTV"
+            duration: ""
+        }
+    }
+
     PopupMenu
     {
         id: popupMenu
@@ -403,6 +471,35 @@ BaseScreen
             {
                 savedID = webcamGrid.model.get(webcamGrid.currentIndex).id;
                 playerSources.webcamList.models[feedSource.webcamListIndex].model.reload();
+            }
+            else if (itemData.startsWith("video"))
+            {
+                var list = itemData.split("|");
+                if (list.length >= 4)
+                {
+                    mediaModel.get(0).title = list[1];
+                    mediaModel.get(0).player = list[2];
+                    mediaModel.get(0).url = list[3];
+
+                    if (list.length === 5)
+                        mediaModel.get(0).icon = list[4];
+
+                    playerSources.adhocList = mediaModel;
+                    var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0}});
+                }
+            }
+            else if (itemData.startsWith("webpage"))
+            {
+                var list = itemData.split("|");
+                if (list.length === 5)
+                {
+                    var title = list[1];
+                    var width = parseInt(list[2]);
+                    var zoom = xscale(1.0) //parseFloat(list[3]);
+                    var url = list[4];
+
+                    stack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: url, zoomFactor: zoom}});
+                }
             }
             else if (itemData !== "")
             {
@@ -547,8 +644,9 @@ BaseScreen
         // icon
         webcamIcon.source = getIconURL(webcamGrid.model.get(webcamGrid.currentIndex).icon);
 
-        websiteIcon.visible = ((webcamGrid.model.get(webcamGrid.currentIndex).website !== undefined && webcamGrid.model.get(webcamGrid.currentIndex).website !== "" ) ? true : false)
-        radioFeedIcon.visible = (getLink("radio_feed0") !== undefined ? true : false)
+        websiteIcon.visible = ((webcamGrid.model.get(webcamGrid.currentIndex).website !== undefined && webcamGrid.model.get(webcamGrid.currentIndex).website !== "" ) ? true : false);
+        radioFeedIcon.visible = (getLink("radio_feed0") !== undefined ? true : false);
+        videoIcon.visible = (getLink("video0") !== undefined ? true : false)
     }
 
     function getLink(linktype)
