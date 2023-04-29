@@ -1,6 +1,6 @@
-import QtQuick 2.0
+import QtQuick 2.15
 import Base 1.0
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.15
 
 BaseDialog
 {
@@ -56,7 +56,7 @@ BaseDialog
                     wrapMode: TextEdit.WordWrap
                     textFormat: TextEdit.RichText
                     readOnly: true
-                    background.opacity: 0.0
+                    Component.onCompleted: if (background) background.opacity = 0.0
                 }
 
             ScrollBar.vertical: ScrollBar { }
