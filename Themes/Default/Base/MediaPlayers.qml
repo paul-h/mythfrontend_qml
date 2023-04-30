@@ -21,7 +21,7 @@ FocusScope
     property int streamlinkPort: Util.randomIntFromRange(4000, 65536)
     property string commandlog
 
-    // one of Internal, VLC, MDK, WebBrowser, YouTube, YouTubeTV, RailCam, RailCamYT, StreamLink, StreamBuffer, Tivo
+    // one of Internal, VLC, MDK, WebBrowser, YouTube, YouTubeTV, RailCam, StreamLink, StreamBuffer, Tivo
     property string player: ""
     property var videoPlayer: undefined
 
@@ -772,7 +772,7 @@ FocusScope
             fontPixelSize: (_xscale(16) + _yscale(16)) / 2
             text:
             {
-                if (videoPlayer !== undefined && (player === "VLC" || player === "YouTube" || player === "RailCamYT" || player === "MDK"))
+                if (videoPlayer !== undefined && (player === "VLC" || player === "YouTube" || player === "MDK"))
                     return "Position: " + Util.milliSecondsToString(videoPlayer.getPosition()) + " / " + Util.milliSecondsToString(videoPlayer.getDuration())
                 else
                     return "Position: N/A"
@@ -789,7 +789,7 @@ FocusScope
             fontPixelSize: (_xscale(16) + _yscale(16)) / 2
             text:
             {
-                if (videoPlayer !== undefined && (player === "VLC" || player === "YouTube" || player === "RailCamYT" || player === "MDK"))
+                if (videoPlayer !== undefined && (player === "VLC" || player === "YouTube" || player === "MDK"))
                     return Util.milliSecondsToString(videoPlayer.getDuration() - videoPlayer.getPosition())
                 else
                     "Remaining : N/A"
@@ -840,7 +840,7 @@ FocusScope
             }
             blueText:
             {
-                if (player === "RailCam")
+                if (feedHasRailCamData())
                     "Show RailCam Info";
                 else
                     "";
@@ -890,7 +890,7 @@ FocusScope
                     {
                         var position = 1;
 
-                        if (videoPlayer !== undefined && (player === "VLC" || player === "YouTube" || player === "RailCamYT" || player === "MDK"))
+                        if (videoPlayer !== undefined && (player === "VLC" || player === "YouTube" || player === "MDK"))
                             position = videoPlayer.getPosition() / videoPlayer.getDuration();
 
                         return (parent.width - anchors.leftMargin - anchors.rightMargin) * position;
@@ -988,7 +988,7 @@ FocusScope
             }
             blueText:
             {
-                if (player === "RailCam")
+                if (feedHasRailCamData())
                     "Show RailCam Info";
                 else
                     "";
@@ -1251,7 +1251,7 @@ FocusScope
         {
             createWebPlayer();
         }
-        else if (newPlayer === "YouTube"|| newPlayer === "RailCamYT")
+        else if (newPlayer === "YouTube")
         {
             // this uses the embedded YouTube player
             createYoutubePlayer();
@@ -1307,7 +1307,7 @@ FocusScope
             videoPlayer.profile = youtubeWebProfile;
             videoPlayer.url = newURL;
         }
-        else if (root.player === "YouTube" || root.player === "RailCamYT")
+        else if (root.player === "YouTube")
         {
             var videoID = "''";
             var pos = newURL.indexOf("=");
@@ -1372,7 +1372,7 @@ FocusScope
         checkProcessTimer.running = false;
         streamLinkProcess.waitForFinished();
 
-        if (player === "VLC" || player === "FFMPEG" || player === "YouTube" || player === "RailCamYT" || player === "MDK"|| player === "TIVO")
+        if (player === "VLC" || player === "FFMPEG" || player === "YouTube" || player === "MDK"|| player === "TIVO")
             videoPlayer.stop();
         else if (videoPlayer === "WebBrowser")
             videoPlayer.url = "about:blank";
@@ -1436,7 +1436,7 @@ FocusScope
 
     function setFillMode(mode)
     {
-        if (player === "VLC" || player === "FFMPEG" || player === "YouTube" || player === "RailCamYT" || player === "MDK"|| player === "Tivo")
+        if (player === "VLC" || player === "FFMPEG" || player === "YouTube" || player === "MDK"|| player === "Tivo")
             videoPlayer.setFillMode(mode);
     }
 
@@ -1468,13 +1468,13 @@ FocusScope
 
     function skipBack(time)
     {
-        if (player === "VLC" || player === "FFMPEG" || player === "YouTube" || player === "RailCamYT" || player === "MDK"|| player === "Tivo" || player === "WebBrowser")
+        if (player === "VLC" || player === "FFMPEG" || player === "YouTube" || player === "MDK"|| player === "Tivo" || player === "WebBrowser")
             videoPlayer.skipBack(time);
     }
 
     function skipForward(time)
     {
-        if (player === "VLC" || player === "FFMPEG" || player === "YouTube" || player === "RailCamYT" || player === "MDK"|| player === "Tivo" || player === "WebBrowser")
+        if (player === "VLC" || player === "FFMPEG" || player === "YouTube" || player === "MDK"|| player === "Tivo" || player === "WebBrowser")
             videoPlayer.skipForward(time);
     }
 
@@ -1744,7 +1744,7 @@ FocusScope
         }
 
         // if a RailCam feed add 'On The Camera Today/Tomorrow' webpages
-        if (player === "RailCam" || player === "RailCamYT")
+        if (player === "RailCam" || feedHasRailCamData())
         {
             browserURLList.append({"title": "RailCam - On the cameras today", "url": "http://news.railcam.uk/index.php/category/today/", "width" : 500, "zoom": 1.0});
             browserURLList.append({"title": "RailCam - On the cameras tomorrow", "url": "http://news.railcam.uk/index.php/category/tomorrow/", "width" : 500, "zoom": 1.0});
@@ -1812,7 +1812,7 @@ FocusScope
 
     function updateRailcamApproach()
     {
-        if (infoPanel.visible || (player !== "RailCam" && player !== "RailCamYT"))
+        if (infoPanel.visible || !feedHasRailCamData())
         {
             railcamApproaching.visible = false;
             railcamMiniDiagram.visible = false;
@@ -1825,6 +1825,11 @@ FocusScope
             railcamApproaching.visible = showRailcamApproach;
             railcamMiniDiagram.visible = showRailcamDiagram;
         }
+    }
+
+    function feedHasRailCamData()
+    {
+        return (getLink("railcam_approach") !== undefined || getLink("railcam_minidiagram") !== undefined);
     }
 
     function nextURL()
