@@ -77,6 +77,7 @@ BaseScreen
         var link;
         var parts;
         var x;
+        var addedWebsites = false;
 
         event.accepted = true;
 
@@ -85,12 +86,12 @@ BaseScreen
             popupMenu.clearMenuItems();
 
             popupMenu.addMenuItem("", "Switch WebCam List");
-            popupMenu.addMenuItem("", "Reload");
+
             for (x = 0; x < playerSources.webcamList.webcamList.count; x++)
                 popupMenu.addMenuItem("0", playerSources.webcamList.webcamList.get(x).title, x, (feedSource.webcamListIndex == x ? true : false));
 
             // add website
-            if (getLink("website0") !== undefined)
+            if (getLink("website0") !== undefined || feedHasRailCamData())
             {
                 popupMenu.addMenuItem("", "Related Websites");
 
@@ -106,10 +107,18 @@ BaseScreen
                             var width = parseInt(parts[1]);
                             var zoom = parseFloat(parts[2]);
                             var actualurl = parts[3];
-                            popupMenu.addMenuItem("2", title, "webpage|" + link, false);
+                            popupMenu.addMenuItem("1", title, "webpage|" + link, false);
                         }
                     }
                 }
+
+                if (feedHasRailCamData())
+                {
+                    popupMenu.addMenuItem("1", "RailCam - On the cameras today", "webpage|RailCam - On the cameras today|800|1.0|http://news.railcam.uk/index.php/category/today/", false);
+                    popupMenu.addMenuItem("1", "RailCam - On the cameras tomorrow", "webpage|RailCam - On the cameras tomorrow|800|1.0|http://news.railcam.uk/index.php/category/tomorrow/", false);
+                }
+
+                addedWebsites = true;
             }
 
             // add videos
@@ -126,11 +135,13 @@ BaseScreen
                         if (parts.length >= 3)
                         {
                             var title = parts[0];
-                            popupMenu.addMenuItem("3", title, "video|" + link, false);
+                            popupMenu.addMenuItem(addedWebsites ? "2" : "1", title, "video|" + link, false);
                         }
                     }
                 }
             }
+
+            popupMenu.addMenuItem("", "Reload");
 
             popupMenu.show();
         }
@@ -665,6 +676,11 @@ BaseScreen
         }
 
         return undefined;
+    }
+
+    function feedHasRailCamData()
+    {
+        return (getLink("railcam_approach") !== undefined || getLink("railcam_minidiagram") !== undefined);
     }
 
     function checkForUpdates()
