@@ -318,18 +318,53 @@ bool Context::initMythQMLDB(void)
     if (!m_mythQMLDB.isOpen())
         return false;
 
-    QStringList tables = m_mythQMLDB.tables();
-    if (tables.contains("settings", Qt::CaseInsensitive))
-        return true;
-
     QSqlQuery q(m_mythQMLDB);
-    if (!q.exec(QLatin1String("CREATE TABLE settings ("
+
+    if (!q.exec(QLatin1String("CREATE TABLE IF NOT EXISTS settings ("
                               "    value VARCHAR(128) PRIMARY KEY,"
                               "    data VARCHAR(16000) NOT NULL default '',"
                               "    hostname VARCHAR(64) default NULL"
                               ");")))
     {
-        m_logger->error(Verbose::GENERAL, "Context: Failed to create settings table error - " + q.lastError().text());
+            m_logger->error(Verbose::GENERAL, "Context: Failed to create settings table error - " + q.lastError().text());
+            return false;
+    }
+
+    if (!q.exec(QLatin1String("CREATE TABLE IF NOT EXISTS recordings ("
+                              "    recordid INTEGER PRIMARY KEY,"
+                              "    title VARCHAR(64) default NULL,"
+                              "    subtitle VARCHAR(64) default NULL,"
+                              "    description VARCHAR(64) default NULL,"
+                              "    category VARCHAR(64) default NULL,"
+                              "    chanid VARCHAR(64) default NULL,"
+                              "    channum VARCHAR(64) default NULL,"
+                              "    channame VARCHAR(64) default NULL,"
+                              "    recgroup VARCHAR(64) default NULL,"
+                              "    starttime VARCHAR(64) default NULL,"
+                              "    airdate VARCHAR(64) default NULL,"
+                              "    filename VARCHAR(64) default NULL,"
+                              "    hostname VARCHAR(64) default NULL"
+                              ");")))
+    {
+        m_logger->error(Verbose::GENERAL, "Context: Failed to create recordings table error - " + q.lastError().text());
+        return false;
+    }
+
+    if (!q.exec(QLatin1String("CREATE TABLE IF NOT EXISTS bookmarks ("
+                              "bookmarkid INTEGER NOT NULL,"
+                              "website TEXT NOT NULL,"
+                              "title TEXT NOT NULL,"
+                              "categories TEXT NOT NULL,"
+                              "url TEXT NOT NULL,"
+                              "iconurl TEXT NOT NULL,"
+                              "date_added TEXT NOT NULL,"
+                              "date_modified TEXT NOT NULL,"
+                              "date_visited	TEXT NOT NULL,"
+                              "visited_count INTEGER NOT NULL DEFAULT 0,"
+                              "PRIMARY KEY(bookmarkid AUTOINCREMENT)"
+                              ");")))
+    {
+        m_logger->error(Verbose::GENERAL, "Context: Failed to create bookmarks table error - " + q.lastError().text());
         return false;
     }
 
@@ -374,6 +409,7 @@ QString Context::getOSVersion(void)
           {
               line = line.remove("PRETTY_NAME=");
               line = line.remove("\"");
+              inputFile.close();
               return line;
           }
        }
