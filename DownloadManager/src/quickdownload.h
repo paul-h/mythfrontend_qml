@@ -118,6 +118,7 @@ signals:
 
 public slots:
     void start();
+    void start(const QString &url);
     void start(QUrl url);
     void start(QObject* data);
     void stop();
