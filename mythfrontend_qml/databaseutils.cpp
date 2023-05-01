@@ -175,3 +175,112 @@ bool DatabaseUtils::setSetting(QString settingName, QString hostName, QString va
 
     return success;
 }
+
+// recordings
+
+void DatabaseUtils::updateRecording(int recordid, const QString &title, const QString &subtitle, const QString &description, const QString &category,
+                                    const QString &chanid, const QString &channum, const QString &callsign, const QString &channelname, const QString &recgroup,
+                                    const QString &starttime, const QString & airdate, const QString &filename, const QString &hostname)
+{
+    gContext->m_logger->debug(Verbose::DATABASE,
+                              QString("DatabaseUtils::updateRecording: recordid is: %1, title is: %2, subtitle is: %3, description is: %4, category is: %5"
+                                      "chanid is: %6, channum is: %7, callsign is: %8, channelname is: %9, recgroup is: %10, starttime is: %11, airdate is: %11"
+                                      "filemame is: %12, hostname is: %13")
+                              .arg(recordid).arg(title).arg(subtitle).arg(description).arg(category).arg(chanid).arg(channum).arg(callsign)
+                              .arg(channelname).arg(starttime).arg(airdate).arg(filename).arg(hostname));
+
+    QSqlQuery query(gContext->m_mythQMLDB);
+    query.prepare("UPDATE recordings SET title = :TITLE, subtitle = :SUBTITLE, description = :DESCRIPTION, category = :CATEGORY, "
+                  "chanid = :CHANID, channum = :CHANNUM, callsign = :CALLSIGN, channelname = :CHANNELNAME, recgroup = : RECGROUP, "
+                  "starttime = :STARTTIME, airdate = :AIRDATE, filename = :FILENAME, hostname = :HOSTNAME "
+                  "WHERE recordid = :RECORDID;"
+    "VALUES (:id, :forename, :surname)");
+    query.bindValue(":RECORDID", QString("%1").arg(recordid));
+    query.bindValue(":TITLE", title);
+    query.bindValue(":SUBTITLE", subtitle);
+    query.bindValue(":DESCRIPTION", description);
+    query.bindValue(":CATEGORY", category);
+    query.bindValue(":CHANID", chanid);
+    query.bindValue(":CHANNUM", channum);
+    query.bindValue(":CALLSIGN", callsign);
+    query.bindValue(":CHANNELNAME", channelname);
+    query.bindValue(":RECGROUP", recgroup);
+    query.bindValue(":STARTTIME", starttime);
+    query.bindValue(":AIRDATE", airdate);
+    query.bindValue(":FILENAME", filename);
+    query.bindValue(":HOSTNAME", hostname);
+    query.exec();
+
+    gContext->m_mythQMLDB.commit();
+
+}
+
+// browser bookmark
+
+int DatabaseUtils::addBrowserBookmark(const QString &website, const QString &title, const QString &category, const QString &url, const QString &iconUrl)
+{
+    gContext->m_logger->debug(Verbose::DATABASE,
+                              QString("DatabaseUtils::addBrowserBookmark: website is: %1, title is: %2, category is: %3, url is: %4, iconUrl is: %5")
+                              .arg(website).arg(title).arg(category).arg(url).arg(iconUrl));
+
+    QSqlQuery query(gContext->m_mythQMLDB);
+    query.prepare("INSERT INTO bookmarks (website, title, category, url, iconurl, date_added, date_modified, date_visited, visited_count) "
+                  "VALUES (:WEBSITE, :TITLE, :CATEGORY, :URL, :ICONURL, :DATE_ADDED, :DATE_MODIFIED, :DATE_VISITED, :VISITED_COUNT);");
+    query.bindValue(":WEBSITE", website);
+    query.bindValue(":TITLE", title);
+    query.bindValue(":CATEGORY", category);
+    query.bindValue(":URL", url);
+    query.bindValue(":ICONURL", iconUrl);
+    query.bindValue(":DATE_ADDED", QDateTime::currentDateTime().toString(Qt::ISODate));
+    query.bindValue(":DATE_MODIFIED", QDateTime::currentDateTime().toString(Qt::ISODate));
+    query.bindValue(":DATE_VISITED", "");
+    query.bindValue(":VISITED_COUNT", 0);
+
+    if (!query.exec())
+    {
+        gContext->m_logger->error(Verbose::GENERAL, QString("DatabaseUtils::addBrowserBookmark ERROR: %1 - %2").arg(query.lastError().text()).arg(query.executedQuery()));
+        return -1;
+    }
+
+    gContext->m_mythQMLDB.commit();
+
+    return query.lastInsertId().toInt();
+}
+
+void DatabaseUtils::updateBrowserBookmark(int bookmarkid, const QString &website, const QString &title, const QString &category, const QString &url, const QString &iconUrl)
+{
+    gContext->m_logger->debug(Verbose::DATABASE,
+                              QString("DatabaseUtils::updateBrowserBookmark: bookmarkid is: %1, website is: %2, title is: %3, category is: %4, url is: %5, iconUrl is: %6")
+                              .arg(bookmarkid).arg(website).arg(title).arg(category).arg(url).arg(iconUrl));
+
+    QSqlQuery query(gContext->m_mythQMLDB);
+    query.prepare("UPDATE bookmarks SET website = :WEBSITE, title = :TITLE, category = :CATEGORY, url = :URL, iconurl = :ICONURL, date_modified = :DATE_MODIFIED "
+                  "WHERE bookmarkid = :BOOKMARTKID;");
+    query.bindValue(":WEBSITE", website);
+    query.bindValue(":TITLE", title);
+    query.bindValue(":CATEGORY", category);
+    query.bindValue(":URL", url);
+    query.bindValue(":ICONURL", iconUrl);
+    query.bindValue(":DATE_MODIFIED", QDateTime::currentDateTime().toString(Qt::ISODate));
+    query.bindValue(":BOOKMARTKID", bookmarkid);
+
+    if (!query.exec())
+    {
+        gContext->m_logger->error(Verbose::GENERAL, QString("DatabaseUtils::updateBrowserBookmark ERROR: %1 - %2").arg(query.lastError().text()).arg(query.executedQuery()));
+    }
+
+    gContext->m_mythQMLDB.commit();
+
+}
+
+void DatabaseUtils::deleteBrowserBookmark(int bookmarkid)
+{
+    gContext->m_logger->debug(Verbose::DATABASE, QString("DatabaseUtils::deleteBrowserBookmark: bookmarkid is: %1").arg(bookmarkid));
+
+    QSqlQuery query(gContext->m_mythQMLDB);
+    query.prepare("DELETE FROM bookmarks WHERE bookmarkid = :BOOKMARTKID;");
+    query.bindValue(0, bookmarkid);
+    query.exec();
+
+    gContext->m_mythQMLDB.commit();
+}
