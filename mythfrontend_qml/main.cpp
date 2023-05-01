@@ -108,6 +108,7 @@ int main(int argc, char *argv[])
     // register our QML types
     qmlRegisterType<SvgImage>("SvgImage", 1, 0, "SvgImage");
     qmlRegisterType<FileIO, 1>("FileIO", 1, 0, "FileIO");
+    qmlRegisterType<SqlQueryModel, 1>("SqlQueryModel", 1, 0, "SqlQueryModel");
 
     // these are frontend only
 
