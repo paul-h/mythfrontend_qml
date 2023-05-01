@@ -246,6 +246,11 @@ void QuickDownload::start()
     start(_url);
 }
 
+void QuickDownload::start(const QString &url)
+{
+    start(QUrl(url));
+}
+
 void QuickDownload::start(QObject* data)
 {
     _partList = dynamic_cast<QAbstractListModel*>(data);
