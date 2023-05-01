@@ -14,6 +14,16 @@ void DownloadManager::append(const QUrl &url)
     gContext->m_logger->debug(Verbose::NETWORK, "DownloadManager: append - " + url.toString());
     DownloadInfo *dl = new DownloadInfo(url);
 
+    // check for duplicate downloads
+    for (int x = 0; x < m_downloadQueue.count(); x++)
+    {
+        if (m_downloadQueue.at(x)->getUrl().toString() == url.toString())
+        {
+            gContext->m_logger->info(Verbose::NETWORK, QString("DownloadManager: got duplicate url - %1").arg(url.toString()));
+            return;
+        }
+    }
+
     m_downloadQueue.enqueue(dl);
 
     if (m_downloadQueue.size() == 1)
