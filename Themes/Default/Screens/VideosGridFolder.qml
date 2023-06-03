@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import "../../../Models"
-import Qt.labs.folderlistmodel 2.1
+import Qt.labs.folderlistmodel 2.5
 import Base 1.0
 import Process 1.0
 import Dialogs 1.0
@@ -189,7 +189,8 @@ BaseScreen
         {
             id: folderModel
             folder: settings.videoPath
-            nameFilters: ["*.mp4", "*.flv", "*.mp2", "*.wmv", "*.avi", "*.mkv", "*.mpg", "*.iso", "*.ISO", "*.mov", "*.webm"]
+            caseSensitive: false
+            nameFilters: ["*.mp4", "*.flv", "*.mp2", "*.wmv", "*.avi", "*.mkv", "*.mpg", "*.iso", "*.mov", "*.webm", "*.img"]
         }
 
         model: folderModel
@@ -217,7 +218,8 @@ BaseScreen
             }
             else
             {
-                if (model.get(currentIndex, "filePath").endsWith(".ISO") || model.get(currentIndex, "filePath").endsWith(".iso"))
+                if (model.get(currentIndex, "filePath").endsWith(".ISO") || model.get(currentIndex, "filePath").endsWith(".iso") ||
+                    model.get(currentIndex, "filePath").endsWith(".IMG") || model.get(currentIndex, "filePath").endsWith(".img"))
                 {
                     playDVD(model.get(currentIndex, "filePath"))
                 }
