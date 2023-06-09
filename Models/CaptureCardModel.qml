@@ -10,6 +10,7 @@ XmlListModel
     query: "/CaptureCardList/CaptureCards/CaptureCard"
 
     XmlRole { name: "CardId"; query: "CardId/string()" }
+    XmlRole { name: "ParentId"; query: "Id/number()" }
     XmlRole { name: "HostName"; query: "HostName/string()" }
     XmlRole { name: "StartChannel"; query: "StartChanel/number()" }
     XmlRole { name: "DisplayName"; query: "DisplayName/string()" }
