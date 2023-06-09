@@ -96,16 +96,16 @@ Item
                         //getLineupPreview("GBR-1008053-DEFAULT", debugLineupPreviewCallback);
                         //getLineups(debugCallback);
                         //getLineup("GBR-1000041-DEFAULT", debugCallback);
-                        //getPrograms('["MV002856960000"]', debugCallback)
+                        getPrograms('["EP012811800381"]', debugCallback)
                         //getGenericDescription('["EP016736560025"]', debugCallback)
-                        //getArtwork('["EP01673656"]', debugCallback)
+                        //getArtwork('["EP01281180"]', debugCallback)
                         //getCastImages(58321, debugCallback);
 
 
-                        //var stations = ["24325", "50059"];
-                        //var dates = ["2022-09-13", "2022-09-14"];
+                        var stations = ["24325", "68051"];
+                        var dates = ["2023-06-01", "2023-06-02"];
                         //getLastModified(stations, dates, debugCallback)
-                        //getSchedule(stations, dates, , debugCallback);
+                        //getSchedule(stations, dates, debugCallback);
                     }
                     else
                     {
@@ -231,7 +231,7 @@ Item
 
     function getCastImages(nameID, callback)
     {
-        apiRequest("GET", apiBaseURL + apiVersion + "/metadata/celebrity/" + nameID, "", false, callback);
+        apiRequest("GET", apiBaseURL + apiVersion + "/metadata/celebrity/" + nameID, "", true, callback);
     }
 
     function getLastModified(stationIDs, dates, callback)
