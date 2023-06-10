@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import Base 1.0
 import mythqml.net 1.0
+import Models 1.0
 
 FocusScope
 {
@@ -9,23 +10,36 @@ FocusScope
     property int columns: 1
     property int spacing: 5
 
+    property var sourceTree: undefined
+    property string basePath: ""
     property var model: treeModel
 
     property var lists: [];
 
+    property int currentIndex: 0
+    property int currentLevel: 0
+
     // private properties
     property int _focusedList: 0
     property int _leftList: 0
+    property string _savedPath: ""
 
     signal nodeClicked(var node)
     signal nodeSelected(var node)
+    signal posChanged(int level, int index, int count)
 
     Component.onCompleted:
     {
         lists.push(createList(0, model));
         lists[0].focus = true;
         _focusedList = 0;
-        nodeSelectedHandler(0, 0);
+        //nodeSelectedHandler(0, 0);
+    }
+
+    onBasePathChanged:
+    {
+        model = getNodeFromPath(basePath);
+        reset();
     }
 
     onWidthChanged:
@@ -56,6 +70,24 @@ FocusScope
     width: xscale(600)
     height: yscale(600)
 
+    Connections
+    {
+        target: sourceTree
+        function onBranchUpdateStarted(path)
+        {
+            // TODO check we are displaying the path
+            _savedPath = getActiveNodePath(true);
+        }
+
+        function onBranchUpdateEnded(path)
+        {
+            if (_savedPath != "")
+            {
+                setFocusedNode(_savedPath);
+            }
+        }
+    }
+
     ListModel
     {
         id: treeModel
@@ -84,10 +116,12 @@ FocusScope
                 source:
                 {
                     if (model.icon)
-                        mythUtils.findThemeFile("images/no_image.png")
+                        model.icon
                     else
                         ""
                 }
+                asynchronous: true
+                onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/no_image.png")
             }
 
             ListText
@@ -105,7 +139,7 @@ FocusScope
                 width: xscale(20); height: yscale(20)
                 source:
                 {
-                    if (model.subNodes && model.subNodes.count)
+                    if ((model.expanded !== undefined && !model.expanded) || (model.subNodes && model.subNodes.count))
                         mythUtils.findThemeFile("images/arrow.png")
                     else
                         ""
@@ -136,13 +170,42 @@ FocusScope
 
     function nodeSelectedHandler(nodeID, index)
     {
+        currentIndex = index;
+        currentLevel = nodeID;
+
+        //var path = getActiveNodePath(true);
+        var node = lists[nodeID].model.get(index);
+        var path = getPathFromNode(node, true);
+
+        if (path === "" || node === undefined)
+            return;
+
+        if (sourceTree !== undefined)
+        {
+            if (!node.expanded)
+            {
+                sourceTree.model.expandNode(path, node);
+
+                if (node.subNodes.count === 0)
+                {
+                    node.subNodes.append({
+                                             "parent": node, "itemTitle": "<No Results>", "itemData": "NoResult", "checked": false, "expanded": true, "icon": mythUtils.findThemeFile("images/no_result.jpg"),
+                                             "subNodes": [], type: SourceTreeModel.NodeType.No_Result, "player": "", "url": "", "genre": ""
+                                         })
+                }
+            }
+        }
+
         var i;
 
         if (lists[nodeID].model === null || lists[nodeID].model === undefined ||  lists[nodeID].model.get(index) === undefined)
             return;
 
         if (nodeID === _focusedList)
+        {
             objRoot.nodeSelected(lists[nodeID].model.get(index));
+            objRoot.posChanged(nodeID, index, lists[nodeID].model.count);
+        }
 
         if (nodeID === _focusedList && lists[nodeID].model.get(index).subNodes.count && nodeID >= lists.length - 1)
         {
@@ -205,7 +268,7 @@ FocusScope
         var sData;
 
         if (data === undefined)
-            sData = "";
+            sData = title;
         else if (typeof data === "number")
             sData = data.toString();
         else
@@ -213,19 +276,19 @@ FocusScope
 
         if (path === "")
         {
-            objRoot.model.append({"itemTitle": title, "itemData": sData, "checked": checked, "icon": icon, "subNodes": []})
+            model.append({"itemTitle": title, "itemData": sData, "checked": checked, "icon": icon, "subNodes": []})
         }
         else
         {
             var szSplit = path.split(',')
 
-            if (objRoot.model.get(parseInt(szSplit[0])) === undefined)
+            if (model.get(parseInt(szSplit[0])) === undefined)
             {
                 log.error(Verbose.GUI, "TreeButtonList: addNode - Error: Given node does not exist!")
                 return false
             }
 
-            var node = treeModel.get(parseInt(szSplit[0]))
+            var node = model.get(parseInt(szSplit[0]))
 
             for (var i = 1; i < szSplit.length; ++i)
             {
@@ -249,44 +312,121 @@ FocusScope
     //FIXME: 
     function setFocusedNode(path)
     {
-        for (var i = 0; i < lists.length; i++)
-        {
-            lists[i].focus = false;
-            lists[i].currentIndex = 0;
-        }
+        for (var x = 0; x < lists.length; x++)
+            lists[x].destroy();
 
+        lists.length = 0;
+        lists.push(createList(0, model));
         lists[0].focus = true;
         _focusedList = 0;
-        _leftList = 0;
-        makeListVisible()
         nodeSelectedHandler(0, 0);
 
-        /*
-        var szSplit = path.split(',')
-        var node = treeModel.get(parseInt(szSplit[0]))
-
-        if (node === undefined)
+        if (path === "")
         {
-            log.error(Verbose.GUI, "TreeButtonList: setFocusedNode - Error: Given node does not exist !")
-            return
+            nodeSelectedHandler(0, 0);
+            return;
         }
 
-        for (var i = 1; i < szSplit.length; ++i)
+        var list = path.split(" ~ ");
+        var node = model;
+        var found = false;
+
+        for (var x = 0; x < list.length; x++)
         {
-            if (node.subNode.get(parseInt(szSplit[i])) === undefined)
+            found = false;
+
+            for (var y = 0; y < node.count; y++)
             {
-                log.error(Verbose.GUI, "TreeButtonList: setFocusedNode - Error: Given node does not exist !")
-                return
+                if (node.get(y).itemData == list[x])
+                {
+                    if (node.get(y).expanded !== undefined && node.get(y).expanded === false && (typeof node.expandNode === "function"))
+                        node.expandNode(getPathFromNode(node.get(y), true), node.get(y))
+
+                    node = node.get(y).subNodes;
+
+                    lists[_focusedList].highlightMoveDuration = 0;
+                    lists[_focusedList].currentIndex = y;
+                    lists[_focusedList].highlightMoveDuration = 1500;
+
+                    moveRight();
+
+                    found = true;
+
+                    break;
+                }
             }
-            node = node.subNode.get(parseInt(szSplit[i]))
+
+            if (!found)
+            {
+                lists[_focusedList].highlightMoveDuration = 0;
+                lists[_focusedList].currentIndex = 0;
+                lists[_focusedList].highlightMoveDuration = 1500;
+
+                break;
+            }
         }
-        */
+    }
+
+    function getNodeFromPath(path)
+    {
+        var list = path.split(" ~ ");
+        var node = sourceTree.model;
+        var found = false;
+
+        for (var x = 0; x < list.length; x++)
+        {
+            found = false;
+
+            for (var y = 0; y < node.count; y++)
+            {
+                if (node.get(y).itemData == list[x])
+                {
+                    if (node.get(y).expanded === false)
+                        sourceTree.model.expandNode(getPathFromNode(node.get(y), true), node.get(y))
+
+                    if (x < list.length - 1)
+                        node = node.get(y).subNodes;
+
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+                return undefined;
+        }
+
+        return node;
+    }
+
+    function getPathFromNode(node, useData)
+    {
+        if (!node)
+            return "";
+
+        var result = "";
+
+        while (node != null)
+        {
+            if (result != "")
+                result = (useData ? node.itemData : node.itemTitle) + " ~ " + result;
+            else
+                result = useData ? node.itemData : node.itemTitle;
+
+            node = node.parent;
+        }
+
+        return result;
+    }
+
+    function resetModel()
+    {
+        model.clear();
+        reset();
     }
 
     function reset()
     {
-        model.clear();
-
         for (var x = 0; x < lists.length; x++)
             lists[x].destroy();
 
@@ -297,7 +437,12 @@ FocusScope
         nodeSelectedHandler(0, 0);
     }
 
-    function getActiveNodePath()
+    function getActiveNode()
+    {
+        return lists[_focusedList].model.get(lists[_focusedList].currentIndex);
+    }
+
+    function getActiveNodePath(useData)
     {
         var result;
 
@@ -306,10 +451,11 @@ FocusScope
 
         for (var i = 0; i <= _focusedList; i++)
         {
+            var nodeText = (useData ? lists[i].model.get(lists[i].currentIndex).itemData : lists[i].model.get(lists[i].currentIndex).itemTitle);
             if (i > 0)
-                result = result + " ~ " + lists[i].model.get(lists[i].currentIndex).itemTitle;
+                result = result + " ~ " + nodeText;
             else
-                result = lists[i].model.get(lists[i].currentIndex).itemTitle
+                result = nodeText;
         }
 
         return result;
@@ -331,6 +477,7 @@ FocusScope
         }
 
         objRoot.nodeSelected(lists[_focusedList].model.get(lists[_focusedList].currentIndex));
+        objRoot.posChanged(_focusedList, lists[_focusedList].currentIndex, lists[_focusedList].model.count);
     }
 
     function moveRight()
@@ -357,7 +504,9 @@ FocusScope
 
         makeListVisible()
 
-        objRoot.nodeSelected(lists[_focusedList].model.get(lists[_focusedList].currentIndex));
+        //objRoot.nodeSelected(lists[_focusedList].model.get(lists[_focusedList].currentIndex));
+        objRoot.nodeSelectedHandler(lists[_focusedList].nodeID, lists[_focusedList].currentIndex);
+        objRoot.posChanged(_focusedList, lists[_focusedList].currentIndex, lists[_focusedList].model.count);
     }
 
     function makeListVisible()

@@ -450,9 +450,9 @@ BaseScreen
        menu.append({"menutext": "All", "loaderSource": "IPTVViewer.qml", "menuSource": ""});
        menu.append({"menutext": "---", "loaderSource": "IPTVViewer.qml", "loaderSource": "", "menuSource": ""});
 
-       for (var x = 1; x < playerSources.iptvList.genreList.count; x++)
+       for (var x = 1; x < playerSources.iptvList.model.genreList.count; x++)
        {
-           menu.append({"menutext": playerSources.iptvList.genreList.get(x).item, "loaderSource": "IPTVViewer.qml", "menuSource": ""});
+           menu.append({"menutext": playerSources.iptvList.model.genreList.get(x).item, "loaderSource": "IPTVViewer.qml", "menuSource": ""});
        }
     }
 

@@ -85,4 +85,78 @@ Item
     {
         return channelsModel.get(index);
     }
+
+    function expandNode(tree, path, node)
+    {
+        var callsigns = [];
+
+        node.expanded  = true
+
+        if (node.type === SourceTreeModel.NodeType.Root_Title)
+        {
+            node.subNodes.append({"parent": node, "itemTitle": "<All Channels>", "itemData": "AllChannels", "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.TivoTV_Filters})
+            node.subNodes.append({"parent": node, "itemTitle": "Genres", "itemData": "Genres", "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.TivoTV_Filters})
+            node.subNodes.append({"parent": node, "itemTitle": "Definitions", "itemData": "Definitions", "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.TivoTV_Filters})
+        }
+        else if (node.type === SourceTreeModel.NodeType.TivoTV_Filters)
+        {
+            var x;
+            var chan;
+
+            if (node.itemData === "AllChannels")
+            {
+                for (x = 0; x < channelsModel.count; x++)
+                {
+                    chan = channelsModel.get(x);
+
+                    node.subNodes.append({
+                                             "parent": node, "itemTitle": chan.title, "itemData": String(chan.ChanNo), "checked": false, "expanded": true, "icon": chan.Icon, "subNodes": [], type: SourceTreeModel.NodeType.TivoTV_Channel,
+                                             "title": chan.title, "player": chan.player, "url": String(chan.url), "genre": chan.Category, "ChannelName": chan.Name, "SDID": chan.SDId
+                                         })
+                }
+            }
+            else if (node.itemData === "Genres")
+            {
+                for (x = 0; x < categoryList.count; x++)
+                    node.subNodes.append({"parent": node, "itemTitle": categoryList.get(x).item, "itemData": categoryList.get(x).item, "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.TivoTV_Filter_Genre})
+            }
+            else if (node.itemData === "Definitions")
+            {
+                for (x = 0; x < definitionList.count; x++)
+                    node.subNodes.append({"parent": node, "itemTitle": definitionList.get(x).item, "itemData": definitionList.get(x).item, "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.TivoTV_Filter_Definition})
+            }
+        }
+        else if (node.type === SourceTreeModel.NodeType.TivoTV_Filter_Genre)
+        {
+            var genre = node.itemData;
+
+            for (x = 0; x < channelsModel.count; x++)
+            {
+                chan = channelsModel.get(x);
+
+                // filter by Category/genre
+                if (chan.Category === genre)
+                    node.subNodes.append({
+                                             "parent": node, "itemTitle": chan.title, "itemData": String(chan.ChanNo), "checked": false, "expanded": true, "icon": chan.Icon, "subNodes": [], type: SourceTreeModel.NodeType.TivoTV_Channel,
+                                             "title": chan.title, "player": chan.player, "url": String(chan.url), "genre": chan.Category, "ChannelName": chan.Name, "SDID": chan.SDId
+                                         })
+            }
+        }
+        else if (node.type === SourceTreeModel.NodeType.TivoTV_Filter_Definition)
+        {
+            var definition = node.itemData;
+
+            for (x = 0; x < channelsModel.count; x++)
+            {
+                chan = channelsModel.get(x);
+
+                // filter by definition
+                if (chan.Definition === definition)
+                    node.subNodes.append({
+                                             "parent": node, "itemTitle": chan.title, "itemData": String(chan.ChanNo), "checked": false, "expanded": true, "icon": chan.Icon, "subNodes": [], type: SourceTreeModel.NodeType.TivoTV_Channel,
+                                             "title": chan.title, "player": chan.player, "url": String(chan.url), "genre": chan.Category, "ChannelName": chan.Name, "SDID": chan.SDId
+                                         })
+            }
+        }
+    }
 }
