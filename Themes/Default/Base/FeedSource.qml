@@ -136,9 +136,9 @@ Item
 
             ValueFilter
             {
-                enabled: (webvideoFilterFavorite !== "Any")
+                enabled: (webcamFilterFavorite !== "Any")
                 roleName: "favorite"
-                value: (webvideoFilterFavorite === "Yes")
+                value: (webcamFilterFavorite === "Yes")
             }
 
             AnyOf
@@ -402,12 +402,12 @@ Item
         filters = [];
         sorters = [];
 
-        if (feedList.sourceModel !== channelsModel)
+        if (feedList.sourceModel !== channelsModel.model)
         {
             if (feedList.sourceModel && feedList.sourceModel.loadingStatus)
                 feedList.sourceModel.loadingStatus.disconnect(handleModelStatusChange);
 
-            feedList.sourceModel = channelsModel;
+            feedList.sourceModel = channelsModel.model;
             channelsModel.loadingStatus.connect(handleModelStatusChange);
         }
     }
@@ -531,12 +531,12 @@ Item
         filters = videoFilter;
         sorters = videoSorter;
 
-        if (feedList.sourceModel !== playerSources.videoList)
+        if (feedList.sourceModel !== playerSources.videoList.model)
         {
             if (feedList.sourceModel)
                 feedList.sourceModel.loadingStatus.disconnect(handleModelStatusChange);
 
-            feedList.sourceModel = playerSources.videoList;
+            feedList.sourceModel = playerSources.videoList.model;
             handleModelStatusChange(XmlListModel.Ready);
             // playerSources.videoList.loadingStatus.connect(handleModelStatusChange);
         }

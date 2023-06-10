@@ -82,7 +82,7 @@ BaseScreen
     SortFilterProxyModel
     {
         id: channelsProxyModel
-        sourceModel: channelsModel
+        sourceModel: channelsModel.model
         filters: sourceIDFilter
         sorters: chanNumSorter
     }

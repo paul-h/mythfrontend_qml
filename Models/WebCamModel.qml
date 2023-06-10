@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
 import mythqml.net 1.0
+import SortFilterProxyModel 0.2
 
 Item
 {
@@ -9,6 +10,70 @@ Item
     property var webcamList: webcamListModel
     property var models: []
     property int status: XmlListModel.Null
+
+    property int webcamListIndex: 0
+
+    property string _category: ""
+    property string _sort: "title"
+    property string _webcamFilterFavorite: "Any"
+
+    property list<QtObject> webcamFilter:
+    [
+        AllOf
+        {
+            ExpressionFilter
+            {
+                id: categoryFilter
+                property string category: ""
+                expression:
+                {
+                    var catList = categories.split(",");
+                    for (var x = 0; x < catList.length; x++)
+                    {
+                        if (catList[x].trim() == root._category)
+                            return true;
+                    }
+
+                    return false;
+                }
+                enabled: root._category !== ""
+            }
+
+            ValueFilter
+            {
+                enabled: (_webcamFilterFavorite !== "Any")
+                roleName: "favorite"
+                value: (_webcamFilterFavorite === "Yes")
+            }
+
+            AnyOf
+            {
+                ValueFilter
+                {
+                    roleName: "status"
+                    value: "Working"
+                }
+
+                ValueFilter
+                {
+                    roleName: "status"
+                    value: "Temporarily Offline"
+                }
+            }
+        }
+    ]
+
+    property list<QtObject> titleSorter:
+    [
+        RoleSorter { roleName: "title"; ascendingOrder: true}
+    ]
+
+    SortFilterProxyModel
+    {
+        id: proxyModel
+        filters: webcamFilter
+        sorters: titleSorter
+    }
 
     XmlListModel
     {
@@ -199,7 +264,6 @@ Item
                     }
 
                     categories.sort();
-                    listModel.categoryList.append({"item": "<All Webcams>"});
 
                     for (var x = 0; x < categories.length; x++)
                         listModel.categoryList.append({"item": categories[x]});
@@ -230,5 +294,82 @@ Item
     function updateModel(index)
     {
         models[index].reload();
+    }
+
+    function expandNode(tree, path, node)
+    {
+        node.expanded  = true
+
+        if (node.type === SourceTreeModel.NodeType.Root_Title)
+        {
+            // add file lists
+            for (var x = 0; x < root.webcamList.count; x++)
+            {
+                 node.subNodes.append({"parent": node, "itemTitle": root.webcamList.get(x).title, "itemData": String(x),    "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Webcam_File})
+            }
+        }
+        else if (node.type === SourceTreeModel.NodeType.Webcam_File)
+        {
+            node.subNodes.append({"parent": node, "itemTitle": "<All Webcams>", "itemData": "<All Webcams>", "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Webcam_Category})
+            node.subNodes.append({"parent": node, "itemTitle": "Favorites",     "itemData": "Favorites",     "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Webcam_Category})
+
+            var categories = root.models[parseInt(node.itemData)].categoryList;
+
+            for (x = 0; x < categories.count; x++)
+            {
+                node.subNodes.append({"parent": node, "itemTitle": categories.get(x).item, "itemData": categories.get(x).item, "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Webcam_Category})
+            }
+        }
+        else if (node.type === SourceTreeModel.NodeType.Webcam_Category)
+        {
+            var category = node.itemTitle;
+
+            root.webcamListIndex = parseInt(node.parent.itemData);
+            var model = models[parseInt(node.parent.itemData)].model;
+
+            proxyModel.sourceModel =  model
+
+            // add the webcams for this category
+            if (category === "Favorites")
+            {
+                _webcamFilterFavorite = "Yes";
+                category = "";
+            }
+            else
+            {
+                _webcamFilterFavorite = "Any";
+            }
+
+            root._category = "";
+            root._category = category === "<All Webcams>" ? "" : category;
+
+            for (var y = 0; y < proxyModel.count; y++)
+            {
+                node.subNodes.append({"parent": node, "itemTitle": proxyModel.get(y).title, "itemData": String(proxyModel.get(y).id), "checked": false, "expanded": true, "icon": getIconURL(proxyModel.get(y).icon), "subNodes": [], type: SourceTreeModel.NodeType.Webcam_Item,
+                                      "id": proxyModel.get(y).id, "title": proxyModel.get(y).title, "description": proxyModel.get(y).description, "website": proxyModel.get(y).website, "zoom": proxyModel.get(y).zoom,
+                                      "dateadded": proxyModel.get(y).dateadded, "datemodified": proxyModel.get(y).datemodified, "status": proxyModel.get(y).status, "categories": proxyModel.get(y).categories, "links": proxyModel.get(y).links,
+                                      "player": proxyModel.get(y).player, "url": proxyModel.get(y).url, "favorite": false, "offline": false
+                                     })
+            }
+        }
+    }
+
+    function getIconURL(iconURL)
+    {
+        if (iconURL)
+        {
+            if (iconURL.startsWith("file://") || iconURL.startsWith("http://") || iconURL.startsWith("https://"))
+                return iconURL;
+            else
+            {
+                // try to get the icon from the same URL the webcam list was loaded from
+                var url = webcamList.get(webcamListIndex).url
+                var r = /[^\/]*$/;
+                url = url.replace(r, '');
+                return url + iconURL;
+            }
+        }
+
+        return ""
     }
 }

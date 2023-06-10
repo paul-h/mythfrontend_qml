@@ -17,14 +17,14 @@ BaseDialog
     function show(focusItem)
     {
         if (!restoreSelected)
-            menuList.setFocusedNode(0);
+            menuList.setFocusedNode("");
 
         _show(focusItem);
     }
 
     function clearMenuItems()
     {
-        menuList.reset();
+        menuList.resetModel();
     }
 
     function addMenuItem(path, title, data, checked)

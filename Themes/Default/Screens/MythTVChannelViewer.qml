@@ -628,15 +628,15 @@ BaseScreen
             menu.append({"menutext": playerSources.channelGroups.get(x).Name, "loaderSource": "MythTVChannelViewer.qml", "menuSource": "", "filter": playerSources.channelGroups.get(x).GroupId});
     }
 
-   function setFilter(groupName, groupId)
-   {
-       footer.greenText = "Show (" + groupName +")";
+    function setFilter(groupName, groupId)
+    {
+        footer.greenText = "Show (" + groupName +")";
 
-       feedSource.channelGroupId = groupId;
-   }
+        feedSource.channelGroupId = groupId;
+    }
 
-   function feedChanged(feedSource, filter, index)
-   {
+    function feedChanged(feedSource, filter, index)
+    {
         if (feedSource !== "Live TV")
             return;
 
@@ -677,7 +677,6 @@ BaseScreen
                     footer.yellowText = "Show (All Sources)";
             }
         }
-
         channelGrid.currentIndex = index;
-   }
+    }
 }

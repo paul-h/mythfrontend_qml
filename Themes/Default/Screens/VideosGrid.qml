@@ -26,7 +26,7 @@ BaseScreen
     SortFilterProxyModel
     {
         id: videosProxyModel
-        sourceModel: VideosModel {}
+        sourceModel: playerSources.videosList.model
         filters:
         [
             AllOf

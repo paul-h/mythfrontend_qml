@@ -3,6 +3,7 @@ import QtQuick.Window 2.0
 import QtQuick.Layouts 1.0
 import QtQuick.Controls 1.0
 import Base 1.0
+import Models 1.0
 
 BaseScreen
 {
@@ -15,224 +16,67 @@ BaseScreen
         showTicker(false);
         muteAudio(true);
 
-        var icon = mythUtils.findThemeFile("images/no_image.png");
-
-        treeView.addNode("", "All", undefined, false, icon);
-        treeView.addNode("", "Title", undefined, false,icon);
-        treeView.addNode("", "Type", undefined, false, icon);
-        treeView.addNode("", "Category", undefined, false, icon);
-        treeView.addNode("", "Year", undefined, false, icon);
-        treeView.addNode("", "Rating", undefined, false, icon);
-
-        // All
-        treeView.addNode("0", "Title 1");
-        treeView.addNode("0", "Title 2");
-        treeView.addNode("0", "Title 3");
-        treeView.addNode("0", "Title 4");
-        treeView.addNode("0", "Title 5");
-        treeView.addNode("0", "Title 6");
-        treeView.addNode("0", "Title 7");
-        treeView.addNode("0", "Title 8");
-        treeView.addNode("0", "Title 9");
-        treeView.addNode("0", "Title 10");
-        treeView.addNode("0", "Title 11");
-        treeView.addNode("0", "Title 12");
-
-        // title
-        treeView.addNode("1", "All");
-        treeView.addNode("1", "Type");
-        treeView.addNode("1", "Category");
-        treeView.addNode("1", "Year");
-        treeView.addNode("1", "Rating");
-
-        // title/Type
-        treeView.addNode("1,1", "All");
-        treeView.addNode("1,1", "Television");
-        treeView.addNode("1,1", "Films");
-
-        // title/Type/All
-        treeView.addNode("1,1,1", "Title 1");
-        treeView.addNode("1,1,1", "Title 2");
-        treeView.addNode("1,1,1", "Title 3");
-        treeView.addNode("1,1,1", "Title 4");
-        treeView.addNode("1,1,1", "Title 5");
-        treeView.addNode("1,1,1", "Title 6");
-        treeView.addNode("1,1,1", "Title 7");
-        treeView.addNode("1,1,1", "Title 8");
-        treeView.addNode("1,1,1", "Title 9");
-        treeView.addNode("1,1,1", "Title 10");
-        treeView.addNode("1,1,1", "Title 11");
-        treeView.addNode("1,1,1", "Title 12");
-        //treeView.setFocusedNode("0");
+        treeView.setFocusedNode("Root ~ BrowserBookmarks ~ AllBookmarks ~ 4");
     }
-/*
-    ListModel
+
+    Keys.onPressed:
     {
-        id: treeModel
+        event.accepted = true;
 
-        ListElement
+        if (event.key === Qt.Key_F1)
         {
-            itemTitle: "Christmas (6)"
-            subNodes:
-            [
-                ListElement
-                {
-                    itemTitle: "Subitem1 title 1/1" 
-                    subNodes:
-                    [
-                        ListElement
-                        {
-                            itemTitle: "Subitem2 title 1/1" 
-                            subNodes:
-                            [
-                                ListElement
-                                {
-                                    itemTitle: "Subitem3 title 1"
-                                },
-                                ListElement
-                                {
-                                    itemTitle: "Subitem3 title 2" 
-                                },
-                                ListElement
-                                {
-                                    itemTitle: "Subitem3 title 3"
-                                },
-                                ListElement
-                                {
-                                    itemTitle: "Subitem3 title 4"
-                                },
-                                ListElement
-                                {
-                                    itemTitle: "Subitem3 title 5"
-                                },
-                                ListElement
-                                {
-                                    itemTitle: "Subitem3 title 6"
-                                }
-                            ]
-                        },
-                        ListElement
-                        {
-                            itemTitle: "Subitem2 title 2/1" 
-                        },
-                        ListElement
-                        {
-                            itemTitle: "Subitem2 title 3/1"
-                        },
-                        ListElement
-                        {
-                            itemTitle: "Subitem2 title 4/1"
-                        },
-                        ListElement
-                        {
-                            itemTitle: "Subitem2 title 5/1"
-                        },
-                        ListElement
-                        {
-                            itemTitle: "Subitem2 title 6/1"
-                        }
-                    ]
-                },
-                ListElement
-                {
-                    itemTitle: "Subitem1 title 2/1" 
-                },
-                ListElement
-                {
-                    itemTitle: "Subitem1 title 3/1"
-                },
-                ListElement
-                {
-                    itemTitle: "Subitem1 title 4/1"
-                },
-                ListElement
-                {
-                    itemTitle: "Subitem1 title 5/1"
-                },
-                ListElement
-                {
-                    itemTitle: "Subitem1 title 6/1"
-                }
-            ]
+            treeView.basePath = "Root ~ Webcams ~ 1 ~ Favorites";
+            sourceTree.setRootNode("Root ~ Webcams ~ 1 ~ Favorites");
+            treeView.reset();
         }
-        ListElement
+        else if (event.key === Qt.Key_F2)
         {
-            itemTitle: "Classic Rock (2)"
-            subNodes:
-            [
-                ListElement { itemTitle: "Subitem title 1/2" },
-                ListElement { itemTitle: "Subitem title 2/2 long text long text long text long text long text long text long text" }
-            ]
+            treeView.basePath = "Root ~ BrowserBookmarks ~ AllBookmarks";
+            sourceTree.setRootNode("Root ~ BrowserBookmarks ~ AllBookmarks")
+            treeView.reset();
         }
-        ListElement
+        else if (event.key === Qt.Key_F3)
         {
-            itemTitle: "Pop (3)"
-            subNodes:
-            [
-                ListElement
-                {
-                    itemTitle: "Pop title 1/3"
-                },
-                ListElement
-                { 
-                    itemTitle: "Pop title 2/3" 
-                                        subNodes:
-                    [
-                        ListElement
-                        {
-                            itemTitle: "Pop Subitem title 1"
-                            subNodes:
-                            [
-                                ListElement
-                                {
-                                    itemTitle: "Subitem for Pop Subitem title 1"
-                                }
-                            ]
-                        },
-                        ListElement
-                        {
-                            itemTitle: "Pop Subitem title 2"
-                        },
-                        ListElement
-                        {
-                            itemTitle: "Pop Subitem title 3"
-                        },
-                        ListElement
-                        {
-                            itemTitle: "Pop Subitem title 4"
-                        },
-                        ListElement
-                        {
-                            itemTitle: "Pop Subitem title 5"
-                        },
-                        ListElement
-                        {
-                            itemTitle: "Pop Subitem title 6"
-                        },
-                        ListElement
-                        {
-                            itemTitle: "Pop Subitem title 7"
-                        },
-                        ListElement
-                        {
-                            itemTitle: "Pop Subitem title 8"
-                        },
-                        ListElement
-                        {
-                            itemTitle: "Pop Subitem title 9"
-                        },
-                        ListElement
-                        {
-                            itemTitle: "Pop Subitem title 10"
-                        }
-                    ]
+            treeView.basePath = "Root";
+            sourceTree.setRootNode("");
+            treeView.reset();
+        }
+        else if (event.key === Qt.Key_F4 || event.key === Qt.Key_A)
+        {
+            // add new bookmark
+            stack.push({item: mythUtils.findThemeFile("Screens/settings/BrowserBookmarkEditor.qml"), properties:{bookmarkIndex: -1, bookmarkList: playerSources.browserBookmarksList}});
+        }
+        else if (event.key === Qt.Key_F5 || event.key === Qt.Key_E)
+        {
+            // edit existing bookmark
+            var node = treeView.getActiveNode();
 
-                },
-                ListElement { itemTitle: "Pop title 3/3" }
-            ]
+            if (node && node.type === SourceTreeModel.NodeType.Browser_Bookmark)
+            {
+                var bookmarkId = node.bookmarkid;
+                var bookmarkIndex = playerSources.browserBookmarksList.getIndexFromId(bookmarkId);
+                stack.push({item: mythUtils.findThemeFile("Screens/settings/BrowserBookmarkEditor.qml"), properties:{bookmarkIndex: bookmarkIndex, bookmarkList: playerSources.browserBookmarksList}});
+            }
         }
+        else if (event.key === Qt.Key_F6 || event.key === Qt.Key_D)
+        {
+            // delete existing bookmark
+            var node = treeView.getActiveNode();
+
+            if (node && node.type === SourceTreeModel.NodeType.Browser_Bookmark)
+            {
+                var bookmarkId = node.bookmarkid;
+                dbUtils.deleteBrowserBookmark(bookmarkId);
+            }
+        }
+        else
+            event.accepted = true;
     }
-*/
+
+    SourceTreeModel
+    {
+        id: sourceTree
+    }
 
     BaseBackground
     {
@@ -248,6 +92,17 @@ BaseScreen
         x: xscale(30)
         y: yscale(60)
         width: parent.width - xscale(60)
+        textFormat: Text.PlainText
+    }
+
+    InfoText
+    {
+        id: posText
+        x: parent.width - width - xscale(30)
+        y: yscale(60)
+        width: xscale(120)
+        horizontalAlignment: Text.AlignRight
+        text: "xxx of xxx"
     }
 
     TreeButtonList
@@ -259,11 +114,22 @@ BaseScreen
         height: yscale(560)
         columns: 4
         spacing: xscale(10)
-        //model: treeModel
+        sourceTree: sourceTree
+        model: sourceTree.model
 
         onNodeSelected:
         {
             breadCrumb.text = getActiveNodePath();
+        }
+
+        onPosChanged:
+        {
+            posText.text = (index + 1) + " of " + count
+        }
+
+        onNodeClicked:
+        {
+            sourceTree.playFile(currentIndex, node)
         }
     }
 }
