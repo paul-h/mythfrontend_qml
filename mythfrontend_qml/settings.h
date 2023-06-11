@@ -25,6 +25,7 @@ class Settings : public QObject
     Q_PROPERTY(QString masterIP READ masterIP WRITE setMasterIP NOTIFY masterIPChanged)
     Q_PROPERTY(int     masterPort READ masterPort WRITE setMasterPort NOTIFY masterPortChanged)
     Q_PROPERTY(QString masterBackend READ masterBackend NOTIFY masterBackendChanged)
+    Q_PROPERTY(QString masterBackendV2 READ masterBackendV2 NOTIFY masterBackendV2Changed)
     Q_PROPERTY(QString securityPin READ securityPin  WRITE setSecurityPin  NOTIFY securityPinChanged)
     Q_PROPERTY(QString configPath READ configPath WRITE setConfigPath NOTIFY configPathChanged)
     Q_PROPERTY(QString sharePath READ sharePath WRITE setSharePath NOTIFY sharePathChanged)
@@ -75,6 +76,8 @@ class Settings : public QObject
     // tivo
     Q_PROPERTY(QString tivoIP READ tivoIP WRITE setTivoIP NOTIFY tivoIPChanged)
     Q_PROPERTY(QString tivoControlPort READ tivoControlPort WRITE setTivoControlPort NOTIFY tivoControlPortChanged)
+    Q_PROPERTY(QString tivoUserName READ tivoUserName WRITE setTivoUserName NOTIFY tivoUserNameChanged)
+    Q_PROPERTY(QString tivoPassword READ tivoPassword WRITE setTivoPassword NOTIFY tivoPasswordChanged)
     Q_PROPERTY(QString tivoVideoURL READ tivoVideoURL WRITE setTivoVideoURL NOTIFY tivoVideoURLChanged)
 
     // schedules direct
@@ -112,6 +115,7 @@ class Settings : public QObject
     void masterIPChanged(void);
     void masterPortChanged(void);
     void masterBackendChanged(void);
+    void masterBackendV2Changed(void);
     void securityPinChanged(void);
     void configPathChanged(void);
     void sharePathChanged(void);
@@ -154,6 +158,8 @@ class Settings : public QObject
 
     void tivoIPChanged(void);
     void tivoControlPortChanged(void);
+    void tivoUserNameChanged(void);
+    void tivoPasswordChanged(void);
     void tivoVideoURLChanged(void);
 
     void sdUserNameChanged(void);
@@ -210,6 +216,7 @@ class Settings : public QObject
     void    setMasterPort(int masterPort);
 
     QString masterBackend(void);
+    QString masterBackendV2(void);
 
     QString securityPin(void);
     void    setSecurityPin(const QString &securityPin);
@@ -309,6 +316,12 @@ class Settings : public QObject
 
     QString tivoControlPort(void);
     void    setTivoControlPort(const QString &tivoControlPort);
+
+    QString tivoUserName(void);
+    void    setTivoUserName(const QString &tivoUserName);
+
+    QString tivoPassword(void);
+    void    setTivoPassword(const QString &tivoPassword);
 
     QString tivoVideoURL(void);
     void    setTivoVideoURL(const QString &tivoVideoURL);
@@ -413,6 +426,8 @@ class Settings : public QObject
 
     QString m_tivoIP;
     QString m_tivoControlPort;
+    QString m_tivoUserName;
+    QString m_tivoPassword;
     QString m_tivoVideoURL;
 
     QString m_sdUserName;
