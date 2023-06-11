@@ -21,6 +21,8 @@
 #include "svgimage.h"
 #include "telnet.h"
 #include "fileio.h"
+#include "accessmanagerfactory.h"
+#include "quickdownload.h"
 
 // shared
 #include "context.h"
@@ -149,6 +151,11 @@ int main(int argc, char *argv[])
     // create the optional jumpto property
     QString jumpto = parser.value(jumpOption);
     gContext->m_engine->rootContext()->setContextProperty("jumpto", QString(jumpto));
+
+    // override the Network Access Manager
+    MythQmlNetworkAccessManagerFactory networkManagerFactory;
+    gContext->m_engine->setNetworkAccessManagerFactory(&networkManagerFactory);
+    qQuickDownloadMaster->setNetworkAccessManager(gContext->m_engine->networkAccessManager());
 
     gContext->m_engine->clearComponentCache();
     gContext->m_engine->load(QUrl(QString(SHAREPATH) + "qml/main.qml"));
