@@ -69,23 +69,57 @@ BaseScreen
         height: yscale(50)
         text: settings.tivoControlPort
         KeyNavigation.up: tivoIPEdit;
-        KeyNavigation.down: tivoVideoURLEdit;
+        KeyNavigation.down: tivoUserNameEdit;
     }
 
     LabelText
     {
         x: xscale(30); y: yscale(200)
+        text: "Tivo User Name:"
+    }
+
+    BaseEdit
+    {
+        id: tivoUserNameEdit
+        x: xscale(300); y: yscale(200)
+        width: parent.width - x - xscale(20)
+        height: yscale(50)
+        text: settings.tivoUserName
+        KeyNavigation.up: tivoPortEdit;
+        KeyNavigation.down: tivoPasswordEdit;
+    }
+
+    LabelText
+    {
+        x: xscale(30); y: yscale(250)
+        text: "Tivo Password:"
+    }
+
+    BaseEdit
+    {
+        id: tivoPasswordEdit
+        x: xscale(300); y: yscale(250)
+        width: parent.width - x - xscale(20)
+        height: yscale(50)
+        text: settings.tivoPassword
+        KeyNavigation.up: tivoUserNameEdit;
+        KeyNavigation.down: tivoVideoURLEdit;
+    }
+
+    LabelText
+    {
+        x: xscale(30); y: yscale(300)
         text: "Tivo Video URL:"
     }
 
     BaseEdit
     {
         id: tivoVideoURLEdit
-        x: xscale(300); y: yscale(200)
+        x: xscale(300); y: yscale(300)
         width: parent.width - x - xscale(20)
         height: yscale(50)
         text: settings.tivoVideoURL
-        KeyNavigation.up: tivoPortEdit;
+        KeyNavigation.up: tivoPasswordEdit;
         KeyNavigation.down: saveButton;
     }
 
@@ -112,13 +146,15 @@ BaseScreen
     {
         dbUtils.setSetting("TivoIP",          settings.hostName, tivoIPEdit.text);
         dbUtils.setSetting("TivoControlPort", settings.hostName, tivoPortEdit.text);
+        dbUtils.setSetting("TivoUserName",    settings.hostName, tivoUserNameEdit.text);
+        dbUtils.setSetting("TivoPassword",    settings.hostName, tivoPasswordEdit.text);
         dbUtils.setSetting("TivoVideoURL",    settings.hostName, tivoVideoURLEdit.text);
 
         settings.tivoIP       = tivoIPEdit.text;
         settings.tivoPort     = tivoPortEdit.text;
+        settings.tivoUserName = tivoUserNameEdit.text;
+        settings.tivoPassword = tivoPasswordEdit.text;
         settings.tivoVideoURL = tivoVideoURLEdit.text;
-
-        //playerSources.zmSettingsChanged();
 
         returnSound.play();
         stack.pop();

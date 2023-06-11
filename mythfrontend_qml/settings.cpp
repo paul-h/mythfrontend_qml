@@ -90,6 +90,8 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     // tivo
     setTivoIP(gContext->m_databaseUtils->getSetting("TivoIP", hostName));
     setTivoControlPort(gContext->m_databaseUtils->getSetting("TivoControlPort", hostName));
+    setTivoUserName(gContext->m_databaseUtils->getSetting("TivoUserName", hostName));
+    setTivoPassword(gContext->m_databaseUtils->getSetting("TivoPassword", hostName));
     setTivoVideoURL(gContext->m_databaseUtils->getSetting("TivoVideoURL", hostName));
 
     //schedules direct
@@ -244,6 +246,12 @@ void Settings::setDefaultSettings(const QString &hostName)
     {
         setTivoControlPort("31339");
         gContext->m_databaseUtils->setSetting("TivoControlPort", hostName, "31339");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("TivoUserName", hostName) == "")
+    {
+        setTivoUserName("tivo");
+        gContext->m_databaseUtils->setSetting("TivoUserName", hostName, "tivo");
     }
 
     // weather
@@ -419,6 +427,10 @@ QString Settings::masterBackend()
     return QString("http://%1:%2/").arg(m_masterIP).arg(m_masterPort);
 }
 
+QString Settings::masterBackendV2()
+{
+    return QString("http://%1:%2").arg(m_masterIP).arg(m_masterPort + 200);
+}
 
 QString Settings::securityPin(void)
 {
@@ -787,6 +799,28 @@ QString Settings::tivoVideoURL(void)
     return m_tivoVideoURL;
 }
 
+QString Settings::tivoUserName(void)
+{
+    return m_tivoUserName;
+}
+
+void Settings::setTivoUserName(const QString &tivoUserName)
+{
+    m_tivoUserName = tivoUserName;
+    emit tivoUserNameChanged();
+}
+
+QString Settings::tivoPassword(void)
+{
+    return m_tivoPassword;
+}
+
+void Settings::setTivoPassword(const QString &tivoPassword)
+{
+    m_tivoPassword = tivoPassword;
+    emit tivoPasswordChanged();
+}
+
 void Settings::setTivoVideoURL(const QString &tivoVideoURL)
 {
     m_tivoVideoURL = tivoVideoURL;
@@ -808,6 +842,7 @@ QString Settings::sdPassword(void)
 {
     return m_sdPassword;
 }
+
 void Settings::setSDPassword(const QString &sdPassword)
 {
     m_sdPassword = sdPassword;
