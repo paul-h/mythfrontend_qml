@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import SortFilterProxyModel 0.2
+import Models 1.0
 import mythqml.net 1.0
 
 Item
@@ -8,13 +9,19 @@ Item
 
     // feed lists
     property var channelList: channelsModel
-    property var videoList: videosModel
+    property var videosList: videosModel
     property var webcamList: webcamModel
     property var webvideoList: webvideoModel
     property var zmCameraList: zmMonitorsModel
     property var iptvList: iptvModel
     property var adhocList: undefined
     property var tivoChannelList: tivoChannelsModel
+    property var tivoNowShowingList: tivoNowShowing
+    property var youtubeSubsList: youtubeSubsModel
+    property var youtubeFeedList: youtubeFeedModel
+    property var recordingsList: recordingsModel
+    property var browserBookmarksList: browserBookmarkModel
+    property var videoFilesList: videoFilesModel
 
     // live tv
     property var videoSourceList: videoSourceModel
@@ -49,7 +56,7 @@ Item
 
         property int sourceId: 6
 
-        sourceModel: channelsModel
+        sourceModel: channelsModel.model
         filters:
         [
             ValueFilter
@@ -83,7 +90,7 @@ Item
     ChannelsModel
     {
         id: channelsModel
-        groupByCallsign: false
+        groupByCallsign: true
     }
 
     VideoSourceModel
@@ -119,7 +126,7 @@ Item
     {
         id: webvideoProxyModel
 
-        sourceModel: webvideoModel.model
+        //sourceModel: webvideoModel.models[0]
         filters:
         [
             AllOf
@@ -191,6 +198,14 @@ Item
         id: videosModel
     }
 
+    /* ------------------------------------------------ Video Files -------------------------------------------------------*/
+    FileBrowserModel
+    {
+        id: videoFilesModel
+        folder: settings.videoPath
+        nameFilters: ["*.mp4", "*.flv", "*.mp2", "*.wmv", "*.avi", "*.mkv", "*.mpg", "*.iso", "*.ISO", "*.mov", "*.webm"]
+    }
+
     /* ------------------------------------------------ Tivo TV -----------------------------------------------------------*/
     SDJsonModel
     {
@@ -200,6 +215,11 @@ Item
     TivoChannelsModel
     {
         id: tivoChannelsModel
+    }
+
+    TivoNowShowingModel
+    {
+        id: tivoNowShowing
     }
 
     /* -----------------------------------------------------------------------------------------------------------------*/
@@ -224,6 +244,33 @@ Item
 
         return -1;
     }
+
+    /* -------------------------------------------- YouTube Subscriptions ----------------------------------------------------------*/
+
+    YoutubeSubListModel
+    {
+        id: youtubeSubsModel
+    }
+
+    YoutubeFeedModel
+    {
+        id: youtubeFeedModel
+    }
+
+    /* ---------------------------------------------Browser Bookmarks----------------------------------------------------------*/
+    BrowserBookmarksModel
+    {
+        id: browserBookmarkModel
+    }
+
+    /* -------------------------------------------- MythTV Recordings ---------------------------------------------------------*/
+
+    MythRecordingsModel
+    {
+        id: recordingsModel
+    }
+
+    /*-------------------------------------------------------------------------------------------------------------------------------*/
 
     function getFeedList(feedSource)
     {
@@ -286,9 +333,9 @@ Item
 
     function addIPTVMenu(popupMenu, feed, path, player)
     {
-        for (var x = 0; x < iptvList.count; x++)
+        for (var x = 0; x < iptvList.model.count; x++)
         {
-            var title = iptvList.get(x).title;
+            var title = iptvList.model.get(x).title;
             var data = "player=" + player + "\nIPTV\n" + "Title,,," + "\n" + x;
             popupMenu.addMenuItem(path, title, data);
         }
