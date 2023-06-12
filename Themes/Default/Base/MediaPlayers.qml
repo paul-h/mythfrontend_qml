@@ -41,6 +41,7 @@ FocusScope
 
     signal playbackEnded()
     signal activeFeedChanged()
+    signal browserURLListChanged()
 
     Component.onDestruction:
     {
@@ -117,7 +118,7 @@ FocusScope
             return Qt.formatDateTime(now2, "yyyy-MM-ddThh:mm:ss");
         }
 
-        onStatusChanged: if (status == XmlListModel.Ready) updateNowNext()
+        onStatusChanged: if (status == XmlListModel.Ready) updateNowNext();
     }
 
     FeedSource
@@ -1576,16 +1577,15 @@ FocusScope
         else
             b_title.text = ""
 
-        if (!feedSource.feedList.get(_browserIndex))
+        if (feedSource.feedList.get(_browserIndex) && feedSource.feedList.get(_browserIndex).categories)
+            b_category.text = feedSource.feedList.get(_browserIndex).categories;
+        else
             b_category.text = "";
-        else
-            b_category.text = feedSource.feedList.get(_browserIndex).categories
 
-        if (!feedSource.feedList.get(_browserIndex))
+        if (feedSource.feedList.get(_browserIndex) && feedSource.feedList.get(_browserIndex).description)
+            b_description.text = feedSource.feedList.get(_browserIndex).description;
+        else
             b_description.text = "";
-        else
-            b_description.text = feedSource.feedList.get(_browserIndex).description
-
     }
 
     function hideFeedBrowser()
@@ -1600,9 +1600,19 @@ FocusScope
 
     function goToFeed(feedIndex)
     {
-        stop();
+        if (root.player !== "Tivo")
+            stop();
+
         feedSource.currentFeed = feedIndex;
-        play(true);
+
+        if (root.player === "Tivo")
+        {
+           var url = feedSource.feedList.get(feedSource.currentFeed).url;
+           videoPlayer.changeChannel(url);
+        }
+        else
+            play(true);
+
         updateOSD();
         showInfo(true);
     }
@@ -1612,7 +1622,8 @@ FocusScope
         if (feedSource.feedName === "Advent Calendar")
             return;
 
-        stop();
+        if (root.player !== "Tivo")
+            stop();
 
         if (feedSource.currentFeed === feedSource.feedCount - 1)
         {
@@ -1621,7 +1632,13 @@ FocusScope
         else
             feedSource.currentFeed++;
 
-        play(true);
+        if (root.player === "Tivo")
+        {
+           var url = feedSource.feedList.get(feedSource.currentFeed).url;
+           videoPlayer.changeChannel(url);
+        }
+        else
+            play(true);
 
         updateOSD();
 
@@ -1633,7 +1650,8 @@ FocusScope
         if (feedSource.feedName === "Advent Calendar")
             return;
 
-        stop();
+        if (root.player !== "Tivo")
+            stop();
 
         if (feedSource.currentFeed === 0)
         {
@@ -1642,7 +1660,13 @@ FocusScope
         else
             feedSource.currentFeed--;
 
-        play(true);
+        if (root.player === "Tivo")
+        {
+           var url = feedSource.feedList.get(feedSource.currentFeed).url;
+           videoPlayer.changeChannel(url);
+        }
+        else
+            play(true);
 
         updateOSD();
 
@@ -1749,11 +1773,16 @@ FocusScope
         if (feedSource.feedName === "Live TV" && guideModel.count > 0)
         {
             var searchTitle = guideModel.get(0).Title;
+            browserURLList.append({"title": "The Movie Database", "url": "https://www.themoviedb.org/search?query=" + searchTitle, "width" : 500, "zoom": 1.0});
             browserURLList.append({"title": "IMDb", "url": "https://www.imdb.com/find?q=" + searchTitle, "width" : 500, "zoom": 1.0});
             browserURLList.append({"title": "Rotten Tomatoes", "url": "https://www.rottentomatoes.com/search?search=" + searchTitle, "width" : 500, "zoom": 1.0});
+            browserURLList.append({"title": "JustWatch", "url": "https://www.justwatch.com/uk/search?q=" + searchTitle, "width" : 500, "zoom": 1.0});
         }
 
         // TODO add other web urls here
+
+        // emit signal to tell the internal player to update the browser if visible
+        browserURLListChanged();
     }
 
     // update radio feeds
@@ -1996,6 +2025,8 @@ FocusScope
             timeIndictor.length = 100;
 
         }
+
+        updateBrowserURLList();
     }
 
     function updateTimeIndicator()
