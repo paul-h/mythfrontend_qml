@@ -44,6 +44,14 @@ ListModel
     }
     ListElement
     {
+        menutext: "Tivo Live TV Test"
+        loaderSource: "InternalPlayer.qml"
+        waterMark: "watermark/tivo.svg"
+        layout: 0
+        feedSource: "Tivo TV"
+    }
+    ListElement
+    {
         menutext:"QmlVlc Player Test"
         loaderSource: "tests/TestQmlVlc.qml"
         waterMark: "watermark/setup.png"

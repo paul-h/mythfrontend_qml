@@ -20,7 +20,6 @@ ListModel
         waterMark: "watermark/tivo.svg"
         feedSource: "Tivo TV"
     }
-
     ListElement
     {
         menutext:"Watch Recordings"
