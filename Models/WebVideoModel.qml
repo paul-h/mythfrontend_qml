@@ -264,6 +264,7 @@ Item
                     }
 
                     categories.sort();
+                    listModel.categoryList.append({"item": "<All Web Videos>"});
 
                     for (var x = 0; x < categories.length; x++)
                         listModel.categoryList.append({"item": categories[x]});
@@ -315,7 +316,7 @@ Item
 
             var categories = root.models[parseInt(node.itemData)].categoryList;
 
-            for (x = 0; x < categories.count; x++)
+            for (x = 1; x < categories.count; x++)
             {
                 node.subNodes.append({"parent": node, "itemTitle": categories.get(x).item, "itemData": categories.get(x).item, "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Webvideo_Category})
             }
