@@ -12,13 +12,15 @@ BaseScreen
 
     defaultFocusItem: videoList
     property alias folder: folderModel.folder
+    property alias sortField: folderModel.sortField
+    property alias sortReversed: folderModel.sortReversed
 
     // one of VLC or MDK
     property string _playerToUse: dbUtils.getSetting("InternalPlayer", settings.hostName, "VLC");
 
     Component.onCompleted:
     {
-        showTitle(true, folderModel.folder);
+        showTitle(false, "");
         setHelp("https://mythqml.net/help/videos_folder.php#top");
         showTime(false);
         showTicker(false);
@@ -45,16 +47,27 @@ BaseScreen
         }
     }
 
-    BaseBackground
-    {
-        x: xscale(15); y: yscale(50); width: parent.width - xscale(30); height: yscale(655)
-    }
-
     Keys.onPressed:
     {
         event.accepted = true;
 
         if (event.key === Qt.Key_F1)
+        {
+            // red
+            if (folderModel.sortField === FolderListModel.Name)
+                folderModel.sortField = FolderListModel.Time;
+            else
+                folderModel.sortField = FolderListModel.Name;
+
+            footer.redText = "Sort (" + (folderModel.sortField === FolderListModel.Name ? "Name" : "Modified") + ")";
+        }
+        else if (event.key === Qt.Key_F2)
+        {
+            // green
+            folderModel.sortReversed = !folderModel.sortReversed;
+            footer.greenText = "Order (" + (folderModel.sortReversed ? "Z-A" : "A-Z") + ")";
+        }
+        else if (event.key === Qt.Key_F4)
         {
             ffmpegProcess.start("/usr/bin/mythffmpeg", ["-i",  "file://" + videoList.model.get(videoList.currentIndex, "filePath"),
                                                         "-vcodec", "copy", "-acodec", "copy",
@@ -141,9 +154,21 @@ BaseScreen
         }
     }
 
+    BaseBackground
+    {
+        x: xscale(15); y: yscale(50); width: parent.width - xscale(30); height: yscale(625)
+    }
+
+    TitleText
+    {
+        x: 20
+        width: parent.width - xscale(200)
+        text: folderModel.folder
+    }
+
     InfoText
     {
-        x: parent.width - xscale(230); y: yscale(5); width: xscale(200);
+        x: parent.width - xscale(180); y: yscale(5); width: xscale(150);
         text: (videoList.currentIndex + 1) + " of " + videoList.model.count;
         horizontalAlignment: Text.AlignRight
     }
@@ -154,7 +179,7 @@ BaseScreen
 
         ListItem
         {
-            height: yscale(62)
+            height: yscale(60)
 
             Image
             {
@@ -181,7 +206,7 @@ BaseScreen
     ButtonList
     {
         id: videoList
-        x: xscale(25); y: yscale(65); width: parent.width - xscale(50); height: yscale(620)
+        x: xscale(25); y: yscale(65); width: parent.width - xscale(50); height: yscale(594)
 
         clip: true
 
@@ -191,6 +216,7 @@ BaseScreen
             folder: settings.videoPath
             caseSensitive: false
             nameFilters: ["*.mp4", "*.flv", "*.mp2", "*.wmv", "*.avi", "*.mkv", "*.mpg", "*.iso", "*.mov", "*.webm", "*.img"]
+            sortField: FolderListModel.Name
         }
 
         model: folderModel
@@ -211,9 +237,9 @@ BaseScreen
                 else
                 {
                     if (root.isPanel)
-                        panelStack.push({item: Qt.resolvedUrl("VideosGridFolder.qml"), properties:{folder: model.get(currentIndex, "filePath")}});
+                        panelStack.push({item: Qt.resolvedUrl("VideosGridFolder.qml"), properties:{folder: model.get(currentIndex, "filePath"), sortField: sortField, sortReversed: sortReversed}});
                     else
-                        stack.push({item: Qt.resolvedUrl("VideosGridFolder.qml"), properties:{folder: model.get(currentIndex, "filePath")}});
+                        stack.push({item: Qt.resolvedUrl("VideosGridFolder.qml"), properties:{folder: model.get(currentIndex, "filePath"), sortField: sortField, sortReversed: sortReversed}});
                 }
             }
             else
@@ -241,6 +267,16 @@ BaseScreen
 
             event.accepted = true;
         }
+    }
+
+    Footer
+    {
+        id: footer
+        width: parent.width
+        redText: "Sort (" + (sortField === FolderListModel.Name ? "Name" : "Modified") + ")"
+        greenText: "Order (" + (sortReversed ? "Z-A" : "A-Z") + ")"
+        yellowText: ""
+        blueText: ""
     }
 
     function feedChanged(filter, index)
