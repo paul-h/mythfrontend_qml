@@ -3,7 +3,6 @@ import QtQuick.XmlListModel 2.0
 import mythqml.net 1.0
 import SortFilterProxyModel 0.2
 import RecordingsModel 1.0
-import AsyncWorker 1.0
 
 Item
 {
