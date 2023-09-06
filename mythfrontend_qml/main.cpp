@@ -21,6 +21,7 @@
 #include "svgimage.h"
 #include "telnet.h"
 #include "fileio.h"
+#include "testasync.h"
 #include "accessmanagerfactory.h"
 #include "quickdownload.h"
 
@@ -113,6 +114,9 @@ int main(int argc, char *argv[])
     qmlRegisterType<SqlQueryModel, 1>("SqlQueryModel", 1, 0, "SqlQueryModel");
 
     // these are frontend only
+
+    // multi threading helper
+    qmlRegisterType<TestAsync>("AsyncWorker", 1, 0, "AsyncWorker");
 
     // recordings model
     qmlRegisterType<Telnet>("Telnet", 1, 0, "Telnet");
