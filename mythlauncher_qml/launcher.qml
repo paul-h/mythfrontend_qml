@@ -14,6 +14,7 @@ MainWindow
     showVideoBackground: false
     playStartupEffect: false
     showZMAlerts: false
+    needPlayerSources: false
 
     idleTime: settings.launcherIdleTime
 

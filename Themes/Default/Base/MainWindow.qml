@@ -31,6 +31,7 @@ Window
     property bool playStartupEffect: true
     property bool showZMAlerts: true
     property bool showingZMAlerts: (zmAlertDialog.state === "show")
+    property bool needPlayerSources: true
 
     property int idleTime: settings.frontendIdleTime
 
@@ -41,7 +42,7 @@ Window
     property int backgroundVideoVolume: 100
     property int radioPlayerVolume: 100
 
-    property alias playerSources: playerSourcesModel
+    property var playerSources: undefined
 
     property int _fadeTime: 4000
 
@@ -58,6 +59,9 @@ Window
         soundEffectsVolume = dbUtils.getSetting("SoundEffectsVolume", settings.hostName, "100");
         backgroundVideoVolume = dbUtils.getSetting("BackgroundVideoVolume", settings.hostName, "100");
         radioPlayerVolume = dbUtils.getSetting("RadioPlayerVolume", settings.hostName, "100");
+
+        if (needPlayerSources)
+            loadPlayerSources();
     }
 
     Connections
@@ -133,11 +137,6 @@ Window
                     showNotification("Downloading the background slideshow.<br>Received " + received.toFixed(1) + "Mb<br>Please Wait....", settings.osdTimeoutLong);
             }
         }
-    }
-
-    PlayerSourcesModel
-    {
-        id: playerSourcesModel
     }
 
     Process
@@ -582,6 +581,39 @@ Window
         id: notificationTimer
         interval: 6000; running: false; repeat: false
         onTriggered: notificationPanel.visible = false;
+    }
+
+    function loadPlayerSources()
+    {
+        log.info(Verbose.INFO, "loading playerSources from: " + settings.sharePath + "qml/Models/PlayerSourcesModel.qml");
+
+        var component = Qt.createComponent(settings.sharePath + "qml/Models/PlayerSourcesModel.qml");
+
+        while (component.status != Component.Ready && component.status != Component.Error)
+        {
+            log.debug(Verbose.GUI, "waiting for component to load! Status: " + component.status);
+        }
+
+        if (component.status == Component.Ready)
+        {
+            playerSources = component.createObject(window);
+
+            if (playerSources == null)
+            {
+                // Error Handling
+                log.error(Verbose.GUI, "Error creating playerSources");
+                return null
+            }
+
+            return playerSources;
+        }
+        else if (component.status == Component.Error)
+        {
+            // Error Handling
+            log.error(Verbose.GUI, "Error loading component:", component.errorString());
+        }
+
+        return null;
     }
 
     function loadTheme()
