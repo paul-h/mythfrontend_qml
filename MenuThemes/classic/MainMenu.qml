@@ -64,6 +64,13 @@ ListModel
     }
     ListElement
     {
+        menutext:"Home Assistant"
+        loaderSource: "ThemedMenu.qml"
+        waterMark: "watermark/home_assistant.svg"
+        menuSource: "HomeAssistantMenu.qml"
+    }
+    ListElement
+    {
         menutext:"ZoneMinder"
         loaderSource: "ThemedMenu.qml"
         waterMark: "watermark/zoneminder.png"
