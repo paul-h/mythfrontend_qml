@@ -28,7 +28,7 @@ BaseScreen
         onLoaded:
         {
             showTitle (true, "Fuel Bill Viewer (" + gasBills.get(billIdx).name + ")");
-            browser.url = gasBills.get(billIdx).url
+            browser.url = settings.energyDataDir + "/bills/" + gasBills.get(billIdx).url
         }
     }
 
@@ -81,12 +81,12 @@ BaseScreen
             if (activeFuel === "Gas")
             {
                 showTitle (true, "Fuel Bill Viewer (" + gasBills.get(billIdx).name + ")");
-                browser.url = gasBills.get(billIdx).url;
+                browser.url = settings.energyDataDir + "/bills/" + gasBills.get(billIdx).url;
             }
             else
             {
                 showTitle (true, "Fuel Bill Viewer (" + electricBills.get(billIdx).name + ")");
-                browser.url = electricBills.get(billIdx).url;
+                browser.url = settings.energyDataDir + "/bills/" + electricBills.get(billIdx).url;
             }
         }
     }
@@ -112,12 +112,12 @@ BaseScreen
             if (activeFuel === "Gas")
             {
                 showTitle (true, "Fuel Bill Viewer (" + gasBills.get(billIdx).name + ")");
-                browser.url = gasBills.get(billIdx).url;
+                browser.url = settings.energyDataDir + "/bills/" + gasBills.get(billIdx).url;
             }
             else
             {
                 showTitle (true, "Fuel Bill Viewer (" + electricBills.get(billIdx).name + ")");
-                browser.url = electricBills.get(billIdx).url;
+                browser.url = settings.energyDataDir + "/bills/" + electricBills.get(billIdx).url;
             }
         }
     }
@@ -139,12 +139,12 @@ BaseScreen
             if (activeFuel === "Gas")
             {
                 showTitle (true, "Fuel Bill Viewer (" + gasBills.get(billIdx).name + ")");
-                browser.url = gasBills.get(billIdx).url;
+                browser.url = settings.energyDataDir + "/bills/" + gasBills.get(billIdx).url;
             }
             else
             {
                 showTitle (true, "Fuel Bill Viewer (" + electricBills.get(billIdx).name + ")");
-                browser.url = electricBills.get(billIdx).url;
+                browser.url = settings.energyDataDir + "/bills/" + electricBills.get(billIdx).url;
             }
         }
     }
