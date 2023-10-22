@@ -26,6 +26,38 @@ BaseDialog
         itemList.add(item);
     }
 
+    function show(focusItem)
+    {
+        searchEdit.text = ""
+        searchEdit.focus = true
+        _show(focusItem);
+    }
+
+    function showSelected(selectedItem, focusItem)
+    {
+        itemList.highlightMoveDuration = 0
+
+        searchEdit.text = ""
+        searchEdit.focus = true
+        itemList.currentIndex = 0;
+
+        if (selectedItem)
+        {
+            for (var x = 0; x < listProxyModel.count; x++)
+            {
+                if (selectedItem == listProxyModel.get(x, displayField))
+                {
+                    itemList.currentIndex = x;
+                    break;
+                }
+            }
+        }
+
+        _show(focusItem);
+
+        itemList.highlightMoveDuration = 1500
+    }
+
     SortFilterProxyModel
     {
         id: listProxyModel
@@ -78,6 +110,15 @@ BaseDialog
             KeyNavigation.right: itemList;
 
             onTextChanged: if (itemList.count > 0) itemList.currentIndex = 0; else itemList.currentIndex = -1;
+
+            onEditingFinished:
+            {
+                if (itemList.currentIndex != -1)
+                {
+                    searchDialog.state = "";
+                    searchDialog.itemSelected(listProxyModel.get(itemList.currentIndex, dataField));
+                }
+            }
         }
 
         ButtonList
