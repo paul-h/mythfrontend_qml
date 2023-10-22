@@ -167,7 +167,7 @@ BaseScreen
         {
             // GREEN
             searchDialog.model = playerSources.webcamList.models[feedSource.webcamListIndex].categoryList
-            searchDialog.show();
+            searchDialog.showSelected(feedSource.category);
         }
         else if (event.key === Qt.Key_F3)
         {
