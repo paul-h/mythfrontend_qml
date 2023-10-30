@@ -21,7 +21,7 @@ Item
         x: xscale(24); y: yscale(28)
         width: xscale(sourceSize.width)
         height: yscale(sourceSize.height)
-        source: mythUtils.findThemeFile("title/title_tv.png")
+        source: mythUtils.findThemeFile(model.logo)
     }
 
     Image
