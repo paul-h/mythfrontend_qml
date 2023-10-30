@@ -3,7 +3,7 @@ import QtQuick 2.0
 ListModel
 {
     id: weatherMenu
-    property string logo: "title/title_setup.png"
+    property string logo: "title/title_weather.png"
     property string title: "Weather Menu"
 
     ListElement
