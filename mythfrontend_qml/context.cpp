@@ -368,6 +368,41 @@ bool Context::initMythQMLDB(void)
         return false;
     }
 
+    if (!q.exec(QLatin1String("CREATE TABLE IF NOT EXISTS tivochannels ("
+                              "chanid INTEGER NOT NULL,"
+                              "channo INTEGER NOT NULL,"
+                              "name TEXT NOT NULL,"
+                              "plus1 INTEGER default NULL,"
+                              "category TEXT NOT NULL,"
+                              "definition TEXT NOT NULL,"
+                              "sdid TEXT default NULL,"
+                              "icon TEXT default NULL,"
+                              "PRIMARY KEY(chanid AUTOINCREMENT)"
+                              ");")))
+    {
+        m_logger->error(Verbose::GENERAL, "Context: Failed to create tivochannels table error - " + q.lastError().text());
+        return false;
+    }
+
+    if (!q.exec(QLatin1String("CREATE TABLE IF NOT EXISTS menuitems ("
+                              "itemid INTEGER NOT NULL,"
+                              "menu TEXT NOT NULL,"
+                              "position INTEGER default 0,"
+                              "menuText TEXT NOT NULL,"
+                              "loaderSource TEXT NOT NULL,"
+                              "waterMark TEXT default '',"
+                              "url TEXT default '',"
+                              "zoom REAL default 1.0,"
+                              "fullscreen INTEGER default 0,"
+                              "layout INTEGER default 0,"
+                              "exec TEXT default '',"
+                              "PRIMARY KEY(itemid AUTOINCREMENT)"
+                              ");")))
+    {
+        m_logger->error(Verbose::GENERAL, "Context: Failed to create menuitems table error - " + q.lastError().text());
+        return false;
+    }
+
     return true;
 }
 
