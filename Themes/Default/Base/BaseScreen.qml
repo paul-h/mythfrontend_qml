@@ -9,22 +9,20 @@ Item
 
     property bool reloadingTheme: false
 
-    property bool   oldShowTitle: false
-    property string oldTitle: ""
-
-    property bool oldShowTicker: false
-    property bool oldShowTime: false
-    property bool oldShowVideo: false
-    property bool oldShowImage: false
-    property bool oldMuteAudio: false
-
-    property string oldHelpURL: ""
-
     property bool   isPanel: (parent.objectName == "panelstack" || parent.objectName == "themedpanel")
 
     // private properties
     property double _wmult: width / 1280
     property double _hmult: height / 720
+
+    property bool _showTitle: true
+    property string _title: ""
+    property bool _showTicker: false
+    property bool _showTime: true
+    property bool _showVideo: theme.backgroundVideo != undefined
+    property bool _showImage: !showVideo
+    property bool _muteAudio: false
+    property string _helpURL: ""
 
     function _xscale(x)
     {
@@ -94,6 +92,12 @@ Item
 
     function showTitle(show, newTitle)
     {
+        if (newTitle != undefined)
+            objectName = newTitle;
+
+        _showTitle = show;
+        _title = newTitle;
+
         if (isPanel)
         {
             screenTitle.visible = show
@@ -106,26 +110,31 @@ Item
 
     function showTicker(show)
     {
+        _showTicker = show;
         screenBackground.showTicker = show;
     }
 
     function showTime(show)
     {
+        _showTime = show;
         screenBackground.showTime = show;
     }
 
     function showVideo(show)
     {
+        _showVideo = show;
         screenBackground.showVideo = (show && theme.backgroundVideo != undefined);
     }
 
     function showImage(show)
     {
+        _showImage = show;
         screenBackground.showImage = show;
     }
 
     function muteAudio(mute)
     {
+        _muteAudio = mute;
         screenBackground.muteAudio = mute;
     }
 
@@ -136,6 +145,7 @@ Item
 
     function setHelp(url)
     {
+        _helpURL = url;
         screenBackground.helpURL = url;
     }
 
@@ -151,38 +161,17 @@ Item
         return false;
     }
 
-    Component.onCompleted:
+    function restoreSettings()
     {
-        oldShowTitle = screenBackground.showTitle;
-        oldTitle = screenBackground.title;
+        screenBackground.showTitle = _showTitle;
+        screenBackground.title = _title;
 
-        oldShowTicker = screenBackground.showTicker;
-        oldShowTime = screenBackground.showTime;
-        oldShowVideo = screenBackground.showVideo;
-        oldShowImage = screenBackground.showImage;
-        oldMuteAudio = screenBackground.muteAudio;
+        screenBackground.showTicker = _showTicker;
+        screenBackground.showTime = _showTime;
+        screenBackground.showVideo = _showVideo;
+        screenBackground.showImage = _showImage;
+        screenBackground.muteAudio = _muteAudio;
 
-        oldHelpURL = screenBackground.helpURL;
-
-        stateSaved();
-    }
-
-    Component.onDestruction:
-    {
-        if (reloadingTheme)
-        {
-            return;
-        }
-
-        screenBackground.showTitle = oldShowTitle;
-        screenBackground.title = oldTitle;
-
-        screenBackground.showTicker = oldShowTicker;
-        screenBackground.showTime = oldShowTime;
-        screenBackground.showVideo = oldShowVideo;
-        screenBackground.showImage = oldShowImage;
-        screenBackground.muteAudio = oldMuteAudio;
-
-        screenBackground.helpURL = oldHelpURL;
+        screenBackground.helpURL = _helpURL;
     }
 }

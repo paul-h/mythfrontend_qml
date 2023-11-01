@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import Base 1.0
 import Dialogs 1.0
+import Models 1.0
 
 Item
 {
@@ -13,6 +14,11 @@ Item
     Loader
     {
         id: menuLoader
+    }
+
+    MenuItemModel
+    {
+        id: menuItemModel
     }
 
     Image
@@ -200,15 +206,37 @@ Item
 
                 if (model.get(currentIndex).loaderSource === "ThemedMenu.qml")
                 {
-                    menuLoader.source = settings.menuPath + model.get(currentIndex).menuSource;
-                    stack.push({item: mythUtils.findThemeFile("Screens/ThemedMenu.qml"), properties:{model: menuLoader.item}});
+                    if (model.get(currentIndex).menuSource.startsWith("database://"))
+                    {
+                        var menuSource = model.get(currentIndex).menuSource
+                        var paramstr = menuSource.replace("database://", "");
+                        var params = paramstr.split("|");
+                        if (params.length === 3)
+                        {
+                            var key = params[0];
+                            var title = params[1];
+                            var logo = params[2];
+                            loadFromDB(key, title, logo);
+                            stack.push({item: mythUtils.findThemeFile("Screens/ThemedMenu.qml"), properties:{model: menuItemModel.model}});
+                        }
+                    }
+
+                    else if (model.get(currentIndex).menuSource.startsWith("file://"))
+                    {
+                        menuLoader.source = model.get(currentIndex).menuSource;
+                        stack.push({item: mythUtils.findThemeFile("Screens/ThemedMenu.qml"), properties:{model: menuLoader.item}});
+                    }
+                    else
+                    {
+                        menuLoader.source = settings.menuPath + model.get(currentIndex).menuSource;
+                        stack.push({item: mythUtils.findThemeFile("Screens/ThemedMenu.qml"), properties:{model: menuLoader.item}});
+                    }
                 }
                 else if (model.get(currentIndex).loaderSource === "WebBrowser.qml")
                 {
                     var url = model.get(currentIndex).url
                     var zoom = xscale(model.get(currentIndex).zoom)
-                    var fullscreen = model.get(currentIndex).fullscreen
-
+                    var fullscreen = model.get(currentIndex).fullscreen === "true" ? true : false
                     if (url.startsWith("setting://"))
                     {
                         var setting = url.replace("setting://", "");
@@ -288,6 +316,15 @@ Item
         id: watermark
         x: xscale(832); y: yscale(196); width: xscale(300); height: yscale(300)
         source: mythUtils.findThemeFile("watermark/tv.png")
+    }
+
+    function loadFromDB(key, title, logo)
+    {
+        // load menu items from database
+        menuItemModel.menu = key;
+        menuItemModel.title = title;
+        menuItemModel.logo = logo;
+        menuItemModel.loadFromDB();
     }
 }
 
