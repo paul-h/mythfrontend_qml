@@ -413,6 +413,9 @@ Window
                 if (currentItem)
                 {
                     currentItem.defaultFocusItem.focus = true;
+
+                    if (typeof currentItem.restoreSettings === "function")
+                        currentItem.restoreSettings();
                 }
             }
 
