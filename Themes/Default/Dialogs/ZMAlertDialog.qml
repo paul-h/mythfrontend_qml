@@ -43,6 +43,8 @@ BasePopup
     Connections
     {
         target: playerSources.zmCameraList
+        ignoreUnknownSignals: true
+
         function onMonitorStatus(monitorId, status)
         {
             if (autoHide && mediaPlayer.feed.feedName === "ZoneMinder Cameras")
