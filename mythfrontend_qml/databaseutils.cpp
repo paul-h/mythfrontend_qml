@@ -284,3 +284,149 @@ void DatabaseUtils::deleteBrowserBookmark(int bookmarkid)
 
     gContext->m_mythQMLDB.commit();
 }
+
+// tivo channels
+
+int DatabaseUtils::addTivoChannel(int channo, const QString &name, int plus1, const QString &category, const QString &definition, int sdid, const QString &icon)
+{
+    gContext->m_logger->debug(Verbose::DATABASE,
+                              QString("DatabaseUtils::addTivoChannel: channo is: %1, name is: %2, plus1 is: %3, category is: %4, definition is: %5, sdid is: %6, icon is: %7")
+                              .arg(channo).arg(name).arg(plus1).arg(category).arg(definition).arg(sdid).arg(icon));
+
+    QSqlQuery query(gContext->m_mythQMLDB);
+    query.prepare("INSERT INTO tivochannels (channo, name, plus1, category, definition, sdid, icon) "
+                  "VALUES (:CHANNO, :NAME, :PLUS1, :CATEGORY, :DEFINITION, :SDID, :ICON);");
+    query.bindValue(":CHANNO", channo);
+    query.bindValue(":NAME", name);
+    query.bindValue(":PLUS1", plus1);
+    query.bindValue(":CATEGORY", category);
+    query.bindValue(":DEFINITION", definition);
+    query.bindValue(":SDID", sdid);
+    query.bindValue(":ICON", icon);
+
+    if (!query.exec())
+    {
+        gContext->m_logger->error(Verbose::GENERAL, QString("DatabaseUtils::addTivoChannel ERROR: %1 - %2").arg(query.lastError().text()).arg(query.executedQuery()));
+        return -1;
+    }
+
+    gContext->m_mythQMLDB.commit();
+
+    return query.lastInsertId().toInt();
+}
+
+void DatabaseUtils::updateTivoChannel(int chanid,int channo, const QString &name, int plus1, const QString &category, const QString &definition, int sdid, const QString &icon)
+{
+    gContext->m_logger->debug(Verbose::DATABASE,
+                              QString("DatabaseUtils::updateTivoChannel: chanid: %1, channo is: %2, name is: %3, plus1 is: %4, category is: %5, definition is: %6, sdid is: %7, icon is: %8")
+                              .arg(chanid).arg(channo).arg(name).arg(plus1).arg(category).arg(definition).arg(sdid).arg(icon));
+
+    QSqlQuery query(gContext->m_mythQMLDB);
+    query.prepare("UPDATE tivochannels SET channo = :CHANNO, name = :NAME, plus1 = :PLUS1, category = :CATEGORY, definition = :DEFINITION, sdid = :SDID,icon = :ICON "
+                  "WHERE chanid = :CHANID;");
+    query.bindValue(":CHANNO", channo);
+    query.bindValue(":NAME", name);
+    query.bindValue(":PLUS1", plus1);
+    query.bindValue(":CATEGORY", category);
+    query.bindValue(":DEFINITION", definition);
+    query.bindValue(":SDID", sdid);
+    query.bindValue(":ICON", icon);
+    query.bindValue(":CHANID", chanid);
+
+    if (!query.exec())
+    {
+        gContext->m_logger->error(Verbose::GENERAL, QString("DatabaseUtils::updateTivoChannel ERROR: %1 - %2").arg(query.lastError().text()).arg(query.executedQuery()));
+    }
+
+    gContext->m_mythQMLDB.commit();
+
+}
+
+void DatabaseUtils::deleteTivoChannel(int chanid)
+{
+    gContext->m_logger->debug(Verbose::DATABASE, QString("DatabaseUtils::deleteTivoChannel: chanid is: %1").arg(chanid));
+
+    QSqlQuery query(gContext->m_mythQMLDB);
+    query.prepare("DELETE FROM tivochannels WHERE chanid = :CHANID;");
+    query.bindValue(0, chanid);
+    query.exec();
+
+    gContext->m_mythQMLDB.commit();
+}
+
+// menu items
+
+int DatabaseUtils::addMenuItem(const QString &menu, int position, const QString &menuText, const QString &loaderSource, const QString &waterMark, const QString &url,
+                               double zoom, bool fullscreen, int layout, const QString &exec)
+{
+    gContext->m_logger->debug(Verbose::DATABASE,
+                              QString("DatabaseUtils::addMenuItem: menu is: %1, position is: %2, menuText is: %3, loaderSource is: %4, waterMark is: %5, url is %6, zoom is %7,fullscreen is %8, layout is %9, exec is %10")
+                              .arg(menu).arg(position).arg(menuText).arg(loaderSource).arg(waterMark).arg(url).arg(zoom).arg(fullscreen).arg(layout).arg(exec));
+
+    QSqlQuery query(gContext->m_mythQMLDB);
+    query.prepare("INSERT INTO menuitems (menu, position, menuText, loaderSource, waterMark, url, zoom, fullscreen, layout, exec) "
+                  "VALUES (:MENU, :POSITION, :MENUTEXT, :LOADERSOURCE, :WATERMARK, :URL, :ZOOM, :FULLSCREEN, :LAYOUT, :EXEC);");
+    query.bindValue(":MENU", menu);
+    query.bindValue(":POSITION", position);
+    query.bindValue(":MENUTEXT", menuText);
+    query.bindValue(":LOADERSOURCE", loaderSource);
+    query.bindValue(":WATERMARK", waterMark);
+    query.bindValue(":URL", url);
+    query.bindValue(":ZOOM", zoom);
+    query.bindValue(":FULLSCREEN", (fullscreen ? "1" : "0"));
+    query.bindValue(":LAYOUT", layout);
+    query.bindValue(":EXEC", exec);
+
+    if (!query.exec())
+    {
+        gContext->m_logger->error(Verbose::GENERAL, QString("DatabaseUtils::addMenuItem ERROR: %1 - %2").arg(query.lastError().text()).arg(query.executedQuery()));
+        return -1;
+    }
+
+    gContext->m_mythQMLDB.commit();
+
+    return query.lastInsertId().toInt();
+}
+
+void DatabaseUtils::updateMenuItem(int itemid,const QString &menu, int position, const QString &menuText, const QString &loaderSource, const QString &waterMark, const QString &url,
+                                   double zoom, bool fullscreen, int layout, const QString &exec)
+{
+    gContext->m_logger->debug(Verbose::DATABASE,
+                              QString("DatabaseUtils::updateMenuItem: itemid is %1, menu is: %2, position is: %3, menuText is: %4, loaderSource is: %5, waterMark is: %6, url is %7, zoom is %8,fullscreen is %9, layout is %10, exec is %11")
+                              .arg(itemid).arg(menu).arg(position).arg(menuText).arg(loaderSource).arg(waterMark).arg(url).arg(zoom).arg(fullscreen).arg(layout).arg(exec));
+
+    QSqlQuery query(gContext->m_mythQMLDB);
+    query.prepare("UPDATE menuitems SET menu = :MENU, position = :POSITION, menuText = :MENUTEXT, loaderSource = :LOADERSOURCE, waterMark = :WATERMARK, url = :URL, zoom = :ZOOM, fullscreen = :FULLSCREEN, layout = :LAYOUT, exec = :EXEC "
+                  "WHERE itemid = :ITEMID;");
+    query.bindValue(":MENU", menu);
+    query.bindValue(":POSITION", position);
+    query.bindValue(":MENUTEXT", menuText);
+    query.bindValue(":LOADERSOURCE", loaderSource);
+    query.bindValue(":WATERMARK", waterMark);
+    query.bindValue(":URL", url);
+    query.bindValue(":ZOOM", zoom);
+    query.bindValue(":FULLSCREEN", (fullscreen ? 1 : 0));
+    query.bindValue(":LAYOUT", layout);
+    query.bindValue(":EXEC", exec);
+    query.bindValue(":ITEMID", itemid);
+
+    if (!query.exec())
+    {
+        gContext->m_logger->error(Verbose::GENERAL, QString("DatabaseUtils::updateMenuItem ERROR: %1 - %2").arg(query.lastError().text()).arg(query.executedQuery()));
+    }
+
+    gContext->m_mythQMLDB.commit();
+
+}
+
+void DatabaseUtils::deleteMenuItem(int itemid)
+{
+    gContext->m_logger->debug(Verbose::DATABASE, QString("DatabaseUtils::deleteMenuItem: itemid is: %1").arg(itemid));
+
+    QSqlQuery query(gContext->m_mythQMLDB);
+    query.prepare("DELETE FROM menuitems WHERE itemid = :ITEMID;");
+    query.bindValue(0, itemid);
+    query.exec();
+
+    gContext->m_mythQMLDB.commit();
+}
