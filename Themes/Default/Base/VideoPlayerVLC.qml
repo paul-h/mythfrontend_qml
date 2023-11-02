@@ -187,6 +187,11 @@ FocusScope
         log.debug(Verbose.PLAYBACK, "VideoPlayerVLC: toggleMute - muted is now: " + mediaplayer.muted)
     }
 
+    function toggleFillMode()
+    {
+        setFillMode();
+    }
+
     function setFillMode(mode)
     {
         showMessage("FillMode is not supported by this player", settings.osdTimeoutMedium);
