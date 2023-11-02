@@ -45,6 +45,23 @@ BaseScreen
 
         setLayout(layout);
 
+        // set the default volume
+        var volume = dbUtils.getSetting("VideoPlayerVolume", settings.hostName, "100");
+
+        // sanity check the volume
+        if (volume < 0 || volume > 100)
+            volume = 100;
+
+        playerLayout.mediaPlayer1.setVolume(volume);
+        playerLayout.mediaPlayer2.setVolume(volume);
+        playerLayout.mediaPlayer3.setVolume(volume);
+        playerLayout.mediaPlayer4.setVolume(volume);
+
+        playerLayout.mediaPlayer1.browserURLListChanged.connect(updateBrowser());
+        playerLayout.mediaPlayer2.browserURLListChanged.connect(updateBrowser());
+        playerLayout.mediaPlayer3.browserURLListChanged.connect(updateBrowser());
+        playerLayout.mediaPlayer4.browserURLListChanged.connect(updateBrowser());
+
         getActivePlayer().showInfo(true);
         getActivePlayer().updateRadioFeedList();
         updateRadioFeed();
@@ -632,39 +649,44 @@ BaseScreen
             else if (itemText == "Live TV")
             {
                 getActivePlayer().feed.switchToFeed("Live TV", "-1", 0);
-                getActivePlayer().play();
+                getActivePlayer().startPlayback();
+            }
+            else if (itemText == "Tivo TV")
+            {
+                getActivePlayer().feed.switchToFeed("Tivo TV", ",,", 0);
+                getActivePlayer().startPlayback();
             }
             else if (itemText == "IPTV")
             {
                 getActivePlayer().feed.switchToFeed("IPTV", "-1", 0);
-                getActivePlayer().play();
+                getActivePlayer().startPlayback();
             }
             else if (itemText == "Recordings")
             {
                 getActivePlayer().feed.switchToFeed("Recordings", "", 0);
-                getActivePlayer().play();
+                getActivePlayer().startPlayback();
             }
             else if (itemText == "Videos")
             {
                 getActivePlayer().feed.switchToFeed("Videos", "", 0);
-                getActivePlayer().play();
+                getActivePlayer().startPlayback();
             }
             else if (itemText == "ZoneMinder Cameras")
             {
                getActivePlayer().feed.switchToFeed("ZoneMinder Cameras", "", 0);
-                getActivePlayer().play();
+                getActivePlayer().startPlayback();
             }
             else if (itemText == "Webcams")
             {
                 var index = dbUtils.getSetting("WebcamListIndex", settings.hostName, "");
                 var filter = index + ",," + "title";
                 getActivePlayer().feed.switchToFeed("Webcams", filter, 0);
-                getActivePlayer().play();
+                getActivePlayer().startPlayback();
             }
             else if (itemText == "Web Videos")
             {
                 getActivePlayer().feed.switchToFeed("Web Videos", "", 0);
-                getActivePlayer().play();
+                getActivePlayer().startPlayback();
             }
             else if (itemText == "Toggle Mute")
                 getActivePlayer().toggleMute();
@@ -884,6 +906,7 @@ BaseScreen
 
         popupMenu.addMenuItem("", "Switch Source");
         popupMenu.addMenuItem("1", "Live TV");
+        popupMenu.addMenuItem("1", "Tivo TV");
         popupMenu.addMenuItem("1", "IPTV");
         popupMenu.addMenuItem("1", "Recordings");
         popupMenu.addMenuItem("1", "Videos");
