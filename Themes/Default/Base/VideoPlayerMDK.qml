@@ -232,11 +232,11 @@ FocusScope
     {
         mediaplayer.setFillMode(mode);
 
-        if (mode === VideoPlayerMDK.FillMode.Stretch)
+        if (mode === MediaPlayers.FillMode.Stretch)
             showMessage("Fill Mode: Stretch", settings.osdTimeoutMedium);
-        else if (mode === VideoPlayerMDK.FillMode.PreserveAspectFit)
+        else if (mode === MediaPlayers.FillMode.PreserveAspectFit)
             showMessage("Fill Mode: Fit", settings.osdTimeoutMedium);
-        else if (mode === VideoPlayerMDK.FillMode.PreserveAspectCrop)
+        else if (mode === MediaPlayers.FillMode.PreserveAspectCrop)
             showMessage("Fill Mode: Crop", settings.osdTimeoutMedium);
     }
 
