@@ -159,4 +159,17 @@ Item
             }
         }
     }
+
+    function getIndexFromId(channelId)
+    {
+        for (var x = 0; x < channelsModel.count; x++)
+        {
+            var channel = channelsModel.get(x);
+
+            if (channel.ChanNo == channelId)
+                return x;
+        }
+
+        return -1;
+    }
 }
