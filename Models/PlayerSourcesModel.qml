@@ -38,6 +38,9 @@ Item
     // zoneminder
     property alias zmToken: zmLogin.token
 
+    // schedules direct API
+    property alias sdAPI: sdAPI
+
     /* ----------------------------------------------- Shared Sorters  --------------------------------------------------- */
     property list<QtObject> titleSorter:
     [
@@ -165,14 +168,12 @@ Item
     }
 
     /* --------------------------------------------------- IPTV -------------------------------------------------------------- */
-
     IPTVModel
     {
         id: iptvModel
     }
 
     /* ------------------------------------------------ ZoneMinder Cameras --------------------------------------------------- */
-
     ZMLoginModel
     {
         id: zmLogin
@@ -207,12 +208,7 @@ Item
     }
 
     /* ------------------------------------------------ Tivo TV -----------------------------------------------------------*/
-    SDJsonModel
-    {
-        id: sdJsonModel
-    }
-
-    TivoChannelsModel
+    TivoChannelsDBModel
     {
         id: tivoChannelsModel
     }
@@ -246,7 +242,6 @@ Item
     }
 
     /* -------------------------------------------- YouTube Subscriptions ----------------------------------------------------------*/
-
     YoutubeSubListModel
     {
         id: youtubeSubsModel
@@ -264,10 +259,15 @@ Item
     }
 
     /* -------------------------------------------- MythTV Recordings ---------------------------------------------------------*/
-
     MythRecordingsModel
     {
         id: recordingsModel
+    }
+
+    /* -------------------------------------------- Schedules Direct JSON API ---- -------------------------------------------------*/
+    SDJsonModel
+    {
+        id: sdAPI
     }
 
     /*-------------------------------------------------------------------------------------------------------------------------------*/
