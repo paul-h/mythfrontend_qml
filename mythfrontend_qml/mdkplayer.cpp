@@ -372,7 +372,7 @@ void QmlMDKPlayer::setFillMode(int fillMode)
     if (!m_playerAPI)
         return;
 
-    float aspectRatio = mdk::IgnoreAspectRatio;
+    float aspectRatio = mdk::IgnoreAspectRatio; // Stretch
 
     if (fillMode == 1) // PreserveAspectFit
         aspectRatio = mdk::KeepAspectRatio;
