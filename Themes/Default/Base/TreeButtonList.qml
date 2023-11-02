@@ -23,6 +23,7 @@ FocusScope
     property int _focusedList: 0
     property int _leftList: 0
     property string _savedPath: ""
+    property string _savedPosition: ""
 
     signal nodeClicked(var node)
     signal nodeSelected(var node)
@@ -33,7 +34,6 @@ FocusScope
         lists.push(createList(0, model));
         lists[0].focus = true;
         _focusedList = 0;
-        //nodeSelectedHandler(0, 0);
     }
 
     onBasePathChanged:
@@ -73,17 +73,19 @@ FocusScope
     Connections
     {
         target: sourceTree
+        ignoreUnknownSignals: true
+
         function onBranchUpdateStarted(path)
         {
             // TODO check we are displaying the path
-            _savedPath = getActiveNodePath(true);
+            _savedPosition = saveFocus();
         }
 
         function onBranchUpdateEnded(path)
         {
-            if (_savedPath != "")
+            if (_savedPosition != "")
             {
-                setFocusedNode(_savedPath);
+                restoreFocus();
             }
         }
     }
@@ -173,7 +175,6 @@ FocusScope
         currentIndex = index;
         currentLevel = nodeID;
 
-        //var path = getActiveNodePath(true);
         var node = lists[nodeID].model.get(index);
         var path = getPathFromNode(node, true);
 
@@ -399,6 +400,61 @@ FocusScope
         return node;
     }
 
+    function saveFocus()
+    {
+        var result = "";
+
+        for (var x = lists.length - 2; x >= 0; x--)
+        {
+            if (result != "")
+                result =  lists[x].currentIndex + "~" + result;
+            else
+                result = lists[x].currentIndex;
+        }
+
+        return result;
+    }
+
+    function restoreFocus()
+    {
+        for (var x = 0; x < lists.length; x++)
+            lists[x].destroy();
+
+        lists.length = 0;
+        lists.push(createList(0, model));
+        lists[0].focus = true;
+        _focusedList = 0;
+        nodeSelectedHandler(0, 0);
+
+        if (_savedPosition === "")
+        {
+            nodeSelectedHandler(0, 0);
+            return;
+        }
+
+        var list = _savedPosition.split("~");
+        var node = model;
+
+        for (var y = 0; y < list.length; y++)
+        {
+            var index = list[y];
+
+            if (index >= lists[y].model.count)
+                index = lists[y].model.count - 1;
+
+            if (node.get(index).expanded !== undefined && node.get(index).expanded === false && (typeof node.expandNode === "function"))
+                node.expandNode(getPathFromNode(node.get(index), true), node.get(index))
+
+            node = node.get(index).subNodes;
+
+            lists[y].highlightMoveDuration = 0;
+            lists[y].currentIndex = index;
+            lists[y].highlightMoveDuration = 1500;
+
+            moveRight();
+        }
+    }
+
     function getPathFromNode(node, useData)
     {
         if (!node)
@@ -492,7 +548,8 @@ FocusScope
             if (_focusedList >= lists.length - 1)
             {
                 // we need to add a new list for this node
-                lists[_focusedList + 1] = createList(_focusedList + 1, lists[_focusedList].model.get(lists[_focusedList].currentIndex).subNodes);
+                var currentIndex = lists[_focusedList].currentIndex > 0 ? lists[_focusedList].currentIndex : 0
+                lists[_focusedList + 1] = createList(_focusedList + 1, lists[_focusedList].model.get(currentIndex).subNodes);
             }
         }
 
@@ -504,7 +561,6 @@ FocusScope
 
         makeListVisible()
 
-        //objRoot.nodeSelected(lists[_focusedList].model.get(lists[_focusedList].currentIndex));
         objRoot.nodeSelectedHandler(lists[_focusedList].nodeID, lists[_focusedList].currentIndex);
         objRoot.posChanged(_focusedList, lists[_focusedList].currentIndex, lists[_focusedList].model.count);
     }
