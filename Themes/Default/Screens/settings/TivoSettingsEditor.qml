@@ -120,6 +120,23 @@ BaseScreen
         height: yscale(50)
         text: settings.tivoVideoURL
         KeyNavigation.up: tivoPasswordEdit;
+        KeyNavigation.down: tivoSDLineupEdit;
+    }
+
+    LabelText
+    {
+        x: xscale(30); y: yscale(350)
+        text: "Tivo SD Lineup:"
+    }
+
+    BaseEdit
+    {
+        id: tivoSDLineupEdit
+        x: xscale(300); y: yscale(350)
+        width: parent.width - x - xscale(20)
+        height: yscale(50)
+        text: settings.tivoSDLineup
+        KeyNavigation.up: tivoPasswordEdit;
         KeyNavigation.down: saveButton;
     }
 
@@ -128,7 +145,7 @@ BaseScreen
         id: saveButton;
         x: parent.width - width - xscale(50); y: yscale(600);
         text: "Save";
-        KeyNavigation.up: tivoVideoURLEdit
+        KeyNavigation.up: tivoSDLineupEdit
         KeyNavigation.down: tivoIPEdit
         onClicked: save()
     }
@@ -149,12 +166,14 @@ BaseScreen
         dbUtils.setSetting("TivoUserName",    settings.hostName, tivoUserNameEdit.text);
         dbUtils.setSetting("TivoPassword",    settings.hostName, tivoPasswordEdit.text);
         dbUtils.setSetting("TivoVideoURL",    settings.hostName, tivoVideoURLEdit.text);
+        dbUtils.setSetting("TivoSDLineup",    settings.hostName, tivoSDLineupEdit.text);
 
         settings.tivoIP       = tivoIPEdit.text;
         settings.tivoPort     = tivoPortEdit.text;
         settings.tivoUserName = tivoUserNameEdit.text;
         settings.tivoPassword = tivoPasswordEdit.text;
         settings.tivoVideoURL = tivoVideoURLEdit.text;
+        settings.tivoSDLineup = tivoSDLineupEdit.text;
 
         returnSound.play();
         stack.pop();

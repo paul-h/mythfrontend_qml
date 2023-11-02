@@ -79,6 +79,7 @@ class Settings : public QObject
     Q_PROPERTY(QString tivoUserName READ tivoUserName WRITE setTivoUserName NOTIFY tivoUserNameChanged)
     Q_PROPERTY(QString tivoPassword READ tivoPassword WRITE setTivoPassword NOTIFY tivoPasswordChanged)
     Q_PROPERTY(QString tivoVideoURL READ tivoVideoURL WRITE setTivoVideoURL NOTIFY tivoVideoURLChanged)
+    Q_PROPERTY(QString tivoSDLineup READ tivoSDLineup WRITE setTivoSDLineup NOTIFY tivoSDLineupChanged)
 
     // schedules direct
     Q_PROPERTY(QString sdUserName READ sdUserName WRITE setSDUserName NOTIFY sdUserNameChanged)
@@ -161,6 +162,7 @@ class Settings : public QObject
     void tivoUserNameChanged(void);
     void tivoPasswordChanged(void);
     void tivoVideoURLChanged(void);
+    void tivoSDLineupChanged(void);
 
     void sdUserNameChanged(void);
     void sdPasswordChanged(void);
@@ -326,6 +328,9 @@ class Settings : public QObject
     QString tivoVideoURL(void);
     void    setTivoVideoURL(const QString &tivoVideoURL);
 
+    QString tivoSDLineup(void);
+    void    setTivoSDLineup(const QString &tivoSDLineup);
+
     QString sdUserName(void);
     void    setSDUserName(const QString &sdUserName);
 
@@ -429,6 +434,7 @@ class Settings : public QObject
     QString m_tivoUserName;
     QString m_tivoPassword;
     QString m_tivoVideoURL;
+    QString m_tivoSDLineup;
 
     QString m_sdUserName;
     QString m_sdPassword;

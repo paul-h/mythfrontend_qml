@@ -93,6 +93,7 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     setTivoUserName(gContext->m_databaseUtils->getSetting("TivoUserName", hostName));
     setTivoPassword(gContext->m_databaseUtils->getSetting("TivoPassword", hostName));
     setTivoVideoURL(gContext->m_databaseUtils->getSetting("TivoVideoURL", hostName));
+    setTivoSDLineup(gContext->m_databaseUtils->getSetting("TivoSDLineup", hostName));
 
     //schedules direct
     setSDUserName(gContext->m_databaseUtils->getSetting("SdUserName", hostName));
@@ -252,6 +253,12 @@ void Settings::setDefaultSettings(const QString &hostName)
     {
         setTivoUserName("tivo");
         gContext->m_databaseUtils->setSetting("TivoUserName", hostName, "tivo");
+    }
+
+    if (gContext->m_databaseUtils->getSetting("TivoSDLineup", hostName) == "")
+    {
+        setTivoSDLineup("GBR-1000041-DEFAULT");
+        gContext->m_databaseUtils->setSetting("TivoSDLineup", hostName, "GBR-1000041-DEFAULT");
     }
 
     // weather
@@ -799,6 +806,12 @@ QString Settings::tivoVideoURL(void)
     return m_tivoVideoURL;
 }
 
+void Settings::setTivoVideoURL(const QString &tivoVideoURL)
+{
+    m_tivoVideoURL = tivoVideoURL;
+    emit tivoVideoURLChanged();
+}
+
 QString Settings::tivoUserName(void)
 {
     return m_tivoUserName;
@@ -821,10 +834,15 @@ void Settings::setTivoPassword(const QString &tivoPassword)
     emit tivoPasswordChanged();
 }
 
-void Settings::setTivoVideoURL(const QString &tivoVideoURL)
+QString Settings::tivoSDLineup(void)
 {
-    m_tivoVideoURL = tivoVideoURL;
-    emit tivoVideoURLChanged();
+    return m_tivoSDLineup;
+}
+
+void Settings::setTivoSDLineup(const QString &tivoSDLineup)
+{
+    m_tivoSDLineup = tivoSDLineup;
+    emit tivoSDLineupChanged();
 }
 
 QString Settings::sdUserName(void)
