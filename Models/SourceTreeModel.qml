@@ -78,6 +78,17 @@ Item
         }
     }
 
+    Connections
+    {
+        target: playerSources.tivoChannelList
+        function onLoaded()
+        {
+            branchUpdateStarted("Root ~ TivoTV");
+            clearBranch("Root ~ TivoTV");
+            branchUpdateEnded("Root ~ TivoTV");
+        }
+    }
+
     ListModel
     {
         id: treeModel
