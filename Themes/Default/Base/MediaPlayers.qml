@@ -144,6 +144,8 @@ FocusScope
     Connections
     {
         target: playerSources.zmCameraList
+        ignoreUnknownSignals: true
+
         function onMonitorStatus(monitorId, status)
         {
             if (feedSource.feedName === "ZoneMinder Cameras")
@@ -1073,7 +1075,7 @@ FocusScope
         _mediaStatus = mediaStatus;
 
        log.debug(Verbose.PLAYBACK, "MediaPlayers: mediaStatus: " + mediaStatus + " for source: " + feedSource.feedList.get(feedSource.currentFeed).url);
-
+       log.debug(Verbose.PLAYBACK, "MediaPlayers: mediaStatus: " + mediaStatus + " for videoplayer source: " + videoPlayer.source);
         if (mediaStatus === MediaPlayers.MediaStatus.NoMedia)
         {
             showMessage("No Media!!", settings.osdTimeoutMedium);
@@ -1168,8 +1170,8 @@ FocusScope
         // we always need to restart the StreamLink/StreamBuffer process even if it is already running
         if (newPlayer === "StreamLink" || newPlayer === "StreamBuffer")
         {
-            if (player !== "FFMPEG" && player !== "MDK")
-                createMDKPlayer();
+            if (player !== "VLC")
+                createVLCPlayer();
 
             videoPlayer.visible = false;
 
@@ -1432,7 +1434,7 @@ FocusScope
 
     function setFillMode(mode)
     {
-        if (player === "VLC" || player === "FFMPEG" || player === "YouTube" || player === "MDK"|| player === "Tivo")
+        if (player === "VLC" || player === "FFMPEG" || player === "YouTube" || player === "MDK"|| player === "Tivo" || player === "StreamLink")
             videoPlayer.setFillMode(mode);
     }
 
