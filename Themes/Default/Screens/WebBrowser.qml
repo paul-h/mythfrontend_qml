@@ -18,8 +18,8 @@ BaseScreen
         setHelp("https://mythqml.net/help/web_browser.php#top");
         showTime(false);
         showTicker(false);
-        pauseVideo(true);
-        muteAudio(true);
+        pauseVideo(fullscreen);
+        muteAudio(fullscreen);
         radioPlayerDialog.suspendPlayback();
     }
 
