@@ -22,14 +22,10 @@ BaseScreen
         RoleSorter { roleName: "name"; ascendingOrder: true }
     ]
 
-    SortFilterProxyModel
+    SDChannelsModel
     {
-        id: sdChannelsProxyModel
-        sourceModel: SDChannelsModel {}
-
-        sorters: chanNameSorter
+        id: sdChannelModel
     }
-
 
     Keys.onPressed:
     {
@@ -86,7 +82,7 @@ BaseScreen
         id: sdChannelList
         x: xscale(20); y: yscale(20); width: (parent.width - xscale(50)) / 2; height: yscale(550)
 
-        model: sdChannelsProxyModel
+        model: sdChannelModel.model
         delegate: listRow
 
         Keys.onReturnPressed:
