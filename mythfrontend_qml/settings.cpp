@@ -117,6 +117,10 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
 
     // data sources
     setEnergyDataDir(gContext->m_databaseUtils->getSetting("EnergyDataDir", hostName));
+
+    // home assistant
+    setHAURL(gContext->m_databaseUtils->getSetting("HAURL", hostName));
+    setHAAPIToken(gContext->m_databaseUtils->getSetting("HAAPIToken", hostName));
 }
 
 void Settings::setDefaultSettings(const QString &hostName)
@@ -308,6 +312,13 @@ void Settings::setDefaultSettings(const QString &hostName)
     {
         setDvdParameters("--play-and-exit --fullscreen --key-quit Esc --key-leave-fullscreen Ctrl+F dvd:///dev/sr0");
         gContext->m_databaseUtils->setSetting("DvdParameters", hostName, "--play-and-exit|--fullscreen|--global-key-quit|Esc|--global-key-vol-mute|F9|--global-key-vol-up|]|--global-key-vol-down|[|--key-play-pause|P|--global-key-jump-medium|<|--global-key-jump+medium|>|--global-key-jump-long|Page Down|--global-key-jump+long|Page Up|--global-key-leave-fullscreen|Ctrl+F|dvd:///dev/sr0");
+    }
+
+    // home assistant
+    if (gContext->m_databaseUtils->getSetting("HAURL", hostName) == "")
+    {
+        setHAURL("http://localhost:8123/");
+        gContext->m_databaseUtils->setSetting("HAURL", hostName, "http://localhost:8123/");
     }
 }
 
@@ -1008,4 +1019,26 @@ void Settings::setEnergyDataDir(const QString &energyDataDir)
 {
     m_energyDataDir = energyDataDir;
     emit energyDataDirChanged();
+}
+
+QString Settings::haURL(void)
+{
+    return m_haURL;
+}
+
+void Settings::setHAURL(const QString &haURL)
+{
+    m_haURL = haURL;
+    emit haURLChanged();
+}
+
+QString Settings::haAPIToken(void)
+{
+    return m_haAPIToken;
+}
+
+void Settings::setHAAPIToken(const QString &haAPIToken)
+{
+    m_haAPIToken = haAPIToken;
+    emit haAPITokenChanged();
 }

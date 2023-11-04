@@ -104,6 +104,10 @@ class Settings : public QObject
     // data sources
     Q_PROPERTY(QString energyDataDir READ energyDataDir WRITE setEnergyDataDir NOTIFY energyDataDirChanged)
 
+    // home assistant
+    Q_PROPERTY(QString haURL READ haURL WRITE setHAURL NOTIFY haURLChanged)
+    Q_PROPERTY(QString haAPIToken READ haAPIToken WRITE setHAAPIToken NOTIFY haAPITokenChanged)
+
    signals:
     void mysqlIPChanged(void);
     void mysqlPortChanged(void);
@@ -182,6 +186,9 @@ class Settings : public QObject
     void dvdParametersChanged(void);
 
     void energyDataDirChanged(void);
+
+    void haURLChanged(void);
+    void haAPITokenChanged(void);
 
   public:
     Settings(const QString &hostName, const QString &theme);
@@ -376,7 +383,13 @@ class Settings : public QObject
     QString energyDataDir(void);
     void    setEnergyDataDir(const QString &energyDataDir);
 
-  private:
+    QString haURL(void);
+    void    setHAURL(const QString &haURL);
+
+    QString haAPIToken(void);
+    void    setHAAPIToken(const QString &haAPIToken);
+
+private:
     // Mysql Database
     QString m_mysqlIP;
     int     m_mysqlPort;
@@ -454,4 +467,7 @@ class Settings : public QObject
     QString m_dvdParameters;
 
     QString m_energyDataDir;
+
+    QString m_haURL;
+    QString m_haAPIToken;
 };
