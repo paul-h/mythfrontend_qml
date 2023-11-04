@@ -78,4 +78,10 @@ ListModel
         loaderSource:"settings/MythChannelEditor.qml"
         waterMark: "watermark/keys.png"
     }
+    ListElement
+    {
+        menutext: "Home Assistant Settings"
+        loaderSource:"settings/HASettingsEditor.qml"
+        waterMark: "watermark/keys.png"
+    }
 }
