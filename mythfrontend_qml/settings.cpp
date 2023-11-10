@@ -94,6 +94,7 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     setTivoPassword(gContext->m_databaseUtils->getSetting("TivoPassword", hostName));
     setTivoVideoURL(gContext->m_databaseUtils->getSetting("TivoVideoURL", hostName));
     setTivoSDLineup(gContext->m_databaseUtils->getSetting("TivoSDLineup", hostName));
+    setTivoVideoSource(gContext->m_databaseUtils->getSetting("TivoVideoSource", hostName));
 
     //schedules direct
     setSDUserName(gContext->m_databaseUtils->getSetting("SdUserName", hostName));
@@ -854,6 +855,17 @@ void Settings::setTivoSDLineup(const QString &tivoSDLineup)
 {
     m_tivoSDLineup = tivoSDLineup;
     emit tivoSDLineupChanged();
+}
+
+QString Settings::tivoVideoSource(void)
+{
+    return m_tivoVideoSource;
+}
+
+void Settings::setTivoVideoSource(const QString &tivoVideoSource)
+{
+    m_tivoVideoSource = tivoVideoSource;
+    emit tivoVideoSourceChanged();
 }
 
 QString Settings::sdUserName(void)
