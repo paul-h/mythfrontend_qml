@@ -3,6 +3,7 @@ import QtQuick 2.0
 FocusScope
 {
     property alias text: editText.text
+    property alias wrapMode: editText.wrapMode
 
     signal textHasChanged();
 
