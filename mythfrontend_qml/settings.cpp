@@ -122,6 +122,7 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
     // home assistant
     setHAURL(gContext->m_databaseUtils->getSetting("HAURL", hostName));
     setHAAPIToken(gContext->m_databaseUtils->getSetting("HAAPIToken", hostName));
+    setHAMenuFile(gContext->m_databaseUtils->getSetting("HAMenuFile", hostName));
 }
 
 void Settings::setDefaultSettings(const QString &hostName)
@@ -1053,4 +1054,15 @@ void Settings::setHAAPIToken(const QString &haAPIToken)
 {
     m_haAPIToken = haAPIToken;
     emit haAPITokenChanged();
+}
+
+QString Settings::haMenuFile(void)
+{
+    return m_haMenuFile;
+}
+
+void Settings::setHAMenuFile(const QString &haMenuFile)
+{
+    m_haMenuFile = haMenuFile;
+    emit haMenuFileChanged();
 }

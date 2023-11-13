@@ -108,8 +108,9 @@ class Settings : public QObject
     // home assistant
     Q_PROPERTY(QString haURL READ haURL WRITE setHAURL NOTIFY haURLChanged)
     Q_PROPERTY(QString haAPIToken READ haAPIToken WRITE setHAAPIToken NOTIFY haAPITokenChanged)
+    Q_PROPERTY(QString haMenuFile READ haMenuFile WRITE setHAMenuFile NOTIFY haMenuFileChanged)
 
-   signals:
+  signals:
     void mysqlIPChanged(void);
     void mysqlPortChanged(void);
     void mysqlUserChanged(void);
@@ -191,6 +192,7 @@ class Settings : public QObject
 
     void haURLChanged(void);
     void haAPITokenChanged(void);
+    void haMenuFileChanged(void);
 
   public:
     Settings(const QString &hostName, const QString &theme);
@@ -394,6 +396,9 @@ class Settings : public QObject
     QString haAPIToken(void);
     void    setHAAPIToken(const QString &haAPIToken);
 
+    QString haMenuFile(void);
+    void    setHAMenuFile(const QString &haMenuFile);
+
 private:
     // Mysql Database
     QString m_mysqlIP;
@@ -476,4 +481,5 @@ private:
 
     QString m_haURL;
     QString m_haAPIToken;
+    QString m_haMenuFile;
 };
