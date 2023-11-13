@@ -41,6 +41,9 @@ Item
     // schedules direct API
     property alias sdAPI: sdAPI
 
+    // home assistant API
+    property alias haAPI: haAPI
+
     /* ----------------------------------------------- Shared Sorters  --------------------------------------------------- */
     property list<QtObject> titleSorter:
     [
@@ -268,6 +271,12 @@ Item
     SDJsonModel
     {
         id: sdAPI
+    }
+
+    /* -------------------------------------------- Home Assistant JSON REST API ---- -------------------------------------------------*/
+    HAJsonModel
+    {
+        id: haAPI
     }
 
     /*-------------------------------------------------------------------------------------------------------------------------------*/
