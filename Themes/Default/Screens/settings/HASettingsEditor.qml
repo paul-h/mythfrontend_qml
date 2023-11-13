@@ -69,6 +69,23 @@ BaseScreen
         height: yscale(50)
         text: settings.haAPIToken
         KeyNavigation.up: haUrlEdit;
+        KeyNavigation.down: haMenuFileEdit;
+    }
+
+    LabelText
+    {
+        x: xscale(30); y: yscale(200)
+        text: "Menu File Location:"
+    }
+
+    BaseEdit
+    {
+        id: haMenuFileEdit
+        x: xscale(300); y: yscale(200)
+        width: parent.width - x - xscale(20)
+        height: yscale(50)
+        text: settings.haMenuFile
+        KeyNavigation.up: haAPITokenEdit;
         KeyNavigation.down: saveButton;
     }
 
@@ -77,7 +94,7 @@ BaseScreen
         id: saveButton;
         x: parent.width - width - xscale(50); y: yscale(600);
         text: "Save";
-        KeyNavigation.up: haAPITokenEdit
+        KeyNavigation.up: haMenuFileEdit
         KeyNavigation.down: haUrlEdit
         onClicked: save()
     }
@@ -93,11 +110,13 @@ BaseScreen
 
     function save()
     {
-        dbUtils.setSetting("HAURL",   settings.hostName, haUrlEdit.text);
-        dbUtils.setSetting("HAAPIToken",   settings.hostName, haAPITokenEdit.text);
+        dbUtils.setSetting("HAURL",      settings.hostName, haUrlEdit.text);
+        dbUtils.setSetting("HAAPIToken", settings.hostName, haAPITokenEdit.text);
+        dbUtils.setSetting("HAMenuFile", settings.hostName, haMenuFileEdit.text);
 
         settings.haURL = haUrlEdit.text;
         settings.haAPIToken = haAPITokenEdit.text;
+        settings.haMenuFile = haMenuFileEdit.text;
 
         returnSound.play();
         stack.pop();
