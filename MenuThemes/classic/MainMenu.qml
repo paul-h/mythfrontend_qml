@@ -67,7 +67,7 @@ ListModel
         menutext:"Home Assistant"
         loaderSource: "ThemedMenu.qml"
         waterMark: "watermark/home_assistant.svg"
-        menuSource: "HomeAssistantMenu.qml"
+        menuSource: "setting://HAMenuFile"
     }
     ListElement
     {

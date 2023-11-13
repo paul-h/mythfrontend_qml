@@ -206,6 +206,7 @@ Item
 
                 if (model.get(currentIndex).loaderSource === "ThemedMenu.qml")
                 {
+                    // load menu items from the database
                     if (model.get(currentIndex).menuSource.startsWith("database://"))
                     {
                         var menuSource = model.get(currentIndex).menuSource
@@ -220,10 +221,17 @@ Item
                             stack.push({item: mythUtils.findThemeFile("Screens/ThemedMenu.qml"), properties:{model: menuItemModel.model}});
                         }
                     }
-
+                    // load menu items from the specified local file
                     else if (model.get(currentIndex).menuSource.startsWith("file://"))
                     {
                         menuLoader.source = model.get(currentIndex).menuSource;
+                        stack.push({item: mythUtils.findThemeFile("Screens/ThemedMenu.qml"), properties:{model: menuLoader.item}});
+                    }
+                    // load the menu items from the local file specified by the setting
+                    else if (model.get(currentIndex).menuSource.startsWith("setting://"))
+                    {
+                        var setting = model.get(currentIndex).menuSource.replace("setting://", "");
+                        menuLoader.source = dbUtils.getSetting(setting, settings.hostName, "");
                         stack.push({item: mythUtils.findThemeFile("Screens/ThemedMenu.qml"), properties:{model: menuLoader.item}});
                     }
                     else
