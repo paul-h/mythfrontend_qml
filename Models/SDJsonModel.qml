@@ -21,6 +21,8 @@ Item
 
     Component.onCompleted:
     {
+        log.info(Verbose.MODEL, "SDJsonModel: onCompleted calling getToken");
+
         getToken();
     }
 
@@ -55,7 +57,7 @@ Item
                 }
                 else
                 {
-                    log.error(Verbose.MODEL, "apiRequest ERROR: got status '" + http.statusText + "' - " + http.responseText)
+                    log.error(Verbose.MODEL, "SDJsonModel: apiRequest ERROR: got status '" + http.statusText + "' - " + http.responseText)
                     log.error(Verbose.MODEL, "Headers '" + http.getAllResponseHeaders())
                 }
             }
@@ -66,6 +68,8 @@ Item
 
     function getToken(username, password)
     {
+        log.info(Verbose.MODEL, "SDJsonModel: getToken called");
+
         var http = new XMLHttpRequest();
         var url = apiBaseURL + apiVersion + "/token";
         var params = '{"username":"' + root.username + '","password":"' + sha1(root.password) + '"}';
@@ -96,14 +100,14 @@ Item
                         //getLineupPreview("GBR-1008053-DEFAULT", debugLineupPreviewCallback);
                         //getLineups(debugCallback);
                         //getLineup("GBR-1000041-DEFAULT", debugCallback);
-                        getPrograms('["EP012811800381"]', debugCallback)
+                        //getPrograms('["EP012811800381"]', debugCallback)
                         //getGenericDescription('["EP016736560025"]', debugCallback)
                         //getArtwork('["EP01281180"]', debugCallback)
                         //getCastImages(58321, debugCallback);
 
 
-                        var stations = ["24325", "68051"];
-                        var dates = ["2023-06-01", "2023-06-02"];
+                        //var stations = ["24325", "68051"];
+                        //var dates = ["2023-06-01", "2023-06-02"];
                         //getLastModified(stations, dates, debugCallback)
                         //getSchedule(stations, dates, debugCallback);
                     }
