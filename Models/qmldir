@@ -7,6 +7,7 @@ ChannelsModel 1.0 ChannelsModel.qml
 EncodersModel 1.0 EncodersModel.qml
 FileBrowserModel 1.0 FileBrowserModel.qml
 FuelBillsModel 1.0 FuelBillsModel.qml
+HAJsonModel 1.0 HAJsonModel.qml
 IPTVModel 1.0 IPTVModel.qml
 JSONListModel 1.0 JSONListModel.qml
 jsonpath 1.0 jsonpath.js
