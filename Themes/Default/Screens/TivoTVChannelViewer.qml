@@ -41,33 +41,10 @@ BaseScreen
 
         while (stack.busy) {};
 
-//        sourceId = -1;
-
-//        if (isPanel)
-//            channelGroupId =  -1;
-//        else
-//            channelGroupId = dbUtils.getSetting("LastChannelGroupId", settings.hostName, -1);
-
-//        if (channelGroupId == -1)
-//            footer.greenText = "Show (All Categories)"
-//        else
-//        {
-//            var index = playerSources.channelGroups.findById(channelGroupId);
-//            if (index !== -1)
-//                footer.greenText = "Show (" + playerSources.channelGroups.get(index).Name + ")"
-//            else
-//                footer.greenText = "Show (All Categories)";
-//        }
-
         sort = "ChanNo";
         var filter =  category + "," + definition + "," + sort;
         feedSource.feedModelLoaded.connect(updateChannelDetails);
         feedSource.switchToFeed("Tivo TV", filter, channelGrid.currentIndex);
-    }
-
-    Component.onDestruction:
-    {
-//        dbUtils.setSetting("LastChannelGroupId", settings.hostName, feedSource.channelGroupId)
     }
 
     Timer
@@ -90,25 +67,9 @@ BaseScreen
         }
     }
 
-    Timer
-    {
-        id: previewTimer
-        interval: 3000; running: false; repeat: false
-        onTriggered:
-        {
-            //if (showPreview)
-            //    updatePlayer();
-        }
-    }
-
     FeedSource
     {
         id: feedSource
-    }
-
-    SDJsonModel
-    {
-        id: sdAPI
     }
 
     Keys.onPressed:
@@ -227,7 +188,7 @@ BaseScreen
                     asynchronous: true
                     anchors.fill: parent
                     anchors.margins: xscale(5)
-                    source: Icon !== "" ? Icon : mythUtils.findThemeFile("images/grid_noimage.png");
+                    source: icon !== "" ? icon : mythUtils.findThemeFile("images/grid_noimage.png");
                     onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/grid_noimage.png");
                 }
                 LabelText
@@ -235,7 +196,7 @@ BaseScreen
                     x: 5;
                     y: channelGrid.cellHeight - yscale(40)
                     width: channelGrid.cellWidth - xscale(10)
-                    text: Name
+                    text: name
                     horizontalAlignment: Text.AlignHCenter;
                     fontPixelSize: xscale(14)
                 }
@@ -243,7 +204,6 @@ BaseScreen
         }
 
         model: feedSource.feedList
-        //model: tivoChannels.model
         delegate: channelDelegate
         focus: true
 
@@ -255,10 +215,6 @@ BaseScreen
                 return;
             }
 
-//            videoPlayer.stop();
-//            showPreview = false;
-//            returnSound.play();
-
             if (root.isPanel)
             {
                 var sort = feedSource.sort;
@@ -268,9 +224,7 @@ BaseScreen
             }
             else
             {
-                videoPlayer.changeChannel(model.get(currentIndex).ChanNo);
-//                var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Live TV", defaultFilter: filter, defaultCurrentFeed: channelGrid.currentIndex}});
-//                item.feedChanged.connect(feedChanged);
+                videoPlayer.changeChannel(model.get(currentIndex).channo);
             }
 
             event.accepted = true;
@@ -288,14 +242,7 @@ BaseScreen
                 event.accepted = false;
         }
 
-        onCurrentIndexChanged:
-        {
-
-            //videoPlayer.stop();
-            //videoPlayer.visible = false;
-            updateChannelDetails();
-            //previewTimer.start();
-        }
+        onCurrentIndexChanged: updateChannelDetails();
 
         KeyNavigation.up: videoPlayer;
         KeyNavigation.down: videoPlayer;
@@ -413,12 +360,13 @@ BaseScreen
         }
     }
 
+    // not currently used
     Image
     {
         id: recordingIcon
         x: _xscale(900); y: yscale(630); width: xscale(32); height: yscale(32)
         source: mythUtils.findThemeFile("images/recording.png")
-        visible: false //guideModel.count > 0 ?  guideModel.get(0).RecordingStatus === "Recording" : false
+        visible: false
     }
 
     Footer
@@ -450,9 +398,9 @@ BaseScreen
         {
             for (var x = 0; x < playerSources.tivoChannelList.count; x++)
             {
-                if (playerSources.tivoChannelList.get(x).ChanNo === channel)
+                if (playerSources.tivoChannelList.get(x).channo === channel)
                 {
-                    programStatus.text = playerSources.tivoChannelList.get(x).ChanNo + " - " + playerSources.tivoChannelList.get(x).Name;
+                    programStatus.text = playerSources.tivoChannelList.get(x).channo + " - " + playerSources.tivoChannelList.get(x).name;
 
                     // if this is the first channel change select the channel in the grid
                     if (_startingUp)
@@ -564,17 +512,12 @@ BaseScreen
             if (!currentItem)
                 return;
 
-            title.text = currentItem.ChanNo + " - " +  currentItem.Name;
+            title.text = currentItem.channo + " - " +  currentItem.name;
 
-            // icon
-//            channelIcon.source = currentItem.Icon ? settings.masterBackend + "Guide/GetChannelIcon?ChanId=" + currentItem.ChanId : mythUtils.findThemeFile("images/grid_noimage.png");
+            // icon - not currently used
+            // channelIcon.source = currentItem.Icon ? settings.masterBackend + "Guide/GetChannelIcon?ChanId=" + currentItem.ChanId : mythUtils.findThemeFile("images/grid_noimage.png");
 
-            getSDSchedule(currentItem.SDId);
-
-//            if (videoPlayer.visible)
-//            {
-//                previewTimer.start();
-//            }
+            getSDSchedule(currentItem.sdid);
 
             noMatches.visible = false;
         }
@@ -598,7 +541,7 @@ BaseScreen
         var tomorrow = Util.addDays(today, 1);
 
         var dates = [Qt.formatDateTime(yesterday, "yyyy-MM-dd"), Qt.formatDateTime(today, "yyyy-MM-dd"), Qt.formatDateTime(tomorrow, "yyyy-MM-dd")];
-        sdAPI.getSchedule(stations, dates, findNowNext);
+        playerSources.sdAPI.getSchedule(stations, dates, findNowNext);
     }
 
     function findNowNext(json)
@@ -608,7 +551,7 @@ BaseScreen
         for (var day = 0; day < json.length; day++)
         {
             // check this data is for the selected channel
-            if (channelGrid.model.get(channelGrid.currentIndex).SDId !== json[day].stationID)
+            if (channelGrid.model.get(channelGrid.currentIndex).sdid !== json[day].stationID)
                 return;
 
             // check we have some programs
@@ -621,7 +564,6 @@ BaseScreen
 
             // find the programID for the now and next programs
             var now = new Date();
-            //var now2 = new Date(Date.now() + (now.getTimezoneOffset() * 60 * 1000));
 
             for (var x = 0; x < json[day].programs.length; x++)
             {
@@ -650,7 +592,7 @@ BaseScreen
                         nextProgID = nextProgram.programID;
                     }
 
-                    sdAPI.getPrograms([nowProgID, nextProgID], updateNowNext);
+                    playerSources.sdAPI.getPrograms([nowProgID, nextProgID], updateNowNext);
                     found =  true;
                     break;
                 }
@@ -717,11 +659,11 @@ BaseScreen
 
         // we can't get the recording status from the TIVO?
         //programStatus.text = "";
-//      var state = guideModel.get(0).RecordingStatus;
-//      if (state === "Unknown")
-//          programStatus.text = "Not Recording";
-//      else
-//          programStatus.text = guideModel.get(0).RecordingStatus
+        //var state = guideModel.get(0).RecordingStatus;
+        //if (state === "Unknown")
+        //    programStatus.text = "Not Recording";
+        //else
+        //    programStatus.text = guideModel.get(0).RecordingStatus
 
         if (json[0].genres)
         {
@@ -800,11 +742,6 @@ BaseScreen
     {
         videoPlayerFullscreen = !videoPlayerFullscreen;
 
-//        panel1.visible = !videoPlayerFullscreen;
-//        panel2.visible = !videoPlayerFullscreen;
-//        panel3.visible = !videoPlayerFullscreen;
-//        detailsPanel.visible = !videoPlayerFullscreen;
-
         if (videoPlayerFullscreen)
         {
             videoPlayer.x = 0;
@@ -820,23 +757,7 @@ BaseScreen
             videoPlayer.width = _xscale(266);
             videoPlayer.height = _yscale(150);
 
-//            if (internalPlayer.previousFocusItem)
-//            {
-//                panelStack.focus = true;
-//                internalPlayer.previousFocusItem.focus = true;
-//            }
         }
-    }
-
-    function updatePlayer()
-    {
-        //TODO check encoder availability
-        var encoderNum = 1
-        var ip = settings.masterIP
-        var chanNum = channelGrid.model.get(channelGrid.currentIndex).ChanNum;
-        var pin = settings.securityPin;
-//        videoPlayer.visible = true;
-//        videoPlayer.source = "myth://type=livetv:server=" + ip + ":pin=" + pin + ":encoder=" + encoderNum + ":channum=" + chanNum
     }
 
     function createMenu(menu)
@@ -846,7 +767,7 @@ BaseScreen
         menu.append({"menutext": "All", "loaderSource": "MythTVChannelViewer.qml", "menuSource": "", "filter": -1});
 
         for (var x = 0; x < playerSources.channelGroups.count; x++)
-            menu.append({"menutext": playerSources.channelGroups.get(x).Name, "loaderSource": "MythTVChannelViewer.qml", "menuSource": "", "filter": playerSources.channelGroups.get(x).GroupId});
+            menu.append({"menutext": playerSources.channelGroups.get(x).name, "loaderSource": "MythTVChannelViewer.qml", "menuSource": "", "filter": playerSources.channelGroups.get(x).GroupId});
     }
 
     function setFilter(groupName, groupId)
@@ -883,6 +804,7 @@ BaseScreen
             footer.greenText = "Show (" + category + ")";
             footer.yellowText = "Show (" + definition + ")";
         }
+
         channelGrid.currentIndex = index;
     }
 }
