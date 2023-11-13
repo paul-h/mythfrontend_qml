@@ -301,3 +301,22 @@ function monthToString(idx)
 
     return "Invalid";
 }
+
+// extract a named setting from a string list.
+// format of each setting must be like 'SettingName: Value'
+function getSetting(source, setting)
+{
+    var lines = source.split("\n");
+
+    for (var x = 0; x < lines.length; x++)
+    {
+        var line = lines[x];
+        if (line.startsWith(setting))
+        {
+            var result = line.replace(setting + ": ", "");
+            return result;
+        }
+    }
+
+    return undefined;
+}
