@@ -45,10 +45,10 @@ QMAKE_CLEAN += $(TARGET)
 HEADERS += ../mythfrontend_qml/databaseutils.h ../mythfrontend_qml/urlinterceptor.h ../mythfrontend_qml/settings.h
 HEADERS += ../mythfrontend_qml/mythutils.h ../mythfrontend_qml/process.h ../mythfrontend_qml/downloadmanager.h
 HEADERS += ../mythfrontend_qml/eventlistener.h ../mythfrontend_qml/context.h ../mythfrontend_qml/logger.h
-HEADERS += ../mythfrontend_qml/mdkplayer.h ../mythfrontend_qml/mdkapi.h
+HEADERS += ../mythfrontend_qml/mdkplayer.h ../mythfrontend_qml/mdkapi.h ../mythfrontend_qml/sqlquerymodel.h
 
 SOURCES += main.cpp
 SOURCES += ../mythfrontend_qml/databaseutils.cpp ../mythfrontend_qml/urlinterceptor.cpp ../mythfrontend_qml/settings.cpp
 SOURCES += ../mythfrontend_qml/mythutils.cpp ../mythfrontend_qml/downloadmanager.cpp ../mythfrontend_qml/context.cpp
 SOURCES += ../mythfrontend_qml/logger.cpp
-SOURCES += ../mythfrontend_qml/mdkplayer.cpp ../mythfrontend_qml/mdkapi.cpp
+SOURCES += ../mythfrontend_qml/mdkplayer.cpp ../mythfrontend_qml/mdkapi.cpp ../mythfrontend_qml/sqlquerymodel.cpp
