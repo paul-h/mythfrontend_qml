@@ -6,19 +6,14 @@
 #include "context.h"
 #include "mdkapi.h"
 
+// mythfrontend_qml
+#include "sqlquerymodel.h"
+
 Context *gContext = nullptr;
 MDKAPI  *gMDKAPI = nullptr;
 
 int main(int argc, char *argv[])
 {
-//    outFile.open(QIODevice::WriteOnly | QIODevice::Append);
-
-//    // redirect stdout
-//    dup2(outFile.handle(), STDOUT_FILENO);
-
-//    // redirect stderr
-//    dup2(STDOUT_FILENO, STDERR_FILENO);
-
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
@@ -71,6 +66,9 @@ int main(int argc, char *argv[])
                                                         "Mysql settings are correct on the Myth Backend settings page");
         }
     }
+
+    // register our QML types
+    qmlRegisterType<SqlQueryModel, 1>("SqlQueryModel", 1, 0, "SqlQueryModel");
 
     gContext->m_engine->load(QUrl(QString(SHAREPATH) + "qml/launcher.qml"));
 
