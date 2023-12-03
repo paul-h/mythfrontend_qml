@@ -14,7 +14,7 @@ BaseScreen
 
     Component.onCompleted:
     {
-        showTitle(true, "Advent Calendar 2021");
+        showTitle(true, "Advent Calendar");
         showTicker(false);
         setHelp("https://mythqml.net/help/advent_calendar.php#top");
     }
