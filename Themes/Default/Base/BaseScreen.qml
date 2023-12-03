@@ -92,16 +92,16 @@ Item
 
     function showTitle(show, newTitle)
     {
-        if (newTitle != undefined)
+        if (newTitle != null)
             objectName = newTitle;
 
         _showTitle = show;
-        _title = newTitle;
+        _title = newTitle != null ? newTitle : "";
 
         if (isPanel)
         {
             screenTitle.visible = show
-            if (newTitle)
+            if (newTitle != null)
                 screenTitle.text = newTitle;
         }
         else
