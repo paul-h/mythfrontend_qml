@@ -112,7 +112,7 @@ BaseScreen
 
         query: "$.data.consumptionRange[*]"
 
-        //onLoaded: updateChart()
+        onLoaded: updateChart()
     }
 
     LabelText
@@ -231,7 +231,6 @@ BaseScreen
         if (!jsonFile.fileExists())
         {
             dailyUsageModel.json = "";
-            updateChart();
             return;
         }
 
@@ -242,8 +241,6 @@ BaseScreen
         json = json.replace(/: null/g, ':""');
 
         dailyUsageModel.json = json;
-
-        updateChart();
     }
 
     function updateChart()
