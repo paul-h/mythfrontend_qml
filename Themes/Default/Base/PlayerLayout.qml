@@ -152,6 +152,7 @@ Item
                                   y: videoTitle1.y + videoTitle1.height;
                                   width: playerArea.width;
                                   height: playerArea.height - videoTitle1.height;
+                                  showBorder: false;
                                   KeyNavigation.left: browser;
                                   KeyNavigation.right: browser;
                                   KeyNavigation.up: browser;
@@ -196,6 +197,7 @@ Item
                                   y: videoTitle1.height;
                                   width: playerArea.width;
                                   height: playerArea.height - videoTitle1.height;
+                                  showBorder: true;
                                   KeyNavigation.left: browser;
                                   KeyNavigation.right: player2;
                                   KeyNavigation.up: player2;
@@ -252,6 +254,7 @@ Item
                                   x: 0; y: videoTitle1.y + videoTitle1.height + yscale(1);
                                   width: videoTitle1.width;
                                   height: player1.width / 1.77777;
+                                  showBorder: true;
                                   KeyNavigation.left: browser;
                                   KeyNavigation.right: player2;
                                   KeyNavigation.up: player2;
@@ -310,6 +313,7 @@ Item
                                   x: 0; y: videoTitle1.y + videoTitle1.height + 1;
                                   width: videoTitle1.width;
                                   height: Math.min(player1.width / 1.77777, playerArea.height - videoTitle1.height);
+                                  showBorder: true;
                                   KeyNavigation.left: browser;
                                   KeyNavigation.right: player2;
                                   KeyNavigation.up: player2;
@@ -370,6 +374,7 @@ Item
                                   y: videoTitle1.y + videoTitle1.height + yscale(1);
                                   width: videoTitle1.width;
                                   height: Math.min(player1.width / 1.77777, playerArea.height - videoTitle1.height);
+                                  showBorder: true;
                                   KeyNavigation.left: browser;
                                   KeyNavigation.right: player2;
                                   KeyNavigation.up: browser;
@@ -442,6 +447,7 @@ Item
                                   y: videoTitle1.y + videoTitle1.height + yscale(1);
                                   width: playerArea.width / 2;
                                   height: playerArea.height / 2 - yscale(30);
+                                  showBorder: true;
                                   KeyNavigation.left: browser;
                                   KeyNavigation.right: player2;
                                   KeyNavigation.up: browser;
