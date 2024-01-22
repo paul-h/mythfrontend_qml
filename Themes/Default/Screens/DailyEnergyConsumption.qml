@@ -219,6 +219,7 @@ BaseScreen
         var year = date.getFullYear();
 
         dailyUsageModel.source = "";
+        dailyUsageModel.json = "";
 
         daySet.remove(0, daySet.count);
 
