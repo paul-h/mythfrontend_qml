@@ -18,8 +18,8 @@ GridView
         Rectangle
         {
             id: borderRect
-            width: GridView.view ? GridView.view.width : 0
-            height: yscale(50)
+            width: GridView.view ? GridView.view.cellWidth : 0
+            height: GridView.view ? GridView.view.cellHeight : yscale(50)
             color:
             {
                 if (GridView.view && GridView.view.focus)
