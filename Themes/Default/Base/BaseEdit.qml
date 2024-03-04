@@ -5,6 +5,10 @@ FocusScope
     id: root
     property alias text: editText.text
 
+    property alias fontPixelSize: editText.font.pixelSize
+    property alias fontColor: editText.color
+    property alias fontBold: editText.font.bold
+
     signal textEdited();
     signal editingFinished()
 
@@ -110,8 +114,9 @@ FocusScope
         anchors {fill: parent; margins: 6}
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignVCenter
-        font.family: "Helvetica"
-        font.pointSize: xscale(20)
+        font.family: theme.txFontFamily
+        font.pixelSize: xscale(theme.txFontPixelSize)
+        font.bold: theme.txFontBold
         color: theme.txTextColorNormal
 
         Keys.onReturnPressed: root.editingFinished();

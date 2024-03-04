@@ -127,6 +127,9 @@ QtObject
     property color btTextColorDisabled:        "#888888"
 
     // text edit
+    property string txFontFamily:                 "Liberation Sans"
+    property int    txFontPixelSize:              20
+    property bool   txFontBold:                   false
     property color txTextColorNormal:            "#101010"
     property color txTextColorFocused:           "#000000"
     property color txTextBackgroundColorNormal:  "#a8ffffff"

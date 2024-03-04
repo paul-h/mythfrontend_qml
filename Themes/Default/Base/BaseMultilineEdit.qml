@@ -5,6 +5,10 @@ FocusScope
     property alias text: editText.text
     property alias wrapMode: editText.wrapMode
 
+    property alias fontPixelSize: editText.font.pixelSize
+    property alias fontColor: editText.color
+    property alias fontBold: editText.font.bold
+
     signal textHasChanged();
 
     x: 0; y: 0; width: xscale(400); height: yscale(200)
@@ -133,8 +137,9 @@ FocusScope
             wrapMode: TextEdit.WordWrap
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignTop
-            font.family: "Helvetica"
-            font.pointSize: 20
+            font.family: theme.txFontFamily
+            font.pixelSize: xscale(theme.txFontPixelSize)
+            font.bold: theme.txFontBold
             color: theme.txTextColorNormal
         }
     }
