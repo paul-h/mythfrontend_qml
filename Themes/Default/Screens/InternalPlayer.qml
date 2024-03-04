@@ -465,7 +465,7 @@ BaseScreen
         enabled: _actionsEnabled
         onTriggered:
         {
-            var item = getActivePlayer().getActivePlayerItem();
+            var item = getActivePlayer().videoPlayer;
             var url = getActivePlayer().feed.feedList.get(getActivePlayer().feed.currentFeed).url
 
             if (url.indexOf("file://") === 0)
