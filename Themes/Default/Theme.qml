@@ -82,6 +82,31 @@ QtObject
     property int   lvBackgroundBorderWidth:  0;
     property int   lvBackgroundBorderRadius: 0;
 
+    // button
+    property int   btBorderWidth: 3
+    property int   btBorderRadius: 4
+
+    property color btBorderColorNormal:          "#888888"
+    property color btBorderColorFocused:         "#aaaaaa"
+    property color btBorderColorSelected:        "#dddddd"
+    property color btBorderColorFocusedSelected: "#ffffff"
+    property color btBorderColorDisabled:        "#aaaaaa"
+
+    property color btTextColorNormal:          "#888888"
+    property color btTextColorFocused:         "#aaaaaa"
+    property color btTextColorSelected:        "#dddddd"
+    property color btTextColorFocusedSelected: "#ffffff"
+    property color btTextColorDisabled:        "#888888"
+
+    // text edit
+    property string txFontFamily:                 "Liberation Sans"
+    property int    txFontPixelSize:              20
+    property bool   txFontBold:                   false
+    property color  txTextColorNormal:            "#101010"
+    property color  txTextColorFocused:           "#00ff00"
+    property color  txTextBackgroundColorNormal:  "#a8ffffff"
+    property color  txTextBackgroundColorFocused: "#c8ffffff"
+
     // ticker text
     property color tiTextColor:       "green"
     property color tiBackgroundColor: "#88101010"

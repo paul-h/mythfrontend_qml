@@ -130,10 +130,13 @@ QtObject
     property color btTextColorDisabled:        "#888888"
 
     // text edit
-    property color txTextColorNormal:            "#101010"
-    property color txTextColorFocused:           "#000000"
-    property color txTextBackgroundColorNormal:  "#a8ffffff"
-    property color txTextBackgroundColorFocused: "#c8ffffff"
+    property string txFontFamily:                 "Liberation Sans"
+    property int    txFontPixelSize:              20
+    property bool   txFontBold:                   false
+    property color  txTextColorNormal:            "#101010"
+    property color  txTextColorFocused:           "#000000"
+    property color  txTextBackgroundColorNormal:  "#a8ffffff"
+    property color  txTextBackgroundColorFocused: "#c8ffffff"
 
     // ticker text
     property color tiTextColor:       "orange"
