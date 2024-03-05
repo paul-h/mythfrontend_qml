@@ -16,7 +16,8 @@ BaseScreen
         showTicker(true);
         showVideo(true);
         showImage(true);
-        title.source = mythUtils.findThemeFile(model.logo)
+        title.source = mythUtils.findThemeFile(model.logo);
+        setHelp("https://mythqml.net/help/mainmenu.php#top");
     }
 
     BaseThemedMenu

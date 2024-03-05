@@ -13,8 +13,8 @@ BaseScreen
         showTime(true);
         showTicker(true);
         showVideo(false);
-        //showSlideShow(true);
         title.source = mythUtils.findThemeFile(model.logo);
+        setHelp("https://mythqml.net/help/mainmenu.php#top");
     }
 
     BaseThemedMenu

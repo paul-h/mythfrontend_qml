@@ -23,7 +23,7 @@ Item
     property bool _showVideo: theme.backgroundVideo != undefined
     property bool _showImage: !showVideo
     property bool _muteAudio: false
-    property string _helpURL: ""
+    property string _helpURL: "https://mythqml.net/help/general.php#top"
 
     function _xscale(x)
     {
