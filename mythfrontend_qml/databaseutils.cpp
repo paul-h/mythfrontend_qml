@@ -15,8 +15,7 @@ void DatabaseUtils::updateChannel(int chanid, QString chanName, QString chanNo, 
 
     QSqlQuery query(gContext->m_mythDB);
     query.prepare("UPDATE channel SET channum = :CHANNUM, name = :NAME, xmltvid = :XMLTVID, callsign = :CALLSIGN "
-                  "WHERE chanid = :CHANID;"
-    "VALUES (:id, :forename, :surname)");
+                  "WHERE chanid = :CHANID;");
     query.bindValue(":CHANID",   QString("%1").arg(chanid));
     query.bindValue(":CHANNUM",  chanNo);
     query.bindValue(":NAME",     chanName);
@@ -193,8 +192,8 @@ void DatabaseUtils::updateRecording(int recordid, const QString &title, const QS
     query.prepare("UPDATE recordings SET title = :TITLE, subtitle = :SUBTITLE, description = :DESCRIPTION, category = :CATEGORY, "
                   "chanid = :CHANID, channum = :CHANNUM, callsign = :CALLSIGN, channelname = :CHANNELNAME, recgroup = : RECGROUP, "
                   "starttime = :STARTTIME, airdate = :AIRDATE, filename = :FILENAME, hostname = :HOSTNAME "
-                  "WHERE recordid = :RECORDID;"
-    "VALUES (:id, :forename, :surname)");
+                  "WHERE recordid = :RECORDID;");
+
     query.bindValue(":RECORDID", QString("%1").arg(recordid));
     query.bindValue(":TITLE", title);
     query.bindValue(":SUBTITLE", subtitle);
@@ -416,7 +415,6 @@ void DatabaseUtils::updateMenuItem(int itemid,const QString &menu, int position,
     }
 
     gContext->m_mythQMLDB.commit();
-
 }
 
 void DatabaseUtils::deleteMenuItem(int itemid)
