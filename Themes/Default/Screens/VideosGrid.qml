@@ -123,7 +123,7 @@ BaseScreen
         {
             if (event.key === Qt.Key_E)
             {
-                stack.push({item: Qt.resolvedUrl("VideoMetadataEditor.qml"), properties:{videosModel:  model, currentIndex: currentIndex}});
+                stack.push({item: Qt.resolvedUrl("MythVideoMetadataEditor.qml"), properties:{videosModel:  model, currentIndex: currentIndex}});
                 event.accepted = true;
             }
             else if (event.key === Qt.Key_M)
