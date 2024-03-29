@@ -620,4 +620,18 @@ FocusScope
         lists[_focusedList].highlightMoveDuration = 1500;
         lists[_focusedList].currentIndex = lists[_focusedList].model.count / (100 / percent);
     }
+
+    function search(text)
+    {
+        for (var x = lists[_focusedList].currentIndex + 1; x < lists[_focusedList].model.count; x++)
+        {
+            if (lists[_focusedList].model.get(x).itemTitle.includes(text))
+            {
+                lists[_focusedList].highlightMoveDuration = 1500;
+                lists[_focusedList].currentIndex = x;
+                break;
+            }
+        }
+
+    }
 }
