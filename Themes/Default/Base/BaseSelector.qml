@@ -219,6 +219,11 @@ FocusScope
         }
     }
 
+    function getSelected()
+    {
+        return model.get(currentIndex).itemText;
+    }
+
     function selectNext()
     {
         selectorList.currentIndex = selectorList.currentIndex + 1 >= selectorList.model.count ? selectorList.model.count - 1 : selectorList.currentIndex + 1;
