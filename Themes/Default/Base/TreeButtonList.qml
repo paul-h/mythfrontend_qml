@@ -29,13 +29,6 @@ FocusScope
     signal nodeSelected(var node)
     signal posChanged(int level, int index, int count)
 
-    Component.onCompleted:
-    {
-        lists.push(createList(0, model));
-        lists[0].focus = true;
-        _focusedList = 0;
-    }
-
     onBasePathChanged:
     {
         model = getNodeFromPath(basePath);
@@ -240,6 +233,7 @@ FocusScope
         var component = Qt.createComponent("ButtonList.qml");
         var list = component.createObject(objRoot, {"id": "list" + index,
                                                 "nodeID": index,
+                                                "objectName": "list" + index,
                                                 "x": (listWidth * index) + (spacing * index),
                                                 "y": 0,
                                                 "width": listWidth,
@@ -494,6 +488,7 @@ FocusScope
         lists.push(createList(0, model));
         lists[0].focus = true;
         _focusedList = 0;
+        _leftList = 0;
         nodeSelectedHandler(0, 0);
     }
 
