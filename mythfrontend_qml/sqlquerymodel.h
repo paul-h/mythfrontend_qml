@@ -12,6 +12,7 @@ public:
     Q_PROPERTY(bool useMythQMLDB READ useMythQMLDB WRITE setUseMythQMLDB NOTIFY useMythQMLDBChanged)
 
     Q_INVOKABLE void reload(void);
+    Q_INVOKABLE QVariant get(int row, const QString &field) const;
 
     void setQuery(const QString &query, const QSqlDatabase &db = QSqlDatabase());
     void setQuery(const QSqlQuery &query);
@@ -34,4 +35,5 @@ private:
     bool m_useMythQMLDB;
     QString m_sql;
     QHash<int, QByteArray> m_roleNames;
+    QHash<QByteArray, int> m_nameToRoleMap;
 };
