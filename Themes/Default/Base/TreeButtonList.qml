@@ -97,10 +97,14 @@ FocusScope
 
     Keys.onPressed:
     {
+        var handled = false;
+
         if (event.key === Qt.Key_Left)
-            moveLeft();
+            handled = moveLeft();
         else if (event.key === Qt.Key_Right)
-            moveRight();
+            handled = moveRight();
+
+         event.accepted = handled;
     }
 
     Component
@@ -522,10 +526,13 @@ FocusScope
 
     function moveLeft()
     {
+        var listChanged = false;
+
         if (_focusedList > 0)
         {
             --_focusedList;
             lists[_focusedList].focus = true
+            listChanged = true;
         }
 
         // make sure the list is visible
@@ -537,10 +544,14 @@ FocusScope
 
         objRoot.nodeSelected(lists[_focusedList].model.get(lists[_focusedList].currentIndex));
         objRoot.posChanged(_focusedList, lists[_focusedList].currentIndex, lists[_focusedList].model.count);
+
+        return listChanged;
     }
 
     function moveRight()
     {
+        var listChanged = false;
+
         if (lists[_focusedList].model.get(lists[_focusedList].currentIndex).subNodes &&
             lists[_focusedList].model.get(lists[_focusedList].currentIndex).subNodes.count > 0)
         {
@@ -554,6 +565,8 @@ FocusScope
                 var currentIndex = lists[_focusedList].currentIndex > 0 ? lists[_focusedList].currentIndex : 0
                 lists[_focusedList + 1] = createList(_focusedList + 1, lists[_focusedList].model.get(currentIndex).subNodes);
             }
+
+            listChanged = true;
         }
 
         // make sure the list is visible
@@ -566,6 +579,8 @@ FocusScope
 
         objRoot.nodeSelectedHandler(lists[_focusedList].nodeID, lists[_focusedList].currentIndex);
         objRoot.posChanged(_focusedList, lists[_focusedList].currentIndex, lists[_focusedList].model.count);
+
+        return listChanged;
     }
 
     function makeListVisible()
