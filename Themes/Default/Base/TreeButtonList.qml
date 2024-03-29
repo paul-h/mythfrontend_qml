@@ -498,9 +498,12 @@ FocusScope
         return lists[_focusedList].model.get(lists[_focusedList].currentIndex);
     }
 
-    function getActiveNodePath(useData)
+    function getActiveNodePath(useData, separator)
     {
         var result;
+
+        if (separator === undefined)
+            separator = " ~ ";
 
         if (lists.length == 0 ||  lists[0].model.get(lists[0].currentIndex) === undefined)
             return "";
@@ -509,7 +512,7 @@ FocusScope
         {
             var nodeText = (useData ? lists[i].model.get(lists[i].currentIndex).itemData : lists[i].model.get(lists[i].currentIndex).itemTitle);
             if (i > 0)
-                result = result + " ~ " + nodeText;
+                result = result + separator + nodeText;
             else
                 result = nodeText;
         }
