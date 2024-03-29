@@ -6,7 +6,7 @@ Item
 
     signal changed();
 
-    x: 0; y: 0; width: 40; height: 40
+    x: 0; y: 0; width: xscale(40); height: yscale(40)
     focus: false
     state: "normal"
     states:
