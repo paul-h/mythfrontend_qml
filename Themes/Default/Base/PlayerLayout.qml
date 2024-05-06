@@ -49,9 +49,9 @@ Item
 
     function changeState()
     {
-        if (!showBrowser && showHeader)
+        if (!showBrowser && !showHeader)
             state = "fullscreen";
-        else if (!showBrowser && !showHeader)
+        else if (!showBrowser && showHeader)
             state = "playersonly";
         else if (showBrowser)
             state = "showBrowser";
