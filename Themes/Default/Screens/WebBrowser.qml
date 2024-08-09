@@ -128,6 +128,27 @@ BaseScreen
         }
         onFullScreenRequested: request.accept();
         onNavigationRequested: request.action = WebEngineNavigationRequest.AcceptRequest;
+
+        onLoadingChanged:
+        {
+            if (loadRequest.status === WebEngineLoadRequest.LoadSucceededStatus)
+            {
+                var feedurl = loadRequest.url.toString();
+
+                if (feedurl !== "")
+                {
+                    // start the windy.com radar animation
+                    if (feedurl.includes("www.windy.com/-Weather-radar-radar"))
+                    {
+                        runJavaScript("document.getElementsByClassName(\"play-pause checkbox--off\")[0].click();");
+                    }
+                    else if (feedurl.includes("embed.windy.com/embed2.html"))
+                    {
+                        runJavaScript("document.getElementsByClassName(\"play-pause iconfont clickable off\")[0].click();");
+                    }
+                }
+            }
+        }
     }
 
      PopupMenu
