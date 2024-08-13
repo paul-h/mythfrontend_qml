@@ -342,8 +342,12 @@ QString QmlMDKPlayer::getProperty(const QString &key, const QString &defaultValu
         return defaultValue;
 
     QString result;
+    const char* cstr = m_playerAPI->getProperty(m_playerAPI->object, key.toLocal8Bit().data());
 
-    result = QString::fromStdString(m_playerAPI->getProperty(m_playerAPI->object, key.toLocal8Bit().data()));
+    if (!cstr)
+        return defaultValue;
+
+    result = QString::fromStdString(cstr);
 
     if (result.isNull() || result.isEmpty())
         result = defaultValue;
