@@ -7,7 +7,6 @@ FocusScope
     id: root
 
     property alias source: mediaplayer.source
-    property bool loop: false
     property bool playbackStarted: false
 
     signal showMessage(string message, int timeOut)
@@ -28,6 +27,12 @@ FocusScope
             property var deinterlacers: ["None", "Bob", "Yadif", "w3fdif"]
 
             anchors.fill: parent
+
+            Component.onCompleted:
+            {
+                // turn off subtitles by default
+                setProperty("subtitle", "0");
+            }
 
             onCurrentDeinterlacerChanged:
             {
@@ -198,6 +203,30 @@ FocusScope
     function toggleMute()
     {
         mediaplayer.muted = !mediaplayer.muted;
+    }
+
+    function setSubtitles(on)
+    {
+        if (on)
+        {
+            mediaplayer.setProperty("subtitle", "1");
+            showMessage("Subtitles: On", settings.osdTimeoutMedium);
+        }
+        else
+        {
+            mediaplayer.setProperty("subtitle", "0");
+            showMessage("Subtitles: Off", settings.osdTimeoutMedium);
+        }
+    }
+
+    function toggleSubtitles()
+    {
+        var subtitleProp = mediaplayer.getProperty("subtitle", "1");
+
+        if (subtitleProp === "1")
+            setSubtitles(false)
+        else
+            setSubtitles(true);
     }
 
     function getPosition()
