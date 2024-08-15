@@ -6,7 +6,6 @@ FocusScope
 {
     id: root
     property alias source: mediaplayer.mrl
-    property bool loop: false
     property bool playbackStarted: false
 
     signal showMessage(string message, int timeOut)
