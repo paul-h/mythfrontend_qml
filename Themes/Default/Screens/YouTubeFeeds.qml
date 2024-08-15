@@ -245,6 +245,25 @@ BaseScreen
     {
         id: youtubeResult
         query: "$.items[*]"
+        onLoaded:
+        {
+            // description
+            descText.text = youtubeResult.model.get(0).snippet.description.replace(/\n/g, "<br>");;
+
+            // duration
+            var ytDuration = youtubeResult.model.get(0).contentDetails.duration;
+            if (ytDuration === "P0D")
+                duration.text = "Live Stream";
+            else
+            {
+                var d = parseYTTime(ytDuration);
+
+                if (d.length < 4)
+                    d = "00:" + d
+
+                duration.text = "Duration: " + d;
+            }
+        }
     }
 
     function play()
@@ -312,23 +331,6 @@ BaseScreen
             function ()
             {
                 youtubeResult.json = this.responseText;
-
-                // description
-                descText.text = youtubeResult.model.get(0).snippet.description.replace(/\n/g, "<br>");;
-
-                // duration
-                var ytDuration = youtubeResult.model.get(0).contentDetails.duration;
-                if (ytDuration === "P0D")
-                    duration.text = "Live Stream";
-                else
-                {
-                    var d = parseYTTime(ytDuration);
-
-                    if (d.length < 4)
-                        d = "00:" + d
-
-                    duration.text = "Duration: " + d;
-                }
             }
         );
     }

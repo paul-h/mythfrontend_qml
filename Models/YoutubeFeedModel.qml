@@ -63,7 +63,7 @@ XmlListModel
                 }
                 else
                 {
-                    console.log("getYouTubeVideos: " + http.status + "\n" + http.responseText);
+                    log.info(Verbose.MODEL, "getYouTubeVideos: " + http.status + "\n" + http.responseText);
                     return;
                 }
             }
@@ -95,7 +95,6 @@ XmlListModel
             {
                 if (http.status == 200)
                 {
-                    console.log(http.responseText);
                     if (typeof callback === "function")
                     {
                         callback.apply(http);
@@ -103,7 +102,7 @@ XmlListModel
                 }
                 else
                 {
-                    console.log("getPlaylistsForChannel: " + http.status + "\n" + http.responseText);
+                    log.info(Verbose.MODEL, "getPlaylistsForChannel: " + http.status + "\n" + http.responseText);
                     return;
                 }
             }
@@ -135,7 +134,6 @@ XmlListModel
             {
                 if (http.status == 200)
                 {
-                    console.log(http.responseText);
                     if (typeof callback === "function")
                     {
                         callback.apply(http);
@@ -143,7 +141,7 @@ XmlListModel
                 }
                 else
                 {
-                    console.log("getPlaylistItemsForPlaylist: " + http.status + "\n" + http.responseText);
+                    log.info(Verbose.MODEL, "getPlaylistItemsForPlaylist: " + http.status + "\n" + http.responseText);
                     return;
                 }
             }
