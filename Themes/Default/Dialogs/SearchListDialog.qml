@@ -12,8 +12,46 @@ BaseDialog
     property alias model: listProxyModel.sourceModel
     property string displayField: "item"
     property string dataField: "item"
+    property string sortField: "item"
+    property alias delegate: itemList.delegate
 
     signal itemSelected(string itemText)
+
+    Keys.onPressed:
+    {
+        event.accepted = true;
+
+        if (event.key === Qt.Key_Home)
+        {
+            itemList.currentIndex = 0;
+        }
+        else if (event.key === Qt.Key_End)
+        {
+            itemList.currentIndex = listProxyModel.count - 1;
+        }
+        else if (event.key === Qt.Key_F1)
+        {
+            // RED
+            itemList.currentIndex = listProxyModel.count * 0.2;
+        }
+        else if (event.key === Qt.Key_F2)
+        {
+            // GREEN
+            itemList.currentIndex = listProxyModel.count * 0.4;
+        }
+        else if (event.key === Qt.Key_F3)
+        {
+            // YELLOW
+            itemList.currentIndex = listProxyModel.count * 0.6;
+        }
+        else if (event.key === Qt.Key_F4)
+        {
+            // BLUE
+            itemList.currentIndex = listProxyModel.count * 0.8;
+        }
+         else
+            event.accepted = false;
+    }
 
     function reset()
     {
@@ -30,6 +68,7 @@ BaseDialog
     {
         searchEdit.text = ""
         searchEdit.focus = true
+        itemList.currentIndex = 0;
         _show(focusItem);
     }
 
@@ -55,7 +94,7 @@ BaseDialog
 
         _show(focusItem);
 
-        itemList.highlightMoveDuration = 1500
+        itemList.highlightMoveDuration = 500
     }
 
     SortFilterProxyModel
@@ -64,7 +103,7 @@ BaseDialog
         filterRoleName: displayField
         filterPattern: searchEdit.text
         filterCaseSensitivity: Qt.CaseInsensitive
-        sortRoleName: displayField
+        sortRoleName: sortField
     }
 
     Component
@@ -126,7 +165,7 @@ BaseDialog
             id: itemList
             delegate: listRow
             model: listProxyModel
-
+            highlightMoveDuration: 500
             x: xscale(20); y: yscale(60)
             width: parent.width - xscale(40);
             height: parent.height - yscale(70);
