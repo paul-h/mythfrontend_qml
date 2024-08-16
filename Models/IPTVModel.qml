@@ -89,7 +89,7 @@ Item
         id: categoryModel
 
         source: "https://iptv-org.github.io/api/categories.json"
-        onLoaded: loadChannels();
+        onLoaded: loadChannels()
     }
 
     JSONListModel
@@ -97,7 +97,7 @@ Item
         id: languageModel
 
         source: "https://iptv-org.github.io/api/languages.json"
-        onLoaded: loadChannels();
+        onLoaded: loadChannels()
     }
 
     JSONListModel
@@ -105,7 +105,7 @@ Item
         id: countryModel
 
         source: "https://iptv-org.github.io/api/countries.json"
-        onLoaded: loadChannels();
+        onLoaded: loadChannels()
     }
 
     JSONListModel
@@ -113,14 +113,14 @@ Item
         id: streamModel
 
         source: "https://iptv-org.github.io/api/streams.json"
-        onLoaded: loadChannels();
+        onLoaded: loadChannels()
     }
 
     JSONListModel
     {
         id: guideModel
         source: "https://iptv-org.github.io/api/guides.json"
-        onLoaded: loadChannels();
+        onLoaded: loadChannels()
     }
 
     JSONListModel
@@ -135,12 +135,12 @@ Item
         parser: myparser
         parserData: root
 
-        function myparser(objectArray, jsonModel, workerScript, iptvModel)
+        function myparser(json, query, jsonModel, workerScript, parserData)
         {
             // tell the WorkerScript to run the parser
             var models = {'countryModel': countryModel.model, 'languageModel': languageModel.model, 'streamModel': streamModel.model, 'categoryModel': categoryModel.model, 'guideModel': guideModel.model};
             var lists = {'categoryList': root.genreList, 'countryList': root.countryList, 'languageList': root.languageList};
-            var msg = {'objectArray': objectArray,  'jsonModel': jsonModel, 'models': models, 'lists': lists};
+            var msg = {'json': json, 'query': query, 'jsonModel': jsonModel, 'models': models, 'lists': lists};
 
             workerScript.sendMessage(msg);
         }
