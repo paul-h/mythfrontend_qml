@@ -1,8 +1,14 @@
+import { jsonPath, parseJSONString } from "jsonpath.mjs"
+
 WorkerScript.onMessage = function(msg)
 {
     WorkerScript.sendMessage({model: "IPTVModel", status: "Loading"});
 
-    var objectArray = msg.objectArray;
+    var json = msg.json;
+    var query = msg.query;
+    var objectArray = parseJSONString(json, query);
+
+    //var objectArray = msg.objectArray;
     var jsonModel = msg.jsonModel;
     var categoryModel = msg.models.categoryModel;
     var languageModel = msg.models.languageModel;
@@ -92,7 +98,6 @@ WorkerScript.onMessage = function(msg)
     languageList.sync();
 
     jsonModel.sync();
-
     WorkerScript.sendMessage({model: "IPTVModel", status: "Ready"});
 }
 
@@ -209,4 +214,3 @@ function getLanguages(languagesArray, languageMap, languages)
 
     return result;
 }
-

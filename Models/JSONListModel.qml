@@ -6,7 +6,6 @@
 
 import QtQuick 2.0
 import QtQuick.XmlListModel 2.0
-import "jsonpath.js" as JSONPath
 
 Item
 {
@@ -18,8 +17,9 @@ Item
     property var parser: undefined
     property var parserData: undefined
 
-    property ListModel model : jsonModel
+    property ListModel model: jsonModel
     property alias count: jsonModel.count
+    property alias dynamicRoles: jsonModel.dynamicRoles
 
     signal loaded()
 
@@ -33,7 +33,7 @@ Item
     WorkerScript
     {
         id: workerScript
-        source: ""
+        source: "JSONListModel.mjs"
 
         onMessage:
         {
@@ -57,6 +57,13 @@ Item
     onJsonChanged: updateJSONModel()
     onQueryChanged: updateJSONModel()
 
+    function defaultParser(json, query, jsonModel, workerScript, parserData)
+    {
+        var msg = {'json': json, 'query': query, 'jsonModel': jsonModel};
+
+        workerScript.sendMessage(msg);
+    }
+
     function updateJSONModel()
     {
         jsonModel.loadingStatus(XmlListModel.Loading);
@@ -66,39 +73,36 @@ Item
         if ( json === "" )
             return;
 
-        var objectArray = parseJSONString(json, query);
-
         if (parser !== undefined)
         {
-            parser(objectArray, jsonModel, workerScript, parserData);
+            parser(json, query, jsonModel, workerScript, parserData);
         }
         else
         {
-            for ( const key in objectArray )
-            {
-                var jo = objectArray[key];
-                jsonModel.append( jo );
-            }
-
-            loaded();
-
-            jsonModel.loadingStatus(XmlListModel.Ready);
+            defaultParser(json, query, jsonModel, workerScript, parserData);
         }
-    }
-
-    function parseJSONString(jsonString, jsonPathQuery)
-    {
-        var objectArray = JSON.parse(jsonString);
-        if ( jsonPathQuery !== "" )
-            objectArray = JSONPath.jsonPath(objectArray, jsonPathQuery);
-
-        return objectArray;
     }
 
     function doLoad()
     {
+        var url = source;
+        var params= "";
+        var splitURL = url.split('?');
+
+        if (splitURL.length > 1)
+        {
+            url = splitURL[0];
+            params = splitURL[1];
+        }
+
         var xhr = new XMLHttpRequest;
         xhr.open("GET", source);
+
+        xhr.setRequestHeader("Accept", "application/json");
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader("Content-length", params.length);
+        xhr.setRequestHeader("Connection", "close");
+
         xhr.onreadystatechange = function()
         {
             if (xhr.readyState == XMLHttpRequest.DONE)

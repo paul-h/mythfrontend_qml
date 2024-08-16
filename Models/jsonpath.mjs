@@ -4,7 +4,7 @@
  * Licensed under the MIT (MIT-LICENSE.txt) licence.
  *
  */
-function jsonPath(obj, expr, arg) {
+export function jsonPath(obj, expr, arg) {
    var P = {
       resultType: arg && arg.resultType || "VALUE",
       result: [],
@@ -85,4 +85,14 @@ function jsonPath(obj, expr, arg) {
       P.trace(P.normalize(expr).replace(/^\$;?/,""), obj, "$");  // issue 6 resolved
       return P.result.length ? P.result : false;
    }
-} 
+}
+
+export function parseJSONString(jsonString, jsonPathQuery)
+{
+    var objectArray = JSON.parse(jsonString);
+
+    if ( jsonPathQuery !== "" )
+        objectArray = jsonPath(objectArray, jsonPathQuery);
+
+    return objectArray;
+}
