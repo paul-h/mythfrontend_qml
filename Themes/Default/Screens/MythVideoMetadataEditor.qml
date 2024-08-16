@@ -33,7 +33,7 @@ BaseScreen
 
     Component.onCompleted:
     {
-        showTitle(true, "Video Metadata Editor (Page 1)");
+        showTitle(true, "Myth Video Metadata Editor (Page 1)");
         showTime(false);
         showTicker(false);
 
@@ -178,7 +178,7 @@ BaseScreen
                 page3.visible = true
                 page1.visible = false
                 genreEdit.focus = true
-                showTitle(true, "Video Metadata Editor (Page 3)");
+                showTitle(true, "Myth Video Metadata Editor (Page 3)");
                 returnSound.play();
             }
         }
@@ -195,7 +195,7 @@ BaseScreen
                 page2.visible = true
                 page1.visible = false
                 coverartEdit.focus = true
-                showTitle(true, "Video Metadata Editor (Page 2)");
+                showTitle(true, "Myth Video Metadata Editor (Page 2)");
                 returnSound.play();
             }
         }
@@ -344,7 +344,7 @@ BaseScreen
                 page2.visible = false
                 page1.visible = true
                 titleEdit.focus = true
-                showTitle(true, "Video Metadata Editor (Page 1)");
+                showTitle(true, "Myth Video Metadata Editor (Page 1)");
                 returnSound.play();
             }
         }
@@ -361,7 +361,7 @@ BaseScreen
                 page2.visible = false
                 page3.visible = true
                 genreEdit.focus = true
-                showTitle(true, "Video Metadata Editor (Page 3)");
+                showTitle(true, "Myth Video Metadata Editor (Page 3)");
                 returnSound.play();
             }
         }
@@ -455,7 +455,7 @@ BaseScreen
                 page3.visible = false
                 page2.visible = true
                 coverartEdit.focus = true
-                showTitle(true, "Video Metadata Editor (Page 2)");
+                showTitle(true, "Myth Video Metadata Editor (Page 2)");
                 returnSound.play();
             }
         }
@@ -474,7 +474,7 @@ BaseScreen
                 page3.visible = false
                 page1.visible = true
                 titleEdit.focus = true
-                showTitle(true, "Video Metadata Editor (Page 1)");
+                showTitle(true, "Myth Video Metadata Editor (Page 1)");
                 returnSound.play();
             }
         }
