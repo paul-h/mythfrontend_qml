@@ -40,11 +40,18 @@ int main(int argc, char *argv[])
                                      QCoreApplication::translate("main", "verbose"));
     parser.addOption(verboseOption);
 
+    // add frontend option
+    QCommandLineOption frontendOption(QStringList() << "f" << "frontend",
+                                     QCoreApplication::translate("main", "Frontend to auto start. Options are QML, LEGACY, NETFLIX, PLUTO, NONE."),
+                                     QCoreApplication::translate("main", "frontend"));
+    parser.addOption(frontendOption);
+
     // Process the command line arguments given by the user
     parser.process(*app);
 
     QString logLevel = parser.value(logLevelOption);
     QString verbose = parser.value(verboseOption);
+    QString frontend = parser.value(frontendOption);
 
     // create the context
     gContext = new Context("MythLauncherQML", logLevel, verbose);
@@ -69,6 +76,9 @@ int main(int argc, char *argv[])
 
     // register our QML types
     qmlRegisterType<SqlQueryModel, 1>("SqlQueryModel", 1, 0, "SqlQueryModel");
+
+    if (frontend != "")
+        gContext->m_engine->setInitialProperties({{"showFrontend", QVariant::fromValue(frontend)}});
 
     gContext->m_engine->load(QUrl(QString(SHAREPATH) + "qml/launcher.qml"));
 

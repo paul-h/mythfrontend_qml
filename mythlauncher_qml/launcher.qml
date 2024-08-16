@@ -4,7 +4,7 @@ import mythqml.net 1.0
 
 MainWindow
 {
-    id: window
+    id: launcherWindow
 
     mainMenu: "LauncherMenu.qml"
     helpURL: "https://mythqml.net/help/launcher.php";
@@ -16,37 +16,58 @@ MainWindow
     showZMAlerts: false
     needPlayerSources: false
 
+    property string showFrontend: ""
+
     idleTime: settings.launcherIdleTime
 
     Component.onCompleted:
     {
-        delay(200, checkAutoStart);
+        delay(2000, checkAutoStart);
     }
 
     function checkAutoStart()
     {
         log.info(Verbose.GENERAL, "MainWindow: Checking to see if we need to auto start a frontend");
 
-        if (settings.autoStartFrontend === "QML_Frontend")
+        var frontend = showFrontend === "" ? settings.autoStartFrontend : showFrontend;
+        frontend = frontend.toLowerCase();
+
+        if (frontend === "qml")
         {
             var message = "Starting QML Frontend.\nPlease Wait...";
             var timeOut = settings.osdTimeoutMedium;
             showBusyDialog(message, timeOut);
             runCommand("mythfrontend_qml", []);
         }
-        else if (settings.autoStartFrontend === "Legacy_Frontend")
+        else if (frontend === "legacy")
         {
             var message = "Starting Old Frontend.\nPlease Wait...";
             var timeOut = settings.osdTimeoutMedium;
             showBusyDialog(message, timeOut);
             runCommand("mythfrontend", []);
         }
-        else if (settings.autoStartFrontend === "KODI")
+        else if (frontend === "kodi")
         {
             var message = "Starting KODI.\nPlease Wait...";
             var timeOut = settings.osdTimeoutMedium;
             showBusyDialog(message, timeOut);
             runCommand("kodi", []);
+        }
+        else if (frontend === "netflix")
+        {
+            var url = "https://www.netflix.com/browse";
+            var zoom = 1.0;
+            var fullscreen = true;
+
+            stack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: url, fullscreen: fullscreen, zoomFactor: zoom}});
+        }
+        else if (frontend === "pluto")
+        {
+            var url = "https://pluto.tv/live-tv/";
+            var zoom = 1.0;
+            var fullscreen = true;
+
+            stack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: url, fullscreen: fullscreen, zoomFactor: zoom}});
         }
     }
 
