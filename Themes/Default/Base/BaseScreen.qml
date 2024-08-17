@@ -8,6 +8,7 @@ Item
     property var    previousFocusItem: undefined
 
     property bool reloadingTheme: false
+    property bool closeOnEscape: true
 
     property bool   isPanel: (parent.objectName == "panelstack" || parent.objectName == "themedpanel")
 
@@ -49,7 +50,10 @@ Item
 
     Keys.onEscapePressed:
     {
-        event.accepted = handleEscape();
+         if (!closeOnEscape)
+            event.accepted = false;
+        else
+            event.accepted = handleEscape();
     }
 
     Keys.onLeftPressed:
@@ -159,6 +163,11 @@ Item
     {
         log.debug(Verbose.GUI, "BaseScreen: handle search - " + message);
         return false;
+    }
+
+    function handleResult(message)
+    {
+        log.debug(Verbose.NETWORK, "BaseScreen: handle search - " + message);
     }
 
     function restoreSettings()
