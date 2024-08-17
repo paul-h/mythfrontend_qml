@@ -22,6 +22,7 @@ Item
     property var recordingsList: recordingsModel
     property var browserBookmarksList: browserBookmarkModel
     property var videoFilesList: videoFilesModel
+    property var radioStreamList: radioBrowserModel
 
     // live tv
     property var videoSourceList: videoSourceModel
@@ -255,28 +256,34 @@ Item
         id: youtubeFeedModel
     }
 
-    /* ---------------------------------------------Browser Bookmarks----------------------------------------------------------*/
+    /* --------------------------------------------------Browser Bookmarks----------------------------------------------------------*/
     BrowserBookmarksModel
     {
         id: browserBookmarkModel
     }
 
-    /* -------------------------------------------- MythTV Recordings ---------------------------------------------------------*/
+    /* ------------------------------------------------- MythTV Recordings ---------------------------------------------------------*/
     MythRecordingsModel
     {
         id: recordingsModel
     }
 
-    /* -------------------------------------------- Schedules Direct JSON API ---- -------------------------------------------------*/
+    /* --------------------------------------------- Schedules Direct JSON API ------------------------------------------------------*/
     SDJsonModel
     {
         id: sdAPI
     }
 
-    /* -------------------------------------------- Home Assistant JSON REST API ---- -------------------------------------------------*/
+    /* -------------------------------------------- Home Assistant JSON REST API ----------------------------------------------------*/
     HAJsonModel
     {
         id: haAPI
+    }
+
+    /* ------------------------------------------------- Radio Browser Database -----------------------------------------------------*/
+    RadioBrowserModel
+    {
+        id: radioBrowserModel
     }
 
     /*-------------------------------------------------------------------------------------------------------------------------------*/
