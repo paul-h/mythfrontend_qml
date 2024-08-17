@@ -45,7 +45,7 @@ BaseScreen
         text: "Theme:"
     }
 
-        ListModel
+    ListModel
     {
         id: themeModel
 

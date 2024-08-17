@@ -100,7 +100,6 @@ Item
         id: videoPlayer
         anchors.fill: parent
         visible: false
-        loop: true;
 
         Component.onCompleted:
         {
@@ -120,7 +119,7 @@ Item
             }
         }
 
-        onVisibleChanged: { if (visible) play(); else stop(); }
+        onVisibleChanged: if (visible) play(); else stop()
     }
 
     // screen title
