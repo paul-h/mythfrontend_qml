@@ -26,6 +26,7 @@ FocusScope
     property var videoPlayer: undefined
 
     property bool showBorder: true
+    property bool showTitle: true
     property bool muteAudio: false
     property bool showRailcamApproach: false
     property bool showRailcamDiagram: false
@@ -210,13 +211,18 @@ FocusScope
         id: returnDelay
     }
 
-    Rectangle
+    Timer
     {
-        id: playerRect
-        anchors.fill: parent
-        focus: true
-        color: "black"
-        radius: theme.bgRadius
+        id: infoTimer
+        interval: settings.osdTimeoutMedium; running: false; repeat: false
+        onTriggered: { infoPanel.visible = false; updateRailcamApproach(); }
+    }
+
+    Timer
+    {
+        id: messageTimer
+        interval: 6000; running: false; repeat: false
+        onTriggered: messagePanel.visible = false;
     }
 
     WebEngineProfile
@@ -261,784 +267,798 @@ FocusScope
         onMiniDiagramImageChanged: mediaPlayer.updateRailCamMiniDiagram(railcamImageFilename)
      }
 
-    InfoText
+    LabelText
     {
-        id: statusText
-        x: parent. width - xscale(10) - width
-        y: yscale(0)
-        width: xscale(150)
-        height: yscale(30)
-        horizontalAlignment: Text.AlignRight
-        visible: state === "Pre Alarm" || state === "Alert" || state === "Alarm"
-
-        states:
-        [
-            State
-            {
-                name: "Idle"
-                PropertyChanges { target: statusText; fontColor: "white" }
-            },
-            State
-            {
-                name: "Pre Alarm"
-                PropertyChanges { target: statusText; fontColor: "yellow" }
-            },
-            State
-            {
-                name: "Alert"
-                PropertyChanges { target: statusText; fontColor: "orange" }
-            },
-            State
-            {
-                name: "Alarm"
-                PropertyChanges { target: statusText; fontColor: "red" }
-            },
-            State
-            {
-                name: "Tape"
-                PropertyChanges { target: statusText; fontColor: "green" }
-            },
-            State
-            {
-                name: "Unknown"
-                PropertyChanges { target: statusText; fontColor: "white" }
-            }
-        ]
-    }
-
-    Item
-    {
-        id: railcamMiniDiagram
-        property bool hasDiagram: true
-        property alias source: diagram.source
-
+        id: videoTitle
         x: 0
-        y: (parent.height / 2) - railcamApproaching.height - yscale(10)
+        y: 0
         width: parent.width
-        height: parent.height / 2
-        visible: false
-
-        Image
-        {
-            id: diagram
-
-            x: _xscale(100)
-            y: 0
-            width: parent.width - _xscale(200)
-            height: parent.height
-            verticalAlignment: Image.AlignBottom
-            opacity: 0.9
-            visible: railcamMiniDiagram.hasDiagram
-            cache: false
-            fillMode: Image.PreserveAspectFit
-            source: ""
-        }
-
-        Rectangle
-        {
-            id: noDiagrams
-            x: (parent.width / 2) - _xscale(300)
-            y: parent.height / 2
-            width: _xscale(600)
-            height: parent.height / 2
-            color: "#000000"
-            opacity: 0.75
-            visible: !railcamMiniDiagram.hasDiagram
-
-            InfoText
-            {
-                anchors.fill: parent
-                horizontalAlignment: Text.AlignHCenter
-                multiline: true
-                text: "This RailCam webcam does not provide any realtime diagrams"
-            }
-        }
-
-        Tracer{}
+        height: yscale(showTitle ? 30 : 0)
+        visible: (height !== 0)
+        text: "Video Title 1"
+        Tracer {color: "red", 5}
     }
 
     Item
     {
-        id: railcamApproaching
-
-        property bool hasData: true
-
-        x: showBorder ? xscale(5) : 0
-        y: parent.height - _yscale(50) - (showBorder ? yscale(5) : 0)
-        width: parent.width - (showBorder ? xscale(10) : 0)
-        height: _yscale(50)
-        visible: false
+        x: 0
+        y: yscale(showTitle ? 30 : 0)
+        width: parent.width
+        height: parent.height - y
 
         Rectangle
         {
+            id: playerRect
             anchors.fill: parent
-            color: "#000000"
-            opacity: 0.75
+            focus: true
+            color: "black"
+            radius: theme.bgRadius
         }
 
         InfoText
         {
-            id: noAproachingData
-            anchors.fill: parent
-            horizontalAlignment: Text.AlignHCenter
-            visible: !railcamApproaching.hasData
-            text: "This RailCam webcam does not provide any live data"
+            id: statusText
+            x: parent. width - xscale(10) - width
+            y: 0
+            width: xscale(150)
+            height: yscale(30)
+            horizontalAlignment: Text.AlignRight
+            visible: state === "Pre Alarm" || state === "Alert" || state === "Alarm"
+
+            states:
+            [
+                State
+                {
+                    name: "Idle"
+                    PropertyChanges { target: statusText; fontColor: "white" }
+                },
+                State
+                {
+                    name: "Pre Alarm"
+                    PropertyChanges { target: statusText; fontColor: "yellow" }
+                },
+                State
+                {
+                    name: "Alert"
+                    PropertyChanges { target: statusText; fontColor: "orange" }
+                },
+                State
+                {
+                    name: "Alarm"
+                    PropertyChanges { target: statusText; fontColor: "red" }
+                },
+                State
+                {
+                    name: "Tape"
+                    PropertyChanges { target: statusText; fontColor: "green" }
+                },
+                State
+                {
+                    name: "Unknown"
+                    PropertyChanges { target: statusText; fontColor: "white" }
+                }
+            ]
         }
 
         Item
         {
-            anchors.fill: parent
-            visible: railcamApproaching.hasData
+            id: railcamMiniDiagram
+            property bool hasDiagram: true
+            property alias source: diagram.source
+
+            x: 0
+            y: (parent.height / 2) - railcamApproaching.height - yscale(10)
+            width: parent.width
+            height: parent.height / 2
+            visible: false
 
             Image
             {
-                x: _xscale(5)
-                y: _yscale(5)
-                width: _xscale(40)
-                height: _yscale(40)
-                horizontalAlignment: Image.AlignHCenter
-                verticalAlignment: Image.AlignVCenter
+                id: diagram
+
+                x: _xscale(100)
+                y: 0
+                width: parent.width - _xscale(200)
+                height: parent.height
+                verticalAlignment: Image.AlignBottom
+                opacity: 0.9
+                visible: railcamMiniDiagram.hasDiagram
+                cache: false
                 fillMode: Image.PreserveAspectFit
-                source: railcamModel.approachLeftList.count === 0 ?  mythUtils.findThemeFile("images/grey_rewind.png") : mythUtils.findThemeFile("images/rewind.png")
+                source: ""
             }
 
-            InfoText
+            Rectangle
             {
-                x: _xscale(50)
-                y: _yscale(5)
-                width: _xscale(200)
-                height: _yscale(40)
-                fontPixelSize: _xscale(20)
-                text: "Nothing in-range"
-                visible: (railcamModel.approachLeftList.count === 0)
-            }
+                id: noDiagrams
+                x: (parent.width / 2) - _xscale(300)
+                y: parent.height / 2
+                width: _xscale(600)
+                height: parent.height / 2
+                color: "#000000"
+                opacity: 0.75
+                visible: !railcamMiniDiagram.hasDiagram
 
-            Image
-            {
-                x: parent.width - _xscale(45)
-                y: _yscale(5)
-                width: _xscale(40)
-                height: _yscale(40)
-                horizontalAlignment: Image.AlignHCenter
-                verticalAlignment: Image.AlignVCenter
-                fillMode: Image.PreserveAspectFit
-                source: railcamModel.approachRightList.count === 0 ?  mythUtils.findThemeFile("images/grey_fastforward.png") :mythUtils.findThemeFile("images/fastforward.png")
-            }
-
-            InfoText
-            {
-                x: parent.width - _xscale(250)
-                y: _yscale(5)
-                width: _xscale(200)
-                height: _yscale(40)
-                horizontalAlignment: Text.AlignRight
-                fontPixelSize: _xscale(20)
-                text: "Nothing in-range"
-                visible: (railcamModel.approachRightList.count === 0)
-            }
-
-            Component
-            {
-                id: listRow
-
-                Item
+                InfoText
                 {
-                    width: _xscale(180); height: leftList.height
-
-                    // background
-                    Rectangle
-                    {
-                        anchors.fill: parent
-                        color: "#000000"
-                        opacity: 0.5
-                        border.color: "grey"
-                        border.width: _xscale(2)
-                        radius: _xscale(5)
-                    }
-
-                    // signal
-                    Rectangle
-                    {
-                        x: _xscale(5)
-                        y: _yscale(8)
-                        width: _xscale(14)
-                        height: parent.height - _yscale(14)
-                        color: "#000000"
-                        opacity: 1.0
-                        border.color: "white"
-                        border.width: _xscale(1)
-                        radius: _xscale(5)
-
-                        Rectangle
-                        {
-                            x: _xscale(3)
-                            y: _yscale(4)
-                            width: _xscale(8)
-                            height: width
-                            radius: width / 2
-                            color:
-                            {
-                                if (status == "Passing")
-                                    return "green"
-                                else if (status == "Passed")
-                                    return "red"
-                                else if (status == "At Platform")
-                                    return "black"
-                                else if (status == "Waiting")
-                                    return "Orange"
-                                else if (status == "Approaching")
-                                {
-                                    if (approach_ind === "<1" || approach_ind === ">1")
-                                        return "yellow"
-                                    else
-                                        return "black"
-                                }
-                            }
-                        }
-
-                        Rectangle
-                        {
-                            x: _xscale(3)
-                            y: _yscale(14)
-                            width: _xscale(8)
-                            height: width
-                            radius: width / 2
-                            color:
-                            {
-                                if (status == "Passing")
-                                    return "black"
-                                else if (status == "Passed")
-                                    return "black"
-                                else if (status == "At Platform")
-                                    return "white"
-                                else if (status == "Waiting")
-                                    return "Orange"
-                                else if (status == "Approaching")
-                                    return "yellow"
-                            }
-                        }
-                    }
-
-                    InfoText
-                    {
-                        x: _xscale(23)
-                        y: 0
-                        width: _xscale(60)
-                        height: parent.height
-                        text: headcode
-                        fontPixelSize: _xscale(20)
-                        horizontalAlignment: Text.AlignHCenter
-                        fontColor:
-                        {
-                            if (status == "Passing")
-                                return "Green"
-                            else if (status == "Approaching")
-                                return "Yellow"
-                            else if (status == "Passed")
-                                return "red"
-                            else if (status == "Waiting")
-                                return "Orange"
-                            else
-                                return "white"
-                        }
-                    }
-
-                    InfoText
-                    {
-                        x: _xscale(85)
-                        y: 0
-                        width: _xscale(100)
-                        height: parent.height
-                        text: status
-                        fontColor: "white"
-                        fontPixelSize: _xscale(16)
-                    }
+                    anchors.fill: parent
+                    horizontalAlignment: Text.AlignHCenter
+                    multiline: true
+                    text: "This RailCam webcam does not provide any realtime diagrams"
                 }
             }
 
-            ListView
-            {
-                id: leftList
-                x: _xscale(55)
-                y: _yscale(5)
-                width: (parent.width / 2) - _xscale(60)
-                height: _yscale(40)
-                spacing: _xscale(5)
-                orientation: ListView.Horizontal
-                clip: true
-                delegate: listRow
-                model: railcamModel.approachLeftList
-                Tracer {}
-            }
-
-            ListView
-            {
-                id: rightList
-                x: (parent.width / 2) + _xscale(5)
-                y: _yscale(5)
-                width: (parent.width / 2) - _xscale(60)
-                height: _yscale(40)
-                spacing: _xscale(5)
-                orientation: ListView.Horizontal
-                layoutDirection: Qt.RightToLeft
-                clip: true
-                delegate: listRow
-                model: railcamModel.approachRightList
-                Tracer {}
-            }
-        }
-    }
-
-    Rectangle
-    {
-        id: playerBorder
-        anchors.fill: parent
-        focus: true
-        color: "transparent"
-        border.color: root.focus ? theme.lvBackgroundBorderColor : theme.bgBorderColor
-        border.width: root.showBorder ? xscale(5) : 0
-        radius: theme.bgRadius
-    }
-
-    Timer
-    {
-        id: infoTimer
-        interval: settings.osdTimeoutMedium; running: false; repeat: false
-        onTriggered: { infoPanel.visible = false; updateRailcamApproach(); }
-    }
-
-    BaseBackground
-    {
-        id: infoPanel
-        x: xscale(10);
-        y: parent.height - ((feedSource.feedName === "Live TV") ? _yscale(330) : _yscale(160)) - yscale(10);
-        width: parent.width - xscale(20);
-        height: (feedSource.feedName === "Live TV") ? _yscale(330) : _yscale(160)
-
-        visible: false
-
-        Image
-        {
-            id: icon
-            x: _xscale(10)
-            y: _yscale(10)
-            width: _xscale(100)
-            height: _yscale(100)
-
-            onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/grid_noimage.png")
-        }
-
-        TitleText
-        {
-            id: title
-            x: icon.width + _xscale(15)
-            y: _yscale(5)
-            width: parent.width - currFeed.width - icon.width - _xscale(25)
-            height: _yscale(50)
-            fontPixelSize: (_xscale(24) + _yscale(24)) / 2
-
-            verticalAlignment: Text.AlignTop
+            Tracer{}
         }
 
         Item
         {
-            id: nowNextInfo
+            id: railcamApproaching
 
-            x: 0
-            y: _yscale(110)
-            width: parent.width
-            height: parent.height - y
+            property bool hasData: true
 
-            visible: (feedSource.feedName === "Live TV")
+            x: showBorder ? xscale(5) : 0
+            y: parent.height - _yscale(50) - (showBorder ? yscale(5) : 0)
+            width: parent.width - (showBorder ? xscale(10) : 0)
+            height: _yscale(50)
+            visible: false
 
-            RichText
+            Rectangle
             {
-                id: programTitle
-                x: _xscale(30)
-                y: 0
-                width: _xscale(700)
-                height: _yscale(25)
-                labelFontPixelSize: (_xscale(16) + _yscale(16)) / 2
-                infoFontPixelSize: (_xscale(16) + _yscale(16)) / 2
-                label: "Now: "
+                anchors.fill: parent
+                color: "#000000"
+                opacity: 0.75
             }
 
             InfoText
             {
-                id: programDesc
-                x: _xscale(30); y: _yscale(45)
-                width: parent.width - _xscale(60); height: _yscale(75)
-                verticalAlignment: Text.AlignTop
-                fontPixelSize: (_xscale(14) + _yscale(14)) / 2
-                multiline: true
-            }
-
-            InfoText
-            {
-                id: programStatus
-                x: parent.width - _xscale(296); y: _yscale(150); width: _xscale(266); height: _yscale(25)
-                horizontalAlignment: Text.AlignRight
-                fontColor: if (text === "Recording") "red"; else theme.infoFontColor;
-                fontPixelSize: (_xscale(16) + _yscale(16)) / 2
-            }
-
-            InfoText
-            {
-                id: programCategory
-                x: xscale(20); y: _yscale(150); width: _xscale(220); height: _yscale(25)
-                fontColor: "grey"
-                fontPixelSize: (_xscale(16) + _yscale(16)) / 2
-            }
-
-            InfoText
-            {
-                id: programEpisode
-                x: _xscale(315); y: _yscale(150); width: _xscale(320); height: _yscale(25)
+                id: noAproachingData
+                anchors.fill: parent
                 horizontalAlignment: Text.AlignHCenter
-                fontColor: "grey"
-                fontPixelSize: (_xscale(16) + _yscale(16)) / 2
-            }
-
-            InfoText
-            {
-                id: programFirstAired
-                x: _xscale(650); y: _yscale(150); width: _xscale(280); height: _yscale(25)
-                fontColor: "grey"
-                horizontalAlignment: Text.AlignRight
-                fontPixelSize: (_xscale(16) + _yscale(16)) / 2
-            }
-
-            InfoText
-            {
-                id: programLength
-                x: parent.width - _xscale(120); y: 0; width: _xscale(90)
-                height: _yscale(25)
-                fontColor: "grey"
-                horizontalAlignment: Text.AlignRight
-                fontPixelSize: (_xscale(16) + _yscale(16)) / 2
-            }
-
-            RichText
-            {
-                id: programNext
-                x: _xscale(30)
-                y: _yscale(106)
-                width: _xscale(910)
-                height: _yscale(25)
-                label: "Next: "
-                labelFontPixelSize: (_xscale(16) + _yscale(16)) / 2
-                infoFontPixelSize: (_xscale(16) + _yscale(16)) / 2
+                visible: !railcamApproaching.hasData
+                text: "This RailCam webcam does not provide any live data"
             }
 
             Item
             {
-                id: timeIndictor
+                anchors.fill: parent
+                visible: railcamApproaching.hasData
 
-                property int position: 0
-                property int length: 100
-
-                x: programLength.x -_xscale(120)
-                y: _yscale(8)
-                width: _xscale(100)
-                height: yscale(8)
-
-                Rectangle
+                Image
                 {
-                    anchors.fill: parent
-                    color: "white"
+                    x: _xscale(5)
+                    y: _yscale(5)
+                    width: _xscale(40)
+                    height: _yscale(40)
+                    horizontalAlignment: Image.AlignHCenter
+                    verticalAlignment: Image.AlignVCenter
+                    fillMode: Image.PreserveAspectFit
+                    source: railcamModel.approachLeftList.count === 0 ?  mythUtils.findThemeFile("images/grey_rewind.png") : mythUtils.findThemeFile("images/rewind.png")
                 }
 
-                Rectangle
+                InfoText
                 {
-                    x: 0; y: 0; height: parent.height;
-                    width: (parent.width / timeIndictor.length) * timeIndictor.position
-                    color: "red"
+                    x: _xscale(50)
+                    y: _yscale(5)
+                    width: _xscale(200)
+                    height: _yscale(40)
+                    fontPixelSize: _xscale(20)
+                    text: "Nothing in-range"
+                    visible: (railcamModel.approachLeftList.count === 0)
+                }
+
+                Image
+                {
+                    x: parent.width - _xscale(45)
+                    y: _yscale(5)
+                    width: _xscale(40)
+                    height: _yscale(40)
+                    horizontalAlignment: Image.AlignHCenter
+                    verticalAlignment: Image.AlignVCenter
+                    fillMode: Image.PreserveAspectFit
+                    source: railcamModel.approachRightList.count === 0 ?  mythUtils.findThemeFile("images/grey_fastforward.png") :mythUtils.findThemeFile("images/fastforward.png")
+                }
+
+                InfoText
+                {
+                    x: parent.width - _xscale(250)
+                    y: _yscale(5)
+                    width: _xscale(200)
+                    height: _yscale(40)
+                    horizontalAlignment: Text.AlignRight
+                    fontPixelSize: _xscale(20)
+                    text: "Nothing in-range"
+                    visible: (railcamModel.approachRightList.count === 0)
+                }
+
+                Component
+                {
+                    id: listRow
+
+                    Item
+                    {
+                        width: _xscale(180); height: leftList.height
+
+                        // background
+                        Rectangle
+                        {
+                            anchors.fill: parent
+                            color: "#000000"
+                            opacity: 0.5
+                            border.color: "grey"
+                            border.width: _xscale(2)
+                            radius: _xscale(5)
+                        }
+
+                        // signal
+                        Rectangle
+                        {
+                            x: _xscale(5)
+                            y: _yscale(8)
+                            width: _xscale(14)
+                            height: parent.height - _yscale(14)
+                            color: "#000000"
+                            opacity: 1.0
+                            border.color: "white"
+                            border.width: _xscale(1)
+                            radius: _xscale(5)
+
+                            Rectangle
+                            {
+                                x: _xscale(3)
+                                y: _yscale(4)
+                                width: _xscale(8)
+                                height: width
+                                radius: width / 2
+                                color:
+                                {
+                                    if (status == "Passing")
+                                        return "green"
+                                    else if (status == "Passed")
+                                        return "red"
+                                    else if (status == "At Platform")
+                                        return "black"
+                                    else if (status == "Waiting")
+                                        return "Orange"
+                                    else if (status == "Approaching")
+                                    {
+                                        if (approach_ind === "<1" || approach_ind === ">1")
+                                            return "yellow"
+                                        else
+                                            return "black"
+                                    }
+                                }
+                            }
+
+                            Rectangle
+                            {
+                                x: _xscale(3)
+                                y: _yscale(14)
+                                width: _xscale(8)
+                                height: width
+                                radius: width / 2
+                                color:
+                                {
+                                    if (status == "Passing")
+                                        return "black"
+                                    else if (status == "Passed")
+                                        return "black"
+                                    else if (status == "At Platform")
+                                        return "white"
+                                    else if (status == "Waiting")
+                                        return "Orange"
+                                    else if (status == "Approaching")
+                                        return "yellow"
+                                }
+                            }
+                        }
+
+                        InfoText
+                        {
+                            x: _xscale(23)
+                            y: 0
+                            width: _xscale(60)
+                            height: parent.height
+                            text: headcode
+                            fontPixelSize: _xscale(20)
+                            horizontalAlignment: Text.AlignHCenter
+                            fontColor:
+                            {
+                                if (status == "Passing")
+                                    return "Green"
+                                else if (status == "Approaching")
+                                    return "Yellow"
+                                else if (status == "Passed")
+                                    return "red"
+                                else if (status == "Waiting")
+                                    return "Orange"
+                                else
+                                    return "white"
+                            }
+                        }
+
+                        InfoText
+                        {
+                            x: _xscale(85)
+                            y: 0
+                            width: _xscale(100)
+                            height: parent.height
+                            text: status
+                            fontColor: "white"
+                            fontPixelSize: _xscale(16)
+                        }
+                    }
+                }
+
+                ListView
+                {
+                    id: leftList
+                    x: _xscale(55)
+                    y: _yscale(5)
+                    width: (parent.width / 2) - _xscale(60)
+                    height: _yscale(40)
+                    spacing: _xscale(5)
+                    orientation: ListView.Horizontal
+                    clip: true
+                    delegate: listRow
+                    model: railcamModel.approachLeftList
+                    Tracer {}
+                }
+
+                ListView
+                {
+                    id: rightList
+                    x: (parent.width / 2) + _xscale(5)
+                    y: _yscale(5)
+                    width: (parent.width / 2) - _xscale(60)
+                    height: _yscale(40)
+                    spacing: _xscale(5)
+                    orientation: ListView.Horizontal
+                    layoutDirection: Qt.RightToLeft
+                    clip: true
+                    delegate: listRow
+                    model: railcamModel.approachRightList
+                    Tracer {}
                 }
             }
+        }
+
+        Rectangle
+        {
+            id: playerBorder
+            anchors.fill: parent
+            focus: true
+            color: "transparent"
+            border.color: root.focus ? theme.lvBackgroundBorderColor : theme.bgBorderColor
+            border.width: root.showBorder ? xscale(5) : 0
+            radius: theme.bgRadius
+        }
+
+        BaseBackground
+        {
+            id: infoPanel
+            x: xscale(10);
+            y: parent.height - ((feedSource.feedName === "Live TV") ? _yscale(330) : _yscale(160)) - yscale(10);
+            width: parent.width - xscale(20);
+            height: (feedSource.feedName === "Live TV") ? _yscale(330) : _yscale(160)
+
+            visible: false
 
             Image
             {
-                id: recordingIcon
-                x: _xscale(900); y: _yscale(130); width: xscale(32); height: yscale(32)
-                source: mythUtils.findThemeFile("images/recording.png")
-                visible: (guideModel.count > 0 && guideModel.get(0).RecordingStatus === "Recording")
-            }
-        }
+                id: icon
+                x: _xscale(10)
+                y: _yscale(10)
+                width: _xscale(100)
+                height: _yscale(100)
 
-        InfoText
-        {
-            id: pos
-            x: _xscale(55) + icon.width
-            y: _yscale(50)
-            width: _xscale(400)
-            height: _yscale(50)
-            fontPixelSize: (_xscale(16) + _yscale(16)) / 2
-            text:
-            {
-                if (videoPlayer !== undefined && (player === "VLC" || player === "YouTube" || player === "MDK"))
-                    return "Position: " + Util.milliSecondsToString(videoPlayer.getPosition()) + " / " + Util.milliSecondsToString(videoPlayer.getDuration())
-                else
-                    return "Position: N/A"
-            }
-        }
-
-        InfoText
-        {
-            id: timeLeft
-            x: parent.width - width - _xscale(15);
-            y: _yscale(50)
-            width: _xscale(240)
-            height: _yscale(50)
-            fontPixelSize: (_xscale(16) + _yscale(16)) / 2
-            text:
-            {
-                if (videoPlayer !== undefined && (player === "VLC" || player === "YouTube" || player === "MDK"))
-                    return Util.milliSecondsToString(videoPlayer.getDuration() - videoPlayer.getPosition())
-                else
-                    "Remaining : N/A"
+                onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/grid_noimage.png")
             }
 
-            horizontalAlignment: Text.AlignRight
-        }
-
-        InfoText
-        {
-            id: currFeed
-            x: parent.width - width - _xscale(15)
-            y: _yscale(0)
-            width: _xscale(240)
-            height: _yscale(50)
-            fontPixelSize: (_xscale(16) + _yscale(16)) / 2
-            text: feedSource.currentFeed + 1 + " of " + feedSource.feedCount + " (" + feedSource.feedName + ")"
-
-            horizontalAlignment: Text.AlignRight
-        }
-
-        InfoText
-        {
-            id: currPlayer
-            x: parent.width - width - _xscale(15)
-            y: _yscale(24)
-            width: _xscale(240)
-            height: _yscale(50)
-            fontPixelSize: (_xscale(16) + _yscale(16)) / 2
-            text: player;
-
-            horizontalAlignment: Text.AlignRight
-        }
-
-        Footer
-        {
-            id: footer
-            x: root._xscale(5)
-            y: parent.height - root._yscale(38)
-            width: parent.width - root._xscale(10)
-            height: root._yscale(32)
-
-            redText: "Previous"
-            greenText: "Next"
-            yellowText:
+            TitleText
             {
-                "Show Web Pages";
-            }
-            blueText:
-            {
-                if (feedHasRailCamData())
-                    "Show RailCam Info";
-                else
-                    "";
+                id: title
+                x: icon.width + _xscale(15)
+                y: _yscale(5)
+                width: parent.width - currFeed.width - icon.width - _xscale(25)
+                height: _yscale(50)
+                fontPixelSize: (_xscale(24) + _yscale(24)) / 2
+
+                verticalAlignment: Text.AlignTop
             }
 
-            Tracer {}
-       }
-
-
-        RowLayout
-        {
-            id: toolbar
-            opacity: .55
-            spacing: _xscale(10)
-            x: _xscale(15) + icon.width
-            y: _yscale(70)
-            width: parent.width - _xscale(25) - icon.width
-            height: _yscale(50)
-            anchors.bottomMargin: spacing
-            anchors.leftMargin: spacing * _xscale(1.5)
-            anchors.rightMargin: spacing * _xscale(1.5)
-            Behavior on anchors.bottomMargin { PropertyAnimation { duration: 250} }
-            Rectangle
+            Item
             {
-                height: _yscale(25)
-                width: height
-                radius: width * _xscale(0.25)
-                color: 'black'
-                border.width: _xscale(1)
-                border.color: 'white'
+                id: nowNextInfo
+
+                x: 0
+                y: _yscale(110)
+                width: parent.width
+                height: parent.height - y
+
+                visible: (feedSource.feedName === "Live TV")
+
+                RichText
+                {
+                    id: programTitle
+                    x: _xscale(30)
+                    y: 0
+                    width: _xscale(700)
+                    height: _yscale(25)
+                    labelFontPixelSize: (_xscale(16) + _yscale(16)) / 2
+                    infoFontPixelSize: (_xscale(16) + _yscale(16)) / 2
+                    label: "Now: "
+                }
+
+                InfoText
+                {
+                    id: programDesc
+                    x: _xscale(30); y: _yscale(45)
+                    width: parent.width - _xscale(60); height: _yscale(75)
+                    verticalAlignment: Text.AlignTop
+                    fontPixelSize: (_xscale(14) + _yscale(14)) / 2
+                    multiline: true
+                }
+
+                InfoText
+                {
+                    id: programStatus
+                    x: parent.width - _xscale(296); y: _yscale(150); width: _xscale(266); height: _yscale(25)
+                    horizontalAlignment: Text.AlignRight
+                    fontColor: if (text === "Recording") "red"; else theme.infoFontColor;
+                    fontPixelSize: (_xscale(16) + _yscale(16)) / 2
+                }
+
+                InfoText
+                {
+                    id: programCategory
+                    x: xscale(20); y: _yscale(150); width: _xscale(220); height: _yscale(25)
+                    fontColor: "grey"
+                    fontPixelSize: (_xscale(16) + _yscale(16)) / 2
+                }
+
+                InfoText
+                {
+                    id: programEpisode
+                    x: _xscale(315); y: _yscale(150); width: _xscale(320); height: _yscale(25)
+                    horizontalAlignment: Text.AlignHCenter
+                    fontColor: "grey"
+                    fontPixelSize: (_xscale(16) + _yscale(16)) / 2
+                }
+
+                InfoText
+                {
+                    id: programFirstAired
+                    x: _xscale(650); y: _yscale(150); width: _xscale(280); height: _yscale(25)
+                    fontColor: "grey"
+                    horizontalAlignment: Text.AlignRight
+                    fontPixelSize: (_xscale(16) + _yscale(16)) / 2
+                }
+
+                InfoText
+                {
+                    id: programLength
+                    x: parent.width - _xscale(120); y: 0; width: _xscale(90)
+                    height: _yscale(25)
+                    fontColor: "grey"
+                    horizontalAlignment: Text.AlignRight
+                    fontPixelSize: (_xscale(16) + _yscale(16)) / 2
+                }
+
+                RichText
+                {
+                    id: programNext
+                    x: _xscale(30)
+                    y: _yscale(106)
+                    width: _xscale(910)
+                    height: _yscale(25)
+                    label: "Next: "
+                    labelFontPixelSize: (_xscale(16) + _yscale(16)) / 2
+                    infoFontPixelSize: (_xscale(16) + _yscale(16)) / 2
+                }
+
+                Item
+                {
+                    id: timeIndictor
+
+                    property int position: 0
+                    property int length: 100
+
+                    x: programLength.x -_xscale(120)
+                    y: _yscale(8)
+                    width: _xscale(100)
+                    height: yscale(8)
+
+                    Rectangle
+                    {
+                        anchors.fill: parent
+                        color: "white"
+                    }
+
+                    Rectangle
+                    {
+                        x: 0; y: 0; height: parent.height;
+                        width: (parent.width / timeIndictor.length) * timeIndictor.position
+                        color: "red"
+                    }
+                }
+
                 Image
                 {
-                    source:  _playbackStatus === MediaPlayers.PlaybackStatus.Playing ? mythUtils.findThemeFile("images/player/play.png") : (_playbackStatus === MediaPlayers.PlaybackStatus.Paused ? mythUtils.findThemeFile("images/player/pause.png") : mythUtils.findThemeFile("images/player/stop.png"))
-                    anchors.fill: parent
+                    id: recordingIcon
+                    x: _xscale(900); y: _yscale(130); width: xscale(32); height: yscale(32)
+                    source: mythUtils.findThemeFile("images/recording.png")
+                    visible: (guideModel.count > 0 && guideModel.get(0).RecordingStatus === "Recording")
                 }
             }
-            Rectangle
+
+            InfoText
             {
-                Layout.fillWidth: true
-                height: _yscale(10)
-                color: 'transparent'
-                border.width: _xscale(1)
-                border.color: 'white'
+                id: pos
+                x: _xscale(55) + icon.width
+                y: _yscale(50)
+                width: _xscale(400)
+                height: _yscale(50)
+                fontPixelSize: (_xscale(16) + _yscale(16)) / 2
+                text:
+                {
+                    if (videoPlayer !== undefined && (player === "VLC" || player === "YouTube" || player === "MDK"))
+                        return "Position: " + Util.milliSecondsToString(videoPlayer.getPosition()) + " / " + Util.milliSecondsToString(videoPlayer.getDuration())
+                    else
+                        return "Position: N/A"
+                }
+            }
+
+            InfoText
+            {
+                id: timeLeft
+                x: parent.width - width - _xscale(15);
+                y: _yscale(50)
+                width: _xscale(240)
+                height: _yscale(50)
+                fontPixelSize: (_xscale(16) + _yscale(16)) / 2
+                text:
+                {
+                    if (videoPlayer !== undefined && (player === "VLC" || player === "YouTube" || player === "MDK"))
+                        return Util.milliSecondsToString(videoPlayer.getDuration() - videoPlayer.getPosition())
+                    else
+                        "Remaining : N/A"
+                }
+
+                horizontalAlignment: Text.AlignRight
+            }
+
+            InfoText
+            {
+                id: currFeed
+                x: parent.width - width - _xscale(15)
+                y: _yscale(0)
+                width: _xscale(240)
+                height: _yscale(50)
+                fontPixelSize: (_xscale(16) + _yscale(16)) / 2
+                text: feedSource.currentFeed + 1 + " of " + feedSource.feedCount + " (" + feedSource.feedName + ")"
+
+                horizontalAlignment: Text.AlignRight
+            }
+
+            InfoText
+            {
+                id: currPlayer
+                x: parent.width - width - _xscale(15)
+                y: _yscale(24)
+                width: _xscale(240)
+                height: _yscale(50)
+                fontPixelSize: (_xscale(16) + _yscale(16)) / 2
+                text: player;
+
+                horizontalAlignment: Text.AlignRight
+            }
+
+            Footer
+            {
+                id: footer
+                x: root._xscale(5)
+                y: parent.height - root._yscale(38)
+                width: parent.width - root._xscale(10)
+                height: root._yscale(32)
+
+                redText: "Previous"
+                greenText: "Next"
+                yellowText:
+                {
+                    "Show Web Pages";
+                }
+                blueText:
+                {
+                    if (feedHasRailCamData())
+                        "Show RailCam Info";
+                    else
+                        "";
+                }
+
+                Tracer {}
+           }
+
+            RowLayout
+            {
+                id: toolbar
+                opacity: .55
+                spacing: _xscale(10)
+                x: _xscale(15) + icon.width
+                y: _yscale(70)
+                width: parent.width - _xscale(25) - icon.width
+                height: _yscale(50)
+                anchors.bottomMargin: spacing
+                anchors.leftMargin: spacing * _xscale(1.5)
+                anchors.rightMargin: spacing * _xscale(1.5)
+                Behavior on anchors.bottomMargin { PropertyAnimation { duration: 250} }
                 Rectangle
                 {
-                    width:
+                    height: _yscale(25)
+                    width: height
+                    radius: width * _xscale(0.25)
+                    color: 'black'
+                    border.width: _xscale(1)
+                    border.color: 'white'
+                    Image
                     {
-                        var position = 1;
-
-                        if (videoPlayer !== undefined && (player === "VLC" || player === "YouTube" || player === "MDK"))
-                            position = videoPlayer.getPosition() / videoPlayer.getDuration();
-
-                        return (parent.width - anchors.leftMargin - anchors.rightMargin) * position;
+                        source:  _playbackStatus === MediaPlayers.PlaybackStatus.Playing ? mythUtils.findThemeFile("images/player/play.png") : (_playbackStatus === MediaPlayers.PlaybackStatus.Paused ? mythUtils.findThemeFile("images/player/pause.png") : mythUtils.findThemeFile("images/player/stop.png"))
+                        anchors.fill: parent
                     }
-                    color: 'blue'
-                    anchors.margins: _xscale(2)
-                    anchors.top: parent.top
-                    anchors.left: parent.left
-                    anchors.bottom: parent.bottom
+                }
+                Rectangle
+                {
+                    Layout.fillWidth: true
+                    height: _yscale(10)
+                    color: 'transparent'
+                    border.width: _xscale(1)
+                    border.color: 'white'
+                    Rectangle
+                    {
+                        width:
+                        {
+                            var position = 1;
+
+                            if (videoPlayer !== undefined && (player === "VLC" || player === "YouTube" || player === "MDK"))
+                                position = videoPlayer.getPosition() / videoPlayer.getDuration();
+
+                            return (parent.width - anchors.leftMargin - anchors.rightMargin) * position;
+                        }
+                        color: 'blue'
+                        anchors.margins: _xscale(2)
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.bottom: parent.bottom
+                    }
                 }
             }
         }
-    }
 
-    BaseBackground
-    {
-        id: browsePanel
-        x: xscale(10);
-        y: parent.height - _yscale(160) - yscale(10);
-        opacity: 0.75
-        width: parent.width - xscale(20);
-        height: _yscale(160)
-
-        visible: false
-
-        Image
+        BaseBackground
         {
-            id: b_icon
-            x: _xscale(10)
-            y: _yscale(10)
-            width: _xscale(100)
-            height: _yscale(100)
+            id: browsePanel
+            x: xscale(10);
+            y: parent.height - _yscale(160) - yscale(10);
+            opacity: 0.75
+            width: parent.width - xscale(20);
+            height: _yscale(160)
 
-            onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/grid_noimage.png")
-        }
+            visible: false
 
-        TitleText
-        {
-            id: b_title
-            x: b_icon.width + _xscale(15)
-            y: _yscale(5)
-            width: parent.width - b_currFeed.width - b_icon.width - _xscale(25)
-            height: _yscale(50)
-            fontPixelSize: (_xscale(24) + _yscale(24)) / 2
-            verticalAlignment: Text.AlignTop
-        }
-
-        InfoText
-        {
-            id: b_currFeed
-            x: parent.width - width - _xscale(15)
-            y: _yscale(0)
-            width: _xscale(240)
-            height: _yscale(50)
-            fontPixelSize: (_xscale(16) + _yscale(16)) / 2
-            text: _browserIndex + 1 + " of " + feedSource.feedCount + " (" + feedSource.feedName + ")"
-
-            horizontalAlignment: Text.AlignRight
-        }
-
-        InfoText
-        {
-            id: b_description
-            x: b_icon.width + _xscale(15)
-            y: _yscale(32)
-            width: parent.width - b_currFeed.width - b_icon.width - _xscale(25)
-            height: _yscale(60)
-            verticalAlignment: Text.AlignTop
-            multiline: true
-            fontPixelSize: _xscale(13)
-        }
-
-        InfoText
-        {
-            id: b_category
-            x: b_icon.width + _xscale(15)
-            y: _yscale(75);
-            width: parent.width - b_currFeed.width - b_icon.width - _xscale(25)
-            fontColor: "grey"
-        }
-
-        Footer
-        {
-            id: b_footer
-            x: root._xscale(5)
-            y: parent.height - root._yscale(38)
-            width: parent.width - root._xscale(10)
-            height: root._yscale(32)
-
-            redText: "Previous"
-            greenText: "Next"
-            yellowText:
+            Image
             {
-                "Show Web Pages";
+                id: b_icon
+                x: _xscale(10)
+                y: _yscale(10)
+                width: _xscale(100)
+                height: _yscale(100)
+
+                onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/grid_noimage.png")
             }
-            blueText:
+
+            TitleText
             {
-                if (feedHasRailCamData())
-                    "Show RailCam Info";
-                else
-                    "";
+                id: b_title
+                x: b_icon.width + _xscale(15)
+                y: _yscale(5)
+                width: parent.width - b_currFeed.width - b_icon.width - _xscale(25)
+                height: _yscale(50)
+                fontPixelSize: (_xscale(24) + _yscale(24)) / 2
+                verticalAlignment: Text.AlignTop
+            }
+
+            InfoText
+            {
+                id: b_currFeed
+                x: parent.width - width - _xscale(15)
+                y: _yscale(0)
+                width: _xscale(240)
+                height: _yscale(50)
+                fontPixelSize: (_xscale(16) + _yscale(16)) / 2
+                text: _browserIndex + 1 + " of " + feedSource.feedCount + " (" + feedSource.feedName + ")"
+
+                horizontalAlignment: Text.AlignRight
+            }
+
+            InfoText
+            {
+                id: b_description
+                x: b_icon.width + _xscale(15)
+                y: _yscale(32)
+                width: parent.width - b_currFeed.width - b_icon.width - _xscale(25)
+                height: _yscale(60)
+                verticalAlignment: Text.AlignTop
+                multiline: true
+                fontPixelSize: _xscale(13)
+            }
+
+            InfoText
+            {
+                id: b_category
+                x: b_icon.width + _xscale(15)
+                y: _yscale(75);
+                width: parent.width - b_currFeed.width - b_icon.width - _xscale(25)
+                fontColor: "grey"
+            }
+
+            Footer
+            {
+                id: b_footer
+                x: root._xscale(5)
+                y: parent.height - root._yscale(38)
+                width: parent.width - root._xscale(10)
+                height: root._yscale(32)
+
+                redText: "Previous"
+                greenText: "Next"
+                yellowText:
+                {
+                    "Show Web Pages";
+                }
+                blueText:
+                {
+                    if (feedHasRailCamData())
+                        "Show RailCam Info";
+                    else
+                        "";
+                }
             }
         }
-    }
 
-    BusyIndicator
-    {
-        id: busyIndicator
-        x: (parent.width / 2) - (width / 2)
-        y: (parent.height / 2) - (height / 2)
-        running: visible
-        visible: false
-    }
-
-    InfoText
-    {
-        id: busyText
-        x: (parent.width / 2) - (width / 2)
-        y: busyIndicator.y + busyIndicator.height + yscale(10)
-        visible: false
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        fontPixelSize: (_xscale(20) + _yscale(20)) / 2
-        text: "Loading..."
-    }
-
-    Timer
-    {
-        id: messageTimer
-        interval: 6000; running: false; repeat: false
-        onTriggered: messagePanel.visible = false;
-    }
-
-    BaseBackground
-    {
-        id: messagePanel
-        x: _xscale(100); y: _yscale(120); width: _xscale(400); height: _yscale(110)
-        visible: false
+        BusyIndicator
+        {
+            id: busyIndicator
+            x: (parent.width / 2) - (width / 2)
+            y: (parent.height / 2) - (height / 2)
+            running: visible
+            visible: false
+        }
 
         InfoText
         {
-            id: messageText
-            anchors.fill: parent
+            id: busyText
+            x: (parent.width / 2) - (width / 2)
+            y: busyIndicator.y + busyIndicator.height + yscale(10)
+            visible: false
             horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
             fontPixelSize: (_xscale(20) + _yscale(20)) / 2
+            text: "Loading..."
+        }
+
+        BaseBackground
+        {
+            id: messagePanel
+            x: _xscale(100); y: _yscale(120); width: _xscale(400); height: _yscale(110)
+            visible: false
+
+            InfoText
+            {
+                id: messageText
+                anchors.fill: parent
+                horizontalAlignment: Text.AlignHCenter
+                fontPixelSize: (_xscale(20) + _yscale(20)) / 2
+            }
         }
     }
 
@@ -1286,6 +1306,8 @@ FocusScope
         else
             title.text = "";
 
+        videoTitle.text = title.text;
+
         if (feedSource.feedName == "ZoneMinder Cameras")
             newURL += "&connkey=" + Util.randomIntFromRange(0, 999999);
 
@@ -1441,6 +1463,12 @@ FocusScope
     {
         if (player === "VLC" || player === "FFMPEG" || player === "YouTube" || player === "MDK"|| player === "Tivo" || player === "StreamLink")
             videoPlayer.setFillMode(mode);
+    }
+
+    function toggleSubtitles()
+    {
+        if (player === "MDK")
+            return videoPlayer.toggleSubtitles();
     }
 
     function stopRecording()
