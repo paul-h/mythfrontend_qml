@@ -13,13 +13,15 @@ BaseDialog
     property bool themePlayerEnabled: false
 
     property var streamList: themeStreamList
+    property var radioList: radioStreamList
 
-    property alias volume: audioPlayer.volume
+    property alias volume: streamPlayer.volume
     property bool muteAudio: false
 
-    property alias mrl: audioPlayer.mrl
+    property alias mrl: streamPlayer.mrl
 
     property string trackArtistTitle: ""
+    property int trackStart: 0
 
     property bool _enabled: false
     property bool _wasPlaying: false
@@ -39,15 +41,20 @@ BaseDialog
 
     Component.onDestruction:
     {
-        audioPlayer.stop();
+        streamPlayer.stop();
         dbUtils.setSetting("RadioPlayerEnabled", settings.hostName, radioPlayerEnabled);
         dbUtils.setSetting("ThemePlayerEnabled", settings.hostName, themePlayerEnabled);
     }
 
+    onTrackArtistTitleChanged:
+    {
+         trackStart = streamPlayer.time;
+    }
+
     ListModel
     {
-        id: internalStreamList
-        objectName: "internalStreamList"
+        id: radioStreamList
+        objectName: "radioStreamList"
         property int currentItem: 0
     }
 
@@ -58,11 +65,16 @@ BaseDialog
         property int currentItem: 0
     }
 
+    ListModel
+    {
+        id: playedModel
+    }
+
     VlcPlayer
     {
-        id: audioPlayer
+        id: streamPlayer
 
-        onTimeChanged: if (trackArtistTitle !== audioPlayer.mediaDescription.nowPlaying) trackArtistTitle = audioPlayer.mediaDescription.nowPlaying;
+        onTimeChanged: if (trackArtistTitle != undefined && playedModel.get(0) !== undefined && trackArtistTitle === playedModel.get(0).trackArtistTitle) playedModel.get(0).length = time - trackStart;
 
         Component.onCompleted:
         {
@@ -88,45 +100,45 @@ BaseDialog
         {
             if (state === VlcPlayer.NothingSpecial)
             {
-                log.debug(Verbose.PLAYBACK, "AudioPlayer state: Nothing Special - " + mrl);
+                log.debug(Verbose.PLAYBACK, "streamPlayer state: Nothing Special - " + mrl);
                 status.text = "Idle";
             }
             else if (state === VlcPlayer.Opening)
             {
-                log.debug(Verbose.PLAYBACK, "AudioPlayer state: Opening - " + mrl);
+                log.debug(Verbose.PLAYBACK, "streamPlayer state: Opening - " + mrl);
                 status.text = "Opening";
             }
             else if (state === VlcPlayer.Buffering)
             {
-                log.debug(Verbose.PLAYBACK, "AudioPlayer state: Buffering - " + mrl);
+                log.debug(Verbose.PLAYBACK, "streamPlayer state: Buffering - " + mrl);
                 //status.text = "Buffering";
             }
             else if (state === VlcPlayer.Playing)
             {
-                log.debug(Verbose.PLAYBACK, "AudioPlayer state: Playing - " + mrl);
+                log.debug(Verbose.PLAYBACK, "streamPlayer state: Playing - " + mrl);
                 muteTimer.start();
                 status.text = "Playing";
-                if (root.state !== "show" && streamList == internalStreamList)
+                if (root.state !== "show" && streamList == radioStreamList)
                     showNotification("Playing audio stream.<br>" + streamList.get(streamList.currentItem).title);
             }
             else if (state === VlcPlayer.Paused)
             {
-                log.debug(Verbose.PLAYBACK, "AudioPlayer state: Paused - " + mrl);
+                log.debug(Verbose.PLAYBACK, "streamPlayer state: Paused - " + mrl);
                 status.text = "Paused";
             }
             else if (state === VlcPlayer.Stopped)
             {
-                log.debug(Verbose.PLAYBACK, "AudioPlayer state: Stopped - " + mrl);
+                log.debug(Verbose.PLAYBACK, "streamPlayer state: Stopped - " + mrl);
                 status.text = "Stopped";
             }
             else if (state === VlcPlayer.Ended)
             {
-                log.debug(Verbose.PLAYBACK, "AudioPlayer state: Ended - " + mrl);
+                log.debug(Verbose.PLAYBACK, "streamPlayer state: Ended - " + mrl);
                 status.text = "Ended";
             }
             else if (state === VlcPlayer.Error)
             {
-                log.debug(Verbose.PLAYBACK, "AudioPlayer state: Error - " + mrl);
+                log.debug(Verbose.PLAYBACK, "streamPlayer state: Error - " + mrl);
                 if (root.state !== "show")
                     showNotification("Failed to play audio stream.<br>" + streamList.get(streamList.currentItem).title);
                 trackArtistTitle = "Error: Failed to play audio stream.";
@@ -143,14 +155,20 @@ BaseDialog
         onTriggered:
         {
             // keep checking the mute status until we get the result we want
-            if (audioPlayer.audio.mute != -1)
+            if (streamPlayer.audio.mute != -1)
             {
-                if (audioPlayer.audio.mute != root.muteAudio)
-                    audioPlayer.audio.mute = root.muteAudio;
+                if (streamPlayer.audio.mute != root.muteAudio)
+                    streamPlayer.audio.mute = root.muteAudio;
                 else
                     running = false;
             }
         }
+    }
+
+    Timer
+    {
+        interval: 1000; running: true; repeat: true
+        onTriggered: if (trackArtistTitle != streamPlayer.mediaDescription.nowPlaying) trackArtistTitle = streamPlayer.mediaDescription.nowPlaying;
     }
 
     Keys.onPressed:
@@ -170,25 +188,25 @@ BaseDialog
         else if (event.key === Qt.Key_F3 || event.key === Qt.Key_P)
         {
             // YELLOW
-            if (audioPlayer.state === 3) // playing
-                audioPlayer.stop();
+            if (streamPlayer.state === 3) // playing
+                streamPlayer.stop();
             else
             {
-                if (audioPlayer.mrl != "")
-                    audioPlayer.play();
+                if (streamPlayer.mrl != "")
+                    streamPlayer.play();
             }
         }
         else if (event.key === Qt.Key_S)
         {
             // stop
-            if (audioPlayer.state === 3) // playing
-                audioPlayer.stop();
+            if (streamPlayer.state === 3) // playing
+                streamPlayer.stop();
         }
         else if (event.key === Qt.Key_F4 || event.key === Qt.Key_F9)
         {
             //BLUE
             root.muteAudio = !root.muteAudio;
-            audioPlayer.audio.mute = root.muteAudio;
+            streamPlayer.audio.mute = root.muteAudio;
         }
         else if (event.key === Qt.Key_F8)
         {
@@ -259,7 +277,7 @@ BaseDialog
         {
             id: volumePercent
             x: xscale(200); y: yscale(110); width: xscale(156); height: yscale(35)
-            text: audioPlayer.volume + "%";
+            text: streamPlayer.volume + "%";
             fontColor: "gray"
         }
 
@@ -414,7 +432,7 @@ BaseDialog
         if (list === "internal")
         {
             _enabled = radioPlayerEnabled;
-            streamList = internalStreamList;
+            streamList = radioStreamList;
         }
         else if (list === "theme")
         {
@@ -432,8 +450,8 @@ BaseDialog
         if (streamList.currentItem < 0)
             streamList.currentItem = streamList.count - 1;
 
-        audioPlayer.mrl = streamList.get(streamList.currentItem).url;
-        audioPlayer.play();
+        streamPlayer.mrl = streamList.get(streamList.currentItem).url;
+        streamPlayer.play();
 
         trackArtistTitle = "";
         icon.source = streamList.get(streamList.currentItem).logo;
@@ -447,8 +465,8 @@ BaseDialog
         if (streamList.currentItem >= streamList.count)
             streamList.currentItem = 0;
 
-        audioPlayer.mrl = streamList.get(streamList.currentItem).url;
-        audioPlayer.play();
+        streamPlayer.mrl = streamList.get(streamList.currentItem).url;
+        streamPlayer.play();
 
         trackArtistTitle = "";
         icon.source = streamList.get(streamList.currentItem).logo;
@@ -470,27 +488,27 @@ BaseDialog
     {
         if (streamList.count === 0)
         {
-            audioPlayer.stop();
+            streamPlayer.stop();
             icon.source = mythUtils.findThemeFile("images/radio.png");
             trackArtistTitle = "";
 
             return;
         }
 
-        audioPlayer.mrl = streamList.get(streamList.currentItem).url;
+        streamPlayer.mrl = streamList.get(streamList.currentItem).url;
         trackArtistTitle = "";
         icon.source = streamList.get(streamList.currentItem).logo
-        audioPlayer.play();
+        streamPlayer.play();
     }
 
     function stop()
     {
-        audioPlayer.stop();
+        streamPlayer.stop();
     }
 
     function pause()
     {
-        audioPlayer.pause();
+        streamPlayer.pause();
     }
 
     function record()
@@ -533,14 +551,14 @@ BaseDialog
 
     function isPlaying()
     {
-        return audioPlayer.state === VlcPlayer.Playing;
+        return streamPlayer.state === VlcPlayer.Playing;
     }
 
     function suspendPlayback()
     {
         if (isPlaying())
         {
-            savedPosition = audioPlayer.position;
+            savedPosition = streamPlayer.position;
             _wasPlaying = true;
             root.stop();
         }
@@ -557,7 +575,7 @@ BaseDialog
         if (_wasPlaying)
         {
             root.play();
-            audioPlayer.position = savedPosition;
+            streamPlayer.position = savedPosition;
         }
     }
 
@@ -570,14 +588,14 @@ BaseDialog
     {
         root.muteAudio = mute;
 
-        if (mute !== audioPlayer.audio.mute)
-            audioPlayer.audio.mute = mute;
+        if (mute !== streamPlayer.audio.mute)
+            streamPlayer.audio.mute = mute;
     }
 
     function toggleMute()
     {
         root.muteAudio = !root.muteAudio;
 
-        audioPlayer.audio.mute = root.muteAudio;
+        streamPlayer.audio.mute = root.muteAudio;
     }
 }
