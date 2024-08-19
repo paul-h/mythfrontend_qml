@@ -1,4 +1,5 @@
 *.o
 moc_*
+*.moc
 mythfrontend_qml
 Makefile
