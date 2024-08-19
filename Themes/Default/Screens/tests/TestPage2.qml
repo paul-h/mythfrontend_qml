@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.0
 import QtQuick.Controls 1.0
 import Base 1.0
 import Models 1.0
+import Dialogs 1.0
 
 BaseScreen
 {
@@ -130,6 +131,20 @@ BaseScreen
         onNodeClicked:
         {
             sourceTree.playFile(currentIndex, node)
+        }
+    }
+
+    TextEditDialog
+    {
+        id: editDialog
+        title: "Search"
+        message: "Search for Stream"
+
+        width: xscale(600); height: yscale(350)
+
+        onResultText:
+        {
+            treeView.search(text);
         }
     }
 }
