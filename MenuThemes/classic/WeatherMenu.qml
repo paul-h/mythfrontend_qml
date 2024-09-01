@@ -8,13 +8,21 @@ ListModel
 
     ListElement
     {
-        menutext: "Current Conditions (VisualCrossing)"
+        menutext: "Current Conditions (HA)"
+        loaderSource: "WebBrowser.qml"
+        waterMark: "watermark/weather.png"
+        url: "setting://WeatherHomeAssistant"
+        zoom: 1.0
+    }
+    ListElement
+    {
+        menutext: "Current Conditions (VC)"
         loaderSource: "weather/CurrentConditions.qml"
         waterMark: "watermark/weather.png"
     }
     ListElement
     {
-        menutext: "Current Conditions"
+        menutext: "Current Conditions (WU)"
         loaderSource:"WebBrowser.qml"
         waterMark: "watermark/weather.png"
         url: "setting://WeatherCurrentConditions"
