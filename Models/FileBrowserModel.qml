@@ -59,7 +59,11 @@ Item
         showDirsFirst: true
         caseSensitive: false
         showOnlyReadable: true
-        onStatusChanged: if (folderModel.status == FolderListModel.Ready) doLoad(folder.toString())
+        onStatusChanged:
+        {
+            if (folderModel.status == FolderListModel.Ready)
+                doLoad(folder.toString())
+        }
     }
 
     ListModel
@@ -98,10 +102,15 @@ Item
     {
         var folder;
 
-        if (node.type === SourceTreeModel.NodeType.Root_Title || node.type === SourceTreeModel.NodeType.VideoFiles_Directory)
+        if (node.itemData === "Loading")
+            return;
+
+        if (node.type === SourceTreeModel.NodeType.Root_Title || node.type === SourceTreeModel.NodeType.FileBrowser_Directory)
         {
             if (node.itemData === "VideoFiles")
-                folder = "file://" + settings.videoPath;
+                folder = settings.videoPath;
+            else if (node.itemData === "FileBrowser")
+                folder = folderModel.folder.toString();
             else
                 folder = node.itemData;
 
@@ -136,7 +145,7 @@ Item
 
                     node.subNodes.append({
                                              "parent": node, "itemTitle": fileNode.fileName, "itemData": fileNode.fileUrl, "checked": false, "expanded": fileNode.fileIsDir ? false : true,
-                                             "icon": findCoverImage(fileNode), "subNodes": [], type: fileNode.fileIsDir ?  SourceTreeModel.NodeType.VideoFiles_Directory : SourceTreeModel.NodeType.VideoFiles_File,
+                                             "icon": findCoverImage(fileNode), "subNodes": [], type: fileNode.fileIsDir ?  SourceTreeModel.NodeType.FileBrowser_Directory : SourceTreeModel.NodeType.FileBrowser_File,
                                              "title": fileNode.fileBaseName, "player": "VLC", "url": fileNode.fileUrl, "fileIsDir": fileNode.fileIsDir, "filePath": fileNode.filePath
                                           })
                 }

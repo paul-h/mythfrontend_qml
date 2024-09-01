@@ -430,3 +430,50 @@ void DatabaseUtils::deleteMenuItem(int itemid)
 
     gContext->m_mythQMLDB.commit();
 }
+
+bool DatabaseUtils::updateMediaItem(QObject *metadata)
+{
+    QSqlQuery query(gContext->m_mythQMLDB);
+    query.prepare("UPDATE mediaitems SET title = :TITLE, subtitle = :SUBTITLE, description = :DESCRIPTION, season = :SEASON, episode = :EPISODE, "
+                  "tagline = :TAGLINE, genres = :CATEGORIES, inetref = :INETREF, website = :WEBSITE, contenttype = :CONTENTTYPE, nsfw = :NSFW, studio = :STUDIO, "
+                  "coverart = :COVERART, fanart = :FANART, banner = :BANNER, screenshot = :SCREENSHOT, front = :FRONT, back = :BACK, channum = :CHANNUM, "
+                  "callsign = :CALLSIGN, startts = :STARTTS, releasedate = :RELEASEDATE, runtime = :RUNTIME, runtimesecs = :RUNTIMESECS, status = :STATUS "
+                  "WHERE id = :ID;");
+
+    query.bindValue(":TITLE", metadata->property("title").toString());
+    query.bindValue(":SUBTITLE", metadata->property("subtitle").toString());
+    query.bindValue(":DESCRIPTION", metadata->property("description").toString());
+    query.bindValue(":SEASON", metadata->property("season").toString());
+    query.bindValue(":EPISODE", metadata->property("episode").toString());
+    query.bindValue(":TAGLINE", metadata->property("tagline").toString());
+    query.bindValue(":CATEGORIES", metadata->property("categories").toString());
+    query.bindValue(":INETREF", metadata->property("inetref").toString());
+    query.bindValue(":WEBSITE", metadata->property("website").toString());
+    query.bindValue(":CONTENTTYPE", metadata->property("contentType").toString());
+    query.bindValue(":NSFW", metadata->property("nsfw").toInt());
+    query.bindValue(":STUDIO", metadata->property("studio").toString());
+    query.bindValue(":COVERART", metadata->property("coverart").toString());
+    query.bindValue(":FANART", metadata->property("fanart").toString());
+    query.bindValue(":BANNER", metadata->property("banner").toString());
+    query.bindValue(":SCREENSHOT", metadata->property("screenshot").toString());
+    query.bindValue(":FRONT", metadata->property("front").toString());
+    query.bindValue(":BACK", metadata->property("back").toString());
+    query.bindValue(":CHANNUM", metadata->property("channum").toString());
+    query.bindValue(":CALLSIGN", metadata->property("callsign").toString());
+    query.bindValue(":STARTTS", metadata->property("startts").toString());
+    query.bindValue(":RELEASEDATE", metadata->property("releasedate").toString());
+    query.bindValue(":RUNTIME", metadata->property("runtime").toString());
+    query.bindValue(":RUNTIMESECS", metadata->property("runtimesecs").toString());
+    query.bindValue(":STATUS", metadata->property("status").toString());
+    query.bindValue(":ID", metadata->property("id").toString());
+
+    if (!query.exec())
+    {
+        gContext->m_logger->error(Verbose::GENERAL, QString("SqlQueryModel::update ERROR: %1 - %2").arg(query.lastError().text()).arg(query.executedQuery()));
+        return false;
+    }
+
+    gContext->m_mythQMLDB.commit();
+
+    return true;
+}

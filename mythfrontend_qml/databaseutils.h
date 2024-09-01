@@ -35,4 +35,6 @@ class DatabaseUtils : public QObject
     Q_INVOKABLE void updateMenuItem(int itemid,const QString &menu, int position, const QString &menuText, const QString &loaderSource, const QString &waterMark, const QString &url,
                                     double zoom, bool fullscreen, int layout, const QString &exec);
     Q_INVOKABLE void deleteMenuItem(int itemid);
+
+    Q_INVOKABLE bool updateMediaItem(QObject *metadata);
 };
