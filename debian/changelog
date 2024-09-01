@@ -1,3 +1,10 @@
+mythfrontend-qml (3:0.0.14.alpha~stable) noble; urgency=medium
+
+  * Bump the version
+
+ -- Paul Harrison <pharrison@mythtv.org>  Sun, 01 Sep 2024 16:19:00 +0100
+
+
 mythfrontend-qml (3:0.0.13.alpha~stable) hirsute; urgency=medium
 
   * Bump the version

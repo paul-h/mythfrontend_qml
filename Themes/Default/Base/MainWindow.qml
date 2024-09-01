@@ -1012,7 +1012,7 @@ Window
                  '<br><font color="yellow"><b>Date: </font></b>' + buildtime +
                  '<br><font  color="yellow"><b>OS Version: </font></b>' + osversion +
                  '<br><font  color="yellow"><b>Qt Version: </font></b>' + qtversion +
-                 '<br><br>(c) Paul Harrison 2019-2023'
+                 '<br><br>(c) Paul Harrison 2019-2024'
 
         rejectButtonText: ""
         acceptButtonText: "Close"
