@@ -613,7 +613,7 @@ Window
         else if (component.status == Component.Error)
         {
             // Error Handling
-            log.error(Verbose.GUI, "Error loading component:", component.errorString());
+            log.error(Verbose.GUI, "Error loading component: " + component.errorString());
         }
 
         return null;
@@ -778,7 +778,7 @@ Window
         else if (component.status == Component.Error)
         {
             // Error Handling
-            log.error(Verbose.GUI, "Error loading component:", component.errorString());
+            log.error(Verbose.GUI, "Error loading component:" + component.errorString());
         }
 
         return null;
