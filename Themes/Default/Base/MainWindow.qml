@@ -786,10 +786,21 @@ Window
 
     function showHelp()
     {
-        var url = screenBackground.helpURL;
-        var zoom = xscale(1.3);
-        var fullscreen = true;
-        stack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: url, fullscreen: fullscreen, zoomFactor: zoom}});
+        showWebpage(screenBackground.helpURL, xscale(1.3), true);
+    }
+
+    function showWebpage(url, zoom, fullscreen)
+    {
+        if (url == "" || url == undefined)
+        {
+            showNotification("ERROR: Cannot show the webpage - given an invalid URL");
+            return;
+        }
+
+        if (!url.startsWith("http://") && !url.startsWith("https://") && !url.startsWith("file://"))
+            url = "http://" + url;
+
+        stack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: url, zoomFactor: zoom, fullscreen: fullscreen}});
     }
 
     function showNotification(message, timeOut)
