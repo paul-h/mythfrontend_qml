@@ -1356,7 +1356,7 @@ Window
 
             for (var y = 0; y < jumpPoints.length; y++)
             {
-                if (message === jumpPoints[y].toLowerCase())
+                if (jumpTo === jumpPoints[y].toLowerCase())
                 {
 
                     log.debug(Verbose.GENERAL, "handleJumpTo: jump point was found");
@@ -1408,43 +1408,42 @@ Window
         log.debug(Verbose.GENERAL, "handleJumpTo: jump point was not found");
     }
 
-    function handleKeypress(message)
+    function handleKeypress(messageJson)
     {
-        message = message.replace('Key Press: ', '');
-        message = message.toLowerCase();
-        log.debug(Verbose.GENERAL, "Looking for keypress: " + message);
+        var key = messageJson.key.toLowerCase();
+        log.debug(Verbose.GENERAL, "Looking for keypress: " + key);
 
-        if (message === "back" || message === "escape")
+        if (key === "back" || key === "escape")
             mythUtils.sendKeyEvent(window, Qt.Key_Escape);
-        else if (message === "up")
+        else if (key === "up")
             mythUtils.sendKeyEvent(window, Qt.Key_Up);
-        else if (message === "down")
+        else if (key === "down")
             mythUtils.sendKeyEvent(window, Qt.Key_Down);
-        else if (message === "left")
+        else if (key === "left")
             mythUtils.sendKeyEvent(window, Qt.Key_Left);
-        else if (message === "right")
+        else if (key === "right")
             mythUtils.sendKeyEvent(window, Qt.Key_Right);
-        else if (message === "page up")
+        else if (key === "page up")
             mythUtils.sendKeyEvent(window, Qt.Key_PageUp);
-        else if (message === "page down")
+        else if (key === "page down")
             mythUtils.sendKeyEvent(window, Qt.Key_PageDown);
-        else if (message === "red")
+        else if (key === "red")
             mythUtils.sendKeyEvent(window, Qt.Key_F1);
-        else if (message === "green")
+        else if (key === "green")
             mythUtils.sendKeyEvent(window, Qt.Key_F2);
-        else if (message === "yellow")
+        else if (key === "yellow")
             mythUtils.sendKeyEvent(window, Qt.Key_F3);
-        else if (message === "blue")
+        else if (key === "blue")
             mythUtils.sendKeyEvent(window, Qt.Key_F4);
-        else if (message ==="ok" || message === "select" || message === "return")
+        else if (key ==="ok" || key === "select" || key === "return")
             mythUtils.sendKeyEvent(window, Qt.Key_Return);
 
 
     }
 
-    function handleSearch(message)
+    function handleSearch(messageJson)
     {
-        log.debug(Verbose.GENERAL, "handleSearch: " + message);
+        log.debug(Verbose.GENERAL, "handleSearch: " + messageJson);
 
         for (var x = stack.depth - 1; x >= 0 ; x--)
         {
@@ -1452,15 +1451,15 @@ Window
 
             if (screen)
             {
-                if (screen.handleSearch(message))
+                if (screen.handleSearch(messageJson))
                     break;
             }
         }
     }
 
-    function handleCommand(message)
+    function handleCommand(messageJson)
     {
-        log.debug(Verbose.GENERAL, "handleCommand: " + message);
+        log.debug(Verbose.GENERAL, "handleCommand: " + messageJson);
 
         for (var x = stack.depth - 1; x >= 0 ; x--)
         {
@@ -1468,7 +1467,23 @@ Window
 
             if (screen)
             {
-                if (screen.handleCommand(message))
+                if (screen.handleCommand(messageJson))
+                    break;
+            }
+        }
+    }
+
+    function handleResult(messageJson)
+    {
+        log.debug(Verbose.GENERAL, "handleResult: " + messageJson);
+
+        for (var x = stack.depth - 1; x >= 0 ; x--)
+        {
+            var screen = stack.get(x, StackView.DontLoad);
+
+            if (screen)
+            {
+                if (screen.handleResult(messageJson))
                     break;
             }
         }
