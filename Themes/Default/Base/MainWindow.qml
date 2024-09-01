@@ -560,6 +560,11 @@ Window
         busyDialog.show();
     }
 
+    function hideBusyDialog()
+    {
+        busyDialog.hide();
+    }
+
     Timer
     {
         id: mouseTimer
@@ -1327,13 +1332,23 @@ Window
         }
     }
 
+    function sendCommandToHelper(command)
+    {
+        if (helperWebSocket.active)
+            helperWebSocket.sendTextMessage(command);
+    }
+
+    function isHelperAvailable()
+    {
+        return helperWebSocket.active && helperWebSocket.status === WebSocket.Open;
+    }
+
     JumpModel {id: jumpModel}
 
     function handleJumpTo(message)
     {
-        message = message.replace('Jump To: ', '');
-        message = message.toLowerCase();
-        log.debug(Verbose.GENERAL, "Looking for jumpPoint: " + message);
+        var jumpTo = message.jumpTo.toLowerCase();
+        log.debug(Verbose.GENERAL, "Looking for jumpPoint: " + jumpTo);
 
         for (var x = 0; x < jumpModel.count; x++)
         {
