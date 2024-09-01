@@ -64,7 +64,22 @@ Item
         Browser_Filter_Website,     // 46
         Browser_Filter_Category,    // 47
         VideoFiles_File,            // 48
-        VideoFiles_Directory        // 49
+        VideoFiles_Directory,       // 49
+        FileBrowser_File,           // 50
+        FileBrowser_Directory,      // 51
+        Radio_Stream,               // 52
+        Radio_Filters,              // 53
+        Radio_Filter_All,           // 54
+        Radio_Filter_Tag,           // 55
+        Radio_Filter_Country,       // 56
+        Radio_Filter_Language,      // 57
+        Media_File,                 // 58
+        Media_Filters,              // 59
+        Media_Filter_All,           // 60
+        Media_Filter_Genre,         // 61
+        Media_Filter_MediaType,     // 62
+        Media_Filter_ContentType,   // 63
+        Media_Filter_NSFW           // 64
     }
 
     Connections
@@ -93,6 +108,7 @@ Item
     {
         id: treeModel
 
+        property var sourceTree: root
         property var root: treeModel.get(0);
 
         ListElement
@@ -129,6 +145,7 @@ Item
                     node.subNodes.append({"parent": treeModel.get(0), "itemTitle": "CCTV Cameras",          "itemData": "ZMCameras",      "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Root_Title})
                     node.subNodes.append({"parent": treeModel.get(0), "itemTitle": "Pictures",              "itemData": "Pictures",       "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Root_Title})
                     node.subNodes.append({"parent": treeModel.get(0), "itemTitle": "Music",                 "itemData": "Music",          "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Root_Title})
+                    node.subNodes.append({"parent": treeModel.get(0), "itemTitle": "Radio Streams",         "itemData": "RadioStreams",   "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Root_Title})
                     node.subNodes.append({"parent": treeModel.get(0), "itemTitle": "News Feeds",            "itemData": "NewsFeeds",      "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Root_Title})
                     node.subNodes.append({"parent": treeModel.get(0), "itemTitle": "Web Browser",           "itemData": "WebBrowser",     "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Root_Title})
                     node.subNodes.append({"parent": treeModel.get(0), "itemTitle": "Weather",               "itemData": "Weather",        "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Root_Title})
@@ -143,6 +160,7 @@ Item
                     node.subNodes.append({"parent": treeModel.get(0), "itemTitle": "Myth TV",               "itemData": "MythTV",           "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Root_Title})
                     node.subNodes.append({"parent": treeModel.get(0), "itemTitle": "TiVo TV",               "itemData": "TivoTV",           "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Root_Title})
                     node.subNodes.append({"parent": treeModel.get(0), "itemTitle": "Fire TV",               "itemData": "FireTV",           "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Root_Title})
+                    node.subNodes.append({"parent": treeModel.get(0), "itemTitle": "Media",                 "itemData": "Media",            "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Root_Title})
                     node.subNodes.append({"parent": treeModel.get(0), "itemTitle": "Webcams",               "itemData": "Webcams",          "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Root_Title})
                     node.subNodes.append({"parent": treeModel.get(0), "itemTitle": "Web Videos",            "itemData": "Webvideos",        "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Root_Title})
                     node.subNodes.append({"parent": treeModel.get(0), "itemTitle": "Videos",                "itemData": "Videos",           "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Root_Title})
@@ -152,13 +170,18 @@ Item
                     node.subNodes.append({"parent": treeModel.get(0), "itemTitle": "IPTV Channels",         "itemData": "IPTVChannels",     "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Root_Title})
                     node.subNodes.append({"parent": treeModel.get(0), "itemTitle": "YouTube Subscriptions", "itemData": "YouTubeSubs",      "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Root_Title})
                     node.subNodes.append({"parent": treeModel.get(0), "itemTitle": "Browser Bookmarks",     "itemData": "BrowserBookmarks", "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Root_Title})
-
+                    node.subNodes.append({"parent": treeModel.get(0), "itemTitle": "File Browser",          "itemData": "FileBrowser",      "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Root_Title})
+                    node.subNodes.append({"parent": treeModel.get(0), "itemTitle": "Radio Streams",         "itemData": "RadioStreams",   "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Root_Title})
                     return;
                 }
             }
 
             // has this node already been expanded
             if (node.expanded)
+                return;
+
+            // is this node already loading
+            if (node.itemData === "Loading")
                 return;
 
             if (path.startsWith("Root ~ MythTV"))
@@ -178,6 +201,10 @@ Item
             else if (path.startsWith("Root ~ TivoTV ~ NowShowing"))
             {
                 playerSources.tivoNowShowingList.expandNode(treeModel, path, node);
+            }
+            else if (path.startsWith("Root ~ Media"))
+            {
+                playerSources.mediaItemsList.expandNode(treeModel, path, node);
             }
             else if (path.startsWith("Root ~ Webcams"))
             {
@@ -215,6 +242,14 @@ Item
             {
                 playerSources.browserBookmarksList.expandNode(treeModel, path, node);
             }
+            else if (path.startsWith("Root ~ FileBrowser"))
+            {
+                playerSources.fileBrowserList.expandNode(treeModel, path, node);
+            }
+            else if (path.startsWith("Root ~ RadioStreams"))
+            {
+                playerSources.radioStreamList.expandNode(treeModel, path, node);
+            }
         }
     }
 
@@ -227,10 +262,25 @@ Item
     {
         if (node.type === SourceTreeModel.NodeType.Webcam_Item || node.type === SourceTreeModel.NodeType.IPTV_Channel || node.type === SourceTreeModel.NodeType.ZoneMinder_Camera ||
             node.type === SourceTreeModel.NodeType.MythTV_Channel || node.type === SourceTreeModel.NodeType.TivoTV_Channel || node.type === SourceTreeModel.NodeType.Webvideo_Item ||
-            node.type === SourceTreeModel.NodeType.YouTube_Video || node.type === SourceTreeModel.NodeType.Videos_Video)
+            node.type === SourceTreeModel.NodeType.YouTube_Video || node.type === SourceTreeModel.NodeType.Videos_Video || node.type === SourceTreeModel.NodeType.Media_File)
         {
             playerSources.adhocList = node.parent.subNodes;
             stack.push({item: mythUtils.findThemeFile("Screens/InternalPlayer.qml"), properties:{defaultFeedSource: "Adhoc", defaultFilter: "", defaultCurrentFeed: currentIndex}});
+        }
+        else if (node.type === SourceTreeModel.NodeType.Radio_Stream)
+        {
+            // copy the model containing the current node
+            radioPlayerDialog.clearStreams();
+
+            for (var x = 0; x < node.parent.subNodes.count; x++)
+            {
+                var stream = node.parent.subNodes.get(x);
+                radioPlayerDialog.addStream(stream.itemTitle, stream.url, stream.icon);
+            }
+
+            radioPlayerDialog.streamList.currentItem = currentIndex;
+            radioPlayerDialog.switchStreamList("internal")
+            radioPlayerDialog.play();
         }
         else if (node.type === SourceTreeModel.NodeType.VideoFiles_File)
         {

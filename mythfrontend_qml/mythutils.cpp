@@ -9,6 +9,8 @@
 #include <QQuickWindow>
 #include <QPixmap>
 #include <QImage>
+#include <QDomDocument>
+#include <QJsonDocument>
 
 // common
 #include "mythutils.h"
@@ -77,6 +79,46 @@ bool MythUtils::fileExists(const QString& fileName)
 bool MythUtils::removeFile(const QString& fileName)
 {
     return QFile::remove(fileName);
+}
+
+QString MythUtils::calcFileHash(const QString& filename)
+{
+    QFile file(filename);
+    QFileInfo fileinfo(file);
+    qint64 initialsize = fileinfo.size();
+    quint64 hash = 0;
+
+    if (initialsize == 0)
+        return {"NULL"};
+
+    if (file.open(QIODevice::ReadOnly))
+        hash = initialsize;
+    else
+    {
+        gContext->m_logger->error(Verbose::FILE, "CalcFileHash - Error: Unable to open selected file, missing read permissions?");
+        return {"NULL"};
+    }
+
+    file.seek(0);
+    QDataStream stream(&file);
+    stream.setByteOrder(QDataStream::LittleEndian);
+    for (quint64 tmp = 0, i = 0; i < 65536/sizeof(tmp); i++)
+    {
+        stream >> tmp;
+        hash += tmp;
+    }
+
+    file.seek(initialsize - 65536);
+    for (quint64 tmp = 0, i = 0; i < 65536/sizeof(tmp); i++)
+    {
+        stream >> tmp;
+        hash += tmp;
+    }
+
+    file.close();
+
+    QString output = QString("%1").arg(hash, 0, 16);
+    return output;
 }
 
 void MythUtils::clearDir(const QString &path)
@@ -204,7 +246,8 @@ QPoint MythUtils::getMousePos(void)
 
 void MythUtils::moveMouse(int x, int y)
 {
-    QPoint globalPoint = QPoint(x, y);
+    QPoint pos =  QCursor::pos();
+    QPoint globalPoint = QPoint(pos.x() + x, pos.y() + y);
     QCursor::setPos(globalPoint);
 }
 
@@ -327,3 +370,181 @@ QString MythUtils::properties(QObject *item, bool linebreak)
     }
     return out;
 }
+
+QString MythUtils::compressStr(const QString &str)
+{
+    return qCompress(str.toUtf8(), 5);
+}
+
+ QString MythUtils::unCompressStr(const QString &str)
+{
+    return QString::fromUtf8(qUncompress(str.toUtf8()));
+ }
+
+ bool MythUtils::writeMetadataXML(const QString &mxmlFile, QObject *metadata)
+ {
+    QDomDocument doc("MythMetadataXML");
+
+    QDomElement root = doc.createElement("metadata");
+    doc.appendChild(root);
+
+    QDomElement item = doc.createElement("item");
+    root.appendChild(item);
+
+    QString RFC822("ddd, d MMMM yyyy hh:mm:ss");
+
+    // add each metadata items
+    QDomElement title = doc.createElement("title");
+    item.appendChild(title);
+    title.appendChild(doc.createTextNode(metadata->property("title").toString()));
+
+    QDomElement subtitle = doc.createElement("subtitle");
+    item.appendChild(subtitle);
+    subtitle.appendChild(doc.createTextNode(metadata->property("subtitle").toString()));
+
+    QDomElement desc = doc.createElement("description");
+    item.appendChild(desc);
+    desc.appendChild(doc.createTextNode(metadata->property("description").toString()));
+
+    QDomElement episode = doc.createElement("episode");
+    item.appendChild(episode);
+    episode.appendChild(doc.createTextNode(metadata->property("episode").toString()));
+
+    QDomElement season = doc.createElement("season");
+    item.appendChild(season);
+    season.appendChild(doc.createTextNode(metadata->property("season").toString()));
+
+    QDomElement tagline = doc.createElement("tagline");
+    item.appendChild(tagline);
+    tagline.appendChild(doc.createTextNode(metadata->property("tagline").toString()));
+
+    QStringList cats = metadata->property("categories").toString().split(",", Qt::SkipEmptyParts);
+    QDomElement categories = doc.createElement("categories");
+    item.appendChild(categories);
+
+    for (const auto & str : qAsConst(cats))
+    {
+        QString trimmedStr = str.trimmed();
+        QDomElement cat = doc.createElement("category");
+        categories.appendChild(cat);
+        cat.setAttribute("type", "genre");
+        cat.setAttribute("name", trimmedStr);
+    }
+
+    QDomElement contenttype = doc.createElement("contenttype");
+    item.appendChild(contenttype);
+    contenttype.appendChild(doc.createTextNode(metadata->property("contentType").toString()));
+
+    QDomElement nsfw = doc.createElement("nsfw");
+    item.appendChild(nsfw);
+    nsfw.appendChild(doc.createTextNode(metadata->property("nsfw").toString()));
+
+    QDomElement inetref = doc.createElement("inetref");
+    item.appendChild(inetref);
+    inetref.appendChild(doc.createTextNode(metadata->property("inetref").toString()));
+
+    QDomElement website = doc.createElement("website");
+    item.appendChild(website);
+    website.appendChild(doc.createTextNode(metadata->property("website").toString()));
+
+    QDomElement studio = doc.createElement("studio");
+    item.appendChild(studio);
+    studio.appendChild(doc.createTextNode(metadata->property("studio").toString()));
+
+    QDomElement coverart = doc.createElement("coverart");
+    item.appendChild(coverart);
+    coverart.appendChild(doc.createTextNode(metadata->property("coverart").toString()));
+
+    QDomElement fanart = doc.createElement("fanart");
+    item.appendChild(fanart);
+    fanart.appendChild(doc.createTextNode(metadata->property("fanart").toString()));
+
+    QDomElement banner = doc.createElement("banner");
+    item.appendChild(banner);
+    banner.appendChild(doc.createTextNode(metadata->property("banner").toString()));
+
+    QDomElement front = doc.createElement("front");
+    item.appendChild(front);
+    front.appendChild(doc.createTextNode(metadata->property("front").toString()));
+
+    QDomElement back = doc.createElement("back");
+    item.appendChild(back);
+    back.appendChild(doc.createTextNode(metadata->property("back").toString()));
+
+    QDomElement screenshot = doc.createElement("screenshot");
+    item.appendChild(screenshot);
+    screenshot.appendChild(doc.createTextNode(metadata->property("screenshot").toString()));
+
+    QDomElement channum = doc.createElement("channum");
+    item.appendChild(channum);
+    channum.appendChild(doc.createTextNode(metadata->property("channum").toString()));
+
+    QDomElement callsign = doc.createElement("callsign");
+    item.appendChild(callsign);
+    callsign.appendChild(doc.createTextNode(metadata->property("callsign").toString()));
+
+    QDomElement startts = doc.createElement("startts");
+    item.appendChild(startts);
+    startts.appendChild(doc.createTextNode(metadata->property("startts").toString()));
+
+    QDomElement releasedate = doc.createElement("releasedate");
+    item.appendChild(releasedate);
+    releasedate.appendChild(doc.createTextNode(metadata->property("releasedate").toString()));
+
+    QDomElement runtime = doc.createElement("runtime");
+    item.appendChild(runtime);
+    runtime.appendChild(doc.createTextNode(metadata->property("runtime").toString()));
+
+    QDomElement runtimesecs = doc.createElement("runtimesecs");
+    item.appendChild(runtimesecs);
+    runtimesecs.appendChild(doc.createTextNode(metadata->property("runtimesecs").toString()));
+
+    QDomElement status = doc.createElement("status");
+    item.appendChild(status);
+    status.appendChild(doc.createTextNode(metadata->property("status").toString()));
+
+    QDomElement extras = doc.createElement("extras");
+    item.appendChild(extras);
+    qDebug() << "extras: " << metadata->property("extras").toString();
+    QByteArray jsonStr = metadata->property("extras").toByteArray();
+
+    if (!jsonStr.isEmpty())
+    {
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonStr);
+
+        if (jsonDoc.isNull())
+            gContext->m_logger->error(Verbose::GENERAL, QString("Failed to parse JSON for extras"));
+        else
+        {
+            QJsonObject jsonObj = jsonDoc.object();
+            QJsonArray jsonArr = jsonObj["extras"].toArray();
+
+            foreach (const QJsonValue &value, jsonArr)
+            {
+                QJsonObject obj = value.toObject();
+                QString name = obj["name"].toString();
+                QString url = obj["url"].toString();
+
+                QDomElement extra = doc.createElement("extra");
+                extras.appendChild(extra);
+                extra.setAttribute("name", name);
+                extra.setAttribute("url", url);
+            }
+        }
+    }
+
+    // save the mxml to the file
+    QFile f(mxmlFile);
+    if (!f.open(QIODevice::WriteOnly))
+    {
+        gContext->m_logger->info(Verbose::GENERAL, QString("Failed to open mxml file for writing - %1").arg(mxmlFile));
+        return false;
+    }
+
+    QTextStream t(&f);
+    t << doc.toString(4);
+    f.close();
+
+    return true;
+ }
+

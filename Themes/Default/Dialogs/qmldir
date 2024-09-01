@@ -3,6 +3,7 @@ AdventPlayDialog 1.0 AdventPlayDialog.qml
 BaseDialog 1.0 BaseDialog.qml
 BasePopup  1.0 BasePopup.qml
 BusyDialog 1.0 BusyDialog.qml
+FileDirectoryDialog 1.0 FileDirectoryDialog.qml
 InfoDialog 1.0 InfoDialog.qml
 OkCancelDialog 1.0 OkCancelDialog.qml
 PopupMenu 1.0 PopupMenu.qml

@@ -23,6 +23,8 @@ Item
     property var browserBookmarksList: browserBookmarkModel
     property var videoFilesList: videoFilesModel
     property var radioStreamList: radioBrowserModel
+    property var mediaItemsList: mediaItemsModel
+    property var fileBrowserList: fileBrowserModel
 
     // live tv
     property var videoSourceList: videoSourceModel
@@ -171,6 +173,12 @@ Item
         sorters: titleSorter
     }
 
+    /* --------------------------------------------------- Media Items -------------------------------------------------------------- */
+    MediaItemsModel
+    {
+        id: mediaItemsModel
+    }
+
     /* --------------------------------------------------- IPTV -------------------------------------------------------------- */
     IPTVModel
     {
@@ -209,6 +217,14 @@ Item
         id: videoFilesModel
         folder: settings.videoPath
         nameFilters: ["*.mp4", "*.flv", "*.mp2", "*.wmv", "*.avi", "*.mkv", "*.mpg", "*.iso", "*.ISO", "*.mov", "*.webm"]
+    }
+
+    /* ------------------------------------------------ File Browser -------------------------------------------------------*/
+    FileBrowserModel
+    {
+        id: fileBrowserModel
+        folder: "file:///"
+        nameFilters: ["*.*"]
     }
 
     /* ------------------------------------------------ Tivo TV -----------------------------------------------------------*/

@@ -53,6 +53,38 @@ function milliSecondsToString(milliseconds)
     return minutesString + ":" + secondsString
 }
 
+var stringToMilliSeconds = (function() {
+  var tMillis = {
+    second: 1000,
+    min: 60 * 1000,
+    minute: 60 * 1000,
+    hour: 60 * 60 * 1000 // etc.
+  };
+  return function(s) {
+    var regex = /(\d+)\s*(second|min|minute|hour)/g, ms=0, m, x;
+    while (m = regex(s)) {
+      x = Number(m[1]) * (tMillis[m[2]]||0);
+      ms += x;
+    }
+    return x ? ms : NaN;
+  };
+})();
+
+function durationToSeconds(timeExpr)
+{
+    var units = {'h': 3600, 'm': 60, 's': 1};
+    var regex = /(\d+)([hms])/g;
+
+    let seconds = 0;
+    var match;
+    while ((match = regex.exec(timeExpr)))
+    {
+        seconds += parseInt(match[1]) * units[match[2]];
+    }
+
+    return seconds;
+}
+
 function milliSecondsToMinutes(milliseconds)
 {
     milliseconds = milliseconds > 0 ? milliseconds : 0
