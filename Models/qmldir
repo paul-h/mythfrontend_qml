@@ -10,7 +10,6 @@ FuelBillsModel 1.0 FuelBillsModel.qml
 HAJsonModel 1.0 HAJsonModel.qml
 IPTVModel 1.0 IPTVModel.qml
 JSONListModel 1.0 JSONListModel.qml
-jsonpath 1.0 jsonpath.js
 JumpModel 1.0 JumpModel.qml
 MediaItemsModel 1.0 MediaItemsModel.qml
 MenuItemModel 1.0 MenuItemModel.qml
