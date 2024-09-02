@@ -49,9 +49,9 @@ Item
 
     function changeState()
     {
-        if (!showBrowser && !showHeader)
+        if (!showBrowser && (playerLayout == 1 || playerLayout == 2)) // fullscreen or pip
             state = "fullscreen";
-        else if (!showBrowser && showHeader)
+        else if (!showBrowser && playerLayout != 1)
             state = "playersonly";
         else if (showBrowser)
             state = "showBrowser";
@@ -91,7 +91,6 @@ Item
             name: "fullscreen"
             PropertyChanges { target: root; y: 0; height: parent.height; }
             PropertyChanges { target: browserPanel; width: 0 }
-            PropertyChanges { target: videoTitle1; height: 0 }
             StateChangeScript { script: doShowHeader(false); }
         },
         State
@@ -99,7 +98,6 @@ Item
             name: "playersonly"
             PropertyChanges { target: root; y: yscale(50); height: parent.height - yscale(50); }
             PropertyChanges { target: browserPanel; width: 0 }
-            PropertyChanges { target: videoTitle1; height: yscale(30) }
             PropertyChanges { target: playerArea; height: root.height - playerArea.y - yscale(5) }
             StateChangeScript { script: doShowHeader(true); }
         },
@@ -108,8 +106,7 @@ Item
             name: "showBrowser"
             PropertyChanges { target: root; y: yscale(50); height: parent.height - yscale(50); }
             PropertyChanges { target: browserPanel; width: browserWidth }
-            PropertyChanges { target: videoTitle1; height: yscale(30) }
-            PropertyChanges { target: playerArea; height: root.height - playerArea.y - yscale(5) }
+            PropertyChanges { target: playerArea; height: root.height - playerArea.y -  yscale(5) }
             StateChangeScript { script: { doShowHeader(true); browser.focus = true; } }
         }
     ]
@@ -117,6 +114,7 @@ Item
     function doShowHeader(show)
     {
         player1.showBorder = show;
+        player1.showTitle = show;
         parent.showTitle(show)
         parent.showTime(show);
 
@@ -140,19 +138,13 @@ Item
             {
                 // fullscreen
                 name: "layout1"
-                PropertyChanges { target: videoTitle1;
+                PropertyChanges { target: player1;
                                   x: 0;
                                   y: 0;
                                   width: playerArea.width;
-                                  height: root.showHeader ? 0 : yscale(30);
-                                  visible: true
-                                }
-                PropertyChanges { target: player1;
-                                  x: 0;
-                                  y: videoTitle1.y + videoTitle1.height;
-                                  width: playerArea.width;
-                                  height: playerArea.height - videoTitle1.height;
+                                  height: playerArea.height;
                                   showBorder: false;
+                                  showTitle: false;
                                   KeyNavigation.left: browser;
                                   KeyNavigation.right: browser;
                                   KeyNavigation.up: browser;
@@ -161,15 +153,12 @@ Item
                 StateChangeScript { script: if ( !player1.isPlaying()) player1.play(); }
 
                 StateChangeScript { script: player2.stop() }
-                PropertyChanges { target: videoTitle2; width: 0 }
                 PropertyChanges { target: player2; width: 0 }
 
                 StateChangeScript { script: player3.stop() }
-                PropertyChanges { target: videoTitle3; width: 0 }
                 PropertyChanges { target: player3; width: 0 }
 
                 StateChangeScript { script: player4.stop() }
-                PropertyChanges { target: videoTitle4; width: 0 }
                 PropertyChanges { target: player4; width: 0 }
 
                 PropertyChanges { target: browser;
@@ -185,19 +174,13 @@ Item
             {
                 // fullscreen with PIP
                 name: "layout2"
-                PropertyChanges { target: videoTitle1;
+                PropertyChanges { target: player1;
                                   x: 0;
                                   y: 0;
                                   width: playerArea.width;
-                                  height: yscale(30);
-                                  visible: true
-                                }
-                PropertyChanges { target: player1;
-                                  x: 0;
-                                  y: videoTitle1.height;
-                                  width: playerArea.width;
-                                  height: playerArea.height - videoTitle1.height;
+                                  height: playerArea.height;
                                   showBorder: true;
+                                  showTitle: true;
                                   KeyNavigation.left: browser;
                                   KeyNavigation.right: player2;
                                   KeyNavigation.up: player2;
@@ -205,15 +188,10 @@ Item
                                 }
                 StateChangeScript { script: if ( !player1.isPlaying()) player1.play() }
 
-                PropertyChanges { target: videoTitle2;
+                PropertyChanges { target: player2;
                                   x: playerArea.width - (playerArea.width / 3) - xscale(50);
                                   y: yscale(50);
                                   width: playerArea.width / 3;
-                                  height: yscale(30);
-                                  visible: true }
-                PropertyChanges { target: player2;
-                                  x: videoTitle2.x; y: videoTitle2.y + videoTitle2.height;
-                                  width: videoTitle2.width;
                                   height: player2.width / 1.77777;
                                   visible: true;
                                   KeyNavigation.left: player1;
@@ -224,11 +202,9 @@ Item
                 StateChangeScript { script: if ( !player2.isPlaying()) player2.play() }
 
                 StateChangeScript { script: player3.stop() }
-                PropertyChanges { target: videoTitle3; width: 0 }
                 PropertyChanges { target: player3; width: 0 }
 
                 StateChangeScript { script: player4.stop() }
-                PropertyChanges { target: videoTitle4; width: 0 }
                 PropertyChanges { target: player4; width: 0 }
 
                 PropertyChanges { target: browser;
@@ -244,17 +220,13 @@ Item
             {
                 // PBP 1/2 screen
                 name: "layout3"
-                PropertyChanges { target: videoTitle1;
+                PropertyChanges { target: player1;
                                   x: 0;
                                   y: ((playerArea.height - player1.height) / 2) - yscale(15);
                                   width: playerArea.width / 2;
-                                  height: yscale(30);
-                                  visible: true }
-                PropertyChanges { target: player1;
-                                  x: 0; y: videoTitle1.y + videoTitle1.height + yscale(1);
-                                  width: videoTitle1.width;
                                   height: player1.width / 1.77777;
                                   showBorder: true;
+                                  showTitle: true;
                                   KeyNavigation.left: browser;
                                   KeyNavigation.right: player2;
                                   KeyNavigation.up: player2;
@@ -262,16 +234,10 @@ Item
                                 }
                 StateChangeScript { script: if ( !player1.isPlaying()) player1.play() }
 
-                PropertyChanges { target: videoTitle2;
-                                  x: videoTitle1.x + videoTitle1.width;
-                                  y: videoTitle1.y;
-                                  width: playerArea.width / 2;
-                                  height: yscale(30);
-                                  visible: true }
                 PropertyChanges { target: player2;
-                                  x: playerArea.width / 2;
-                                  y: videoTitle1.y + videoTitle1.height + yscale(1);
-                                  width: videoTitle1.width;
+                                  x: player1.x + player1.width;
+                                  y: ((playerArea.height - player1.height) / 2) - yscale(15)
+                                  width:playerArea.width / 2;
                                   height: player1.height;
                                   visible: true;
                                   KeyNavigation.left: player1;
@@ -282,11 +248,9 @@ Item
                 StateChangeScript { script: if ( !player2.isPlaying()) player2.play() }
 
                 StateChangeScript { script: player3.stop() }
-                PropertyChanges { target: videoTitle3; width: 0 }
                 PropertyChanges { target: player3; width: 0 }
 
                 StateChangeScript { script: player4.stop() }
-                PropertyChanges { target: videoTitle4; width: 0 }
                 PropertyChanges { target: player4; width: 0 }
 
                 PropertyChanges { target: browser;
@@ -296,24 +260,19 @@ Item
                                   KeyNavigation.down: player2;
                                 }
 
-                PropertyChanges { target: root; showHeader: false; }
+                PropertyChanges { target: root; showHeader: true; }
             },
             State
             {
                 // PBP 3/4 screen with overlap
                 name: "layout4"
-                PropertyChanges { target: videoTitle1;
+                PropertyChanges { target: player1;
                                   x: 0;
                                   y: Math.max(0, ((playerArea.height - player1.height) / 2) - yscale(15));
                                   width: playerArea.width * 0.75;
-                                  height: yscale(30);
-                                  visible: true
-                                }
-                PropertyChanges { target: player1;
-                                  x: 0; y: videoTitle1.y + videoTitle1.height + 1;
-                                  width: videoTitle1.width;
-                                  height: Math.min(player1.width / 1.77777, playerArea.height - videoTitle1.height);
+                                  height: Math.min(player1.width / 1.77777, playerArea.height);
                                   showBorder: true;
+                                  showTitle: true;
                                   KeyNavigation.left: browser;
                                   KeyNavigation.right: player2;
                                   KeyNavigation.up: player2;
@@ -321,16 +280,9 @@ Item
                                 }
                 StateChangeScript { script: if ( !player1.isPlaying()) player1.play() }
 
-                PropertyChanges { target: videoTitle2;
+                PropertyChanges { target: player2;
                                   x: playerArea.width - player2.width;
                                   y: (playerArea.height - player2.height) / 2;
-                                  width: playerArea.width / 3;
-                                  height: yscale(30);
-                                  visible: true;
-                                }
-                PropertyChanges { target: player2;
-                                  x: videoTitle2.x;
-                                  y: videoTitle2.y + videoTitle2.height + yscale(1);
                                   width: playerArea.width / 3;
                                   height: player2.width / 1.77777;
                                   visible: true;
@@ -342,13 +294,10 @@ Item
                 StateChangeScript { script: if ( !player2.isPlaying()) player2.play() }
 
                 StateChangeScript { script: player3.stop() }
-                PropertyChanges { target: videoTitle3; width: 0 }
                 PropertyChanges { target: player3; width: 0 }
 
                 StateChangeScript { script: player4.stop() }
-                PropertyChanges { target: videoTitle4; width: 0 }
                 PropertyChanges { target: player4; width: 0 }
-
 
                 PropertyChanges { target: browser;
                                   KeyNavigation.left: player2;
@@ -363,18 +312,13 @@ Item
             {
                 // PBP 1 + 2
                 name: "layout5"
-                PropertyChanges { target: videoTitle1;
+                PropertyChanges { target: player1;
                                   x: 0;
                                   y: Math.max(0, ((playerArea.height - player1.height) / 2) - yscale(15));
                                   width: playerArea.width * 0.75;
-                                  height: yscale(30);
-                                  visible: true }
-                PropertyChanges { target: player1;
-                                  x: 0;
-                                  y: videoTitle1.y + videoTitle1.height + yscale(1);
-                                  width: videoTitle1.width;
-                                  height: Math.min(player1.width / 1.77777, playerArea.height - videoTitle1.height);
+                                  height: Math.min(player1.width / 1.77777, playerArea.height);
                                   showBorder: true;
+                                  showTitle: true;
                                   KeyNavigation.left: browser;
                                   KeyNavigation.right: player2;
                                   KeyNavigation.up: browser;
@@ -382,17 +326,11 @@ Item
                                 }
                 StateChangeScript { script: if ( !player1.isPlaying()) player1.play() }
 
-                PropertyChanges { target: videoTitle2;
-                                  x: playerArea.width - videoTitle2.width;
+                PropertyChanges { target: player2;
+                                  x: playerArea.width - player2.width;
                                   y: player1.y;
                                   width: player2.height * 1.7777;
-                                  height: yscale(30);
-                                  visible: true }
-                PropertyChanges { target: player2;
-                                  x: videoTitle2.x;
-                                  y: videoTitle2.y + videoTitle2.height;
-                                  width: videoTitle2.width;
-                                  height: (player1.height - (2 * videoTitle1.height)) / 2;
+                                  height: player1.height / 2;
                                   visible: true;
                                   KeyNavigation.left: player1;
                                   KeyNavigation.right: browser;
@@ -401,15 +339,9 @@ Item
                                 }
                 StateChangeScript { script: if ( !player2.isPlaying()) player2.play() }
 
-                PropertyChanges { target: videoTitle3;
-                                  x: videoTitle2.x;
-                                  y: player2.y + player2.height;
-                                  width: videoTitle2.width;
-                                  height: yscale(30);
-                                  visible: true }
                 PropertyChanges { target: player3;
-                                  x: videoTitle2.x;
-                                  y: videoTitle3.y + videoTitle3.height;
+                                  x: player2.x;
+                                  y: player2.y + player2.height;
                                   width: player2.width;
                                   height: player2.height;
                                   visible: true;
@@ -421,7 +353,6 @@ Item
                 StateChangeScript { script: if ( !player3.isPlaying()) player3.play() }
 
                 StateChangeScript { script: player4.stop() }
-                PropertyChanges { target: videoTitle4; width: 0 }
                 PropertyChanges { target: player4; width: 0 }
 
                 PropertyChanges { target: browser;
@@ -437,17 +368,13 @@ Item
             {
                 // Quad Screen
                 name: "layout6"
-                PropertyChanges { target: videoTitle1;
-                                  x: 0;
-                                  y: 0; width: playerArea.width / 2;
-                                  height: yscale(30);
-                                  visible: true }
                 PropertyChanges { target: player1;
                                   x: 0;
-                                  y: videoTitle1.y + videoTitle1.height + yscale(1);
+                                  y: 0;
                                   width: playerArea.width / 2;
-                                  height: playerArea.height / 2 - yscale(30);
+                                  height: playerArea.height / 2;
                                   showBorder: true;
+                                  showTitle: true;
                                   KeyNavigation.left: browser;
                                   KeyNavigation.right: player2;
                                   KeyNavigation.up: browser;
@@ -455,12 +382,6 @@ Item
                                 }
                 StateChangeScript { script: if ( !player1.isPlaying()) player1.play() }
 
-                PropertyChanges { target: videoTitle2;
-                                  x: playerArea.width / 2;
-                                  y: 0;
-                                  width: playerArea.width / 2;
-                                  height: yscale(30);
-                                  visible: true }
                 PropertyChanges { target: player2;
                                   x: playerArea.width / 2;
                                   y: player1.y;
@@ -474,16 +395,9 @@ Item
                                 }
                 StateChangeScript { script: if ( !player2.isPlaying()) player2.play() }
 
-                PropertyChanges { target: videoTitle3;
-                                  x: 0;
-                                  y: player1.y + player1.height + yscale(1);
-                                  width: playerArea.width / 2;
-                                  height: yscale(30);
-                                  visible: true;
-                                }
                 PropertyChanges { target: player3;
                                   x: 0;
-                                  y: videoTitle3.y + videoTitle3.height + yscale(1);
+                                  y: playerArea.height / 2;
                                   width: player1.width;
                                   height: player1.height;
                                   visible: true;
@@ -494,13 +408,6 @@ Item
                                 }
                 StateChangeScript { script: if ( !player3.isPlaying()) player3.play() }
 
-                PropertyChanges { target: videoTitle4;
-                                  x: playerArea.width / 2;
-                                  y: videoTitle3.y;
-                                  width: playerArea.width / 2;
-                                  height: yscale(30);
-                                  visible: true
-                                }
                 PropertyChanges { target: player4;
                                   x: playerArea.width / 2;
                                   y: player3.y;
@@ -525,19 +432,6 @@ Item
             }
         ]
 
-        LabelText
-        {
-            id: videoTitle1
-            x: 0
-            y: 0
-            width: 0
-            height: 0
-            visible: (height !== 0)
-            text: "Video Title 1"
-
-            Tracer {color: Qt.rgba(Math.random(), Math.random(), Math.random(), 1)}
-        }
-
         MediaPlayers
         {
             id: player1
@@ -551,31 +445,7 @@ Item
 
             onFocusChanged: if (focus) changeFocus(this);
             onPlaybackEnded: if (layout === 1) { stop(); stack.pop(); }
-            onActiveFeedChanged:
-            {
-                if (!feed.feedList.get(feed.currentFeed))
-                    videoTitle1.text = "";
-                else if (feed.feedList.get(feed.currentFeed).title !== undefined)
-                    videoTitle1.text = feed.feedList.get(feed.currentFeed).title;
-                else if (feed.feedList.get(feed.currentFeed).url !== undefined)
-                    videoTitle1.text = feed.feedList.get(feed.currentFeed).url;
-                else
-                    videoTitle1.text = "";
-            }
             Tracer { color: Qt.rgba(Math.random(), Math.random(), Math.random(), 1)}
-        }
-
-        LabelText
-        {
-            id: videoTitle2
-            x: parent.width / 2
-            y: parent.height / 2
-            width: 0
-            height: 0
-            visible: (width !== 0)
-            text: "Video Title 2"
-
-            Tracer {color: Qt.rgba(Math.random(), Math.random(), Math.random(), 1)}
         }
 
         MediaPlayers
@@ -591,29 +461,6 @@ Item
 
             onFocusChanged: if (focus) changeFocus(this);
             onVisibleChanged: if (!visible && focus) { focus = false; player1.focus = true; }
-            onActiveFeedChanged:
-            {
-                if (!feed.feedList.get(feed.currentFeed))
-                    videoTitle2.text = "";
-                else if (feed.feedList.get(feed.currentFeed).title !== "")
-                    videoTitle2.text = feed.feedList.get(feed.currentFeed).title;
-                else
-                    videoTitle2.text = feed.feedList.get(feed.currentFeed).url;
-            }
-
-            Tracer {color: Qt.rgba(Math.random(), Math.random(), Math.random(), 1)}
-        }
-
-        LabelText
-        {
-            id: videoTitle3
-            x: parent.width / 2
-            y: parent.height / 2
-            width: 0
-            height: 0
-            visible: (width !== 0)
-            text: "Video Title 3"
-
             Tracer {color: Qt.rgba(Math.random(), Math.random(), Math.random(), 1)}
         }
 
@@ -630,29 +477,6 @@ Item
 
             onFocusChanged: if (focus) changeFocus(this);
             onVisibleChanged: if (!visible && focus) { focus = false; player1.focus = true; }
-            onActiveFeedChanged:
-            {
-                if (!feed.feedList.get(feed.currentFeed))
-                    videoTitle3.text = "";
-                else if (feed.feedList.get(feed.currentFeed).title !== "")
-                    videoTitle3.text = feed.feedList.get(feed.currentFeed).title;
-                else
-                    videoTitle3.text = feed.feedList.get(feed.currentFeed).url;
-            }
-
-            Tracer {color: Qt.rgba(Math.random(), Math.random(), Math.random(), 1)}
-        }
-
-        LabelText
-        {
-            id: videoTitle4
-            x: parent.width / 2
-            y: parent.height / 2
-            width: 0
-            height: 0
-            visible: (width !== 0)
-            text: "Video Title 4"
-
             Tracer {color: Qt.rgba(Math.random(), Math.random(), Math.random(), 1)}
         }
 
@@ -669,16 +493,6 @@ Item
 
             onFocusChanged: if (focus) changeFocus(this);
             onVisibleChanged: if (!visible && focus) { focus = false; player1.focus = true; }
-            onActiveFeedChanged:
-            {
-                if (!feed.feedList.get(feed.currentFeed))
-                    videoTitle4.text = "";
-                else if (feed.feedList.get(feed.currentFeed).title !== "")
-                    videoTitle4.text = feed.feedList.get(feed.currentFeed).title;
-                else
-                    videoTitle4.text = feed.feedList.get(feed.currentFeed).url;
-            }
-
             Tracer {color: Qt.rgba(Math.random(), Math.random(), Math.random(), 1)}
         }
 

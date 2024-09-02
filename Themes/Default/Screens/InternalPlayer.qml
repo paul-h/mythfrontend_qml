@@ -17,7 +17,8 @@ BaseScreen
 
     defaultFocusItem: playerLayout.mediaPlayer1
 
-    property alias layout: playerLayout.playerLayout
+    property int layout: 0
+
     property alias mediaPlayer1: playerLayout.mediaPlayer1
 
     property string defaultFeedSource: "Live TV"
@@ -70,6 +71,20 @@ BaseScreen
     Connections
     {
         target: radioPlayerDialog
+        function onAccepted()
+        {
+            _actionsEnabled = true;
+        }
+
+        function onCancelled()
+        {
+            _actionsEnabled = true;
+        }
+    }
+
+    Connections
+    {
+        target: zmAlertDialog
         function onAccepted()
         {
             _actionsEnabled = true;
@@ -315,6 +330,17 @@ BaseScreen
 
     Action
     {
+        shortcut: "Z" // show ZoneMinder dialog
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            _actionsEnabled = false;
+            zmAlertDialog.show();
+        }
+    }
+
+    Action
+    {
         shortcut: "F9" // toggle mute
         enabled: _actionsEnabled
         onTriggered:
@@ -436,6 +462,16 @@ BaseScreen
         onTriggered:
         {
             changeVolume(1.0);
+        }
+    }
+
+    Action
+    {
+        shortcut: "C" // toggle subtitles
+        enabled: _actionsEnabled
+        onTriggered:
+        {
+            getActivePlayer().toggleSubtitles();
         }
     }
 
@@ -879,7 +915,7 @@ BaseScreen
             }
         }
 
-        root.layout = newLayout;
+        playerLayout.playerLayout = newLayout;
     }
 
     function getActivePlayer()
