@@ -12,14 +12,14 @@ QtObject
     property var backgroundVideo:
     ListModel
     {
-        property string filename: "blue_bubbles.mkv"
-        property string md5: "5f1b7ecc24d90da5bae688e9df39628f"
-        property double size: 22.8
+        property string filename: "mythcenterng.mp4"
+        property string md5: "7afa15cf46bf5b130e65af3363aa5ced"
+        property double size: 124.9
 
         ListElement
         {
-            url: "https://mythqml.net/downloads/themes/MythCenter/blue_bubbles.mkv";
-            size: 22.8
+            url: "https://mythqml.net/downloads/themes/MythCenterNG/mythcenterng.mp4";
+            size: 124.9
         }
     }
 

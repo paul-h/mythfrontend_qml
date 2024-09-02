@@ -67,6 +67,10 @@ BaseScreen
         }
         ListElement
         {
+            itemText: "MythCenterNG"
+        }
+        ListElement
+        {
             itemText: "MythCenterAUTUMN"
         }
         ListElement
