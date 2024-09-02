@@ -104,6 +104,7 @@ void RecordingsModel::startDownload(void)
     int startIndex = 0;
     int count = m_count;
 
+    gContext->m_logger->info(Verbose::MODEL, QString("RecordingsModel: startDownload - m_loadAll: ") + (m_loadAll ? "TRUE" : "FALSE") );
     // use the first and last pending items
     if (!m_pendingDownloads.isEmpty())
     {
@@ -115,8 +116,11 @@ void RecordingsModel::startDownload(void)
     QString descending = (m_descending ? "true" : "false");
 
     // start download of xml from server
-    QString sUrl = QString("%1Dvr/GetRecordedList?startindex=%2&count=%3&Descending=%4")
-            .arg(gContext->m_settings->masterBackend()).arg(startIndex).arg(count).arg(descending);
+    QString sUrl = QString("%1Dvr/GetRecordedList?Descending=%2&Details=True&IncCast=False&IncRecording=False&IncChannel=False")
+            .arg(gContext->m_settings->masterBackend()).arg(descending);
+
+    if  (!m_loadAll)
+        sUrl.append(QString("&startindex=%1&count=%2").arg(startIndex).arg(count));
 
     if (!m_title.isEmpty())
         sUrl.append(QString("&TitleRegEx=%1").arg(m_title));
@@ -141,6 +145,7 @@ void RecordingsModel::startDownload(void)
 
     QUrl url(sUrl);
     m_downloadManager->append(url);
+    gContext->m_logger->info(Verbose::MODEL, QString("RecordingsModel: startDownload - ") + url.toString() );
 }
 
 // process the XML extracting the data we need for the model
@@ -208,12 +213,12 @@ void RecordingsModel::processDownload(QByteArray buffer)
             if (data)
             {
                 // we already have it so just update it?
-                gContext->m_logger->debug(Verbose::MODEL, "RecordingsModel: processDownload - recording found in recordings at: " + QString(startIndex + x));
+                gContext->m_logger->debug(Verbose::MODEL, "RecordingsModel: processDownload - recording found in recordings at: " + QString::number(startIndex + x));
             }
             else
             {
                 // not found so add it to the model
-                gContext->m_logger->debug(Verbose::MODEL, "RecordingsModel: processDownload - adding new recording: " + QString(startIndex + x));
+                gContext->m_logger->debug(Verbose::MODEL, "RecordingsModel: processDownload - adding new recording: " + QString::number(startIndex + x));
                 data = addNewRow();
                 m_data[startIndex + x] = data;
 
