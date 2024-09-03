@@ -12,13 +12,13 @@ Item
     width: parent.width
     height: parent.height
 
+    property int playerLayout: 1
+
     property bool showHeader: false
     property bool showBrowser: false
 
     property int browserWidth: xscale(350)
     property double browserZoom: 1.0
-
-    property int playerLayout: 1
 
     property var activeItem: player1
 
@@ -32,24 +32,14 @@ Item
 
     state: "fullscreen"
 
-    // make sure we don't change the screen title or show time properties
-    // before they have been saved in BaseScreen
-    Component.onCompleted: parent.onStateSaved.connect(initState)
-
     onShowBrowserChanged: changeState()
     onShowHeaderChanged: changeState()
     onPlayerLayoutChanged: changePlayerLayout()
     onBrowserZoomChanged:  { browser.zoomFactor = browserZoom - 0.001; browser.zoomFactor = browserZoom; }
 
-    function initState()
-    {
-        changeState();
-        changePlayerLayout();
-    }
-
     function changeState()
     {
-        if (!showBrowser && (playerLayout == 1 || playerLayout == 2)) // fullscreen or pip
+        if (!showBrowser && (playerLayout === 1 || playerLayout === 2)) // fullscreen or pip
             state = "fullscreen";
         else if (!showBrowser && playerLayout != 1)
             state = "playersonly";

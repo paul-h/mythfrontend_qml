@@ -276,7 +276,7 @@ FocusScope
         height: yscale(showTitle ? 30 : 0)
         visible: (height !== 0)
         text: "Video Title 1"
-        Tracer {color: "red", 5}
+        Tracer {}
     }
 
     Item
