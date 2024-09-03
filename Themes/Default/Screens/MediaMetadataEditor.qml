@@ -12,7 +12,6 @@ BaseScreen
 {
     defaultFocusItem: titleEdit
 
-    //property string videoFilename
     property var sqlModel
     property int currentIndex: 0
 
