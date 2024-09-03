@@ -17,7 +17,7 @@ BaseScreen
 
     defaultFocusItem: playerLayout.mediaPlayer1
 
-    property int layout: 0
+    property int layout: 1
 
     property alias mediaPlayer1: playerLayout.mediaPlayer1
 

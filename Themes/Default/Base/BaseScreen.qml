@@ -35,8 +35,6 @@ Item
         return y * _hmult
     }
 
-    signal stateSaved()
-
     x: 0; y: 0; width: parent.width; height: parent.height
 
     // screen title
