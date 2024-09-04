@@ -32,7 +32,7 @@ MainWindow
         var frontend = showFrontend === "" ? settings.autoStartFrontend : showFrontend;
         frontend = frontend.toLowerCase();
 
-        if (frontend === "qml")
+        if (frontend === "qml" || frontend === "qml_frontend")
         {
             var message = "Starting QML Frontend.\nPlease Wait...";
             var timeOut = settings.osdTimeoutMedium;
