@@ -1,12 +1,17 @@
 #pragma once
 #include <QObject>
 #include <QSqlQuery>
+#include <QSqlDatabase>
+#include <QMap>
 
 class DatabaseUtils : public QObject
 {
     Q_OBJECT
   public:
     DatabaseUtils() { }
+
+    // add a database
+    Q_INVOKABLE bool addDatabase(QObject* database);
 
     // these use the MythTV database
     Q_INVOKABLE void updateChannel(int chanid, QString chanName, QString chanNo, QString xmltvid, QString callsign);
@@ -37,4 +42,17 @@ class DatabaseUtils : public QObject
     Q_INVOKABLE void deleteMenuItem(int itemid);
 
     Q_INVOKABLE bool updateMediaItem(QObject *metadata);
+
+    bool initMythDB(void);
+    bool initMythQMLDB(void);
+    bool loadMythDBSettings(void);
+    bool addSQLite3Database(const QString &name, const QString &filename);
+    bool addMySQLDatabase(const QString &name, const QString &host, int port, const QString &user, const QString &password, const QString &databaseName);
+
+    QSqlDatabase getMythTVDatabase(void) {return m_dbMap["mythtv"];}
+    QSqlDatabase getMythQMLDatabase(void) {return m_dbMap["mythqml"];}
+    QSqlDatabase getDatabase(const QString &database);
+
+    // map of databases
+    QMap<QString, QSqlDatabase> m_dbMap;
 };

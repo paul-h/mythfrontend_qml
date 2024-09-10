@@ -27,10 +27,8 @@ public slots:
     void cleanUp();
 
 public:
-    void init(void);
-    bool initMythDB(void);
-    bool initMythQMLDB(void);
-    bool loadMythDBSettings(void);
+    bool init(void);
+
     QString getOSVersion();
     QString systemID(void);
 
@@ -45,12 +43,6 @@ public:
     MythQmlAbstractUrlInterceptor *m_urlInterceptor;
 
     QString m_systemID;
-
-    // local DB
-    QSqlDatabase m_mythQMLDB;
-
-    // MythTV DB
-    QSqlDatabase m_mythDB;
 };
 
 extern Context *gContext;
