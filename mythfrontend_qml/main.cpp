@@ -89,23 +89,8 @@ int main(int argc, char *argv[])
     // create the context
     gContext = new Context("MythFrontendQML", logLevel, verbose);
 
-    // attempt to connect to the local mythqml database
-    if (!gContext->initMythQMLDB())
+    if (!gContext->init())
         return 1;
-
-    gContext->init();
-
-    // attempt to connect to the MythTV database using our stored credentials
-    if (!gContext->initMythDB())
-    {
-        // failed so try to get the DB credentials from the config.xml
-        if (!gContext->loadMythDBSettings())
-        {
-            // failed to open MythTV database using stored/default credentials or from the mythtv config.xml file
-            gContext->m_logger->error(Verbose::GENERAL, "Failed to open the MythTV database - Please make sure the "
-                                                            "Mysql settings are correct on the Myth Backend settings page");
-        }
-    }
 
     // register our QML types
     qmlRegisterType<SvgImage>("SvgImage", 1, 0, "SvgImage");
@@ -127,7 +112,7 @@ int main(int argc, char *argv[])
     radioStreamsModel->setQuery("SELECT intid, broadcaster, channel, description, "
                                     "url1, url2, url3, url4, url5, logourl, country, "
                                     "language, genre, metaformat, format "
-                                    "FROM music_radios ORDER BY broadcaster, channel", gContext->m_mythDB);
+                                    "FROM music_radios ORDER BY broadcaster, channel", gContext->m_databaseUtils->getMythTVDatabase());
     gContext->m_engine->rootContext()->setContextProperty("radioStreamsModel", radioStreamsModel);
 
     // create the radio streams database model
@@ -135,17 +120,17 @@ int main(int argc, char *argv[])
     radioStreamsDBModel->setQuery("SELECT intid, broadcaster, channel, description, "
                                       "url1, url2, url3, url4, url5, logourl, country, "
                                       "language, genre, metaformat "
-                                      "FROM music_streams ORDER BY broadcaster, channel", gContext->m_mythDB);
+                                      "FROM music_streams ORDER BY broadcaster, channel", gContext->m_databaseUtils->getMythTVDatabase());
     gContext->m_engine->rootContext()->setContextProperty("radioStreamsDBModel", radioStreamsDBModel);
 
     // create the news feed model
     SqlQueryModel *rssFeedsModel = new SqlQueryModel(gContext->m_engine);
-    rssFeedsModel->setQuery("SELECT name, url, ico, updated, podcast FROM newssites ORDER BY name", gContext->m_mythDB);
+    rssFeedsModel->setQuery("SELECT name, url, ico, updated, podcast FROM newssites ORDER BY name", gContext->m_databaseUtils->getMythTVDatabase());
     gContext->m_engine->rootContext()->setContextProperty("rssFeedsModel", rssFeedsModel);
 
     // create the tv channels model
     SqlQueryModel *dbChannelsModel = new SqlQueryModel(gContext->m_engine);
-    dbChannelsModel->setQuery("SELECT chanid, channum, callsign, name, icon, xmltvid FROM channel ORDER BY cast(channum as unsigned);", gContext->m_mythDB);
+    dbChannelsModel->setQuery("SELECT chanid, channum, callsign, name, icon, xmltvid FROM channel ORDER BY cast(channum as unsigned);", gContext->m_databaseUtils->getMythTVDatabase());
     gContext->m_engine->rootContext()->setContextProperty("dbChannelsModel", dbChannelsModel);
 
     // create the optional jumpto property
