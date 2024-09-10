@@ -1,7 +1,7 @@
 #include <QSqlRecord>
 #include <QSqlField>
 #include <QSqlQuery>
-#include <QDebug>
+#include <QSqlError>
 
 #include "sqlquerymodel.h"
 #include "context.h"
@@ -9,7 +9,7 @@
 SqlQueryModel::SqlQueryModel(QObject *parent) :
 QSqlQueryModel(parent)
 {
-    m_useMythQMLDB = true;
+    m_database = "mythqml";
 }
 
 void SqlQueryModel::setSql(const QString &sql)
@@ -18,10 +18,10 @@ void SqlQueryModel::setSql(const QString &sql)
 
     clear();
 
-    if (m_useMythQMLDB)
-        setQuery(m_sql, gContext->m_mythQMLDB);
-    else
-        setQuery(m_sql, gContext->m_mythDB);
+    setQuery(m_sql, gContext->m_databaseUtils->getDatabase(m_database));
+
+    if (QSqlQueryModel::lastError().isValid())
+        gContext->m_logger->error(Verbose::GENERAL, "SqlQueryModel::setSql query failed: " + QSqlQueryModel::lastError().text());
 
     emit sqlChanged(sql);
 }
@@ -31,16 +31,14 @@ QString SqlQueryModel::sql(void)
     return m_sql;
 }
 
-void SqlQueryModel::setUseMythQMLDB(bool useMythQMLDB)
+void SqlQueryModel::setDatabase(const QString &database)
 {
-    m_useMythQMLDB = useMythQMLDB;
-
-    emit useMythQMLDBChanged(useMythQMLDB);
+    m_database = database;
 }
 
-bool SqlQueryModel::useMythQMLDB(void)
+QString SqlQueryModel::database(void)
 {
-    return m_useMythQMLDB;
+    return m_database;
 }
 
 void SqlQueryModel::setQuery(const QString &query, const QSqlDatabase &db)

@@ -9,7 +9,7 @@ public:
     explicit SqlQueryModel(QObject *parent = nullptr);
 
     Q_PROPERTY(QString sql READ sql WRITE setSql NOTIFY sqlChanged)
-    Q_PROPERTY(bool useMythQMLDB READ useMythQMLDB WRITE setUseMythQMLDB NOTIFY useMythQMLDBChanged)
+    Q_PROPERTY(QString database READ database WRITE setDatabase NOTIFY databaseChanged)
 
     Q_INVOKABLE void reload(void);
     Q_INVOKABLE QVariant get(int row, const QString &field) const;
@@ -22,17 +22,18 @@ public:
     void setSql(const QString &sql);
     QString sql(void);
 
-    void setUseMythQMLDB(bool useMythQMLDB);
-    bool useMythQMLDB(void);
+    void setDatabase(const QString &database);
+    QString database(void);
 
 signals:
-    void sqlChanged(const QString& sql);
-    void useMythQMLDBChanged(bool useMythQMLDBChanged);
+    void sqlChanged(const QString &sql);
+    void databaseChanged(const QString &database);
 
 private:
     void generateRoleNames();
 
-    bool m_useMythQMLDB;
+    QString m_database;
+
     QString m_sql;
     QHash<int, QByteArray> m_roleNames;
     QHash<QByteArray, int> m_nameToRoleMap;
