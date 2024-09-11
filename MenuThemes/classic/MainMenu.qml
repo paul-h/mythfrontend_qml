@@ -85,6 +85,13 @@ ListModel
     }
     ListElement
     {
+        menutext: "Banking Viewer"
+        loaderSource: "ThemedMenu.qml"
+        waterMark: "watermark/banking.png"
+        menuSource: "BankingMenu.qml"
+    }
+    ListElement
+    {
         menutext: "What's New"
         loaderSource: "WhatsNew.qml"
         waterMark: "watermark/whatsnew.png"

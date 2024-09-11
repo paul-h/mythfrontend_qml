@@ -104,6 +104,7 @@ class Settings : public QObject
 
     // data sources
     Q_PROPERTY(QString energyDataDir READ energyDataDir WRITE setEnergyDataDir NOTIFY energyDataDirChanged)
+    Q_PROPERTY(QString bankingDataDir READ bankingDataDir WRITE setBankingDataDir NOTIFY bankingDataDirChanged)
 
     // home assistant
     Q_PROPERTY(QString haURL READ haURL WRITE setHAURL NOTIFY haURLChanged)
@@ -189,6 +190,7 @@ class Settings : public QObject
     void dvdParametersChanged(void);
 
     void energyDataDirChanged(void);
+    void bankingDataDirChanged(void);
 
     void haURLChanged(void);
     void haAPITokenChanged(void);
@@ -390,6 +392,9 @@ class Settings : public QObject
     QString energyDataDir(void);
     void    setEnergyDataDir(const QString &energyDataDir);
 
+    QString bankingDataDir(void);
+    void    setBankingDataDir(const QString &bankingDataDir);
+
     QString haURL(void);
     void    setHAURL(const QString &haURL);
 
@@ -478,6 +483,7 @@ private:
     QString m_dvdParameters;
 
     QString m_energyDataDir;
+    QString m_bankingDataDir;
 
     QString m_haURL;
     QString m_haAPIToken;

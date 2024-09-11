@@ -47,6 +47,18 @@ Item
     // home assistant API
     property alias haAPI: haAPI
 
+    /* ---------------------------------- open the banking transactions database --------------------------------------- */
+    QtObject
+    {
+        id: database
+        property string name: "transactions"
+        property string engine: "sqlite3"
+        property string filename: settings.bankingDataDir.replace("file://", "") + "/transactions.db"
+    }
+
+    Component.onCompleted: dbUtils.addDatabase(database);
+
+
     /* ----------------------------------------------- Shared Sorters  --------------------------------------------------- */
     property list<QtObject> titleSorter:
     [
