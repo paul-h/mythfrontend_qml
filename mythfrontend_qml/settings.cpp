@@ -118,6 +118,7 @@ void Settings::initSettings(const QString &hostName, const QString &theme)
 
     // data sources
     setEnergyDataDir(gContext->m_databaseUtils->getSetting("EnergyDataDir", hostName));
+    setBankingDataDir(gContext->m_databaseUtils->getSetting("BankingDataDir", hostName));
 
     // home assistant
     setHAURL(gContext->m_databaseUtils->getSetting("HAURL", hostName));
@@ -1032,6 +1033,17 @@ void Settings::setEnergyDataDir(const QString &energyDataDir)
 {
     m_energyDataDir = energyDataDir;
     emit energyDataDirChanged();
+}
+
+QString Settings::bankingDataDir(void)
+{
+    return m_bankingDataDir;
+}
+
+void Settings::setBankingDataDir(const QString &bankingDataDir)
+{
+    m_bankingDataDir = bankingDataDir;
+    emit bankingDataDirChanged();
 }
 
 QString Settings::haURL(void)
