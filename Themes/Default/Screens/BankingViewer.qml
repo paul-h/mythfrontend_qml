@@ -168,8 +168,16 @@ BaseScreen
             else
                 difference.fontColor = "Green"
 
-            balanceIn.text = "£" + get(0, "balance").toFixed(2);
-            balanceOut.text = "£" + get(rowCount() -1, "balance").toFixed(2);
+            if (rowCount())
+            {
+                balanceIn.text = "£" + get(0, "balance").toFixed(2);
+                balanceOut.text = "£" + get(rowCount() -1, "balance").toFixed(2);
+            }
+            else
+            {
+                balanceIn.text = "£0.00";
+                balanceOut.text = "£0.00";
+            }
         }
     }
 
@@ -242,9 +250,9 @@ BaseScreen
 
     LabelText
     {
-        x: xscale(240)
+        x: xscale(140)
         y: yscale(65)
-        width: xscale(100)
+        width: xscale(200)
         height: yscale(50)
         horizontalAlignment: Text.AlignRight
         fontPixelSize: xscale(16)
@@ -259,15 +267,15 @@ BaseScreen
         width: xscale(100)
         height: yscale(50)
         horizontalAlignment: Text.AlignLeft
-        text: "£123.45"
+        text: ""
         fontColor: "green"
     }
 
     LabelText
     {
-        x: xscale(530)
+        x: xscale(430)
         y: yscale(65)
-        width: xscale(100)
+        width: xscale(200)
         height: yscale(50)
         horizontalAlignment: Text.AlignRight
         fontPixelSize: xscale(16)
@@ -282,15 +290,15 @@ BaseScreen
         width: xscale(100)
         height: yscale(50)
         horizontalAlignment: Text.AlignLeft
-        text: "£123.45"
+        text: ""
         fontColor: "red"
     }
 
     LabelText
     {
-        x: xscale(820)
+        x: xscale(720)
         y: yscale(65)
-        width: xscale(100)
+        width: xscale(200)
         height: yscale(50)
         horizontalAlignment: Text.AlignRight
         fontPixelSize: xscale(16)
@@ -305,7 +313,7 @@ BaseScreen
         width: xscale(100)
         height: yscale(50)
         horizontalAlignment: Text.AlignLeft
-        text: "£123.45"
+        text: ""
         fontColor: "green"
     }
 
@@ -328,7 +336,7 @@ BaseScreen
         width: xscale(100)
         height: yscale(50)
         horizontalAlignment: Text.AlignLeft
-        text: "£123.45"
+        text: ""
         fontColor: "yellow"
     }
 
@@ -351,7 +359,7 @@ BaseScreen
         width: xscale(100)
         height: yscale(50)
         horizontalAlignment: Text.AlignLeft
-        text: "£123.45"
+        text: ""
         fontColor: "yellow"
     }
 
@@ -381,17 +389,17 @@ BaseScreen
                 ListText
                 {
                     x: xscale(10)
-                    width: transInList.width - xscale(110); height: yscale(30)
+                    width: transInList.width - xscale(120); height: yscale(30)
                     text: description
                     fontPixelSize: xscale(14)
                 }
 
                 LabelText
                 {
-                    x: transInList.width - xscale(100)
-                    width: xscale(90); height: yscale(30)
+                    x: transInList.width - xscale(110)
+                    width: xscale(100); height: yscale(30)
                     text: '£' + value.toFixed(2)
-                    fontPixelSize: xscale(20)
+                    fontPixelSize: xscale(19)
                     horizontalAlignment: Text.AlignRight
                     fontColor: "green"
                 }
@@ -411,7 +419,7 @@ BaseScreen
                 {
                     x: xscale(300)
                     y: yscale(20)
-                    width: xscale(200); height: yscale(20)
+                    width: xscale(190); height: yscale(20)
                     text: type
                     fontPixelSize: xscale(12)
                     horizontalAlignment: Text.AlignLeft
@@ -422,7 +430,7 @@ BaseScreen
                         else if (type == "CREDIT IN")
                             "skyblue"
                         else if (type == "INTEREST")
-                            "pink"
+                            "maroon"
                         else
                             "grey"
                     }
@@ -430,9 +438,9 @@ BaseScreen
 
                 LabelText
                 {
-                    x: transOutList.width - xscale(100)
+                    x: transOutList.width - xscale(110)
                     y: yscale(20)
-                    width: xscale(90); height: yscale(20)
+                    width: xscale(100); height: yscale(20)
                     text: '£' + balance.toFixed(2)
                     fontPixelSize: xscale(12)
                     horizontalAlignment: Text.AlignRight
@@ -471,17 +479,17 @@ BaseScreen
                 ListText
                 {
                     x: xscale(10)
-                    width: transOutList.width - xscale(110); height: yscale(30)
+                    width: transOutList.width - xscale(120); height: yscale(30)
                     text: description
                     fontPixelSize: xscale(14)
                 }
 
                 LabelText
                 {
-                    x: transOutList.width - xscale(100)
-                    width: xscale(90); height: yscale(30)
+                    x: transOutList.width - xscale(110)
+                    width: xscale(100); height: yscale(30)
                     text: '£' + Math.abs(value).toFixed(2);
-                    fontPixelSize: xscale(20)
+                    fontPixelSize: xscale(19)
                     horizontalAlignment: Text.AlignRight
                     fontColor: "red"
                 }
@@ -501,7 +509,7 @@ BaseScreen
                 {
                     x: xscale(300)
                     y: yscale(20)
-                    width: xscale(200); height: yscale(20)
+                    width: xscale(190); height: yscale(20)
                     text: type
                     fontPixelSize: xscale(12)
                     horizontalAlignment: Text.AlignLeft
@@ -525,9 +533,9 @@ BaseScreen
 
                 LabelText
                 {
-                    x: transOutList.width - xscale(100)
+                    x: transOutList.width - xscale(110)
                     y: yscale(20)
-                    width: xscale(90); height: yscale(20)
+                    width: xscale(100); height: yscale(20)
                     text: '£' + balance.toFixed(2)
                     fontPixelSize: xscale(12)
                     horizontalAlignment: Text.AlignRight
@@ -614,18 +622,18 @@ BaseScreen
                 }
             }
         }
+    }
 
-        LabelText
-        {
-            id: noData
-            x: chartView.x
-            y: chartView.y
-            width: chartView.width
-            height: chartView.height
-            horizontalAlignment: Text.AlignHCenter
-            fontPixelSize: xscale(25)
-            text: "No data available for this period."
-        }
+    LabelText
+    {
+        id: noData
+        x: chartView.x
+        y: chartView.y
+        width: chartView.width
+        height: chartView.height
+        horizontalAlignment: Text.AlignHCenter
+        fontPixelSize: xscale(25)
+        text: "No data available for this period."
     }
 
     Footer
@@ -667,43 +675,36 @@ BaseScreen
 
         transInList.highlightMoveDuration = 500;
         transOutList.highlightMoveDuration = 500;
+
+        noData.visible = (transInModel.rowCount() == 0 && transOutModel.rowCount() == 0);
     }
 
     function updateChart()
     {
         daySet.remove(0, daySet.count);
-        //dateAxis.categories = []
 
         chartView.title = "Balance for " + startDate.toLocaleDateString(Qt.locale(), "dddd, d MMMM yyyy");
 
-        if (chartModel.rowCount() > 0)
+
+        var col = 0;
+        var time = 0;
+        var total = 0;
+        var xLabels = []; //dateAxis.categories;
+
+        for (var x = 0; x < chartModel.rowCount(); x++)
         {
-            noData.visible = false;
+            // Set the x-axis labels to the dates of the tranaction data
+            xLabels[Number(col)] = chartModel.get(x, "date") + " - #" + (x + 1);
+            var value = chartModel.get(x, "balance");
+            valueAxis.max = (value > valueAxis.max ? value : valueAxis.max);
 
-            var col = 0;
-            var time = 0;
-            var total = 0;
-            var xLabels = []; //dateAxis.categories;
-
-            for (var x = 0; x < chartModel.rowCount(); x++)
-            {
-                    // Set the x-axis labels to the dates of the tranaction data
-                    xLabels[Number(col)] = chartModel.get(x, "date") + " - #" + (x + 1);
-                    var value = chartModel.get(x, "balance");
-                    valueAxis.max = (value > valueAxis.max ? value : valueAxis.max);
-
-                    daySet.append(value);
-                    col++
-            }
-
-            dateAxis.categories = xLabels;
-            dateAxis.visible = true;
-            dateAxis.min = 0;
-            dateAxis.max = xLabels.length;
+            daySet.append(value);
+            col++
         }
-        else
-        {
-            noData.visible = true;
-        }
+
+        dateAxis.categories = xLabels;
+        dateAxis.visible = true;
+        dateAxis.min = 0;
+        dateAxis.max = xLabels.length;
     }
 }
