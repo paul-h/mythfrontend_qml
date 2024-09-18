@@ -225,26 +225,6 @@ FocusScope
         onTriggered: messagePanel.visible = false;
     }
 
-    WebEngineProfile
-    {
-        id: youtubeWebProfile
-        storageName: "YouTube_" + objectName
-        offTheRecord: false
-        httpCacheType: WebEngineProfile.DiskHttpCache
-        persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
-        httpUserAgent: "Mozilla/5.0 (SMART-TV; Linux; Tizen 5.0) AppleWebKit/538.1 (KHTML, like Gecko) Version/5.0 NativeTVAds Safari/538.1"
-    }
-
-    WebEngineProfile
-    {
-        id: mythqmlWebProfile
-        storageName: "MythQML_" + objectName
-        offTheRecord: false
-        httpCacheType: WebEngineProfile.DiskHttpCache
-        persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
-        //httpUserAgent: "Mozilla/5.0 (SMART-TV; Linux; Tizen 5.0) AppleWebKit/538.1 (KHTML, like Gecko) Version/5.0 NativeTVAds Safari/538.1"
-    }
-
     ListModel
     {
         id: browserURLList
@@ -1324,12 +1304,12 @@ FocusScope
 //        }
         else if (root.player === "WebBrowser" || root.player === "RailCam")
         {
-            videoPlayer.profile = mythqmlWebProfile;
+            videoPlayer.profile = playerSources.mythqmlWEProfile;
             videoPlayer.url = newURL;
         }
         else if (root.player === "YouTubeTV")
         {
-            videoPlayer.profile = youtubeWebProfile;
+            videoPlayer.profile = playerSources.youtubeWEProfile;
             videoPlayer.url = newURL;
         }
         else if (root.player === "YouTube")
@@ -2088,7 +2068,7 @@ FocusScope
                                       "anchors.fill" : playerRect,
                                       "anchors.margins" : playerBorder.border.width,
                                       "audioMuted" : false,
-                                      "profile" : youtubeWebProfile
+                                      "profile" : playerSources.youtubeWEProfile
                                   });
 
         if (player === undefined)

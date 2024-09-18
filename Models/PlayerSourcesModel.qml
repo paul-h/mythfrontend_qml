@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtWebEngine 1.10
 import SortFilterProxyModel 0.2
 import Models 1.0
 import mythqml.net 1.0
@@ -46,6 +47,11 @@ Item
 
     // home assistant API
     property alias haAPI: haAPI
+
+    // shared WebEngine Profiles
+    property var mythqmlWEProfile: mythqmlBrowserProfile
+    property var netflixWEProfile: netflixBrowserProfile
+    property var youtubeWEProfile: youtubeBrowserProfile
 
     /* ---------------------------------- open the banking transactions database --------------------------------------- */
     QtObject
@@ -312,6 +318,36 @@ Item
     RadioBrowserModel
     {
         id: radioBrowserModel
+    }
+
+    /* ------------------------------------------------- Shared WebEngine Profiles --------------------------------------------------*/
+    WebEngineProfile
+    {
+        id: mythqmlBrowserProfile
+        storageName: "MythQML"
+        offTheRecord: false
+        httpCacheType: WebEngineProfile.DiskHttpCache
+        persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
+    }
+
+    WebEngineProfile
+    {
+        id: netflixBrowserProfile
+        storageName: "Netflix"
+        offTheRecord: false
+        httpCacheType: WebEngineProfile.DiskHttpCache
+        persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
+        httpUserAgent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/112.0.1"
+    }
+
+    WebEngineProfile
+    {
+        id: youtubeBrowserProfile
+        storageName: "YouTube"
+        offTheRecord: false
+        httpCacheType: WebEngineProfile.DiskHttpCache
+        persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
+        httpUserAgent: "Mozilla/5.0 (SMART-TV; Linux; Tizen 5.0) AppleWebKit/538.1 (KHTML, like Gecko) Version/5.0 NativeTVAds Safari/538.1"
     }
 
     /*-------------------------------------------------------------------------------------------------------------------------------*/
