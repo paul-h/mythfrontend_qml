@@ -25,10 +25,10 @@ class MythUtils : public QObject
     Q_INVOKABLE QString formatDateTime(const QDateTime &dateTime);
     Q_INVOKABLE QString formatDate(const QDateTime &dateTime);
     Q_INVOKABLE QString replaceHtmlChar(const QString &orig);
-    Q_INVOKABLE bool sendKeyEvent(QObject *obj, int keyCode);
-    Q_INVOKABLE void moveMouse(int x, int y);
-    Q_INVOKABLE bool clickMouse(QObject *obj, int x, int y);
-    Q_INVOKABLE bool doubleClickMouse(QObject *obj, int x, int y);
+    Q_INVOKABLE bool sendKeyEvent(QObject *obj, int keyCode, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+    Q_INVOKABLE void mouseMove(int x, int y);
+    Q_INVOKABLE bool mouseLeftClick(QObject *obj, int x, int y);
+    Q_INVOKABLE bool mouseLeftDoubleClick(QObject *obj, int x, int y);
     Q_INVOKABLE QPoint getMousePos(void);
     Q_INVOKABLE QImage cropRailcamImage(QImage image);
     Q_INVOKABLE QString properties(QObject *item, bool linebreak);
