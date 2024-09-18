@@ -21,6 +21,17 @@ BaseScreen
         muteAudio(false);
     }
 
+    Connections
+    {
+        target: browser
+        ignoreUnknownSignals: true
+
+        function onMouseModeChanged()
+        {
+            footer.blueText = (browser.mouseMode ? "Mouse Mode (On)" : "Mouse Mode (Off)");
+        }
+    }
+
     FolderListModel
     {
         id: folderModel
@@ -170,17 +181,14 @@ BaseScreen
         }
     }
 
-    WebEngineView
+    BaseWebBrowser
     {
         id: browser
         x:  xscale(10);
         y:  yscale(50);
         width: parent.width - xscale(20);
         height: parent.height - yscale(100)
-
-        settings.pluginsEnabled: true
-        settings.javascriptEnabled: true
-        settings.javascriptCanOpenWindows: true
+        mouseModeShortcut: "F4"
     }
 
     Footer
@@ -189,7 +197,7 @@ BaseScreen
         redText: "Previous Statement"
         greenText: "Next Statement"
         yellowText: ""
-        blueText: ""
+        blueText: "Mouse Mode (Off)"
     }
 
     function extractDate(basename)
