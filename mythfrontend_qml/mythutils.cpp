@@ -227,14 +227,16 @@ QString MythUtils::replaceHtmlChar(const QString &orig)
     return s;
 }
 
-bool MythUtils::sendKeyEvent(QObject *obj, int keyCode)
+bool MythUtils::sendKeyEvent(QObject *obj, int keyCode, Qt::KeyboardModifiers modifiers)
 {
     if (!obj)
         return false;
 
     Qt::Key key = Qt::Key(keyCode);
-    QKeyEvent* event = new QKeyEvent(QKeyEvent::KeyPress, key, Qt::NoModifier, QKeySequence(key).toString());
-    QCoreApplication::postEvent(obj, event);
+    QKeyEvent* pressEvent = new QKeyEvent(QKeyEvent::KeyPress, key, modifiers, QKeySequence(key).toString());
+    QKeyEvent* releaseEvent = new QKeyEvent(QKeyEvent::KeyRelease, key, modifiers, QKeySequence(key).toString());
+    QCoreApplication::postEvent(obj, pressEvent);
+    QCoreApplication::postEvent(obj, releaseEvent);
 
     return true;
 }
@@ -244,30 +246,27 @@ QPoint MythUtils::getMousePos(void)
     return QCursor::pos();
 }
 
-void MythUtils::moveMouse(int x, int y)
+void MythUtils::mouseMove(int x, int y)
 {
-    QPoint pos =  QCursor::pos();
-    QPoint globalPoint = QPoint(pos.x() + x, pos.y() + y);
+    QPoint globalPoint = QPoint(x, y);
     QCursor::setPos(globalPoint);
 }
 
-bool MythUtils::clickMouse(QObject *obj, int x, int y)
+bool MythUtils::mouseLeftClick(QObject *obj, int x, int y)
 {
     if (!obj)
         return false;
 
     QMouseEvent * event1 = new QMouseEvent ((QEvent::MouseButtonPress), QPoint(x, y),
         Qt::LeftButton,
-        Qt::NoButton,
+        Qt::LeftButton,
         Qt::NoModifier   );
 
     QCoreApplication::postEvent(obj, event1);
 
-    usleep(1000);
-
     QMouseEvent * event2 = new QMouseEvent ((QEvent::MouseButtonRelease), QPoint(x, y),
         Qt::LeftButton,
-        Qt::NoButton,
+        Qt::LeftButton,
         Qt::NoModifier   );
 
     QCoreApplication::postEvent(obj, event2);
@@ -275,7 +274,7 @@ bool MythUtils::clickMouse(QObject *obj, int x, int y)
     return true;
 }
 
-bool MythUtils::doubleClickMouse(QObject *obj, int x, int y)
+bool MythUtils::mouseLeftDoubleClick(QObject *obj, int x, int y)
 {
     if (!obj)
         return false;

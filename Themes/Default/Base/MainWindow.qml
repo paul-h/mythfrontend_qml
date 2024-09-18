@@ -11,6 +11,7 @@ import Screens 1.0
 import Models 1.0
 import mythqml.net 1.0
 import com.blackgrain.qml.quickdownload 1.0
+import "../../../Util.js" as Util
 
 Window
 {
@@ -51,6 +52,8 @@ Window
     property bool _savedShowTicker: false
     property bool _savedShowVideo: false
     property bool _savedShowSlideShow: false;
+
+    property alias stack: stack
 
     Component.onCompleted:
     {
@@ -307,7 +310,7 @@ Window
         {
             // wiggle the mouse to force it to timeout and auto hide itself
             var pos =  mythUtils.getMousePos();
-            mythUtils.moveMouse(pos.x + 1, pos.y + 1);
+            mythUtils.mouseMove(pos.x + 1, pos.y + 1);
 
             screenBackground.screenSaverMode = false
         }
@@ -582,6 +585,26 @@ Window
     function showMouse(show)
     {
         mouseArea.showMouse = show;
+    }
+
+    function mouseMove(x, y)
+    {
+        var pos = mythUtils.getMousePos();
+        var new_x = pos.x + x;
+        var new_y = pos.y + y;
+        mythUtils.mouseMove(new_x, new_y);
+    }
+
+    function mouseMoveTo(x, y)
+    {
+        mythUtils.mouseMove(x, y);
+    }
+
+    function mouseLeftClick()
+    {
+        var pos = mythUtils.getMousePos();
+        var localPos = root.mapFromGlobal(pos.x, pos.y)
+        mythUtils.mouseLeftClick(window, localPos.x, localPos.y);
     }
 
     Timer

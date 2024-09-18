@@ -67,20 +67,6 @@ BaseScreen
 
     Action
     {
-        shortcut: "+"
-        onTriggered: zoom(true);
-        enabled: browser.focus
-    }
-
-    Action
-    {
-        shortcut: "-"
-        onTriggered: zoom(false);
-        enabled: browser.focus
-    }
-
-    Action
-    {
         shortcut: "M"
         onTriggered: popupMenu.show();
         enabled: browser.focus
@@ -102,56 +88,16 @@ BaseScreen
         color: "white"
     }
 
-    WebEngineView
+    BaseWebBrowser
     {
         id: browser
         x: root.fullscreen ? 0 : xscale(10);
         y: root.fullscreen ? 0 : yscale(50);
         width: root.fullscreen ? parent.width : parent.width - xscale(20);
         height: root.fullscreen ? parent.height : parent.height - yscale(60)
-
-        settings.pluginsEnabled: true
-        settings.javascriptEnabled: true
-        settings.javascriptCanOpenWindows: true
-        audioMuted: false;
-
-        Component.onCompleted: settings.playbackRequiresUserGesture = false;
-
-        onNewViewRequested:
-        {
-            var website = request.requestedUrl.toString();
-            var zoom = zoomFactor;
-            if (isPanel)
-                panelStack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: website, zoomFactor: zoom}});
-            else
-                stack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: website, zoomFactor: zoom}});
-        }
-        onFullScreenRequested: request.accept();
-        onNavigationRequested: request.action = WebEngineNavigationRequest.AcceptRequest;
-
-        onLoadingChanged:
-        {
-            if (loadRequest.status === WebEngineLoadRequest.LoadSucceededStatus)
-            {
-                var feedurl = loadRequest.url.toString();
-
-                if (feedurl !== "")
-                {
-                    // start the windy.com radar animation
-                    if (feedurl.includes("www.windy.com/-Weather-radar-radar"))
-                    {
-                        runJavaScript("document.getElementsByClassName(\"play-pause checkbox--off\")[0].click();");
-                    }
-                    else if (feedurl.includes("embed.windy.com/embed2.html"))
-                    {
-                        runJavaScript("document.getElementsByClassName(\"play-pause iconfont clickable off\")[0].click();");
-                    }
-                }
-            }
-        }
     }
 
-     PopupMenu
+    PopupMenu
     {
         id: popupMenu
 
