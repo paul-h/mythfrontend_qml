@@ -24,6 +24,17 @@ BaseScreen
         muteAudio(false);
     }
 
+    Connections
+    {
+        target: browser
+        ignoreUnknownSignals: true
+
+        function onMouseModeChanged()
+        {
+            footer.blueText = (browser.mouseMode ? "Mouse Mode (On)" : "Mouse Mode (Off)");
+        }
+    }
+
     FolderListModel
     {
         id: folderModel
@@ -106,7 +117,7 @@ BaseScreen
         redText: "Previous Statement"
         greenText: "Next Statement"
         yellowText: ""
-        blueText: ""
+        blueText: "Mouse Mode (Off)"
     }
 
     PopupMenu
