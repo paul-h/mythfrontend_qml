@@ -3,6 +3,7 @@ import QtQuick.Controls 1.5
 import QtWebEngine 1.5
 import Base 1.0
 import Models 1.0
+import Dialogs 1.0
 
 import "../../../Util.js" as Util
 
@@ -19,6 +20,17 @@ BaseScreen
         showTime(true);
         showTicker(false);
         muteAudio(false);
+    }
+
+    Connections
+    {
+        target: browser
+        ignoreUnknownSignals: true
+
+        function onMouseModeChanged()
+        {
+            footer.blueText = (browser.mouseMode ? "Mouse Mode (On)" : "Mouse Mode (Off)");
+        }
     }
 
     FuelBillsModel
@@ -65,30 +77,7 @@ BaseScreen
         id: redAction
         shortcut: "F1"
         enabled: browser.focus
-        onTriggered:
-        {
-            if (billIdx === gasBills.count - 1)
-            {
-                errorSound.play();
-                return;
-            }
-            else
-            {
-                returnSound.play();
-                billIdx++;
-            }
-
-            if (activeFuel === "Gas")
-            {
-                showTitle (true, "Fuel Bill Viewer (" + gasBills.get(billIdx).name + ")");
-                browser.url = settings.energyDataDir + "/bills/" + gasBills.get(billIdx).url;
-            }
-            else
-            {
-                showTitle (true, "Fuel Bill Viewer (" + electricBills.get(billIdx).name + ")");
-                browser.url = settings.energyDataDir + "/bills/" + electricBills.get(billIdx).url;
-            }
-        }
+        onTriggered: previousBill()
     }
 
     Action
@@ -96,30 +85,7 @@ BaseScreen
         id: greenAction
         shortcut: "F2"
         enabled: browser.focus
-        onTriggered:
-        {
-            if (billIdx === 0)
-            {
-                errorSound.play();
-                return;
-            }
-            else
-            {
-                returnSound.play();
-                billIdx--;
-            }
-
-            if (activeFuel === "Gas")
-            {
-                showTitle (true, "Fuel Bill Viewer (" + gasBills.get(billIdx).name + ")");
-                browser.url = settings.energyDataDir + "/bills/" + gasBills.get(billIdx).url;
-            }
-            else
-            {
-                showTitle (true, "Fuel Bill Viewer (" + electricBills.get(billIdx).name + ")");
-                browser.url = settings.energyDataDir + "/bills/" + electricBills.get(billIdx).url;
-            }
-        }
+        onTriggered: nextBill()
     }
 
     Action
@@ -127,79 +93,26 @@ BaseScreen
         id: yellowAction
         shortcut: "F3"
         enabled: browser.focus
-        onTriggered:
-        {
-            if (activeFuel === "Electric")
-                activeFuel = "Gas";
-            else if (activeFuel === "Gas")
-                activeFuel = "Electric";
-
-            footer.yellowText = "Showing (" + activeFuel + ")";
-
-            if (activeFuel === "Gas")
-            {
-                showTitle (true, "Fuel Bill Viewer (" + gasBills.get(billIdx).name + ")");
-                browser.url = settings.energyDataDir + "/bills/" + gasBills.get(billIdx).url;
-            }
-            else
-            {
-                showTitle (true, "Fuel Bill Viewer (" + electricBills.get(billIdx).name + ")");
-                browser.url = settings.energyDataDir + "/bills/" + electricBills.get(billIdx).url;
-            }
-        }
+        onTriggered: changeFuel()
     }
 
     Action
     {
-        shortcut: ","
+        shortcut: "M"
+        onTriggered: popupMenu.show();
         enabled: browser.focus
-        onTriggered:
-        {
-            mythUtils.sendKeyEvent(window, Qt.Key_Minus);
-        }
     }
 
-    Action
-    {
-        shortcut: "."
-        enabled: browser.focus
-        onTriggered:
-        {
-            mythUtils.sendKeyEvent(window, Qt.Key_Equal);
-        }
-    }
-
-    Action
-    {
-        shortcut: "<"
-        enabled: browser.focus
-        onTriggered:
-        {
-            mythUtils.sendKeyEvent(window, Qt.Key_Minus);
-        }
-    }
-
-    Action
-    {
-        shortcut: ">"
-        enabled: browser.focus
-        onTriggered:
-        {
-            mythUtils.sendKeyEvent(window, Qt.Key_Equal);
-        }
-    }
-
-    WebEngineView
+    BaseWebBrowser
     {
         id: browser
         x:  xscale(10);
         y:  yscale(50);
         width: parent.width - xscale(20);
         height: parent.height - yscale(100)
-
-        settings.pluginsEnabled: true
-        settings.javascriptEnabled: true
-        settings.javascriptCanOpenWindows: true
+        mouseModeShortcut: "F4"
+        tabShortcut: "F5"
+        shiftTabShortcut: "F6"
     }
 
     Footer
@@ -208,6 +121,136 @@ BaseScreen
         redText: "Previous Bill"
         greenText: "Next Bill"
         yellowText: "Fuel (Gas)"
-        blueText: ""
+        blueText: "Mouse Mode (Off)"
+    }
+
+    PopupMenu
+    {
+        id: popupMenu
+
+        title: "Menu"
+        message: "Energy Bills Options"
+        width: xscale(400); height: yscale(600)
+
+        onItemSelected:
+        {
+            if (itemData === "previous")
+                previousBill();
+            else if (itemData === "next")
+                nextBill();
+            else if (itemData === "fuel")
+                changeFuel();
+            else if (itemData === "zoomin")
+                zoomIn();
+            else if (itemData === "zoomout")
+                zoomOut;
+            else if (itemData === "mousemode")
+                browser.mouseMode = !browser.mouseMode;
+
+            browser.focus = true;
+        }
+        onCancelled:
+        {
+            browser.focus = true;
+        }
+
+        Component.onCompleted:
+        {
+            addMenuItem("", "Previous Bill", "previous");
+            addMenuItem("", "Next Bill", "next");
+            addMenuItem("", "Change Fuel", "fuel");
+            //addMenuItem("", "Zoom In", "zoomin");
+            //addMenuItem("", "Zoom Out", "zoomout");
+            addMenuItem("", "Toggle Mouse Mode", "mousemode");
+        }
+    }
+
+    function previousBill()
+    {
+        if (billIdx === gasBills.count - 1)
+        {
+            errorSound.play();
+            return;
+        }
+        else
+        {
+            returnSound.play();
+            billIdx++;
+        }
+
+        if (activeFuel === "Gas")
+        {
+            showTitle (true, "Fuel Bill Viewer (" + gasBills.get(billIdx).name + ")");
+            browser.url = settings.energyDataDir + "/bills/" + gasBills.get(billIdx).url;
+        }
+        else
+        {
+            showTitle (true, "Fuel Bill Viewer (" + electricBills.get(billIdx).name + ")");
+            browser.url = settings.energyDataDir + "/bills/" + electricBills.get(billIdx).url;
+        }
+    }
+
+    function nextBill()
+    {
+        if (billIdx === 0)
+        {
+            errorSound.play();
+            return;
+        }
+        else
+        {
+            returnSound.play();
+            billIdx--;
+        }
+
+        if (activeFuel === "Gas")
+        {
+            showTitle (true, "Fuel Bill Viewer (" + gasBills.get(billIdx).name + ")");
+            browser.url = settings.energyDataDir + "/bills/" + gasBills.get(billIdx).url;
+        }
+        else
+        {
+            showTitle (true, "Fuel Bill Viewer (" + electricBills.get(billIdx).name + ")");
+            browser.url = settings.energyDataDir + "/bills/" + electricBills.get(billIdx).url;
+        }
+    }
+
+    function changeFuel()
+    {
+        if (activeFuel === "Electric")
+            activeFuel = "Gas";
+        else if (activeFuel === "Gas")
+            activeFuel = "Electric";
+
+        footer.yellowText = "Showing (" + activeFuel + ")";
+
+        if (activeFuel === "Gas")
+        {
+            showTitle (true, "Fuel Bill Viewer (" + gasBills.get(billIdx).name + ")");
+            browser.url = settings.energyDataDir + "/bills/" + gasBills.get(billIdx).url;
+        }
+        else
+        {
+            showTitle (true, "Fuel Bill Viewer (" + electricBills.get(billIdx).name + ")");
+            browser.url = settings.energyDataDir + "/bills/" + electricBills.get(billIdx).url;
+        }
+    }
+
+    function zoomIn()
+    {
+        var x = xscale(1205);
+        var y = yscale(557);
+        var pos = root.mapToGlobal(1205, 557);
+        mythUtils.mouseMove(xscale(pos.x), yscale(pos.y));
+        mythUtils.mouseLeftClick(window, x, y);
+    }
+
+    function zoomOut()
+    {
+        var x = xscale(1205);
+        var y = yscale(604);
+        var pos = root.mapToGlobal(x, y);
+        mythUtils.mouseMove(pos.x, pos.y);
+        mythUtils.mouseLeftClick(window, x, y);
     }
 }
