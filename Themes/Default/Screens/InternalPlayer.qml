@@ -159,14 +159,14 @@ BaseScreen
     Action
     {
         shortcut: "Left"
-        enabled: _actionsEnabled
+        enabled: _actionsEnabled && !playerLayout.browser.mouseMode
         onTriggered: changeFocus("left");
     }
 
     Action
     {
         shortcut: "Right"
-        enabled: _actionsEnabled
+        enabled: _actionsEnabled && !playerLayout.browser.mouseMode
         onTriggered:
         {
             if (layout === 1)
@@ -287,7 +287,7 @@ BaseScreen
     Action
     {
         shortcut: "F5" // switch to next player layout
-        enabled: _actionsEnabled
+        enabled: _actionsEnabled &&  !playerLayout.activeItem.objectName === "Browser"
         onTriggered:
         {
             if (playerLayout.playerLayout < 6)
@@ -597,7 +597,7 @@ BaseScreen
     Action
     {
         shortcut: "Return" // change chat?
-        enabled: _actionsEnabled
+        enabled: _actionsEnabled && !playerLayout.browser.mouseMode
         onTriggered:
         {
             if (getActivePlayer().showingFeedBrowser())
@@ -763,6 +763,8 @@ BaseScreen
             }
 
             // browser options
+            else if (itemText == "Toggle Mouse Mode")
+                playerLayout.browser.mouseMode = !playerLayout.browser.mouseMode;
             else if (itemText == "Hide Browser")
                 playerLayout.showBrowser = false;
             else if (itemText == "Reload")
@@ -926,6 +928,17 @@ BaseScreen
         return playerLayout.mediaPlayer1;
     }
 
+    function isMouseModeActive()
+    {
+        if (playerLayout.activeItem.objectName === "Browser")
+        {
+            if (playerLayout.activeItem.mouseMode)
+                return true;
+        }
+
+        return false;
+    }
+
     function showPlayerMenu()
     {
         popupMenu.message = "Media " + getActivePlayer().objectName + " Options";
@@ -972,6 +985,7 @@ BaseScreen
         popupMenu.message = "Browser Options";
         popupMenu.clearMenuItems();
 
+        popupMenu.addMenuItem("", "Toggle Mouse Mode");
         popupMenu.addMenuItem("", "Change Page");
         popupMenu.addMenuItem("", "Hide Browser");
         popupMenu.addMenuItem("", "Reload");
@@ -981,7 +995,7 @@ BaseScreen
         // Change Page Sub Menu
         for (var x = 0; x < urlList.count; x++)
         {
-            popupMenu.addMenuItem("0", urlList.get(x).title, "browser_index=" + x);
+            popupMenu.addMenuItem("1", urlList.get(x).title, "browser_index=" + x);
         }
 
         _actionsEnabled = false;

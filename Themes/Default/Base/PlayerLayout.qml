@@ -532,7 +532,7 @@ Item
             radius: theme.bgRadius
         }
 
-        WebEngineView
+        BaseWebBrowser
         {
             id: browser
 
@@ -543,19 +543,15 @@ Item
             height: parent.height - y - yscale(5)
             focus: false
             enabled: visible
+            mouseModeShortcut: "F5"
             backgroundColor: "black"
-
-            settings.pluginsEnabled: true
 
             onFocusChanged: if (focus) changeFocus(this);
 
-            profile:  WebEngineProfile
-                      {
-                          storageName: "MythQML"
-                          offTheRecord: false
-                          httpCacheType: WebEngineProfile.DiskHttpCache
-                          persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
-                      }
+            KeyNavigation.left: player1
+            KeyNavigation.right: player1
+            KeyNavigation.up: player1
+            KeyNavigation.down: player1
 
             Tracer {}
         }
