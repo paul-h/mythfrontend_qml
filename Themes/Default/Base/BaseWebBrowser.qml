@@ -9,12 +9,16 @@ FocusScope
     id: root
     property alias url: browser.url
     property alias zoomFactor: browser.zoomFactor
+    property alias backgroundColor: browser.backgroundColor
     property alias browser: browser
+
     property bool mouseMode: false
 
     property string mouseModeShortcut: "F1"
     property string tabShortcut: "F3"
     property string shiftTabShortcut: "F4"
+
+    signal loaded()
 
     Action
     {
@@ -160,6 +164,8 @@ FocusScope
                         runJavaScript("document.getElementsByClassName(\"play-pause iconfont clickable off\")[0].click();");
                     }
                 }
+
+                loaded();
             }
         }
     }
