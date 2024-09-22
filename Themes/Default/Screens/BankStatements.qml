@@ -3,12 +3,15 @@ import QtQuick.Controls 1.5
 import QtWebEngine 1.5
 import Base 1.0
 import Models 1.0
+import Dialogs 1.0
 import Qt.labs.folderlistmodel 2.15
 
 import "../../../Util.js" as Util
 
 BaseScreen
 {
+    id: root
+
     defaultFocusItem: browser
 
     property int statementIdx: 0
@@ -78,22 +81,7 @@ BaseScreen
         id: redAction
         shortcut: "F1"
         enabled: browser.focus
-        onTriggered:
-        {
-            if (statementIdx === folderModel.count - 1)
-            {
-                errorSound.play();
-                return;
-            }
-            else
-            {
-                returnSound.play();
-                statementIdx++;
-            }
-
-            showTitle (true, "Bank Statements Viewer (" + extractDate(folderModel.get(statementIdx, "fileBaseName")) + ")");
-            browser.url = folderModel.get(statementIdx, "fileUrl");
-        }
+        onTriggered: previousStatement()
     }
 
     Action
@@ -101,84 +89,14 @@ BaseScreen
         id: greenAction
         shortcut: "F2"
         enabled: browser.focus
-        onTriggered:
-        {
-            if (statementIdx === 0)
-            {
-                errorSound.play();
-                return;
-            }
-            else
-            {
-                returnSound.play();
-                statementIdx--;
-            }
-
-            showTitle (true, "Bank Statements Viewer (" + extractDate(folderModel.get(statementIdx, "fileBaseName")) + ")");
-            browser.url = browser.url = folderModel.get(statementIdx, "fileUrl");;
-        }
+        onTriggered: nextStatement()
     }
 
     Action
     {
-        id: yellowAction
-        shortcut: "F3"
+        shortcut: "M"
+        onTriggered: popupMenu.show();
         enabled: browser.focus
-        onTriggered:
-        {
-            mythUtils.sendKeyEvent(window, Qt.Key_Return);
-        }
-    }
-
-    Action
-    {
-        id: blueAction
-        shortcut: "F5"
-        enabled: browser.focus
-        onTriggered:
-        {
-            mythUtils.sendKeyEvent(window, Qt.Key_Tab);
-        }
-    }
-
-    Action
-    {
-        shortcut: ","
-        enabled: browser.focus
-        onTriggered:
-        {
-            mythUtils.sendKeyEvent(window, Qt.Key_Minus);
-        }
-    }
-
-    Action
-    {
-        shortcut: "."
-        enabled: browser.focus
-        onTriggered:
-        {
-            mythUtils.sendKeyEvent(window, Qt.Key_Equal);
-        }
-    }
-
-    Action
-    {
-        shortcut: "<"
-        enabled: browser.focus
-        onTriggered:
-        {
-            mythUtils.sendKeyEvent(window, Qt.Key_Minus);
-        }
-    }
-
-    Action
-    {
-        shortcut: ">"
-        enabled: browser.focus
-        onTriggered:
-        {
-            mythUtils.sendKeyEvent(window, Qt.Key_Equal);
-        }
     }
 
     BaseWebBrowser
@@ -189,6 +107,8 @@ BaseScreen
         width: parent.width - xscale(20);
         height: parent.height - yscale(100)
         mouseModeShortcut: "F4"
+        tabShortcut: "F5"
+        shiftTabShortcut: "F6"
     }
 
     Footer
@@ -200,6 +120,96 @@ BaseScreen
         blueText: "Mouse Mode (Off)"
     }
 
+    PopupMenu
+    {
+        id: popupMenu
+
+        title: "Menu"
+        message: "Bank Statementss Options"
+        width: xscale(400); height: yscale(600)
+
+        onItemSelected:
+        {
+            if (itemData === "previous")
+                previousStatement();
+            else if (itemData === "next")
+                nextStatement();
+            else if (itemData === "zoomin")
+                zoomIn();
+            else if (itemData === "zoomout")
+                zoomOut();
+            else if (itemData === "mousemode")
+                browser.mouseMode = !browser.mouseMode;
+
+            browser.focus = true;
+        }
+        onCancelled:
+        {
+            browser.focus = true;
+        }
+
+        Component.onCompleted:
+        {
+            addMenuItem("", "Previous Statement", "previous");
+            addMenuItem("", "Next Statement", "next");
+            //addMenuItem("", "Zoom In", "zoomin");
+            //addMenuItem("", "Zoom Out", "zoomout");
+            addMenuItem("", "Toggle Mouse Mode", "mousemode");
+        }
+    }
+
+    function previousStatement()
+    {
+        if (statementIdx === folderModel.count - 1)
+        {
+            errorSound.play();
+            return;
+        }
+        else
+        {
+            returnSound.play();
+            statementIdx++;
+        }
+
+        showTitle (true, "Bank Statements Viewer (" + extractDate(folderModel.get(statementIdx, "fileBaseName")) + ")");
+        browser.url = folderModel.get(statementIdx, "fileUrl");
+    }
+
+    function nextStatement()
+    {
+        if (statementIdx === 0)
+        {
+            errorSound.play();
+            return;
+        }
+        else
+        {
+            returnSound.play();
+            statementIdx--;
+        }
+
+        showTitle (true, "Bank Statements Viewer (" + extractDate(folderModel.get(statementIdx, "fileBaseName")) + ")");
+        browser.url = browser.url = folderModel.get(statementIdx, "fileUrl");
+    }
+
+    function zoomIn()
+    {
+        var x = xscale(1205);
+        var y = yscale(557);
+        var pos = root.mapToGlobal(x, y);
+        mythUtils.mouseMove(pos.x, pos.y);
+        mythUtils.mouseLeftClick(window, x, y);
+    }
+
+    function zoomOut()
+    {
+        var x = xscale(1206);
+        var y = yscale(604);
+        var pos = root.mapToGlobal(x, y);
+        mythUtils.mouseMove(pos.x, pos.y);
+        mythUtils.mouseLeftClick(window, x, y);
+    }
+
     function extractDate(basename)
     {
         var day = basename.substr(6, 2);
@@ -208,6 +218,5 @@ BaseScreen
         var date = new Date(year, month - 1, day);
 
         return date.toLocaleString(Qt.locale(), "dd MMMM yyyy")
-
     }
 }
