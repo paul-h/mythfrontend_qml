@@ -24,6 +24,7 @@ INCLUDEPATH += ../mdk-sdk/
 
 QT += qml quick sql xml webengine svg
 CONFIG += c++11
+QMAKE_CXXFLAGS_RELEASE -= -Wdate-time
 
 TEMPLATE = app
 
