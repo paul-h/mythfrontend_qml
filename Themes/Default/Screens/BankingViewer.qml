@@ -186,9 +186,9 @@ BaseScreen
         id: transInModel
         property double total: 0.0
 
-        database: "transactions"
-
         sql: "SELECT * FROM transactions";
+
+        database: "transactions"
 
         onSqlChanged:
         {
@@ -218,9 +218,9 @@ BaseScreen
     {
         id: chartModel
 
-        database: "transactions"
-
         sql: "SELECT * FROM transactions";
+
+        database: "transactions"
 
         onSqlChanged:
         {
