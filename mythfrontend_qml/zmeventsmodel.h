@@ -40,7 +40,7 @@ public:
     Q_PROPERTY(Cause cause READ getCause WRITE setCause NOTIFY causeChanged)
     Q_PROPERTY(Archived archived READ getArchived WRITE setArchived NOTIFY archivedChanged)
 
-    Q_PROPERTY(QVariantList dateList READ getDateList)
+    Q_PROPERTY(QList<QDate> dateList READ getDateList)
     Q_PROPERTY(QList<int> monitorList READ getMonitorList)
 
     QString token(void) { return m_token; }
@@ -64,7 +64,7 @@ public:
     Archived getArchived(void) { return m_archived; }
     void setArchived(Archived archived);
 
-    QVariantList getDateList(void) { return m_dateList; }
+    QList<QDate> getDateList(void) { return m_dateList; }
     QList<int> getMonitorList(void) { return m_monitorList; }
 
  signals:
@@ -87,9 +87,9 @@ public:
     bool    m_descending;
     QString m_sort;
     Cause   m_cause;
-    Archived m_archived;
-    QVariantList m_dateList;
-    QList<int>  m_monitorList;
+    Archived     m_archived;
+    QList<QDate> m_dateList;
+    QList<int>   m_monitorList;
 };
 
 #endif // ZMEVENTSMODEL_H

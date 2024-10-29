@@ -36,7 +36,7 @@ public:
             QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent*>(event);
             if (mouseEvent)
             {
-                emit mouseMoved(mouseEvent->globalX(), mouseEvent->globalY());
+                emit mouseMoved(mouseEvent->globalPosition().x(), mouseEvent->globalPosition().y());
             }
 
         }
@@ -45,7 +45,7 @@ public:
             QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent*>(event);
             if (mouseEvent)
             {
-                emit mouseButtonPressed(mouseEvent->globalX(), mouseEvent->globalY());
+                emit mouseButtonPressed(mouseEvent->globalPosition().x(), mouseEvent->globalPosition().y());
             }
 
         }

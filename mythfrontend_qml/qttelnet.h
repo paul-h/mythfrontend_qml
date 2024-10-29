@@ -50,7 +50,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QString>
 #include <QtCore/QSize>
-#include <QtCore/QRegExp>
+#include <QRegExp>
 #include <QtNetwork/QTcpSocket>
 
 class QtTelnetPrivate;

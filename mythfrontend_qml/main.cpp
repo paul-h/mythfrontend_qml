@@ -11,7 +11,7 @@
 #include <QDomDocument>
 #include <QFile>
 #include <QDir>
-#include <QtWebEngine>
+#include <QtWebEngineQuick>
 #include <QUrl>
 
 // mythfrontend_qml
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
-    QtWebEngine::initialize();
+    QtWebEngineQuick::initialize();
 
     QGuiApplication *app = new QApplication(argc, argv);
 
@@ -140,6 +140,7 @@ int main(int argc, char *argv[])
     // override the Network Access Manager
     MythQmlNetworkAccessManagerFactory networkManagerFactory;
     gContext->m_engine->setNetworkAccessManagerFactory(&networkManagerFactory);
+
     qQuickDownloadMaster->setNetworkAccessManager(gContext->m_engine->networkAccessManager());
 
     gContext->m_engine->clearComponentCache();

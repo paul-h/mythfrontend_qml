@@ -166,6 +166,12 @@ void ZMEventsModel::startDownload(void)
     m_downloadManager->append(url);
 }
 
+struct
+{
+    bool operator()(QDate a, QDate b) const { return a < b; }
+}
+customLess;
+
 // process the XML extracting the data we need for the model
 void ZMEventsModel::processDownload(QByteArray buffer)
 {
@@ -181,7 +187,7 @@ void ZMEventsModel::processDownload(QByteArray buffer)
 
     if (parseError.error != QJsonParseError::NoError)
     {
-        gContext->m_logger->warning(Verbose::MODEL, "ZMEventsModel: processDownload - Failed to parse json - Location: " + QString(parseError.offset) + " Error: " + parseError.errorString());
+        gContext->m_logger->warning(Verbose::MODEL, "ZMEventsModel: processDownload - Failed to parse json - Location: " + QString::number(parseError.offset) + " Error: " + parseError.errorString());
         gContext->m_logger->warning(Verbose::MODEL, "ZMEventsModel: processDownload - " + buffer);
         return;
     }
@@ -296,7 +302,7 @@ void ZMEventsModel::processDownload(QByteArray buffer)
             }
         }
 
-        std::sort(m_dateList.begin(), m_dateList.end());
+        std::sort(m_dateList.begin(), m_dateList.end(), customLess);
 
         QModelIndex topLeft = createIndex(startIndex, 0);
         QModelIndex bottomRight = createIndex(startIndex + events.count() - 1, 0);

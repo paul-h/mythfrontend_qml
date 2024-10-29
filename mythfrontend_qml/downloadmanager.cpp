@@ -94,7 +94,7 @@ void DownloadManager::reportRedirect()
     int statusCode = m_currentDownload->getReply()->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     QUrl requestUrl = m_currentDownload->getReply()->request().url();
 
-    gContext->m_logger->debug(Verbose::NETWORK, "Request: " + requestUrl.toDisplayString() + " was redirected with code: " + statusCode);
+    gContext->m_logger->debug(Verbose::NETWORK, "Request: " + requestUrl.toDisplayString() + " was redirected with code: " + QString::number(statusCode));
 
     QVariant target = m_currentDownload->getReply()->attribute(QNetworkRequest::RedirectionTargetAttribute);
 

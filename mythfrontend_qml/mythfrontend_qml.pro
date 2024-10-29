@@ -4,11 +4,12 @@ BRANCH = master
 
 PREFIX = /usr
 
-include(../QmlVlc/QmlVlc.pri)
+#include(../QmlVlc/QmlVlc.pri)
 include(../SortFilterProxyModel/SortFilterProxyModel.pri)
 include(../DownloadManager/quickdownload.pri)
 
 DEFINES += APP_VERSION=\\\"$$VERSION\\\" GIT_BRANCH=\\\"$$BRANCH\\\"
+DEFINES += QT_DISABLE_DEPRECATED_UP_TO=0x050F00
 
 INCLUDEPATH += .. ../QmlVlc
 
@@ -22,9 +23,21 @@ packagesExist(libVLCQtQml) {
 # for MDK SDK
 INCLUDEPATH += ../mdk-sdk/
 
-QT += qml quick sql xml webengine svg
-CONFIG += c++11
+QT += qml quick sql xml svg
+QT += core5compat widgets
+
+contains(QT_MAJOR_VERSION, 5) {
+    QT += webengine
+}
+
+contains(QT_MAJOR_VERSION, 6) {
+    QT += webenginequick
+}
+
+
+CONFIG += c++17
 QMAKE_CXXFLAGS_RELEASE -= -Wdate-time
+QMAKE_CXXFLAGS_RELEASE += -fpermissive
 
 TEMPLATE = app
 

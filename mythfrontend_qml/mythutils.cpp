@@ -11,6 +11,7 @@
 #include <QImage>
 #include <QDomDocument>
 #include <QJsonDocument>
+#include <QRegularExpression>
 
 // common
 #include "mythutils.h"
@@ -219,10 +220,10 @@ QString MythUtils::replaceHtmlChar(const QString &orig)
     s.replace("&szlig;", QChar(0x00df));
 
     // links
-    s.replace(QRegExp("<a href=.*/a>"), "");
+    s.replace(QRegularExpression("<a href=.*/a>"), "");
 
     // images
-    s.replace(QRegExp("<img src=.*/>"), "");
+    s.replace(QRegularExpression("<img src=.*/>"), "");
 
     return s;
 }

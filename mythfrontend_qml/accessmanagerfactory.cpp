@@ -4,9 +4,13 @@
 MythQmlNetworkAccessManagerFactory::MythQmlNetworkAccessManagerFactory()
 {
     // disregard this for now...
-    QList<QSslCertificate> cert = QSslCertificate::fromPath(":/public.crt");
-    QSslError self_signed_error(QSslError::SelfSignedCertificate, cert.at(0));
-    m_expectedSslErrors.append(self_signed_error);
+    QList<QSslCertificate> certs = QSslCertificate::fromPath(":/public.crt");
+
+   if (certs.count() > 0)
+    {
+        QSslError self_signed_error(QSslError::SelfSignedCertificate, certs.at(0));
+        m_expectedSslErrors.append(self_signed_error);
+    }
 }
 
 MythQmlNetworkAccessManagerFactory::~MythQmlNetworkAccessManagerFactory()

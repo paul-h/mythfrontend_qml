@@ -61,13 +61,13 @@ bool Context::init()
     m_engine = new QQmlApplicationEngine;
 
     QCoreApplication::setApplicationName(m_appName);
-    QCoreApplication::setAttribute(Qt::AA_X11InitThreads);
 
     qmlRegisterType<Process>("Process", 1, 0, "Process");
 
     qRegisterMetaType<Verbose>("Verbose");
     qmlRegisterUncreatableType<VerboseClass>("mythqml.net", 1, 0, "Verbose", "Not creatable as it is an enum type");
 
+#if 0
     RegisterQmlVlc();
     QmlVlcConfig& config = QmlVlcConfig::instance();
     config.enableAdjustFilter( true );
@@ -76,6 +76,7 @@ bool Context::init()
     config.enableDebug(false);
     config.enableLoopPlayback(false);
     config.setTrustedEnvironment(true);
+#endif
 
 #ifdef USE_VLCQT
     //VlcCommon::setPluginPath("/usr/local/qml/");
@@ -162,7 +163,7 @@ bool Context::init()
     // create URL interceptor
     m_urlInterceptor = new MythQmlAbstractUrlInterceptor(m_engine);
     m_urlInterceptor->setTheme(theme);
-    m_engine->setUrlInterceptor(m_urlInterceptor);
+    m_engine->addUrlInterceptor(m_urlInterceptor);
 
     m_engine->addImportPath(QString(SHAREPATH) + "qml/Themes/Default");
     m_engine->addImportPath(QString(SHAREPATH) + "qml");
