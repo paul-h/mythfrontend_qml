@@ -1,6 +1,7 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
-import QtQuick.Controls 1.4
+import QtQuick
+import QtQml.XmlListModel
+import QtQuick.Controls
+
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
@@ -294,7 +295,7 @@ BaseScreen
         else
         {
             playerSources.adhocList = mediaModel;
-            var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0}});
+            var item = stack.push(Qt.resolvedUrl("InternalPlayer.qml"), {defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0});
         }
     }
 
@@ -330,6 +331,7 @@ BaseScreen
         youtubeFeedModel.getYouTubeVideos(youtubeID,
             function ()
             {
+                console.log("youtubeFeedModel.getYouTubeVideos result: " + this.responseText);
                 youtubeResult.json = this.responseText;
             }
         );

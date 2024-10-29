@@ -1,6 +1,7 @@
-import QtQuick 2.0
-import QtQuick.Controls 1.5
-import QtWebEngine 1.5
+import QtQuick
+import QtQuick.Controls
+import QtWebEngine
+
 import Base 1.0
 import Dialogs 1.0
 
@@ -105,7 +106,7 @@ BaseScreen
         message: "Browser Options"
         width: xscale(400); height: yscale(600)
 
-        onItemSelected:
+        onItemSelected: (itemText, itemData) =>
         {
             if (itemData === "enterurl")
             {
@@ -144,9 +145,9 @@ BaseScreen
 
         width: xscale(600); height: yscale(350)
 
-        onResultText:
+        onResultText: text =>
         {
-            if (text.startsWith("http://") || text.startsWith("https://"))
+            if (text.startsWith("http://") || text.startsWith("https://") || text.startsWith("file://"))
                 browser.url = text
             else
                 browser.url = "http://" + text

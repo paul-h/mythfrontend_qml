@@ -1,7 +1,7 @@
-import QtQuick 2.0
-import QtQuick.Window 2.0
-import QtQuick.Layouts 1.0
-import QtQuick.Controls 1.0
+import QtQuick
+import QtQuick.Window
+import QtQuick.Layouts
+import QtQuick.Controls
 import Base 1.0
 import VLCQt 1.1
 

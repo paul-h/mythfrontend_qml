@@ -1,6 +1,7 @@
-import QtQuick 2.0
-import QtQuick.Controls 1.4
-import QtWebEngine 1.3
+import QtQuick
+import QtQuick.Controls
+import QtWebEngine
+
 import Base 1.0
 
 BaseScreen

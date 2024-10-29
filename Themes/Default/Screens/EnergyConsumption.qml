@@ -1,5 +1,6 @@
-import QtQuick 2.7
-import QtCharts 2.15
+import QtQuick
+import QtCharts
+
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0

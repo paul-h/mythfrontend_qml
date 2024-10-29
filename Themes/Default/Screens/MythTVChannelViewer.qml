@@ -1,6 +1,7 @@
-import QtQuick 2.0
-import QtQml 2.2
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml
+import QtQml.XmlListModel
+
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
@@ -232,7 +233,7 @@ BaseScreen
             }
             else
             {
-                var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Live TV", defaultFilter: filter, defaultCurrentFeed: channelGrid.currentIndex}});
+                var item = stack.push(Qt.resolvedUrl("InternalPlayer.qml"), defaultFeedSource:  "Live TV", defaultFilter: filter, defaultCurrentFeed: channelGrid.currentIndex});
                 item.feedChanged.connect(feedChanged);
             }
                 event.accepted = true;

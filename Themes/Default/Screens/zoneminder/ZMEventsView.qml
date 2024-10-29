@@ -1,4 +1,5 @@
-import QtQuick 2.0
+import QtQuick
+
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
@@ -524,7 +525,7 @@ BaseScreen
     function playEvent()
     {
         returnSound.play();
-        var item = stack.push({item: Qt.resolvedUrl("ZMEventsPlayer.qml"), properties:{eventList:  eventsList.model, currentEvent: eventsList.currentIndex}});
+        var item = stack.push(Qt.resolvedUrl("ZMEventsPlayer.qml"), {eventList:  eventsList.model, currentEvent: eventsList.currentIndex});
         item.feedChanged.connect(feedChanged);
     }
 

@@ -1,4 +1,5 @@
-import QtQuick 2.7
+import QtQuick
+
 import Base 1.0
 import Dialogs 1.0
 import RecordingsModel 1.0
@@ -387,7 +388,7 @@ BaseScreen
             mediaModel.get(0).url = url;
             mediaModel.get(0).player = (_useMythProtocol ? "VLC" : "MDK");
             playerSources.adhocList = mediaModel;
-            stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0}});
+            stack.push(Qt.resolvedUrl("InternalPlayer.qml"), defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0});
             event.accepted = true;
             returnSound.play();
         }

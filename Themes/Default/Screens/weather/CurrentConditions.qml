@@ -1,10 +1,11 @@
-import QtQuick 2.0
+import QtQuick
+import QtQuick.Layouts
+
 import Screens 1.0
 import Base 1.0
 import Models 1.0
 import SvgImage 1.0
 
-import QtQuick.Layouts 1.3
 
 BaseScreen
 {
@@ -41,7 +42,7 @@ BaseScreen
         if (event.key === Qt.Key_F1)
         {
             // red
-            stack.push({item: Qt.resolvedUrl("Forecast.qml"), properties:{forecast:  vcWeather.forecast}});
+            stack.push(Qt.resolvedUrl("Forecast.qml"), {forecast:  vcWeather.forecast});
         }
         else if (event.key === Qt.Key_F2)
         {

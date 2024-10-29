@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.Controls 1.4
+import QtQuick
+import QtQuick.Controls
+
 import Base 1.0
 import Screens 1.0
 import Dialogs 1.0

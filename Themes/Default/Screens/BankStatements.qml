@@ -1,6 +1,7 @@
-import QtQuick 2.7
-import QtQuick.Controls 1.5
-import QtWebEngine 1.5
+import QtQuick
+import QtQuick.Controls
+import QtWebEngine
+
 import Base 1.0
 import Models 1.0
 import Dialogs 1.0
@@ -38,7 +39,7 @@ BaseScreen
     FolderListModel
     {
         id: folderModel
-        folder: settings.bankingDataDir.replace("file://", "")
+        folder: settings.bankingDataDir
         nameFilters: ["*.pdf"]
         showDirsFirst: true
         caseSensitive: false

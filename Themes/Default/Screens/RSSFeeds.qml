@@ -1,6 +1,7 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
-import QtQuick.Controls 1.4
+import QtQuick
+import QtQml.XmlListModel
+import QtQuick.Controls
+
 import Base 1.0
 import Models 1.0
 import mythqml.net 1.0
@@ -21,7 +22,7 @@ BaseScreen
         showTicker(false);
     }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         if (event.key === Qt.Key_F1)
         {
@@ -167,9 +168,9 @@ BaseScreen
         {
             defaultFocusItem = articleList;
             if (isPanel)
-                panelStack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: feedModel.get(articleList.currentIndex).link, zoomFactor: xscale(1.0)}});
+                panelStack.push(Qt.resolvedUrl("WebBrowser.qml"), {url: feedModel.get(articleList.currentIndex).link, zoomFactor: xscale(1.0)});
             else
-                stack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: feedModel.get(articleList.currentIndex).link, zoomFactor: xscale(1.0)}});
+                stack.push(Qt.resolvedUrl("WebBrowser.qml"), {url: feedModel.get(articleList.currentIndex).link, zoomFactor: xscale(1.0)});
         }
 
         onCurrentIndexChanged:

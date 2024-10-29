@@ -1,4 +1,5 @@
-import QtQuick 2.0
+import QtQuick
+
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
@@ -118,7 +119,7 @@ BaseScreen
             {
                 var website = webvideoGrid.model.get(webvideoGrid.currentIndex).website;
                 var zoom = xscale(webvideoGrid.model.get(webvideoGrid.currentIndex).zoom);
-                stack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: website, zoomFactor: zoom}});
+                stack.push(Qt.resolvedUrl("WebBrowser.qml"), url: website, zoomFactor: zoom});
             }
 
             returnSound.play();
@@ -229,7 +230,7 @@ BaseScreen
 
             if (!root.isPanel)
             {
-                var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Web Videos", defaultFilter:  filter, defaultCurrentFeed: webvideoGrid.currentIndex}});
+                var item = stack.push(Qt.resolvedUrl("InternalPlayer.qml"), {defaultFeedSource:  "Web Videos", defaultFilter:  filter, defaultCurrentFeed: webvideoGrid.currentIndex});
                 item.feedChanged.connect(feedChanged);
             }
             else

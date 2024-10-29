@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
@@ -19,7 +19,7 @@ BaseScreen
         updateStats();
     }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         event.accepted = true;
 
@@ -190,7 +190,7 @@ BaseScreen
             returnSound.play();
         }
 
-        Keys.onPressed:
+        Keys.onPressed: event =>
         {
             if (event.key === Qt.Key_Left && previousFocusItem)
             {

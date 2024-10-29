@@ -1,6 +1,7 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
-import Qt.labs.folderlistmodel 2.5
+import QtQuick
+import QtQml.XmlListModel
+import Qt.labs.folderlistmodel
+
 import Base 1.0
 import Process 1.0
 import Models 1.0
@@ -433,7 +434,7 @@ BaseScreen
         model: mediaItemsModel
         delegate: itemDelegate
 
-        Keys.onReturnPressed:
+        Keys.onReturnPressed: event =>
         {
             var folder = "file://" + model.get(currentIndex, "folder");
             var filename = model.get(currentIndex, "filename")
@@ -462,7 +463,7 @@ BaseScreen
                     else
                     {
                         playerSources.adhocList = mediaModel;
-                        stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0}});
+                        stack.push(Qt.resolvedUrl("InternalPlayer.qml"), {defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0});
                     }
                 }
             }
@@ -706,7 +707,7 @@ BaseScreen
             {
                 var index = parseInt(itemData.replace("EXTRA:", ""));
                 playerSources.adhocList = extrasModel;
-                stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: index}});
+                stack.push(Qt.resolvedUrl("InternalPlayer.qml"), {defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: index});
             }
         }
 
@@ -753,7 +754,7 @@ BaseScreen
         if (website != "")
         {
             var zoom = xscale(1.0);
-            stack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: website, zoomFactor: zoom}});
+            stack.push(Qt.resolvedUrl("WebBrowser.qml"), {url: website, zoomFactor: zoom});
         }
     }
 
@@ -786,7 +787,7 @@ BaseScreen
 
     function showMetadataEditor()
     {
-        var item = stack.push({item: Qt.resolvedUrl("MediaMetadataEditor.qml"), properties:{sqlModel: mediaItemsModel, currentIndex: videoList.currentIndex}});
+        var item = stack.push(Qt.resolvedUrl("MediaMetadataEditor.qml"), {sqlModel: mediaItemsModel, currentIndex: videoList.currentIndex});
         item.saved.connect(reloadModel);
     }
 

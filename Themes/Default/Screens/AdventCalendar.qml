@@ -1,6 +1,6 @@
-import QtMultimedia 5.4
+import QtQuick
+import QtMultimedia
 
-import QtQuick 2.5
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
@@ -312,7 +312,7 @@ BaseScreen
             dbUtils.setSetting("Advent" + calendarModel.calendarIndex + "Day" + calendarGrid.currentIndex, settings.hostName,  "opened");
             calendarGrid.focus = true;
             playerSources.adhocList = calendarGrid.model;
-            stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Advent Calendar", defaultFilter:  "", defaultCurrentFeed: calendarGrid.currentIndex}});
+            stack.push(Qt.resolvedUrl("InternalPlayer.qml"), {defaultFeedSource:  "Advent Calendar", defaultFilter:  "", defaultCurrentFeed: calendarGrid.currentIndex});
         }
         onCancelled:
         {

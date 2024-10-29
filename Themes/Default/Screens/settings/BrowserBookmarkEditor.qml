@@ -1,4 +1,5 @@
-import QtQuick 2.0
+import QtQuick
+
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
@@ -71,7 +72,7 @@ BaseScreen
             else if (!url.startsWith("http://") && !url.startsWith("https://"))
                 url = "http://" + url;
 
-            stack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: url, fullscreen: fullscreen, zoomFactor: zoom}});
+            stack.push(mythUtils.findThemeFile("Screens/WebBrowser.qml"), {url: url, fullscreen: fullscreen, zoomFactor: zoom});
         }
         else if (event.key === Qt.Key_F4)
         {

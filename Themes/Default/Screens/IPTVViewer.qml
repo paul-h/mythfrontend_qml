@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
@@ -214,7 +215,7 @@ BaseScreen
 
             if (!root.isPanel)
             {
-                var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "IPTV", defaultFilter:  filter, defaultCurrentFeed: iptvGrid.currentIndex}});
+                var item = stack.push(Qt.resolvedUrl("InternalPlayer.qml"), {defaultFeedSource:  "IPTV", defaultFilter:  filter, defaultCurrentFeed: iptvGrid.currentIndex});
                 item.feedChanged.connect(feedChanged);
             }
             else

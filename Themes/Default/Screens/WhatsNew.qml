@@ -1,6 +1,7 @@
-import QtQuick 2.0
-import QtQuick.Controls 1.5
-import QtWebEngine 1.5
+import QtQuick
+import QtQuick.Controls
+import QtWebEngine
+
 import Base 1.0
 import Models 1.0
 

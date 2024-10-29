@@ -1,4 +1,5 @@
-import QtQuick 2.0
+import QtQuick
+
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
@@ -69,7 +70,7 @@ BaseScreen
         objectName: "WebCamViewer"
     }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         if (!checkedForUpdates)
             return;
@@ -185,7 +186,7 @@ BaseScreen
             {
                 var website = webcamGrid.model.get(webcamGrid.currentIndex).website;
                 var zoom = xscale(webcamGrid.model.get(webcamGrid.currentIndex).zoom);
-                stack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: website, zoomFactor: zoom}});
+                stack.push(Qt.resolvedUrl("WebBrowser.qml"), {url: website, zoomFactor: zoom});
             }
 
             returnSound.play();
@@ -315,7 +316,7 @@ BaseScreen
         delegate: webcamDelegate
         focus: true
 
-        Keys.onReturnPressed:
+        Keys.onReturnPressed:event =>
         {
             if (!checkedForUpdates)
                 return;
@@ -326,7 +327,7 @@ BaseScreen
 
             if (!root.isPanel)
             {
-                var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Webcams", defaultFilter:  filter, defaultCurrentFeed: webcamGrid.currentIndex}});
+                var item = stack.push(Qt.resolvedUrl("InternalPlayer.qml"), {defaultFeedSource:  "Webcams", defaultFilter:  filter, defaultCurrentFeed: webcamGrid.currentIndex});
                 item.feedChanged.connect(feedChanged);
             }
             else
@@ -338,7 +339,7 @@ BaseScreen
             event.accepted = true;
         }
 
-        Keys.onPressed:
+        Keys.onPressed: event =>
         {
             if (event.key === Qt.Key_Left && ((currentIndex % 4) === 0 && previousFocusItem))
             {
@@ -496,7 +497,7 @@ BaseScreen
                         mediaModel.get(0).icon = list[4];
 
                     playerSources.adhocList = mediaModel;
-                    var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0}});
+                    var item = stack.push(Qt.resolvedUrl("InternalPlayer.qml"), {defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0});
                 }
             }
             else if (itemData.startsWith("webpage"))
@@ -509,7 +510,7 @@ BaseScreen
                     var zoom = xscale(1.0) //parseFloat(list[3]);
                     var url = list[4];
 
-                    stack.push({item: Qt.resolvedUrl("WebBrowser.qml"), properties:{url: url, zoomFactor: zoom}});
+                    stack.push(Qt.resolvedUrl("WebBrowser.qml"), {url: url, zoomFactor: zoom});
                 }
             }
             else if (itemData !== "")

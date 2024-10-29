@@ -1,9 +1,10 @@
-import QtQuick 2.0
-import QtQuick.Window 2.0
-import QtQuick.Layouts 1.0
-import QtQuick.Controls 1.0
-import QtQuick.XmlListModel 2.0
-import QtWebEngine 1.3
+import QtQuick
+import QtQuick.Window
+import QtQuick.Layouts
+import QtQuick.Controls
+import QtQml.XmlListModel
+import QtWebEngine
+
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
@@ -58,10 +59,10 @@ BaseScreen
         playerLayout.mediaPlayer3.setVolume(volume);
         playerLayout.mediaPlayer4.setVolume(volume);
 
-        playerLayout.mediaPlayer1.browserURLListChanged.connect(updateBrowser());
-        playerLayout.mediaPlayer2.browserURLListChanged.connect(updateBrowser());
-        playerLayout.mediaPlayer3.browserURLListChanged.connect(updateBrowser());
-        playerLayout.mediaPlayer4.browserURLListChanged.connect(updateBrowser());
+        playerLayout.mediaPlayer1.browserURLListChanged.connect(updateBrowser);
+        playerLayout.mediaPlayer2.browserURLListChanged.connect(updateBrowser);
+        playerLayout.mediaPlayer3.browserURLListChanged.connect(updateBrowser);
+        playerLayout.mediaPlayer4.browserURLListChanged.connect(updateBrowser);
 
         getActivePlayer().showInfo(true);
         getActivePlayer().updateRadioFeedList();

@@ -1,6 +1,7 @@
-import QtQuick 2.0
-import QtQml 2.2
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml
+import QtQml.XmlListModel
+
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
