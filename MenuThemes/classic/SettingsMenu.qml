@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick
 
 ListModel
 {
@@ -82,6 +82,12 @@ ListModel
     {
         menutext: "Home Assistant Settings"
         loaderSource:"settings/HASettingsEditor.qml"
+        waterMark: "watermark/keys.png"
+    }
+    ListElement
+    {
+        menutext: "Menu Editor"
+        loaderSource:"settings/MenuSettingsEditor.qml"
         waterMark: "watermark/keys.png"
     }
 }

@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick
 
 ListModel
 {
@@ -49,6 +49,12 @@ ListModel
         waterMark: "watermark/tivo.svg"
         layout: 0
         feedSource: "Tivo TV"
+    }
+    ListElement
+    {
+        menutext: "Tivo and FireTV embedded players"
+        loaderSource: "tests/TestPage6.qml"
+        waterMark: "watermark/setup.png"
     }
     ListElement
     {

@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick
 import ".."
 
 ListModel
@@ -61,6 +61,13 @@ ListModel
         waterMark: "watermark/browser.png"
         url: "https://www.google.co.uk"
         zoom: 1.0
+    }
+    ListElement
+    {
+        menutext:"Web Browser Test"
+        loaderSource: "ThemedMenu.qml"
+        waterMark: "watermark/browser.png"
+        menuSource: "database://web_browser|Web Browser Menu|title/title_info_center.png"
     }
     ListElement
     {
