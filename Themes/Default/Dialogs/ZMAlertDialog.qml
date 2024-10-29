@@ -1,8 +1,7 @@
-import QtQuick 2.0
+import QtQuick
+
 import Base 1.0
 import Dialogs 1.0
-import QtGraphicalEffects 1.12
-import QmlVlc 0.1
 import "../../../Models"
 import mythqml.net 1.0
 

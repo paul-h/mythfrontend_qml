@@ -1,4 +1,5 @@
-import QtQuick 2.0
+import QtQuick
+
 import Base 1.0
 import mythqml.net 1.0
 
@@ -32,7 +33,7 @@ BaseDialog
         menuList.addNode(path, title, data, checked);
     }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         event.accepted = true;
 
@@ -65,7 +66,7 @@ BaseDialog
             anchors.fill: parent
 
             focus: true
-            onNodeClicked:
+            onNodeClicked: node =>
             {
                 log.debug(Verbose.GUI, "PopupMenu: onNodeClicked - itemTitle: " + node.itemTitle + ", node.itemData: " + node.itemData);
                 popupMenu.state = "";

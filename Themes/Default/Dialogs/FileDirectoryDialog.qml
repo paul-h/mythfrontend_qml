@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick
 import Models 1.0
 import Base 1.0
 import SortFilterProxyModel 0.2

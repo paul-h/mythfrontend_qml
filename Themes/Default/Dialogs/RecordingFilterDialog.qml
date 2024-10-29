@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick
 import Base 1.0
 import "../../../Models"
 import mythqml.net 1.0
