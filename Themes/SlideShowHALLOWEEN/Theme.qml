@@ -366,7 +366,7 @@ QtObject
 
     function generateGradient (template, baseColor)
     {
-        return template.createObject (_garbage_, { "baseColor" : baseColor });
+        return template.createObject (_garbage_);
     }
 
     // not selected not focused
