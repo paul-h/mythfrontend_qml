@@ -1,5 +1,6 @@
 #include "rolesorter.h"
 #include "qqmlsortfilterproxymodel.h"
+#include "../utils/utils.h"
 
 namespace qqsfpm {
 
@@ -7,7 +8,8 @@ namespace qqsfpm {
     \qmltype RoleSorter
     \inherits Sorter
     \inqmlmodule SortFilterProxyModel
-    \brief Sorts rows based on a source model role
+    \ingroup Sorters
+    \brief Sorts rows based on a source model role.
 
     A RoleSorter is a simple \l Sorter that sorts rows based on a source model role.
 
@@ -55,14 +57,8 @@ QPair<QVariant, QVariant> RoleSorter::sourceData(const QModelIndex &sourceLeft, 
 
 int RoleSorter::compare(const QModelIndex &sourceLeft, const QModelIndex& sourceRight, const QQmlSortFilterProxyModel& proxyModel) const
 {
-    QPair<QVariant, QVariant> pair = sourceData(sourceLeft, sourceRight, proxyModel);
-    QVariant leftValue = pair.first;
-    QVariant rightValue = pair.second;
-    if (leftValue < rightValue)
-        return -1;
-    if (leftValue > rightValue)
-        return 1;
-    return 0;
+    const QPair<QVariant, QVariant> pair = sourceData(sourceLeft, sourceRight, proxyModel);
+    return compareVariants(pair.first, pair.second);
 }
 
 }

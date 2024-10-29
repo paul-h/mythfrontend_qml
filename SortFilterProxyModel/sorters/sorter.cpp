@@ -5,8 +5,10 @@ namespace qqsfpm {
 
 /*!
     \qmltype Sorter
+    \qmlabstract
     \inqmlmodule SortFilterProxyModel
-    \brief Base type for the \l SortFilterProxyModel sorters
+    \ingroup Sorters
+    \brief Base type for the \l SortFilterProxyModel sorters.
 
     The Sorter type cannot be used directly in a QML file.
     It exists to provide a set of common properties and methods,
@@ -76,6 +78,30 @@ void Sorter::setSortOrder(Qt::SortOrder sortOrder)
 
     m_sortOrder = sortOrder;
     Q_EMIT sortOrderChanged();
+    invalidate();
+}
+
+/*!
+    \qmlproperty int Sorter::priority
+
+    This property holds the sort priority of this sorter.
+    Sorters with a higher priority are applied first.
+    In case of equal priority, Sorters are ordered by their insertion order.
+
+    By default, the priority is 0.
+*/
+int Sorter::priority() const
+{
+    return m_priority;
+}
+
+void Sorter::setPriority(int priority)
+{
+    if (m_priority == priority)
+        return;
+
+    m_priority = priority;
+    Q_EMIT priorityChanged();
     invalidate();
 }
 
