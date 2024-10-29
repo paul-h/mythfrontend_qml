@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick
 import Base 1.0
 import mythqml.net 1.0
 
@@ -46,7 +46,7 @@ Item
         visible : true
     }
 
-    Keys.onEscapePressed:
+    Keys.onEscapePressed: event =>
     {
          if (!closeOnEscape)
             event.accepted = false;
@@ -54,7 +54,7 @@ Item
             event.accepted = handleEscape();
     }
 
-    Keys.onLeftPressed:
+    Keys.onLeftPressed: event =>
     {
         if (isPanel && previousFocusItem)
             previousFocusItem.focus = true

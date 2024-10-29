@@ -1,5 +1,6 @@
-﻿import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+﻿import QtQuick
+import QtQml.XmlListModel
+
 import SortFilterProxyModel 0.2
 import mythqml.net 1.0
 import Models 1.0

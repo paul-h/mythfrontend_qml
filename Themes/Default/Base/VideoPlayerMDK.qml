@@ -1,4 +1,5 @@
-import QtQuick 2.10
+import QtQuick
+
 import MDKPlayer 1.0
 import mythqml.net 1.0
 

@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtWebEngine 1.3
+import QtQuick
+import QtWebEngine
+
 import Base 1.0
 import Models 1.0
 

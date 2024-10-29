@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick
 import QmlVlc 0.1
 import mythqml.net 1.0
 

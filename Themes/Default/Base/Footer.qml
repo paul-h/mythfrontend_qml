@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick
 
 Item
 {
@@ -11,8 +11,11 @@ Item
     property alias blueText: blue.text
 
     // private properties
-    property double _wmult: width / implicitWidth
-    property double _hmult: height / implicitHeight
+    property double _wmult: 1
+    property double _hmult: 1
+
+    onWidthChanged: _wmult = width / implicitWidth
+    onHeightChanged: _hmult = height / implicitHeight
 
     function _xscale(x)
     {

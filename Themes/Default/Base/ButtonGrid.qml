@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick
 
 GridView
 {
@@ -78,7 +78,7 @@ GridView
     delegate: {}
     focus: true
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         if (event.key === Qt.Key_PageDown || event.key === Qt.Key_PageUp)
         {

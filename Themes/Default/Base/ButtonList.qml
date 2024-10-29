@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick
 
 ListView
 {
@@ -19,7 +19,7 @@ ListView
     signal nodeClicked(int nodeID, int index);
     signal nodeSelected(int nodeID, int index);
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         var rowCount = currentItem ? height / currentItem.height : 0;
 
