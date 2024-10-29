@@ -1,5 +1,5 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
 
 import Process 1.0
 import mythqml.net 1.0
@@ -31,10 +31,10 @@ Item
         signal loaded();
 
         source: "https://" + ip + "/TiVoConnect?Command=QueryContainer&Container=/NowPlaying&ItemCount=1&AnchorOffset=0&Recurse=Yes"
-        namespaceDeclarations: "declare default element namespace 'http://www.tivo.com/developer/calypso-protocol-1.6/';"
+        //namespaceDeclarations: "declare default element namespace 'http://www.tivo.com/developer/calypso-protocol-1.6/';" // not supported in Qt6
 
         query: "/TiVoContainer/Details"
-        XmlRole { name: "TotalItems"; query: "TotalItems/number()" }
+        XmlListModelRole { name: "TotalItems"; elementName: "TotalItems" } //number
 
         onStatusChanged:
         {
@@ -68,14 +68,14 @@ Item
 
         signal loaded();
 
-        namespaceDeclarations: "declare default element namespace 'http://www.tivo.com/developer/calypso-protocol-1.6/';"
+        //namespaceDeclarations: "declare default element namespace 'http://www.tivo.com/developer/calypso-protocol-1.6/';"
         query: "/TiVoContainer/Item"
-        XmlRole { name: "Title"; query: "Details/Title/string()" }
-        XmlRole { name: "EpisodeTitle"; query: "Details/EpisodeTitle/string()" }
-        XmlRole { name: "Description"; query: "Details/Description/string()" }
-        XmlRole { name: "Duration"; query: "Details/Duration/number()" }
-        XmlRole { name: "SourceChannel"; query: "Details/SourceChannel/string()" }
-        XmlRole { name: "SourceStation"; query: "Details/SourceStation/string()" }
+        XmlListModelRole { name: "Title"; elementName: "Details/Title" }
+        XmlListModelRole { name: "EpisodeTitle"; elementName: "Details/EpisodeTitle" }
+        XmlListModelRole { name: "Description"; elementName: "Details/Description" }
+        XmlListModelRole { name: "Duration"; elementName: "Details/Duration" } // number
+        XmlListModelRole { name: "SourceChannel"; elementName: "Details/SourceChannel" }
+        XmlListModelRole { name: "SourceStation"; elementName: "Details/SourceStation" }
 
         onStatusChanged:
         {

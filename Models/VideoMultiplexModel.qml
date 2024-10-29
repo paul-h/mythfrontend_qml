@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import mythqml.net 1.0
 
 XmlListModel
@@ -11,30 +12,30 @@ XmlListModel
     source: settings.masterBackend + "Channel/GetVideoMultiplexList?SourceID=" + sourceId
     query: "/VideoMultiplexList/VideoMultiplexes/VideoMultiplex"
 
-    XmlRole { name: "MplexId"; query: "MplexId/number()" }
-    XmlRole { name: "SourceId"; query: "SourceId/number()" }
-    XmlRole { name: "TransportId"; query: "TransportId/number()" }
-    XmlRole { name: "NetworkId"; query: "NetworkId/number()" }
-    XmlRole { name: "Frequency"; query: "Frequency/number()" }
-    XmlRole { name: "Inversion"; query: "Inversion/string()" }
-    XmlRole { name: "SymbolRate"; query: "SymbolRate/number()" }
-    XmlRole { name: "FEC"; query: "FEC/string()" }
-    XmlRole { name: "Polarity"; query: "Polarity/string()" }
-    XmlRole { name: "Modulation"; query: "Modulation/string()" }
-    XmlRole { name: "Bandwidth"; query: "Bandwidth/string()" }
-    XmlRole { name: "LPCodeRate"; query: "LPCodeRate/string()" }
-    XmlRole { name: "HPCodeRate"; query: "HPCodeRate/string()" }
-    XmlRole { name: "TransmissionMode"; query: "TransmissionMode/string()" }
-    XmlRole { name: "GuardInterval"; query: "GuardInterval/string()" }
-    XmlRole { name: "Visible"; query: "Visible/string()" }
-    XmlRole { name: "Constellation"; query: "Constellation/string()" }
-    XmlRole { name: "Hierarchy"; query: "Hierarchy/string()" }
-    XmlRole { name: "ModulationSystem"; query: "ModulationSystem/string()" }
-    XmlRole { name: "RollOff"; query: "RollOff/string()" }
-    XmlRole { name: "SIStandard"; query: "SIStandard/string()" }
-    XmlRole { name: "ServiceVersion"; query: "ServiceVersion/string()" }
-    XmlRole { name: "UpdateTimeStamp"; query: "UpdateTimeStamp/string()" }
-    XmlRole { name: "DefaultAuthority"; query: "DefaultAuthority/string()" }
+    XmlListModelRole { name: "MplexId"; elementName: "MplexId" } //number
+    XmlListModelRole { name: "SourceId"; elementName: "SourceId" } //number
+    XmlListModelRole { name: "TransportId"; elementName: "TransportId" }  //number
+    XmlListModelRole { name: "NetworkId"; elementName: "NetworkId" } //number
+    XmlListModelRole { name: "Frequency"; elementName: "Frequency" } //number
+    XmlListModelRole { name: "Inversion"; elementName: "Inversion" }
+    XmlListModelRole { name: "SymbolRate"; elementName: "SymbolRate" } //number
+    XmlListModelRole { name: "FEC"; elementName: "FEC" }
+    XmlListModelRole { name: "Polarity"; elementName: "Polarity" }
+    XmlListModelRole { name: "Modulation"; elementName: "Modulation" }
+    XmlListModelRole { name: "Bandwidth"; elementName: "Bandwidth" }
+    XmlListModelRole { name: "LPCodeRate"; elementName: "LPCodeRate" }
+    XmlListModelRole { name: "HPCodeRate"; elementName: "HPCodeRate" }
+    XmlListModelRole { name: "TransmissionMode"; elementName: "TransmissionMode" }
+    XmlListModelRole { name: "GuardInterval"; elementName: "GuardInterval" }
+    XmlListModelRole { name: "Visible"; elementName: "Visible" }
+    XmlListModelRole { name: "Constellation"; elementName: "Constellation" }
+    XmlListModelRole { name: "Hierarchy"; elementName: "Hierarchy" }
+    XmlListModelRole { name: "ModulationSystem"; elementName: "ModulationSystem" }
+    XmlListModelRole { name: "RollOff"; elementName: "RollOff" }
+    XmlListModelRole { name: "SIStandard"; elementName: "SIStandard" }
+    XmlListModelRole { name: "ServiceVersion"; elementName: "ServiceVersion" }
+    XmlListModelRole { name: "UpdateTimeStamp"; elementName: "UpdateTimeStamp" }
+    XmlListModelRole { name: "DefaultAuthority"; elementName: "DefaultAuthority" }
 
     signal loaded();
 

@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import mythqml.net 1.0
 import SortFilterProxyModel 0.2
 import RecordingsModel 1.0
@@ -111,15 +112,15 @@ Item
         source: settings.masterBackendV2 + "/Dvr/GetRecordedList?Descending=True&Details=False&IncCast=False&IncRecording=False&IncChannel=False&IgnoreLiveTV=True&IgnoreDeleted=True&start=0&count=1"
 
         query: "/ProgramList"
-        XmlRole { name: "TotalItems"; query: "TotalAvailable/number()" }
+        XmlListModelRole { name: "TotalItems"; elementName: "TotalAvailable" }
 
-        onStatusChanged:
+        onStatusChanged: status =>
         {
             if (status == XmlListModel.Ready)
             {
                 log.debug(Verbose.MODEL, "recordingDetailsModel: READY - Found " + count + " details");
                 log.info(Verbose.MODEL, "recordingDetailsModel: Found " + get(0).TotalItems + " recordings");
-                recordingsModel.totalRecordings = get(0).TotalItems;
+                recordingsModel.totalRecordings = parseInt(get(0).TotalItems);
                 recordingsModel.start();
             }
 
@@ -132,6 +133,16 @@ Item
             {
                 log.error(Verbose.MODEL, "recordingDetailsModel: ERROR: " + errorString() + " - " + source);
             }
+        }
+
+        function get(i)
+        {
+            var o = {}
+            for (var j = 0; j < roles.length; ++j)
+            {
+                o[roles[j].name] = data(index(i,0), Qt.UserRole + j)
+            }
+            return o
         }
     }
 
@@ -146,20 +157,20 @@ Item
         signal loaded();
 
         query: "/ProgramList/Programs/Program"
-        XmlRole { name: "Title"; query: "Title/string()" }
-        XmlRole { name: "SubTitle"; query: "SubTitle/string()" }
-        XmlRole { name: "Description"; query: "Description/string()" }
-        XmlRole { name: "Category"; query: "Category/string()" }
-        //XmlRole { name: "Duration"; query: "Details/Duration/number()" }
-        XmlRole { name: "ChanId"; query: "Channel/ChanId/string()" }
-        XmlRole { name: "ChanNum"; query: "Channel/ChanNum/string()" }
-        XmlRole { name: "CallSign"; query: "Channel/CallSign/string()" }
-        XmlRole { name: "ChannelName"; query: "Channel/ChannelName/string()" }
-        XmlRole { name: "RecGroup"; query: "Recording/RecGroup/string()" }
-        XmlRole { name: "StartTime"; query: "StartTime/string()" }
-        XmlRole { name: "AirDate"; query: "AirDate/string()" }
-        XmlRole { name: "FileName"; query: "FileName/string()" }
-        XmlRole { name: "HostName"; query: "HostName/string()" }
+        XmlListModelRole { name: "Title"; elementName: "Title" }
+        XmlListModelRole { name: "SubTitle"; elementName: "SubTitle" }
+        XmlListModelRole { name: "Description"; elementName: "Description" }
+        XmlListModelRole { name: "Category"; elementName: "Category" }
+        //XmlListModelRole { name: "Duration"; elementName: "Details/Duration" }
+        XmlListModelRole { name: "ChanId"; elementName: "Channel/ChanId" }
+        XmlListModelRole { name: "ChanNum"; elementName: "Channel/ChanNum" }
+        XmlListModelRole { name: "CallSign"; elementName: "Channel/CallSign" }
+        XmlListModelRole { name: "ChannelName"; elementName: "Channel/ChannelName" }
+        XmlListModelRole { name: "RecGroup"; elementName: "Recording/RecGroup" }
+        XmlListModelRole { name: "StartTime"; elementName: "StartTime" }
+        XmlListModelRole { name: "AirDate"; elementName: "AirDate" }
+        XmlListModelRole { name: "FileName"; elementName: "FileName" }
+        XmlListModelRole { name: "HostName"; elementName: "HostName" }
 
         onStatusChanged:
         {
@@ -186,6 +197,16 @@ Item
             startIndex = 0;
             var _itemCount = Math.min(itemCount, totalRecordings);
             source = settings.masterBackendV2 + "/Dvr/GetRecordedList?Descending=True&Details=True&IncCast=False&IncRecording=True&IncChannel=True&IgnoreLiveTV=True&IgnoreDeleted=True&StartIndex=" + startIndex + "&Count=" + itemCount
+        }
+
+        function get(i)
+        {
+            var o = {}
+            for (var j = 0; j < roles.length; ++j)
+            {
+                o[roles[j].name] = data(index(i,0), Qt.UserRole + j)
+            }
+            return o
         }
 
         function doLoad()
@@ -223,9 +244,7 @@ Item
                     if (recgroups.indexOf(listModel.get(x).RecGroup) < 0)
                         recgroups.push(listModel.get(x).RecGroup);
                 }
-
                 titles.sort();
-
                 for (x = 0; x < titles.length; x++)
                     root.titleList.append({"item": titles[x]});
 
@@ -240,9 +259,12 @@ Item
                     root.recgroupList.append({"item": recgroups[x]});
 
                 root.loadingFinished = true;
-                root.loadingNode.subNodes.clear();
 
-                expandNode(undefined, "", root.loadingNode);
+                if (root.loadingNode !== undefined)
+                {
+                    root.loadingNode.subNodes.clear();
+                    expandNode(undefined, "", root.loadingNode);
+                }
                 root.loaded();
             }
             else

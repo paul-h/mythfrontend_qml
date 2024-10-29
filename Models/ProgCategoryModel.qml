@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import mythqml.net 1.0
 
 XmlListModel
@@ -7,7 +8,7 @@ XmlListModel
     source: settings.masterBackend + "Dvr/GetProgramCategories?OnlyRecorded=true"
     query: "/StringList/String"
 
-    XmlRole { name: "item"; query: "string()" }
+    XmlListModelRole { name: "item"; elementName: "string()" } //FIXME??
 
     onStatusChanged:
     {

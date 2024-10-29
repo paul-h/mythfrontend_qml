@@ -1,5 +1,5 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+
 import mythqml.net 1.0
 import SortFilterProxyModel 0.2
 
@@ -140,7 +140,7 @@ Item
             // tell the WorkerScript to run the parser
             var models = {'countryModel': countryModel.model, 'languageModel': languageModel.model, 'streamModel': streamModel.model, 'categoryModel': categoryModel.model, 'guideModel': guideModel.model};
             var lists = {'categoryList': root.genreList, 'countryList': root.countryList, 'languageList': root.languageList};
-            var msg = {'json': json, 'query': query, 'jsonModel': jsonModel, 'models': models, 'lists': lists};
+            var msg = {'json': json, 'query': query, 'jsonModel': jsonModel, 'models': models, 'lists': lists, 'debug': debug};
 
             workerScript.sendMessage(msg);
         }

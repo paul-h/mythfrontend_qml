@@ -26,9 +26,8 @@ function loadModel(msg)
 
     var query = msg.query;
     var objectArray = parseJSONString(json, query);
-
     var jsonModel = msg.jsonModel;
-
+    var debug = msg.debug;
     var tagList = msg.lists.tagList;
     var countryList = msg.lists.countryList;
     var languageList = msg.lists.languageList;

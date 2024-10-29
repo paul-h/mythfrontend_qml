@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import mythqml.net 1.0
 
 XmlListModel
@@ -9,9 +10,9 @@ XmlListModel
     source: settings.configPath + "ticker.xml"
 
     query: "/items/item"
-    XmlRole { name: "id"; query: "id/number()" }
-    XmlRole { name: "category"; query: "category/string()" }
-    XmlRole { name: "text"; query: "text/string()" }
+    XmlListModelRole { name: "id"; elementName: "id" }
+    XmlListModelRole { name: "category"; elementName: "category" }
+    XmlListModelRole { name: "text"; elementName: "text" }
 
     onStatusChanged:
     {
@@ -29,5 +30,15 @@ XmlListModel
         {
             log.error(Verbose.MODEL, "TickerModel: ERROR: " + errorString() + " - " + source);
         }
+    }
+
+    function get(i)
+    {
+        var o = {}
+        for (var j = 0; j < roles.length; ++j)
+        {
+            o[roles[j].name] = data(index(i,0), Qt.UserRole + j)
+        }
+        return o
     }
 }

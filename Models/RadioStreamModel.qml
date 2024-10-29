@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import mythqml.net 1.0
 
 XmlListModel
@@ -14,21 +15,21 @@ XmlListModel
 
     source: "file:///home/paul/RadioStreamValidator/spiders/streams_new.xml"
     query: "/streams/item"
-    XmlRole { name: "No"; query: "no/number()" }
-    XmlRole { name: "Broadcaster"; query: "broadcaster/string()" }
-    XmlRole { name: "Channel"; query: "channel/string()" }
-    XmlRole { name: "Description"; query: "description/string()" }
-    XmlRole { name: "Genre"; query: "genre/string()" }
-    XmlRole { name: "Logo"; query: "logourl/string()" }
-    XmlRole { name: "Country"; query: "country/string()" }
-    XmlRole { name: "MetaFormat"; query: "metadataformat/string()" }
-    XmlRole { name: "Language"; query: "language/string()" }
-    XmlRole { name: "Url1"; query: "url1/string()" }
-    XmlRole { name: "Url2"; query: "url2/string()" }
-    XmlRole { name: "Url3"; query: "url3/string()" }
-    XmlRole { name: "Url4"; query: "url4/string()" }
-    XmlRole { name: "Url5"; query: "url5/string()" }
-    XmlRole { name: "Url6"; query: "url6/string()" }
+    XmlListModelRole { name: "No"; elementName: "no" } // number
+    XmlListModelRole { name: "Broadcaster"; elementName: "broadcaster" }
+    XmlListModelRole { name: "Channel"; elementName: "channel" }
+    XmlListModelRole { name: "Description"; elementName: "description" }
+    XmlListModelRole { name: "Genre"; elementName: "genre" }
+    XmlListModelRole { name: "Logo"; elementName: "logourl" }
+    XmlListModelRole { name: "Country"; elementName: "country" }
+    XmlListModelRole { name: "MetaFormat"; elementName: "metadataformat" }
+    XmlListModelRole { name: "Language"; elementName: "language" }
+    XmlListModelRole { name: "Url1"; elementName: "url1" }
+    XmlListModelRole { name: "Url2"; elementName: "url2" }
+    XmlListModelRole { name: "Url3"; elementName: "url3" }
+    XmlListModelRole { name: "Url4"; elementName: "url4" }
+    XmlListModelRole { name: "Url5"; elementName: "url5" }
+    XmlListModelRole { name: "Url6"; elementName: "url6" }
 
     signal loaded();
 
@@ -53,6 +54,16 @@ XmlListModel
             screenBackground.showBusyIndicator = false
             log.debug(Verbose.MODEL, "RadioStreamModel: ERROR - " + errorString() + " - " + source);
         }
+    }
+
+    function get(i)
+    {
+        var o = {}
+        for (var j = 0; j < roles.length; ++j)
+        {
+            o[roles[j].name] = data(index(i,0), Qt.UserRole + j)
+        }
+        return o
     }
 
     function updateLists()

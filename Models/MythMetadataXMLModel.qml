@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import mythqml.net 1.0
 
 XmlListModel
@@ -7,35 +8,35 @@ XmlListModel
     id: mxmlModel
     source: ""
     query: "/metadata/item"
-    XmlRole { name: "title"; query: "title/string()" }
-    XmlRole { name: "subtitle"; query: "subtitle/string()" }
-    XmlRole { name: "description"; query: "description/string()" }
-    XmlRole { name: "season"; query: "season/string()" }
-    XmlRole { name: "episode"; query: "episode/string()" }
-    XmlRole { name: "tagline"; query: "tagline/string()" }
-    XmlRole { name: "categories"; query: "string-join(categories/category/@name, ',')" }
-    XmlRole { name: "contenttype"; query: "contenttype/string()" }
-    XmlRole { name: "nsfw"; query: "boolean(nsfw/number())" }
-    XmlRole { name: "inetref"; query: "inetref/string()" }
-    XmlRole { name: "hash"; query: "hash/string()" }
-    XmlRole { name: "website"; query: "website/string()" }
-    XmlRole { name: "studio"; query: "studio/string()" }
-    XmlRole { name: "coverart"; query: "coverart/string()" }
-    XmlRole { name: "fanart"; query: "fanart/string()" }
-    XmlRole { name: "banner"; query: "banner/string()" }
-    XmlRole { name: "screenshot"; query: "screenshot/string()" }
-    XmlRole { name: "front"; query: "front/string()" }
-    XmlRole { name: "back"; query: "back/string()" }
+    XmlListModelRole { name: "title"; elementName: "title" }
+    XmlListModelRole { name: "subtitle"; elementName: "subtitle" }
+    XmlListModelRole { name: "description"; elementName: "description" }
+    XmlListModelRole { name: "season"; elementName: "season" }
+    XmlListModelRole { name: "episode"; elementName: "episode" }
+    XmlListModelRole { name: "tagline"; elementName: "tagline" }
+    XmlListModelRole { name: "categories"; elementName: "string-join(categories/category/@name, ',')" } // FIXME QT6
+    XmlListModelRole { name: "contenttype"; elementName: "contenttype" }
+    XmlListModelRole { name: "nsfw"; elementName: "boolean(nsfw)" } //FIXME QT6
+    XmlListModelRole { name: "inetref"; elementName: "inetref" }
+    XmlListModelRole { name: "hash"; elementName: "hash" }
+    XmlListModelRole { name: "website"; elementName: "website" }
+    XmlListModelRole { name: "studio"; elementName: "studio" }
+    XmlListModelRole { name: "coverart"; elementName: "coverart" }
+    XmlListModelRole { name: "fanart"; elementName: "fanart" }
+    XmlListModelRole { name: "banner"; elementName: "banner" }
+    XmlListModelRole { name: "screenshot"; elementName: "screenshot" }
+    XmlListModelRole { name: "front"; elementName: "front" }
+    XmlListModelRole { name: "back"; elementName: "back" }
 
-    XmlRole { name: "channum"; query: "channum/string()" }
-    XmlRole { name: "callsign"; query: "callsign/string()" }
-    XmlRole { name: "startts"; query: "startts/string()" }
-    XmlRole { name: "releasedate"; query: "releasedate/string()" }
-    XmlRole { name: "runtime"; query: "runtime/string()" }
-    XmlRole { name: "runtimesecs"; query: "runtimesecs/string()" }
-    XmlRole { name: "dateadded"; query: "dateadded/string()" }
-    XmlRole { name: "datemodified"; query: "datemodified/string()" }
-    XmlRole { name: "status"; query: "status/string()" }
+    XmlListModelRole { name: "channum"; elementName: "channum" }
+    XmlListModelRole { name: "callsign"; elementName: "callsign" }
+    XmlListModelRole { name: "startts"; elementName: "startts" }
+    XmlListModelRole { name: "releasedate"; elementName: "releasedate" }
+    XmlListModelRole { name: "runtime"; elementName: "runtime" }
+    XmlListModelRole { name: "runtimesecs"; elementName: "runtimesecs" }
+    XmlListModelRole { name: "dateadded"; elementName: "dateadded" }
+    XmlListModelRole { name: "datemodified"; elementName: "datemodified" }
+    XmlListModelRole { name: "status"; elementName: "status" }
 
     onStatusChanged:
     {

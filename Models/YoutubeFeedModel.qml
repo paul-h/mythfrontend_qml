@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import mythqml.net 1.0
 
 XmlListModel
@@ -8,14 +9,14 @@ XmlListModel
 
     source: ""
     query: "/feed/entry"
-    namespaceDeclarations: "declare default element namespace 'http://www.w3.org/2005/Atom'; declare namespace media = 'http://search.yahoo.com/mrss/'; "
-    XmlRole { name: "id"; query: "id/string()" }
-    XmlRole { name: "title"; query: "media:group/media:title/string()" }
-    XmlRole { name: "description"; query: "media:group/media:description/string()" }
-    XmlRole { name: "image"; query: "media:group/media:thumbnail/@url/string()" }
-    XmlRole { name: "published"; query: "published/string()" }
-    XmlRole { name: "updated"; query: "updated/string()" }
-    XmlRole { name: "link"; query: "link/@href/string()" }
+    // namespaceDeclarations: "declare default element namespace 'http://www.w3.org/2005/Atom'; declare namespace media = 'http://search.yahoo.com/mrss/'; "
+    XmlListModelRole { name: "id"; elementName: "id" }
+    XmlListModelRole { name: "title"; elementName: "media:group/media:title" }
+    XmlListModelRole { name: "description"; elementName: "media:group/media:description" }
+    XmlListModelRole { name: "image"; elementName: "media:group/media:thumbnail"; attributeName: "url" }
+    XmlListModelRole { name: "published"; elementName: "published" }
+    XmlListModelRole { name: "updated"; elementName: "updated" }
+    XmlListModelRole { name: "link"; elementName: "link"; attributeName: "href" }
 
     onStatusChanged:
     {
@@ -34,6 +35,16 @@ XmlListModel
         {
             log.error(Verbose.MODEL, "YoutubeFeedModel: ERROR: " + errorString() + " - " + source);
         }
+    }
+
+    function get(i)
+    {
+        var o = {}
+        for (var j = 0; j < roles.length; ++j)
+        {
+            o[roles[j].name] = data(index(i,0), Qt.UserRole + j)
+        }
+        return o
     }
 
     function getYouTubeVideos(videoId, callback)

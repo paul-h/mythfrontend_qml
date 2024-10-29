@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import mythqml.net 1.0
 
 XmlListModel
@@ -10,12 +11,12 @@ XmlListModel
 
     source: ""
     query: "/tv/programme"
-    XmlRole { name: "title"; query: "title/string()" }
-    XmlRole { name: "description"; query: "desc/string()" }
-    XmlRole { name: "channel"; query: "@channel/string()"}
-    XmlRole { name: "progStart"; query: "@start/string()" }
-    XmlRole { name: "progEnd"; query: "@stop/string()" }
-    XmlRole { name: "category"; query: "category/string()" }
+    XmlListModelRole { name: "title"; elementName: "title" }
+    XmlListModelRole { name: "description"; elementName: "desc" }
+    XmlListModelRole { name: "channel"; elementName: ""; attributeName: "channel" }
+    XmlListModelRole { name: "progStart"; elementName: ""; attributeName: "start" }
+    XmlListModelRole { name: "progEnd"; elementName: ""; attributeName: "stop" }
+    XmlListModelRole { name: "category"; elementName: "category" }
 
     onStatusChanged:
     {

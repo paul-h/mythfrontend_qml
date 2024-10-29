@@ -1,10 +1,12 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
-import mythqml.net 1.0
+import QtQuick
+import QtQml.XmlListModel
 
-XmlListModel
+import mythqml.net 1.0
+import FileIO 1.0
+
+Item
 {
-    id: zmLoginModel
+    id: root
 
     property string ip: settings.zmIP
     property string user: settings.zmUserName
@@ -12,29 +14,41 @@ XmlListModel
 
     signal loaded();
 
-    query: "/response"
-    XmlRole { name: "credentials"; query: "credentials/string()" }
-    XmlRole { name: "append_password"; query: "append_password/string()" }
-    XmlRole { name: "version"; query: "version/string()" }
-    XmlRole { name: "apiversion"; query: "apiversion/string()" }
-    XmlRole { name: "access_token"; query: "access_token/string()" }
-
-    onStatusChanged:
+    FileIO
     {
-        if (status == XmlListModel.Ready)
-        {
-            log.debug(Verbose.MODEL, "ZMLoginModel: READY - Found " + count + " login responses");
-            loaded();
-        }
+        id: loginFile
+        source: settings.configPath + "zmLogin.xml"
+        onError: console.log(msg)
+    }
 
-        if (status === XmlListModel.Loading)
-        {
-            log.debug(Verbose.MODEL, "ZMLoginModel: LOADING - " + source);
-        }
+    XmlListModel
+    {
+        id: zmLoginModel
 
-        if (status === XmlListModel.Error)
+        query: "/response"
+        XmlListModelRole { name: "credentials"; elementName: "credentials" }
+        XmlListModelRole { name: "append_password"; elementName: "append_password" }
+        XmlListModelRole { name: "version"; elementName: "version" }
+        XmlListModelRole { name: "apiversion"; elementName: "apiversion" }
+        XmlListModelRole { name: "access_token"; elementName: "access_token" }
+
+        onStatusChanged:
         {
-            log.error(Verbose.MODEL, "ZMLoginModel: ERROR: " + errorString() + " - " + source);
+            if (status == XmlListModel.Ready)
+            {
+                log.debug(Verbose.MODEL, "ZMLoginModel: READY - Found " + count + " login responses");
+                root.loaded();
+            }
+
+            if (status === XmlListModel.Loading)
+            {
+                log.debug(Verbose.MODEL, "ZMLoginModel: LOADING - " + source);
+            }
+
+            if (status === XmlListModel.Error)
+            {
+                log.error(Verbose.MODEL, "ZMLoginModel: ERROR: " + errorString() + " - " + source);
+            }
         }
     }
 
@@ -54,7 +68,8 @@ XmlListModel
             {
                 if (http.status == 200)
                 {
-                    xml = http.responseText
+                    loginFile.write(http.responseText);
+                    zmLoginModel.source = loginFile.source;
                 }
                 else
                 {
@@ -64,5 +79,15 @@ XmlListModel
             }
         }
         http.send(params);
+    }
+
+    function get(i)
+    {
+        var o = {}
+        for (var j = 0; j <  zmLoginModel.roles.length; ++j)
+        {
+            o[zmLoginModel.roles[j].name] = zmLoginModel.data(zmLoginModel.index(i, 0), Qt.UserRole + j)
+        }
+        return o
     }
 }

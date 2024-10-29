@@ -5,6 +5,8 @@
  *
  */
 export function jsonPath(obj, expr, arg) {
+   var $ = obj;
+
    var P = {
       resultType: arg && arg.resultType || "VALUE",
       result: [],
@@ -80,7 +82,6 @@ export function jsonPath(obj, expr, arg) {
       }
    };
 
-   var $ = obj;
    if (expr && obj && (P.resultType == "VALUE" || P.resultType == "PATH")) {
       P.trace(P.normalize(expr).replace(/^\$;?/,""), obj, "$");  // issue 6 resolved
       return P.result.length ? P.result : false;

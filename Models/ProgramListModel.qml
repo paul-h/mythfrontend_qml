@@ -1,4 +1,5 @@
-import QtQuick.XmlListModel 2.0
+import QtQml.XmlListModel
+
 import mythqml.net 1.0
 
 XmlListModel
@@ -20,17 +21,17 @@ XmlListModel
 
     query: "/ProgramList/Programs/Program"
 
-    XmlRole { name: "StartTime"; query: "xs:dateTime(StartTime)"}
-    XmlRole { name: "EndTime"; query: "xs:dateTime(EndTime)" }
-    XmlRole { name: "Title"; query: "Title/string()" }
-    XmlRole { name: "SubTitle"; query: "SubTitle/string()" }
-    XmlRole { name: "Description"; query: "Description/string()" }
-    XmlRole { name: "Category"; query: "Category/string()" }
-    XmlRole { name: "Season"; query: "Season/string()" }
-    XmlRole { name: "Episode"; query: "Episode/string()" }
-    XmlRole { name: "TotalEpisodes"; query: "TotalEpisodes/string()" }
-    XmlRole { name: "RecordingStatus"; query: "Recording/Status/string()" }
-    XmlRole { name: "AirDate"; query: "Airdate/string()" }
+    XmlListModelRole { name: "StartTime"; elementName: "xs:dateTime(StartTime)"} //FIXME??
+    XmlListModelRole { name: "EndTime"; elementName: "xs:dateTime(EndTime)" } //FIXME??
+    XmlListModelRole { name: "Title"; elementName: "Title" }
+    XmlListModelRole { name: "SubTitle"; elementName: "SubTitle" }
+    XmlListModelRole { name: "Description"; elementName: "Description" }
+    XmlListModelRole { name: "Category"; elementName: "Category" }
+    XmlListModelRole { name: "Season"; elementName: "Season" }
+    XmlListModelRole { name: "Episode"; elementName: "Episode" }
+    XmlListModelRole { name: "TotalEpisodes"; elementName: "TotalEpisodes" }
+    XmlListModelRole { name: "RecordingStatus"; elementName: "Recording/Status" }
+    XmlListModelRole { name: "AirDate"; elementName: "Airdate" }
 
     onStatusChanged:
     {
@@ -93,5 +94,15 @@ XmlListModel
         log.debug(Verbose.MODEL, "ProgramListModel: url - " + res);
 
         source = res;
+    }
+
+    function get(i)
+    {
+        var o = {}
+        for (var j = 0; j < roles.length; ++j)
+        {
+            o[roles[j].name] = data(index(i,0), Qt.UserRole + j)
+        }
+        return o
     }
 }

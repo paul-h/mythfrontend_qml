@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import mythqml.net 1.0
 
 XmlListModel
@@ -9,9 +10,9 @@ XmlListModel
     source: settings.masterBackend + "Guide/GetChannelGroupList"
     query: "/ChannelGroupList/ChannelGroups/ChannelGroup"
 
-    XmlRole { name: "GroupId"; query: "GroupId/number()" }
-    XmlRole { name: "Name"; query: "Name/string()" }
-    XmlRole { name: "Password"; query: "Password/string()" }
+    XmlListModelRole { name: "GroupId"; elementName: "GroupId" }
+    XmlListModelRole { name: "Name"; elementName: "Name" }
+    XmlListModelRole { name: "Password"; elementName: "Password" }
 
     onStatusChanged:
     {
@@ -29,6 +30,16 @@ XmlListModel
         {
             log.error(Verbose.MODEL, "ChannelGroups - ERROR: " + errorString() + " - " + source);
         }
+    }
+
+    function get(i)
+    {
+        var o = {}
+        for (var j = 0; j < roles.length; ++j)
+        {
+            o[roles[j].name] = data(index(i,0), Qt.UserRole + j)
+        }
+        return o
     }
 
     function findById(Id)

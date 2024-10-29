@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import mythqml.net 1.0
 import SortFilterProxyModel 0.2
 
@@ -80,10 +81,10 @@ Item
         id: webcamListModel
 
         query: "/items/item"
-        XmlRole { name: "id"; query: "id/number()" }
-        XmlRole { name: "title"; query: "title/string()" }
-        XmlRole { name: "description"; query: "description/string()" }
-        XmlRole { name: "url"; query: "url/string()" }
+        XmlListModelRole { name: "id"; elementName: "id" }
+        XmlListModelRole { name: "title"; elementName: "title" }
+        XmlListModelRole { name: "description"; elementName: "description" }
+        XmlListModelRole { name: "url"; elementName: "url" }
 
         onStatusChanged:
         {
@@ -111,6 +112,16 @@ Item
                 webcamFile = "https://mythqml.net/download.php?f=webcams_list.xml&v=" + version + "&s=" + systemid;
 
             source = webcamFile;
+        }
+
+        function get(i)
+        {
+            var o = {}
+            for (var j = 0; j < roles.length; ++j)
+            {
+                o[roles[j].name] = data(index(i,0), Qt.UserRole + j)
+            }
+            return o
         }
     }
 
@@ -198,20 +209,22 @@ Item
 
                 source: ""
                 query: "/webcams/webcam"
-                XmlRole { name: "id"; query: "id/number()"; isKey: true }
-                XmlRole { name: "title"; query: "title/string()" }
-                XmlRole { name: "description"; query: "description/string()" }
-                XmlRole { name: "icon"; query: "icon/string()" }
-                XmlRole { name: "website"; query: "website/string()" }
-                XmlRole { name: "zoom"; query: "zoom/number()" }
-                XmlRole { name: "dateadded"; query: "xs:dateTime(dateadded)" }
-                XmlRole { name: "datemodified"; query: "xs:dateTime(datemodified)" }
-                XmlRole { name: "status"; query: "status/string()" }
-                XmlRole { name: "categories"; query: "string-join(categories/category/@name, ', ')" }
-                XmlRole { name: "links"; query: "string-join(links/link/(concat(@type, '=', @name)), '\n')" }
+                XmlListModelRole { name: "id"; elementName: "id"} //number
+                //XmlListModelRole { name: "id"; elementName: "id/number()"; isKey: true } // isKey not supported in Qt6
+                XmlListModelRole { name: "title"; elementName: "title" }
+                XmlListModelRole { name: "description"; elementName: "description" }
+                XmlListModelRole { name: "icon"; elementName: "icon" }
+                XmlListModelRole { name: "website"; elementName: "website" }
+                XmlListModelRole { name: "zoom"; elementName: "zoom" } //number
+                XmlListModelRole { name: "dateadded"; elementName: "dateadded" } //FIXME
+                XmlListModelRole { name: "datemodified"; elementName: "datemodified" } //FIXME
+                XmlListModelRole { name: "status"; elementName: "status" }
+                XmlListModelRole { name: "categories"; elementName: "categories/category"; attributeName: "name" } //FIXME
+                //XmlListModelRole { name: "links"; elementName: "string-join(links/link/(concat(@type, '=', @name)), '\n')" } //FIXME
+                XmlListModelRole { name: "links"; elementName: "links/link" } //FIXME
 
-                XmlRole { name: "player"; query: "player/string()" }
-                XmlRole { name: "url"; query: "url/string()" }
+                XmlListModelRole { name: "player"; elementName: "player" }
+                XmlListModelRole { name: "url"; elementName: "url" }
 
                 onStatusChanged:
                 {
@@ -273,6 +286,16 @@ Item
                     model.loadFavorites();
 
                     listModel.loaded();
+                }
+
+                function get(i)
+                {
+                    var o = {}
+                    for (var j = 0; j < roles.length; ++j)
+                    {
+                        o[roles[j].name] = data(index(i,0), Qt.UserRole + j)
+                    }
+                    return o
                 }
             }
         }

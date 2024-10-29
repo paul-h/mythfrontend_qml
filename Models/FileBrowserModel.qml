@@ -1,6 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
-import Qt.labs.folderlistmodel 2.15
+import QtQuick
+import Qt.labs.folderlistmodel
+
 import mythqml.net 1.0
 import SortFilterProxyModel 0.2
 import "../Util.js" as Util

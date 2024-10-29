@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import mythqml.net 1.0
 
 XmlListModel
@@ -9,14 +10,14 @@ XmlListModel
     source: settings.masterBackend + "Dvr/GetEncoderList"
     query: "/EncoderList/Encoders/Encoder"
 
-    XmlRole { name: "Id"; query: "Id/number()" }
-    XmlRole { name: "HostName"; query: "HostName/string()" }
-    XmlRole { name: "Local"; query: "xs:boolean(Local)" }
-    XmlRole { name: "Connected"; query: "xs:boolean(Connected)" }
-    XmlRole { name: "State"; query: "SourceId/number()" }
-    XmlRole { name: "SleepStatus"; query: "SleepStatus/number()" }
-    XmlRole { name: "LowOnFreeSpace"; query: "xs:boolean(LowOnFreeSpace)" }
-    XmlRole { name: "SourceIds"; query: "string-join(Inputs/Input/SourceId, ', ')" }
+    XmlListModelRole { name: "Id"; elementName: "Id" }
+    XmlListModelRole { name: "HostName"; elementName: "HostName" }
+    XmlListModelRole { name: "Local"; elementName: "xs:boolean(Local)" }
+    XmlListModelRole { name: "Connected"; elementName: "xs:boolean(Connected)" }
+    XmlListModelRole { name: "State"; elementName: "SourceId" }
+    XmlListModelRole { name: "SleepStatus"; elementName: "SleepStatus" }
+    XmlListModelRole { name: "LowOnFreeSpace"; elementName: "xs:boolean(LowOnFreeSpace)" }
+    XmlListModelRole { name: "SourceIds"; elementName: "string-join(Inputs/Input/SourceId, ', ')" }
 
     onStatusChanged:
     {

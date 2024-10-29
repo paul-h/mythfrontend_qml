@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import mythqml.net 1.0
 
 XmlListModel
@@ -11,11 +12,11 @@ XmlListModel
     source: "https://mythqml.net/download.php?f=whatsnew.xml&v=" + version + "&s=" + systemid
 
     query: "/items/item"
-    XmlRole { name: "id"; query: "id/number()" }
-    XmlRole { name: "minversion"; query: "minversion/string()" }
-    XmlRole { name: "title"; query: "title/string()" }
-    XmlRole { name: "date"; query: "date/string()" }
-    XmlRole { name: "url"; query: "url/string()" }
+    XmlListModelRole { name: "id"; elementName: "id" } // number
+    XmlListModelRole { name: "minversion"; elementName: "minversion" }
+    XmlListModelRole { name: "title"; elementName: "title" }
+    XmlListModelRole { name: "date"; elementName: "date" }
+    XmlListModelRole { name: "url"; elementName: "url" }
 
     onStatusChanged:
     {
@@ -34,5 +35,15 @@ XmlListModel
         {
             log.error(Verbose.MODEL, "WhatsNewModel: ERROR: " + errorString() + " - " + source);
         }
+    }
+
+    function get(i)
+    {
+        var o = {}
+        for (var j = 0; j < roles.length; ++j)
+        {
+            o[roles[j].name] = data(index(i,0), Qt.UserRole + j)
+        }
+        return o
     }
 }

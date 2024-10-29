@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtWebEngine 1.10
+import QtQuick
+import QtWebEngine
+
 import SortFilterProxyModel 0.2
 import Models 1.0
 import mythqml.net 1.0

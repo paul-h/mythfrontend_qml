@@ -1,4 +1,5 @@
-import QtQuick 2.0
+import QtQuick
+
 import mythqml.net 1.0
 import SqlQueryModel 1.0
 

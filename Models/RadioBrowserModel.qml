@@ -1,5 +1,5 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+
 import mythqml.net 1.0
 import SortFilterProxyModel 0.2
 
@@ -90,11 +90,11 @@ Item
         parser: myparser
         parserData: root
 
-        function myparser(json, query, jsonModel, workerScript, parserData)
+        function myparser(json, query, jsonModel, workerScript, parserData, debug)
         {
             var lists = {'tagList': root.tagList, 'countryList': root.countryList, 'languageList': root.languageList};
             var jsonArray = splitJson(json, 15000000);
-            var msg = {'action': 'Load Model', 'jsonArray': jsonArray, 'query': query, 'jsonModel': jsonModel, 'lists': lists};
+            var msg = {'action': 'Load Model', 'jsonArray': jsonArray, 'query': query, 'jsonModel': jsonModel, 'lists': lists, 'debug': debug};
 
             workerScript.sendMessage(msg);
         }

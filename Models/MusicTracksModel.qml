@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import mythqml.net 1.0
 
 XmlListModel
@@ -13,21 +14,21 @@ XmlListModel
 
     source: settings.masterBackend + "Music/GetTrackList?Count=100&StartIndex=200"
     query: "/MusicMetadataInfoList/MusicMetadataInfos/MusicMetadataInfo"
-    XmlRole { name: "Id"; query: "Id/number()" }
-    XmlRole { name: "Artist"; query: "Artist/string()" }
-    XmlRole { name: "CompilationArtist"; query: "Compilation/Artist/string()" }
-    XmlRole { name: "Album"; query: "Album/string()" }
-    XmlRole { name: "Title"; query: "Title/string()" }
-    XmlRole { name: "TrackNo"; query: "TrackNo/number()" }
-    XmlRole { name: "Genre"; query: "Genre/string()" }
-    XmlRole { name: "Year"; query: "Year/number()" }
-    XmlRole { name: "PlayCount"; query: "PlayCount/number()" }
-    XmlRole { name: "Length"; query: "Length/number()" }
-    XmlRole { name: "Rating"; query: "Rating/number()" }
-    XmlRole { name: "FileName"; query: "FileName/string()" }
-    XmlRole { name: "HostName"; query: "HostName/string()" }
-    XmlRole { name: "LastPlayed"; query: "xs:dateTime(LastPlayed)" }
-    XmlRole { name: "Compilation"; query: "xs:boolean(Compilation)" }
+    XmlListModelRole { name: "Id"; elementName: "Id" } // number
+    XmlListModelRole { name: "Artist"; elementName: "Artist" }
+    XmlListModelRole { name: "CompilationArtist"; elementName: "Compilation/Artist/" }
+    XmlListModelRole { name: "Album"; elementName: "Album" }
+    XmlListModelRole { name: "Title"; elementName: "Title" }
+    XmlListModelRole { name: "TrackNo"; elementName: "TrackNo" } // number
+    XmlListModelRole { name: "Genre"; elementName: "Genre" }
+    XmlListModelRole { name: "Year"; elementName: "Year" } // number
+    XmlListModelRole { name: "PlayCount"; elementName: "PlayCount" }
+    XmlListModelRole { name: "Length"; elementName: "Length" } // number
+    XmlListModelRole { name: "Rating"; elementName: "Rating" } //number
+    XmlListModelRole { name: "FileName"; elementName: "FileName" }
+    XmlListModelRole { name: "HostName"; elementName: "HostName" }
+    XmlListModelRole { name: "LastPlayed"; elementName: "xs:dateTime(LastPlayed)" } //FIXME Qt6
+    XmlListModelRole { name: "Compilation"; elementName: "xs:boolean(Compilation)" } //FIXME Qt6
 
     signal loaded();
 
@@ -54,6 +55,16 @@ XmlListModel
             screenBackground.showBusyIndicator = false
             log.error(Verbose.MODEL, "MusicTracksModel: Error: " + errorString() + " - " + source);
         }
+    }
+
+    function get(i)
+    {
+        var o = {}
+        for (var j = 0; j < roles.length; ++j)
+        {
+            o[roles[j].name] = data(index(i,0), Qt.UserRole + j)
+        }
+        return o
     }
 
     function updateLists()

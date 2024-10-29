@@ -1,5 +1,5 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
 
 import Process 1.0
 import mythqml.net 1.0

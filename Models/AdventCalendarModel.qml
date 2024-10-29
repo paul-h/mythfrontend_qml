@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import mythqml.net 1.0
 
 Item
@@ -38,12 +39,12 @@ Item
         source: "https://mythqml.net/download.php?f=advent_calendars.xml&v=" + version + "&s=" + systemid
 
         query: "/items/item"
-        XmlRole { name: "id"; query: "id/number()" }
-        XmlRole { name: "status"; query: "title/string()" }
-        XmlRole { name: "dateadded"; query: "xs:dateTime(dateadded)" }
-        XmlRole { name: "title"; query: "title/string()" }
-        XmlRole { name: "description"; query: "description/string()" }
-        XmlRole { name: "url"; query: "url/string()" }
+        XmlListModelRole { name: "id"; elementName: "id" }
+        XmlListModelRole { name: "status"; elementName: "title" }
+        XmlListModelRole { name: "dateadded"; elementName: "dateadded" }
+        XmlListModelRole { name: "title"; elementName: "title" }
+        XmlListModelRole { name: "description"; elementName: "description" }
+        XmlListModelRole { name: "url"; elementName: "url" }
 
         onStatusChanged:
         {
@@ -68,6 +69,16 @@ Item
                 log.error(Verbose.MODEL, "AdventCalendarsModel: ERROR: " + errorString() + " - " + source);
             }
         }
+
+        function get(i)
+        {
+            var o = {}
+            for (var j = 0; j < roles.length; ++j)
+            {
+                o[roles[j].name] = data(index(i,0), Qt.UserRole + j)
+            }
+            return o
+        }
     }
 
     XmlListModel
@@ -75,12 +86,12 @@ Item
         id: calendarModel
 
         query: "/advent/item"
-        XmlRole { name: "day"; query: "day/number()" }
-        XmlRole { name: "title"; query: "title/string()" }
-        XmlRole { name: "icon"; query: "icon/string()" }
-        XmlRole { name: "url"; query: "url/string()" }
-        XmlRole { name: "player"; query: "player/string()" }
-        XmlRole { name: "duration"; query: "duration/string()" }
+        XmlListModelRole { name: "day"; elementName: "day" }
+        XmlListModelRole { name: "title"; elementName: "title" }
+        XmlListModelRole { name: "icon"; elementName: "icon" }
+        XmlListModelRole { name: "url"; elementName: "url" }
+        XmlListModelRole { name: "player"; elementName: "player" }
+        XmlListModelRole { name: "duration"; elementName: "duration" }
 
         onStatusChanged:
         {
@@ -115,6 +126,16 @@ Item
 
             // send loaded signal
             loaded();
+        }
+
+        function get(i)
+        {
+            var o = {}
+            for (var j = 0; j < roles.length; ++j)
+            {
+                o[roles[j].name] = data(index(i,0), Qt.UserRole + j)
+            }
+            return o
         }
     }
 

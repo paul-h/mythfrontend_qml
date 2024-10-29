@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import mythqml.net 1.0
 
 XmlListModel
@@ -9,12 +10,12 @@ XmlListModel
     source: settings.masterBackend + "Capture/GetCaptureCardList"
     query: "/CaptureCardList/CaptureCards/CaptureCard"
 
-    XmlRole { name: "CardId"; query: "CardId/string()" }
-    XmlRole { name: "ParentId"; query: "Id/number()" }
-    XmlRole { name: "HostName"; query: "HostName/string()" }
-    XmlRole { name: "StartChannel"; query: "StartChanel/number()" }
-    XmlRole { name: "DisplayName"; query: "DisplayName/string()" }
-    XmlRole { name: "SourceId"; query: "SourceId/string()" }
+    XmlListModelRole { name: "CardId"; elementName: "CardId" }
+    XmlListModelRole { name: "ParentId"; elementName: "Id" }
+    XmlListModelRole { name: "HostName"; elementName: "HostName" }
+    XmlListModelRole { name: "StartChannel"; elementName: "StartChannel" }
+    XmlListModelRole { name: "DisplayName"; elementName: "DisplayName" }
+    XmlListModelRole { name: "SourceId"; elementName: "SourceId" }
 
     onStatusChanged:
     {

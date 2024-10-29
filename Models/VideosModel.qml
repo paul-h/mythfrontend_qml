@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import mythqml.net 1.0
 import SortFilterProxyModel 0.2
 
@@ -92,43 +93,43 @@ Item
 
         source: settings.masterBackend + "Video/GetVideoList"
         query: "/VideoMetadataInfoList/VideoMetadataInfos/VideoMetadataInfo"
-        XmlRole { name: "Id"; query: "Id/string()" }
-        XmlRole { name: "Title"; query: "Title/string()" }
-        XmlRole { name: "SubTitle"; query: "SubTitle/string()" }
-        XmlRole { name: "Tagline"; query: "Tagline/string()" }
-        XmlRole { name: "Director"; query: "Director/string()" }
-        XmlRole { name: "Studio"; query: "Studio/string()" }
-        XmlRole { name: "Description"; query: "Description/string()" }
-        XmlRole { name: "Inetref"; query: "Inetref/string()" }
-        XmlRole { name: "Collectionref"; query: "Collectionref/string()" }
-        XmlRole { name: "HomePage"; query: "HomePage/string()" }
-        XmlRole { name: "ReleaseDate"; query: "ReleaseDate/string()" }
-        XmlRole { name: "AddDate"; query: "AddDate/string()" }
-        XmlRole { name: "UserRating"; query: "UserRating/string()" }
-        XmlRole { name: "Length"; query: "Length/string()" }
-        XmlRole { name: "PlayCount"; query: "PlayCount/string()" }
-        XmlRole { name: "Season"; query: "Season/number()" }
-        XmlRole { name: "Episode"; query: "Episode/number()" }
-        XmlRole { name: "ParentalLevel"; query: "ParentalLevel/string()" }
-        XmlRole { name: "Visible"; query: "Visible/string()" }
-        XmlRole { name: "Watched"; query: "Watched/string()" }
-        XmlRole { name: "Processed"; query: "Processed/string()" }
-        XmlRole { name: "ContentType"; query: "ContentType/string()" }
-        XmlRole { name: "Genre"; query: "string-join(Genres/GenreList/Genre/Name, ', ')" }
-        XmlRole { name: "FileName"; query: "FileName/string()" }
-        XmlRole { name: "Hash"; query: "Hash/string()" }
-        XmlRole { name: "HostName"; query: "HostName/string()" }
-        XmlRole { name: "Coverart"; query: "Coverart/string()" }
-        XmlRole { name: "Fanart"; query: "Fanart/string()" }
-        XmlRole { name: "Banner"; query: "Banner/string()" }
-        XmlRole { name: "Screenshot"; query: "Screenshot/string()" }
-        XmlRole { name: "Trailer"; query: "Trailer/string()" }
+        XmlListModelRole { name: "Id"; elementName: "Id" }
+        XmlListModelRole { name: "Title"; elementName: "Title" }
+        XmlListModelRole { name: "SubTitle"; elementName: "SubTitle" }
+        XmlListModelRole { name: "Tagline"; elementName: "Tagline" }
+        XmlListModelRole { name: "Director"; elementName: "Director" }
+        XmlListModelRole { name: "Studio"; elementName: "Studio" }
+        XmlListModelRole { name: "Description"; elementName: "Description" }
+        XmlListModelRole { name: "Inetref"; elementName: "Inetref" }
+        XmlListModelRole { name: "Collectionref"; elementName: "Collectionref" }
+        XmlListModelRole { name: "HomePage"; elementName: "HomePage" }
+        XmlListModelRole { name: "ReleaseDate"; elementName: "ReleaseDate" }
+        XmlListModelRole { name: "AddDate"; elementName: "AddDate" }
+        XmlListModelRole { name: "UserRating"; elementName: "UserRating" }
+        XmlListModelRole { name: "Length"; elementName: "Length" }
+        XmlListModelRole { name: "PlayCount"; elementName: "PlayCount" }
+        XmlListModelRole { name: "Season"; elementName: "Season" } // number
+        XmlListModelRole { name: "Episode"; elementName: "Episode" } //number
+        XmlListModelRole { name: "ParentalLevel"; elementName: "ParentalLevel" }
+        XmlListModelRole { name: "Visible"; elementName: "Visible" }
+        XmlListModelRole { name: "Watched"; elementName: "Watched" }
+        XmlListModelRole { name: "Processed"; elementName: "Processed" }
+        XmlListModelRole { name: "ContentType"; elementName: "ContentType" }
+        XmlListModelRole { name: "Genre"; elementName: "string-join(Genres/GenreList/Genre/Name, ', ')" } //FIXME Qt6
+        XmlListModelRole { name: "FileName"; elementName: "FileName" }
+        XmlListModelRole { name: "Hash"; elementName: "Hash" }
+        XmlListModelRole { name: "HostName"; elementName: "HostName" }
+        XmlListModelRole { name: "Coverart"; elementName: "Coverart" }
+        XmlListModelRole { name: "Fanart"; elementName: "Fanart" }
+        XmlListModelRole { name: "Banner"; elementName: "Banner" }
+        XmlListModelRole { name: "Screenshot"; elementName: "Screenshot" }
+        XmlListModelRole { name: "Trailer"; elementName: "Trailer" }
 
-        XmlRole { name: "title"; query: "Title/string()" }
-        XmlRole { name: "url"; query: "concat(xs:string('myth://type=video:server='), HostName/string(), xs:string(':pin=" + videoModel._pin + "'), xs:string(':port=6543:sgroup=video:filename='), FileName/string())" }
-        XmlRole { name: "player"; query: "xs:string('VLC')" }
+        XmlListModelRole { name: "title"; elementName: "Title" }
+        XmlListModelRole { name: "url"; elementName: "concat(xs:string('myth://type=video:server='), HostName/string(), xs:string(':pin=" + videoModel._pin + "'), xs:string(':port=6543:sgroup=video:filename='), FileName/string())" } //FIXME
+        XmlListModelRole { name: "player"; elementName: "xs:string('VLC')" } //FIXME
 
-        onStatusChanged:
+        onStatusChanged: status =>
         {
             if (status == XmlListModel.Ready)
             {
@@ -151,6 +152,16 @@ Item
                 screenBackground.showBusyIndicator = false;
                 log.error(Verbose.MODEL, "VideosModel: ERROR: " + errorString() + " - " + source);
             }
+        }
+
+        function get(i)
+        {
+            var o = {}
+            for (var j = 0; j < roles.length; ++j)
+            {
+                o[roles[j].name] = data(index(i,0), Qt.UserRole + j)
+            }
+            return o
         }
     }
 

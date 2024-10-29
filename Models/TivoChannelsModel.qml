@@ -1,5 +1,6 @@
-import QtQuick 2.15
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import mythqml.net 1.0
 
 Item
@@ -17,18 +18,18 @@ Item
         id: channelsModel
         source: "https://mythqml.net/download.php?f=channels.xml&v=" + version + "&s=" + systemid;
         query: "/channels/channel"
-        XmlRole { name: "ChanNo"; query: "ChanNo/number()" }
-        XmlRole { name: "Name"; query: "Name/string()" }
-        XmlRole { name: "Plus1"; query: "Plus1/number()" }
-        XmlRole { name: "Definition"; query: "Definition/string()" }
-        XmlRole { name: "Category"; query: "Category/string()" }
-        XmlRole { name: "Icon"; query: "Icon/string()" }
-        XmlRole { name: "SDId"; query: "SDId/string()" }
+        XmlListModelRole { name: "ChanNo"; elementName: "ChanNo" } //number
+        XmlListModelRole { name: "Name"; elementName: "Name" }
+        XmlListModelRole { name: "Plus1"; elementName: "Plus1" } //number
+        XmlListModelRole { name: "Definition"; elementName: "Definition" }
+        XmlListModelRole { name: "Category"; elementName: "Category" }
+        XmlListModelRole { name: "Icon"; elementName: "Icon" }
+        XmlListModelRole { name: "SDId"; elementName: "SDId" }
 
-        XmlRole { name: "title"; query: "concat(ChanNo/string(), xs:string(' - '), Name/string())" }
-        XmlRole { name: "player"; query: "xs:string('Tivo')" }
-        XmlRole { name: "url"; query: "ChanNo/number()" }
-        XmlRole { name: "icon"; query: "Icon/string()" }
+        XmlListModelRole { name: "title"; elementName: "concat(ChanNo/string(), xs:string(' - '), Name/string())" } //FIXME Qt6
+        XmlListModelRole { name: "player"; elementName: "xs:string('Tivo')" } //FIXME Qt6
+        XmlListModelRole { name: "url"; elementName: "ChanNo" } // number
+        XmlListModelRole { name: "icon"; elementName: "Icon" }
 
         onStatusChanged:
         {
@@ -47,6 +48,16 @@ Item
             {
                 log.error(Verbose.MODEL, "TivoChannelsModel: ERROR: " + errorString() + " - " + source);
             }
+        }
+
+        function get(i)
+        {
+            var o = {}
+            for (var j = 0; j < roles.length; ++j)
+            {
+                o[roles[j].name] = data(index(i,0), Qt.UserRole + j)
+            }
+            return o
         }
 
         function doLoad()

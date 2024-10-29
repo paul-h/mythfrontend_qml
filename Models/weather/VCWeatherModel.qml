@@ -1,5 +1,4 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
 
 import Process 1.0
 import mythqml.net 1.0
@@ -302,7 +301,7 @@ Item
 
     function getHourData(hours)
     {
-        var hoursList = Qt.createQmlObject('import QtQuick 2.2; ListModel {}', root);
+        var hoursList = Qt.createQmlObject('import QtQuick; ListModel {}', root);
 
         // this should be an array of hour forecasts
         for (var x = 0; x < hours.length; x++)

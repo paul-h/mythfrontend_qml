@@ -4,8 +4,8 @@
  * Licensed under the MIT licence (http://opensource.org/licenses/mit-license.php)
  */
 
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
 
 Item
 {
@@ -21,6 +21,8 @@ Item
     property alias count: jsonModel.count
     property alias dynamicRoles: jsonModel.dynamicRoles
 
+    property bool debug: false
+
     signal loaded()
 
     ListModel
@@ -35,14 +37,14 @@ Item
         id: workerScript
         source: "JSONListModel.mjs"
 
-        onMessage:
+        onMessage: msg =>
         {
-            if (messageObject.status === "Ready")
+            if (msg.status === "Ready")
             {
                 jsonModel.loadingStatus(XmlListModel.Ready);
                 loaded();
             }
-            else if (messageObject.status === "Loading")
+            else if (msg.status === "Loading")
             {
                 jsonModel.loadingStatus(XmlListModel.Loading);
             }
@@ -57,9 +59,9 @@ Item
     onJsonChanged: updateJSONModel()
     onQueryChanged: updateJSONModel()
 
-    function defaultParser(json, query, jsonModel, workerScript, parserData)
+    function defaultParser(json, query, jsonModel, workerScript, parserData, debug)
     {
-        var msg = {'json': json, 'query': query, 'jsonModel': jsonModel};
+        var msg = {'json': json, 'query': query, 'jsonModel': jsonModel, 'debug': debug};
 
         workerScript.sendMessage(msg);
     }
@@ -75,11 +77,11 @@ Item
 
         if (parser !== undefined)
         {
-            parser(json, query, jsonModel, workerScript, parserData);
+            parser(json, query, jsonModel, workerScript, parserData, debug);
         }
         else
         {
-            defaultParser(json, query, jsonModel, workerScript, parserData);
+            defaultParser(json, query, jsonModel, workerScript, parserData, debug);
         }
     }
 
@@ -117,7 +119,8 @@ Item
                 // convert null to empty string to stop QT spamming the logs
                 str = str.replace(/:null/g, ':""');
                 str = str.replace(/: null/g, ':""');
-
+                if (debug)
+                    console.log(str);
                 json = str;
             }
         }

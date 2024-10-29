@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import mythqml.net 1.0
 
 XmlListModel
@@ -11,15 +12,15 @@ XmlListModel
     source: settings.masterBackend + "Channel/GetVideoSourceList"
     query: "/VideoSourceList/VideoSources/VideoSource"
 
-    XmlRole { name: "Id"; query: "Id/number()" }
-    XmlRole { name: "SourceName"; query: "SourceName/string()" }
-    XmlRole { name: "Grabber"; query: "Grabber/string()" }
-    XmlRole { name: "FreqTable"; query: "FreqTable/string()" }
-    XmlRole { name: "LineupId"; query: "LineupId/string()" }
-    XmlRole { name: "Password"; query: "Password/string()" }
-    XmlRole { name: "UseEIT"; query: "xs:boolean(UseEIT)" }
-    XmlRole { name: "ConfigPath"; query: "ConfigPath/string()" }
-    XmlRole { name: "NITId"; query: "NITId/number()" }
+    XmlListModelRole { name: "Id"; elementName: "Id/number()" }
+    XmlListModelRole { name: "SourceName"; elementName: "SourceName/string()" }
+    XmlListModelRole { name: "Grabber"; elementName: "Grabber/string()" }
+    XmlListModelRole { name: "FreqTable"; elementName: "FreqTable/string()" }
+    XmlListModelRole { name: "LineupId"; elementName: "LineupId/string()" }
+    XmlListModelRole { name: "Password"; elementName: "Password/string()" }
+    XmlListModelRole { name: "UseEIT"; elementName: "xs:boolean(UseEIT)" }
+    XmlListModelRole { name: "ConfigPath"; elementName: "ConfigPath/string()" }
+    XmlListModelRole { name: "NITId"; elementName: "NITId/number()" }
 
     onStatusChanged:
     {
@@ -82,5 +83,15 @@ XmlListModel
 
         for (var x = 0; x < sources.length; x++)
             sourceList.append({"item": sources[x]});
+    }
+
+    function get(i)
+    {
+        var o = {}
+        for (var j = 0; j < roles.length; ++j)
+        {
+            o[roles[j].name] = data(index(i,0), Qt.UserRole + j)
+        }
+        return o
     }
 }

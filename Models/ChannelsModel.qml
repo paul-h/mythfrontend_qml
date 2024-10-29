@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import SortFilterProxyModel 0.2
 import mythqml.net 1.0
 
@@ -119,20 +120,21 @@ Item
 
         query: "/ChannelInfoList/ChannelInfos/ChannelInfo"
 
-        XmlRole { name: "ChanId"; query: "ChanId/number()" }
-        XmlRole { name: "ChanNum"; query: "ChanNum/number()" }
-        XmlRole { name: "CallSign"; query: "CallSign/string()" }
-        XmlRole { name: "IconURL"; query: "IconURL/string()" }
-        XmlRole { name: "ChannelName"; query: "ChannelName/string()" }
-        XmlRole { name: "SourceId"; query: "SourceId/number()" }
-        XmlRole { name: "XMLTVID"; query: "XMLTVID/string()" }
-        XmlRole { name: "MplexId"; query: "MplexId/number()" }
-        XmlRole { name: "ChannelGroups"; query: "ChannelGroups/string()" }
+        XmlListModelRole { name: "ChanId"; elementName: "ChanId" }
+        XmlListModelRole { name: "ChanNum"; elementName: "ChanNum" }
+        XmlListModelRole { name: "CallSign"; elementName: "CallSign" }
+        XmlListModelRole { name: "IconURL"; elementName: "IconURL" }
+        XmlListModelRole { name: "ChannelName"; elementName: "ChannelName" }
+        XmlListModelRole { name: "SourceId"; elementName: "SourceId" }
+        XmlListModelRole { name: "XMLTVID"; elementName: "XMLTVID" }
+        XmlListModelRole { name: "MplexId"; elementName: "MplexId" }
+        XmlListModelRole { name: "ChannelGroups"; elementName: "ChannelGroups" }
 
-        XmlRole { name: "title"; query: "concat(ChanNum/string(), xs:string(' - '), ChannelName/string())" }
-        XmlRole { name: "player"; query: "xs:string('VLC')" }
-        XmlRole { name: "url"; query: "concat(xs:string('myth://type=livetv:server=" + root._ip + "'), xs:string(':encoder=1:channum='), ChanNum/string(), xs:string(':pin=" + root._pin + "'))" }
-        XmlRole { name: "icon"; query: "concat(xs:string('" + settings.masterBackend + "'), xs:string('Guide/GetChannelIcon?ChanId='), ChanId/string())" }
+        //FIXME Qt6
+        XmlListModelRole { name: "title"; elementName: "concat(ChanNum/string(), xs:string(' - '), ChannelName/string())" }
+        XmlListModelRole { name: "player"; elementName: "xs:string('VLC')" }
+        XmlListModelRole { name: "url"; elementName: "concat(xs:string('myth://type=livetv:server=" + root._ip + "'), xs:string(':encoder=1:channum='), ChanNum/string(), xs:string(':pin=" + root._pin + "'))" }
+        XmlListModelRole { name: "icon"; elementName: "concat(xs:string('" + settings.masterBackend + "'), xs:string('Guide/GetChannelIcon?ChanId='), ChanId/string())" }
 
         onStatusChanged:
         {
