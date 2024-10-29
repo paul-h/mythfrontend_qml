@@ -1,6 +1,7 @@
-import QtQuick 2.0
-import QtQuick.Controls 1.5
-import QtWebEngine 1.5
+import QtQuick
+import QtQuick.Controls
+import QtWebEngine
+
 import Base 1.0
 import Dialogs 1.0
 
@@ -128,29 +129,32 @@ FocusScope
         settings.pluginsEnabled: true
         settings.javascriptEnabled: true
         settings.javascriptCanOpenWindows: true
+        //settings.scrollAnimatorEnabled: true // Requires Qt6.8
+        settings.allowRunningInsecureContent: true
+
         audioMuted: false;
 
         profile: playerSources.mythqmlWEProfile
 
         Component.onCompleted: settings.playbackRequiresUserGesture = false;
 
-        onNewViewRequested:
+        onNewWindowRequested: request =>
         {
             var website = request.requestedUrl.toString();
             var zoom = zoomFactor;
             if (isPanel)
-                panelStack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: website, zoomFactor: zoom}});
+                panelStack.push(mythUtils.findThemeFile("Screens/WebBrowser.qml"), {url: website, zoomFactor: zoom});
             else
-                stack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: website, zoomFactor: zoom}});
+                stack.push(mythUtils.findThemeFile("Screens/WebBrowser.qml"), {url: website, zoomFactor: zoom});
         }
-        onFullScreenRequested: request.accept();
-        onNavigationRequested: request.action = WebEngineNavigationRequest.AcceptRequest;
+        onFullScreenRequested: request => request.accept();
+        onNavigationRequested: request => request.accept();
 
-        onLoadingChanged:
+        onLoadingChanged: loadingInfo =>
         {
-            if (loadRequest.status === WebEngineLoadRequest.LoadSucceededStatus)
+            if (loadingInfo.status === WebEngineView.LoadSucceededStatus)
             {
-                var feedurl = loadRequest.url.toString();
+                var feedurl = loadingInfo.url.toString();
 
                 if (feedurl !== "")
                 {

@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick
 import Base 1.0
 import Dialogs 1.0
 import Models 1.0
@@ -97,7 +97,7 @@ Item
             clip: true
             keyNavigationWraps: true
 
-            Keys.onPressed:
+            Keys.onPressed: event =>
             {
                 if (event.key === Qt.Key_PageDown)
                 {
@@ -199,7 +199,7 @@ Item
                 }
             }
 
-            Keys.onReturnPressed:
+            Keys.onReturnPressed: event =>
             {
                 event.accepted = true;
                 returnSound.play();
@@ -218,26 +218,26 @@ Item
                             var title = params[1];
                             var logo = params[2];
                             loadFromDB(key, title, logo);
-                            stack.push({item: mythUtils.findThemeFile("Screens/ThemedMenu.qml"), properties:{model: menuItemModel.model}});
+                            stack.push(mythUtils.findThemeFile("Screens/ThemedMenu.qml"), {model: menuItemModel.model});
                         }
                     }
                     // load menu items from the specified local file
                     else if (model.get(currentIndex).menuSource.startsWith("file://"))
                     {
                         menuLoader.source = model.get(currentIndex).menuSource;
-                        stack.push({item: mythUtils.findThemeFile("Screens/ThemedMenu.qml"), properties:{model: menuLoader.item}});
+                        stack.push(mythUtils.findThemeFile("Screens/ThemedMenu.qml"), {model: menuLoader.item});
                     }
                     // load the menu items from the local file specified by the setting
                     else if (model.get(currentIndex).menuSource.startsWith("setting://"))
                     {
                         var setting = model.get(currentIndex).menuSource.replace("setting://", "");
                         menuLoader.source = dbUtils.getSetting(setting, settings.hostName, "");
-                        stack.push({item: mythUtils.findThemeFile("Screens/ThemedMenu.qml"), properties:{model: menuLoader.item}});
+                        stack.push(mythUtils.findThemeFile("Screens/ThemedMenu.qml"), {model: menuLoader.item});
                     }
                     else
                     {
                         menuLoader.source = settings.menuPath + model.get(currentIndex).menuSource;
-                        stack.push({item: mythUtils.findThemeFile("Screens/ThemedMenu.qml"), properties:{model: menuLoader.item}});
+                        stack.push(mythUtils.findThemeFile("Screens/ThemedMenu.qml"), {model: menuLoader.item});
                     }
                 }
                 else if (model.get(currentIndex).loaderSource === "WebBrowser.qml")
@@ -251,13 +251,13 @@ Item
                         url = dbUtils.getSetting(setting, settings.hostName, "");
                     }
 
-                    stack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: url, fullscreen: fullscreen, zoomFactor: zoom}});
+                    stack.push(mythUtils.findThemeFile("Screens/WebBrowser.qml"), {url: url, fullscreen: fullscreen, zoomFactor: zoom});
                 }
                 else if (model.get(currentIndex).loaderSource === "InternalPlayer.qml")
                 {
                     var layout = model.get(currentIndex).layout
                     var feedSource = model.get(currentIndex).feedSource
-                    stack.push({item: mythUtils.findThemeFile("Screens/InternalPlayer.qml"), properties:{layout: layout, defaultFeedSource: feedSource, defaultCurrentFeed: 0}});
+                    stack.push(mythUtils.findThemeFile("Screens/InternalPlayer.qml"), {layout: layout, defaultFeedSource: feedSource, defaultCurrentFeed: 0});
                 }
                 else if (model.get(currentIndex).loaderSource === "External Program")
                 {
@@ -309,7 +309,7 @@ Item
                 }
                 else
                 {
-                    stack.push({item: mythUtils.findThemeFile("Screens/" + model.get(currentIndex).loaderSource)})
+                    stack.push(mythUtils.findThemeFile("Screens/" + model.get(currentIndex).loaderSource))
                 }
 
                 event.accepted = true;

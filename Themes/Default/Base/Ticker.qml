@@ -1,7 +1,6 @@
-import QtQuick 2.5
-import QtQuick.XmlListModel 2.0
-import QtGraphicalEffects 1.0
-
+import QtQuick
+import QtQml.XmlListModel
+import Qt5Compat.GraphicalEffects
 
 Item
 {
@@ -45,8 +44,7 @@ Item
                 o = rssEntryTemplate.createObject(root,
                                                   {
                                                       "source": urls[i],
-                                                      "query" : "/rss/channel/item",
-                                                      "namespaceDeclarations": "declare namespace content = '" + namespaces[i] + "';"
+                                                      "query" : "/rss/channel/item"
                                                   })
             }
             else
@@ -54,8 +52,7 @@ Item
                 o = atomEntryTemplate.createObject(root,
                                                    {
                                                        "source": urls[i],
-                                                       "query" : "/feed/entry",
-                                                       "namespaceDeclarations": "declare default element namespace '" + namespaces[i] + "';"
+                                                       "query" : "/feed/entry"
                                                    })
             }
             root.rssLists.push(o)
@@ -530,10 +527,10 @@ Item
         XmlListModel
         {
             id: listModel
-            XmlRole {name: "title"; query: "title/string()"}
-            XmlRole {name: "description"; query: "description/string()"}
+            XmlListModelRole {name: "title"; elementName: "title"}
+            XmlListModelRole {name: "description"; elementName: "description"}
             // image URL
-            XmlRole {name: "enclosure"; query: "enclosure/@url/string()"}
+            XmlListModelRole {name: "enclosure"; elementName: "enclosure"; attributeName: "url"}
 
             onCountChanged:
             {
@@ -542,6 +539,16 @@ Item
                     root.entriesAvailable = true
                     root.init()
                 }
+            }
+
+            function get(i)
+            {
+                var o = {}
+                for (var j = 0; j < roles.length; ++j)
+                {
+                    o[roles[j].name] = data(index(i,0), Qt.UserRole + j)
+                }
+                return o
             }
         }
     }
@@ -552,10 +559,10 @@ Item
 
         XmlListModel
         {
-            XmlRole {name: "title"; query: "title/string()"}
-            XmlRole {name: "description"; query: "summary/string()"}
+            XmlListModelRole {name: "title"; elementName: "title"}
+            XmlListModelRole {name: "description"; elementName: "summary"}
             // image URL
-            XmlRole {name: "enclosure"; query: "enclosure/@url/string()"}
+            XmlListModelRole {name: "enclosure"; elementName: "enclosure"; attributeName: "url"}
 
             onCountChanged:
             {
@@ -565,6 +572,17 @@ Item
                     root.init()
                 }
             }
+
+            function get(i)
+            {
+                var o = {}
+                for (var j = 0; j < roles.length; ++j)
+                {
+                    o[roles[j].name] = data(index(i,0), Qt.UserRole + j)
+                }
+                return o
+            }
+
         }
     }
 }

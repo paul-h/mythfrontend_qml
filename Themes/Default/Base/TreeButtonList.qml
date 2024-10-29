@@ -1,4 +1,5 @@
-import QtQuick 2.0
+import QtQuick
+
 import Base 1.0
 import mythqml.net 1.0
 import Models 1.0
@@ -88,7 +89,7 @@ FocusScope
         id: treeModel
     }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         var handled = false;
 
@@ -231,16 +232,17 @@ FocusScope
     {
         var listWidth = (width - (columns - 1) * spacing) / columns
         var component = Qt.createComponent("ButtonList.qml");
-        var list = component.createObject(objRoot, {"id": "list" + index,
-                                                "nodeID": index,
-                                                "objectName": "list" + index,
-                                                "x": (listWidth * index) + (spacing * index),
-                                                "y": 0,
-                                                "width": listWidth,
-                                                "height": height,
-                                                "spacing": 3,
-                                                "model": model,
-                                                "delegate":  listItem});
+        var list = component.createObject(objRoot, {
+                                                        "nodeID": index,
+                                                        "objectName": "list" + index,
+                                                        "x": (listWidth * index) + (spacing * index),
+                                                        "y": 0,
+                                                        "width": listWidth,
+                                                        "height": height,
+                                                        "spacing": 3,
+                                                        "model": model,
+                                                        "delegate":  listItem
+                                                    });
 
         if (list === null)
         {
@@ -249,6 +251,12 @@ FocusScope
         }
         else
         {
+            // for some reason in Qt6 these don't stick when set in createObject()
+            list.x = (listWidth * index) + (spacing * index);
+            list.y = 0;
+            list.width = listWidth;
+            list.height = height;
+
             list.nodeClicked.connect(nodeClickedHandler);
             list.nodeSelected.connect(nodeSelectedHandler);
         }
