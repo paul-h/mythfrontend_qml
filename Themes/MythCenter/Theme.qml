@@ -284,39 +284,39 @@ QtObject
 
     property Item _garbage_ : Item { }
 
-    function generateGradient (template, baseColor)
+    function generateGradient (template)
     {
-        return template.createObject (_garbage_, { "baseColor" : baseColor });
+        return template.createObject (_garbage_);
     }
 
     // not selected not focused
-    function gradientNormal(baseColorTop, baseColorBottom)
+    function gradientNormal()
     {
-        return generateGradient(templateGradientNormal, baseColorTop, baseColorBottom);
+        return generateGradient(templateGradientNormal);
     }
 
     // not selected has focus
-    function gradientFocused(baseColorTop, baseColorBottom)
+    function gradientFocused()
     {
-        return generateGradient(templateGradientFocused, baseColorTop, baseColorBottom);
+        return generateGradient(templateGradientFocused);
     }
 
     // is selected not focused
-    function gradientSelected(baseColorTop, baseColorBottom)
+    function gradientSelected()
     {
-        return generateGradient(templateGradientSelected, baseColorTop, baseColorBottom);
+        return generateGradient(templateGradientSelected);
     }
 
     // is selected has focus
-    function gradientFocusedSelected(baseColorTop, baseColorBottom)
+    function gradientFocusedSelected()
     {
-        return generateGradient (templateGradientFocusedSelected, baseColorTop, baseColorBottom);
+        return generateGradient (templateGradientFocusedSelected);
     }
 
     // disabled
-    function gradientDisabled (baseColorTop, baseColorBottom)
+    function gradientDisabled()
     {
-        return generateGradient (templateGradientDisabled, baseColorTop, baseColorBottom);
+        return generateGradient (templateGradientDisabled);
     }
 
     function gradientShaded (baseColorTop, baseColorBottom)
