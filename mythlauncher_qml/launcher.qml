@@ -1,4 +1,5 @@
-import QtQuick 2.4
+import QtQuick
+
 import Base 1.0
 import mythqml.net 1.0
 
@@ -59,7 +60,7 @@ MainWindow
             var zoom = 1.0;
             var fullscreen = true;
 
-            stack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: url, fullscreen: fullscreen, zoomFactor: zoom}});
+            stack.push(mythUtils.findThemeFile("Screens/WebBrowser.qml"), {url: url, fullscreen: fullscreen, zoomFactor: zoom});
         }
         else if (frontend === "pluto")
         {
@@ -67,7 +68,7 @@ MainWindow
             var zoom = 1.0;
             var fullscreen = true;
 
-            stack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: url, fullscreen: fullscreen, zoomFactor: zoom}});
+            stack.push(mythUtils.findThemeFile("Screens/WebBrowser.qml"), {url: url, fullscreen: fullscreen, zoomFactor: zoom});
         }
     }
 
