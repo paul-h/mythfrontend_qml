@@ -1,4 +1,4 @@
-import QtQuick 2.4
+import QtQuick
 import Base 1.0
 
 

@@ -1,5 +1,5 @@
-import QtQuick 2.0
-import QtQuick.Controls 1.4
+import QtQuick
+import QtQuick.Controls
 
 Item
 {
@@ -60,6 +60,9 @@ Item
 
     function setSlideShow(path)
     {
+        if (!path.startsWith("file://"))
+            path = "file://" + path;
+
         slideShow.folder = path;
     }
 
@@ -95,7 +98,7 @@ Item
     }
 
     // background video
-    VideoPlayerQmlVLC
+    VideoPlayerMDK
     {
         id: videoPlayer
         anchors.fill: parent
