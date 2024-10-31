@@ -74,4 +74,10 @@ ListModel
         loaderSource: "tests/TestMDK.qml"
         waterMark: "watermark/setup.png"
     }
+    ListElement
+    {
+        menutext:"QT Player Test"
+        loaderSource: "tests/TestQTPlayer.qml"
+        waterMark: "watermark/setup.png"
+    }
 }
