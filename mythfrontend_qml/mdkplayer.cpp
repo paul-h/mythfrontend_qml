@@ -402,3 +402,11 @@ void QmlMDKPlayer::record(const QString &filename, const QString &format)
         m_recording = false;
     }
 }
+
+void QmlMDKPlayer::setLoop(int count)
+{
+    if (!m_playerAPI)
+        return;
+
+    m_playerAPI->setLoop(m_playerAPI->object, count);
+}

@@ -8,11 +8,23 @@ FocusScope
     id: root
 
     property alias source: mediaplayer.source
+    property alias position: mediaplayer.position
+    property alias duration: mediaplayer.duration
+
     property bool playbackStarted: false
+    property bool loop: false
 
     signal showMessage(string message, int timeOut)
     signal mediaStatusChanged(int mediaStatus)
     signal playbackStatusChanged(int playbackStatus)
+
+    onLoopChanged:
+    {
+        if (loop)
+            mediaplayer.setLoop(2147483647);
+        else
+            mediaplayer.setLoop(0);
+    }
 
     Rectangle
     {
@@ -61,7 +73,7 @@ FocusScope
                 setProperty("video.avfilter", vfilter);
             }
 
-            onMediaStatusChanged:
+            onMediaStatusChanged: mediaStatus =>
             {
                 if (mediaStatus == (MDKPlayer.MediaStatusEnd + MDKPlayer.MediaPrepared + MDKPlayer.MediaBuffered))
                 {
@@ -100,7 +112,7 @@ FocusScope
                 }
             }
 
-            onPlayerStateChanged:
+            onPlayerStateChanged: playerState =>
             {
                 if (playerState === MDKPlayer.PlayerStatePlaying)
                     root.playbackStatusChanged(MediaPlayers.PlaybackStatus.Playing);
@@ -242,10 +254,7 @@ FocusScope
 
     function setLoopMode(doLoop)
     {
-        if (doLoop)
-            mediaplayer.playlist.mode = VlcPlaylist.Loop;
-        else
-            mediaplayer.playlist.mode = VlcPlaylist.Single;
+        loop = doLoop;
     }
 
     function toggleInterlacer()

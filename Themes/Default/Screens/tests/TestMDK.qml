@@ -21,7 +21,7 @@ BaseScreen
         videoPlayer.stop();
     }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         event.accepted = true;
 
@@ -46,7 +46,13 @@ BaseScreen
         }
         else if (event.key === Qt.Key_L)
         {
-            console.log("PlayerState is: " + videoPlayer.getPlayerState());
+            videoPlayer.loop = !videoPlayer.loop;
+
+            showNotification("Loop mode is: " + (videoPlayer.loop ? "On" : "Off"), settings.osdTimeoutMedium);
+        }
+        else if (event.key === Qt.Key_I)
+        {
+            showNotification("PlayerState is: " + videoPlayer.getPlayerState());
         }
         else if (event.key === Qt.Key_F9)
         {
@@ -106,7 +112,71 @@ BaseScreen
         KeyNavigation.up: urlEdit;
         KeyNavigation.down: urlEdit;
 
-        onShowMessage: window.showNotification(message, timeOut)
+        onShowMessage: (message, timeOut) => window.showNotification(message, timeOut)
+
+        onMediaStatusChanged: mediaStatus =>
+        {
+            if (mediaStatus === MediaPlayers.MediaStatus.Unknown)
+                mediaStatusText.text = "Media Status: Unknown";
+            else if (mediaStatus === MediaPlayers.MediaStatus.NoMedia)
+                mediaStatusText.text = "Media Status: No Media";
+            else if (mediaStatus === MediaPlayers.MediaStatus.Invalid)
+                mediaStatusText.text = "Media Status: Invalid Media";
+            else if (mediaStatus === MediaPlayers.MediaStatus.Loading)
+                mediaStatusText.text = "Media Status: Loading Media";
+            else if (mediaStatus === MediaPlayers.MediaStatus.Loaded)
+                mediaStatusText.text = "Media Status: Loaded Media";
+            else if (mediaStatus === MediaPlayers.MediaStatus.Buffering)
+                mediaStatusText.text = "Media Status: Buffering Media";
+            else if (mediaStatus === MediaPlayers.MediaStatus.Buffered)
+                mediaStatusText.text = "Media Status: Buffered Media";
+            else if (mediaStatus === MediaPlayers.MediaStatus.Ended)
+                mediaStatusText.text = "Media Status: End Of Media";
+            else if (mediaStatus === MediaPlayers.MediaStatus.Stalled)
+                mediaStatusText.text = "Media Status: Stalled Media";
+        }
+
+        onPlaybackStatusChanged: playerStatus =>
+        {
+            if (playerStatus === MediaPlayers.PlaybackStatus.Stopped)
+                playerStatusText.text = "Playback Status: Stopped";
+            else if (playerStatus === MediaPlayers.PlaybackStatus.Paused)
+                playerStatusText.text = "Playback Status: Paused";
+            else if (playerStatus === MediaPlayers.PlaybackStatus.Playing)
+                playerStatusText.text = "Playback Status: Playing";
+        }
+
+                onPositionChanged:
+        {
+            positionText.text = "Position " + position + "/" + duration;
+        }
+
+        InfoText
+        {
+            id: mediaStatusText
+            x: 50
+            y: 50
+            width: 300
+            text: ""
+        }
+
+        InfoText
+        {
+            id: playerStatusText
+            x: 50
+            y: 100
+            width: 300
+            text: ""
+        }
+
+        InfoText
+        {
+            id: positionText
+            x: 50
+            y: 150
+            width: 300
+            text: ""
+        }
     }
 
     Rectangle
