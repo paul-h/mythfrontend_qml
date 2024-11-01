@@ -173,8 +173,8 @@ bool Context::init()
 
 void Context::cleanUp(void)
 {
-    delete gMDKAPI;
     delete m_engine;
+    delete gMDKAPI;
     delete m_settings;
     delete m_databaseUtils;
     delete m_mythUtils;
