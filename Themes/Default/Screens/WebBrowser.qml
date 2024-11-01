@@ -8,8 +8,10 @@ BaseScreen
 {
     id: root
     defaultFocusItem: browser
+
     property alias url: browser.url
     property alias zoomFactor: browser.zoomFactor
+
     property bool fullscreen: false
 
     Component.onCompleted:

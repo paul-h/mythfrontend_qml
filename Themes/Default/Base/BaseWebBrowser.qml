@@ -10,6 +10,7 @@ FocusScope
     property alias url: browser.url
     property alias zoomFactor: browser.zoomFactor
     property alias backgroundColor: browser.backgroundColor
+    property alias canGoBack: browser.canGoBack
     property alias browser: browser
 
     property bool mouseMode: false
@@ -209,6 +210,11 @@ FocusScope
         {
             browser.zoomFactor = Math.max(0.25,  browser.zoomFactor - 0.25)
         }
+    }
+
+    function goBack()
+    {
+        browser.goBack();
     }
 }
 
