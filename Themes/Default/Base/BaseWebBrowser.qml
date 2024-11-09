@@ -12,6 +12,7 @@ FocusScope
     property alias zoomFactor: browser.zoomFactor
     property alias backgroundColor: browser.backgroundColor
     property alias canGoBack: browser.canGoBack
+    property alias profile: browser.profile
     property alias browser: browser
 
     property bool mouseMode: false
@@ -20,6 +21,7 @@ FocusScope
     property string tabShortcut: "F3"
     property string shiftTabShortcut: "F4"
 
+    signal loadingChanged(var loadingInfo)
     signal loaded()
 
     Action
@@ -132,6 +134,7 @@ FocusScope
         settings.javascriptCanOpenWindows: true
         //settings.scrollAnimatorEnabled: true // Requires Qt6.8
         settings.allowRunningInsecureContent: true
+        settings.localContentCanAccessRemoteUrls: true
 
         audioMuted: false;
 
@@ -170,7 +173,8 @@ FocusScope
                     }
                 }
 
-                loaded();
+                root.loadingChanged(loadingInfo);
+                root.loaded();
             }
         }
     }
@@ -219,6 +223,16 @@ FocusScope
     function goBack()
     {
         browser.goBack();
+    }
+
+    function triggerWebAction(action)
+    {
+        browser.triggerWebAction(action);
+    }
+
+    function runJavaScript(script, callback)
+    {
+        browser.runJavaScript(script, callback);
     }
 }
 
