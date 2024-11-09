@@ -157,7 +157,7 @@ BaseScreen
         }
     }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         event.accepted = true;
 

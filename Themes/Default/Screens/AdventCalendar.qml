@@ -108,7 +108,7 @@ BaseScreen
         sorters:  StringSorter { roleName: "dateadded"; sortOrder: Qt.DescendingOrder }
     }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         event.accepted = true;
 
@@ -249,7 +249,7 @@ BaseScreen
         title: "Menu"
         message: "Advent Calendar Options"
 
-        onItemSelected:
+        onItemSelected: (itemText, itemData) =>
         {
             calendarGrid.focus = true;
 

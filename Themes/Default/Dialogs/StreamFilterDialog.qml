@@ -192,7 +192,7 @@ BaseDialog
             broadcasterButton.focus = true;
         }
 
-        onItemSelected:
+        onItemSelected: itemText =>
         {
             if (_searchField == "broadcaster")
             {

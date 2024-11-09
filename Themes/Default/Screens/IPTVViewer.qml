@@ -66,7 +66,7 @@ BaseScreen
         }
     }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         event.accepted = true;
 
@@ -227,7 +227,7 @@ BaseScreen
             event.accepted = true;
         }
 
-        Keys.onPressed:
+        Keys.onPressed: event =>
         {
             if (event.key === Qt.Key_Left && ((currentIndex % 4) === 0 && previousFocusItem))
             {
@@ -332,7 +332,7 @@ BaseScreen
             iptvGrid.focus = true;
         }
 
-        onItemSelected:
+        onItemSelected: itemText =>
         {
             if (field === "Genre")
             {
@@ -390,7 +390,7 @@ BaseScreen
         title: "Menu"
         message: "IPTV Channel Viewer Options"
 
-        onItemSelected:
+        onItemSelected: (itemText, itemData) =>
         {
             iptvGrid.focus = true;
 

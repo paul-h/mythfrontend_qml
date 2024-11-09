@@ -15,7 +15,7 @@ BaseScreen
         showTicker(false);
     }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         event.accepted = true;
 
@@ -145,7 +145,7 @@ BaseScreen
             focusedButton.focus = true;
         }
 
-        onItemSelected:
+        onItemSelected: itemText =>
         {
             if (focusedButton === energyDataDirButton)
                 energyDataDirEdit.text = itemText;

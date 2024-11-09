@@ -73,7 +73,7 @@ BaseScreen
         id: feedSource
     }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         event.accepted = true;
 
@@ -437,7 +437,7 @@ BaseScreen
 
         restoreSelected: true;
 
-        onItemSelected:
+        onItemSelected: (itemText, itemData) =>
         {
             channelGrid.focus = true;
             footer.greenText = "Show (" + itemText +")";
@@ -469,7 +469,7 @@ BaseScreen
 
         restoreSelected: true;
 
-        onItemSelected:
+        onItemSelected: (itemText, itemData) =>
         {
             channelGrid.focus = true;
             footer.yellowText = "Definition (" + itemText +")";

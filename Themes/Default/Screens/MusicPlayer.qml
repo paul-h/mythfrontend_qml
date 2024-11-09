@@ -1,4 +1,5 @@
-import QtQuick 2.0
+import QtQuick
+
 import Models 1.0
 import Base 1.0
 import Dialogs 1.0
@@ -160,7 +161,7 @@ BaseScreen
         model: musicProxyModel
         delegate: listRow
 
-        Keys.onPressed:
+        Keys.onPressed: event =>
         {
             if (event.key === Qt.Key_PageDown)
             {
@@ -197,7 +198,7 @@ BaseScreen
             //var filename = "myth://" + hostname + "/" + model.get(currentIndex).FileName;
             var filename = "myth://" + "localhost:6544" + "/" + model.get(currentIndex).FileName;
             log.debug(Verbose.PLAYBACK, "MusicPlayer: Playing - " + filename);
-            //stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{source1: filename }});
+            //stack.push(Qt.resolvedUrl("InternalPlayer.qml"), {source1: filename });
             musicPlayer.mrl = filename
             event.accepted = true;
             //returnSound.play();

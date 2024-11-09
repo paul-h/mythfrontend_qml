@@ -39,7 +39,7 @@ BaseScreen
         }
     }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         event.accepted = true;
 
@@ -258,7 +258,7 @@ BaseScreen
                 categoryButton.focus = true;
         }
 
-        onItemSelected:
+        onItemSelected: itemText =>
         {
             if (searchWebsites)
             {

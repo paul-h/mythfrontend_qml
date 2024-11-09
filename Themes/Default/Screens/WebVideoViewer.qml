@@ -64,7 +64,7 @@ BaseScreen
         objectName: "WebVideoViewer"
     }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         event.accepted = true;
 
@@ -242,7 +242,7 @@ BaseScreen
             event.accepted = true;
         }
 
-        Keys.onPressed:
+        Keys.onPressed: event =>
         {
             if (event.key === Qt.Key_Left && ((currentIndex % 4) === 0 && previousFocusItem))
             {
@@ -323,7 +323,7 @@ BaseScreen
             webvideoGrid.focus = true;
         }
 
-        onItemSelected:
+        onItemSelected: itemText =>
         {
             if (itemText != "<All Web Videos>")
             {
@@ -351,7 +351,7 @@ BaseScreen
         title: "Menu"
         message: "Web Video Viewer Options"
 
-        onItemSelected:
+        onItemSelected: (itemText, itemData) =>
         {
             webvideoGrid.focus = true;
 

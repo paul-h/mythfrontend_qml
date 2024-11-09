@@ -195,7 +195,7 @@ BaseDialog
             titleButton.focus = true;
         }
 
-        onItemSelected:
+        onItemSelected: itemText =>
         {
             if (_searchField == "title")
             {

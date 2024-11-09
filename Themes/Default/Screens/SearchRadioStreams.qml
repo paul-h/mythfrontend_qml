@@ -85,7 +85,7 @@ BaseScreen
         //sorters: broadcasterSorter
     }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         event.accepted = true;
 

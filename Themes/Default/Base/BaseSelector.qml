@@ -177,7 +177,7 @@ FocusScope
 
         highlightMoveDuration: 1500
 
-        Keys.onPressed:
+        Keys.onPressed: event =>
         {
             if (event.key === Qt.Key_PageDown)
             {

@@ -15,7 +15,7 @@ BaseScreen
         showTicker(true);
     }
 
-    Keys.onPressed: {idleTimer.start(); escapeSound.play(); stack.pop();}
+    Keys.onPressed: event => {idleTimer.start(); escapeSound.play(); stack.pop();}
 
     Timer
     {

@@ -19,7 +19,7 @@ BaseScreen
         showTicker(false);
     }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         event.accepted = true;
 
@@ -443,7 +443,7 @@ BaseScreen
         title: "Menu"
         message: "Event Options"
 
-        onItemSelected:
+        onItemSelected: (itemText, itemData) =>
         {
             eventsList.focus = true;
 

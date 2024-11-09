@@ -199,7 +199,7 @@ BaseScreen
         id: searchResultModel
     }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         event.accepted = true;
 
@@ -1129,7 +1129,7 @@ BaseScreen
             _lastButton.focus = true;
         }
 
-        onItemSelected:
+        onItemSelected: itemText =>
         {
             _lastEdit.text = itemText;
             _lastButton.focus = true;
@@ -1143,7 +1143,7 @@ BaseScreen
         title: "Menu"
         message: "Metadata Editor Options"
 
-        onItemSelected:
+        onItemSelected: (itemText, itemData) =>
         {
             if (itemData == "XML")
             {
@@ -1263,7 +1263,7 @@ BaseScreen
         {
         }
 
-        onItemSelected:
+        onItemSelected: itemText =>
         {
             if (searchItem === "title")
                 titleEdit.text = itemText;

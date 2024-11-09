@@ -53,7 +53,7 @@ BaseScreen
         {
             videoPlayer.loop = !videoPlayer.loop;
 
-                showNotification("Loop mode is: " + (videoPlayer.loop ? "On" : "Off"), settings.osdTimeoutMedium);
+            showNotification("Loop mode is: " + (videoPlayer.loop ? "On" : "Off"), settings.osdTimeoutMedium);
         }
         else if (event.key === Qt.Key_I)
         {

@@ -29,7 +29,7 @@ BaseScreen
         loadData(monthIdx + 1);
     }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         event.accepted = true;
 

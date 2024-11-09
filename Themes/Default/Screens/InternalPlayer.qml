@@ -652,8 +652,8 @@ BaseScreen
 
         title: "Menu"
         message: "Media Player Options"
-
-        onItemSelected:
+ 
+        onItemSelected: (itemText, itemData) =>
         {
             playerLayout.activeItem.focus = true;
 

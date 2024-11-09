@@ -21,7 +21,7 @@ BaseScreen
 
     Keys.onEscapePressed: videoplayer.stop();
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         if (event.key === Qt.Key_M)
         {
@@ -72,7 +72,7 @@ BaseScreen
         KeyNavigation.up: button2;
         KeyNavigation.down: button1;
 
-        Keys.onPressed:
+        Keys.onPressed: event =>
         {
             if (event.key === Qt.Key_X)
             {
@@ -598,7 +598,7 @@ BaseScreen
 
         //model: menuModel
 
-        onItemSelected:
+        onItemSelected: (itemText, itemData) =>
         {
             log.debug(Verbose.GENERAL, "TestPage1: PopupMenu accepted signal received!: " + itemText + " - " + itemData);
             button1.focus = true;

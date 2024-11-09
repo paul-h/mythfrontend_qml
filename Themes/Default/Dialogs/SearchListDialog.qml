@@ -17,7 +17,7 @@ BaseDialog
 
     signal itemSelected(string itemText)
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         event.accepted = true;
 

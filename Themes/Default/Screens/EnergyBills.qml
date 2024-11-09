@@ -133,7 +133,7 @@ BaseScreen
         message: "Energy Bills Options"
         width: xscale(400); height: yscale(600)
 
-        onItemSelected:
+        onItemSelected: (itemText, itemData) =>
         {
             if (itemData === "previous")
                 previousBill();

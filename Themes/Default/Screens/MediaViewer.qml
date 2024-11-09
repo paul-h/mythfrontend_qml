@@ -1,4 +1,3 @@
-import QtQuick
 import QtQml.XmlListModel
 import Qt.labs.folderlistmodel
 
@@ -125,7 +124,7 @@ BaseScreen
         }
     }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         event.accepted = true;
 
@@ -666,12 +665,12 @@ BaseScreen
 
     PopupMenu
     {
-        id: popupMenu
+        id: popupMenu 
 
         title: "Menu"
         message: "Media Viewer Options"
 
-        onItemSelected:
+        onItemSelected: (itemText, itemData) =>
         {
             videoList.focus = true;
 

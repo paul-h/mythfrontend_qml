@@ -10,7 +10,7 @@ BaseDialog
     property alias infoText: info.text
     property alias acceptButtonText: acceptButton.text
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         event.accepted = true;
 

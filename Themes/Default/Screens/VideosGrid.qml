@@ -120,7 +120,7 @@ BaseScreen
         model: videosProxyModel
         delegate: listRow
 
-        Keys.onPressed:
+        Keys.onPressed: event =>
         {
             if (event.key === Qt.Key_E)
             {

@@ -15,7 +15,7 @@ BaseScreen
         setHelp("https://mythqml.net/help/settings_mythbackend.php#top");
     }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         event.accepted = true;
 

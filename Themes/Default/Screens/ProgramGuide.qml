@@ -79,7 +79,7 @@ BaseScreen
 
     BaseBackground { x: xscale(10); y: yscale(220); width: parent.width - xscale(20); height: yscale(460) }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         event.accepted = true;
 
@@ -423,7 +423,7 @@ BaseScreen
 
         restoreSelected: true;
 
-        onItemSelected:
+        onItemSelected: (itemText, itemData) =>
         {
             channelList.focus = true;
             footer.greenText = "Show (" + itemText +")";
