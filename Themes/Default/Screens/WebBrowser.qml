@@ -63,6 +63,18 @@ BaseScreen
 
     Action
     {
+        shortcut: "F5"
+        onTriggered: browser.triggerWebAction(WebEngineView.ViewSource)
+        enabled: browser.focus
+    }
+    Action
+    {
+        shortcut: "F6"
+        onTriggered: browser.triggerWebAction(WebEngineView.InspectElement)
+        enabled: browser.focus
+    }
+    Action
+    {
         shortcut: "F8"
         onTriggered: toggleFullscreen()
         enabled: browser.focus
