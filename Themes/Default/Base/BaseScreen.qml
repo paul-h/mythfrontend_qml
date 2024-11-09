@@ -1,4 +1,5 @@
 import QtQuick
+
 import Base 1.0
 import mythqml.net 1.0
 
@@ -10,7 +11,7 @@ Item
     property bool reloadingTheme: false
     property bool closeOnEscape: true
 
-    property bool   isPanel: (parent.objectName == "panelstack" || parent.objectName == "themedpanel")
+    property bool   isPanel: (parent && (parent.objectName == "panelstack" || parent.objectName == "themedpanel"))
 
     // private properties
     property double _wmult: width / 1280
@@ -35,7 +36,10 @@ Item
         return y * _hmult
     }
 
-    x: 0; y: 0; width: parent.width; height: parent.height
+    x: 0
+    y: 0
+    width: parent ? parent.width : 1280
+    height: parent ? parent.height : 720
 
     // screen title
     TitleText
