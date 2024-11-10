@@ -1,6 +1,7 @@
-import QtQuick 2.0
+import QtQuick
+import Qt.labs.folderlistmodel
+
 import Models 1.0
-import Qt.labs.folderlistmodel 2.15
 import Base 1.0
 
 BaseScreen
@@ -106,21 +107,21 @@ BaseScreen
         model: folderModel
         delegate: listRow
 
-        Keys.onReturnPressed:
+        Keys.onReturnPressed: event =>
         {
             if (isPanel)
             {
                 if (model.get(currentIndex, "fileIsDir"))
-                    panelStack.push({item: Qt.resolvedUrl("IconView.qml"), properties:{folder: model.get(currentIndex, "filePath")}});
+                    panelStack.push(Qt.resolvedUrl("IconView.qml"), {folder: model.get(currentIndex, "filePath")});
                 else
-                    panelStack.push({item: Qt.resolvedUrl("ImageView.qml"), properties:{folder: model.get(currentIndex, "filePath"), currentIndex: currentIndex, folderModel: model}});
+                    panelStack.push(Qt.resolvedUrl("ImageView.qml"), {folder: model.get(currentIndex, "filePath"), currentIndex: currentIndex, folderModel: model});
             }
             else
             {
                 if (model.get(currentIndex, "fileIsDir"))
-                    stack.push({item: Qt.resolvedUrl("IconView.qml"), properties:{folder: model.get(currentIndex, "filePath")}});
+                    stack.push(Qt.resolvedUrl("IconView.qml"), {folder: model.get(currentIndex, "filePath")});
                 else
-                    stack.push({item: Qt.resolvedUrl("ImageView.qml"), properties:{folder: model.get(currentIndex, "filePath"), currentIndex: currentIndex, folderModel: model}});
+                    stack.push(Qt.resolvedUrl("ImageView.qml"), {folder: model.get(currentIndex, "filePath"), currentIndex: currentIndex, folderModel: model});
             }
 
             event.accepted = true;
