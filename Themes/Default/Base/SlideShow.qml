@@ -1,5 +1,5 @@
-import QtQuick 2.0
-import Qt.labs.folderlistmodel 2.1
+import QtQuick 2.15
+import Qt.labs.folderlistmodel 2.15
 
 Rectangle
 {
@@ -9,9 +9,14 @@ Rectangle
     property alias folder: folderModel.folder
     property int slideDuration: 28000 //ms
     property int fadeDuration: 8000
+    property bool doShuffle: true
     property bool doZoom: true
     property bool doFade: true
     property bool doMove: true
+
+    property alias currentIndex: folderModel.index
+
+    signal imageChanged(int index)
 
     width: xscale(1280)
     height: yscale(720)
@@ -39,8 +44,10 @@ Rectangle
         {
             if (index >= rlist.length)
                 shuffleList();
+            else
+                index++;
 
-            return folderModel.get(rlist[index++], "fileURL");
+            return folderModel.get(rlist[index], "fileURL");
         }
 
         // Fisher-Yates shuffle algorithm.
@@ -62,28 +69,34 @@ Rectangle
             var list = [];
             for (var i = 0; i < folderModel.count; i++)
                 list.push(i);
-            shuffleArray(list);
+
+            if (doShuffle)
+                shuffleArray(list);
+
             rlist = list;
             index = 0;
         }
 
-        // Initialisation
-        onCountChanged:
+        onStatusChanged:
         {
-            if (count === 0 || !root.visible)
+            if (status == FolderListModel.Ready)
             {
-                mtimer.stop();
-                return;
+                if (count === 0)
+                {
+                    mtimer.stop();
+                    return;
+                }
+
+                shuffleList();
+                img1.item.asynchronous = false
+                img1.item.source = folderModel.get(rlist[index], "fileURL")
+                img1.item.fadein();
+                img2.item.loadNextSlide();
+                img1.item.asynchronous = true;
+
+                if (root.visible)
+                    mtimer.start();
             }
-
-            shuffleList();
-            img1.item.asynchronous = false
-            img1.item.loadNextSlide();
-            img1.item.fadein();
-            img2.item.loadNextSlide();
-
-            img1.item.asynchronous = true;
-             mtimer.start();
         }
     }
 
@@ -250,6 +263,11 @@ Rectangle
                 NumberAnimation {target: img; property: "y"; from: from_x; to: to_x; duration: slideDuration; }
                 NumberAnimation {target: img; property: "x"; from: from_y; to: to_y; duration: slideDuration; }
                 NumberAnimation {target: img; property: "scale"; from: from_scale; to: to_scale; duration: slideDuration; }
+                onStarted:
+                {
+                    // send image changed signal
+                    root.imageChanged(folderModel.index);
+                }
             }
 
             SequentialAnimation
