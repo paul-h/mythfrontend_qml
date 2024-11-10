@@ -7,9 +7,9 @@ FocusScope
     property var model: ListModel {}
     property var rowModels: []
     property int currentIndex: -1
-    property int rows: 4
-    property int columns: 7
-    property bool showPosition:true
+    property int rows: 6
+    property int columns: 10
+    property bool showPosition: true
 
     signal itemClicked(int row, int col);
     signal itemSelected(int row, int col);
@@ -107,7 +107,7 @@ FocusScope
                 y: yscale(5)
                 width: parent.width - xscale(10)
                 height: parent.height - labelText.height - yscale(5)
-                source: if (icon) mythUtils.findThemeFile(icon); else mythUtils.findThemeFile("images/no_image.png");
+                source: getIconURL(icon)
                 fillMode: Image.PreserveAspectFit
                 horizontalAlignment: Image.AlignHCenter
                 onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/no_image.png")
@@ -160,5 +160,24 @@ FocusScope
 
             onCurrentIndexChanged: itemSelected(pageList.currentIndex, root.currentIndex);
         }
+    }
+
+    function getIconURL(iconURL)
+    {
+        if (iconURL)
+        {
+            if (iconURL.startsWith("file://") || iconURL.startsWith("http://") || iconURL.startsWith("https://"))
+                return iconURL;
+            else
+            {
+                // try to get the icon from the same URL the webcam list was loaded from
+                var url = playerSources.webcamList.webcamList.get(0).url
+                var r = /[^\/]*$/;
+                url = url.replace(r, '');
+                return url + iconURL;
+            }
+        }
+
+        return mythUtils.findThemeFile("images/no_image.png")
     }
 }
