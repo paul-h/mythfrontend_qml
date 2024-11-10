@@ -4,10 +4,13 @@ import Base 1.0
 
 BaseScreen
 {
+    id: root
     defaultFocusItem: image
     property FolderListModel folderModel
     property alias source: image.source
     property int currentIndex
+
+    property bool _slideShow: false
 
     Component.onCompleted:
     {
@@ -16,6 +19,8 @@ BaseScreen
         showTicker(false);
         showVideo(false);
         updatePosition();
+
+        slideShow.folder = folderModel.folder
     }
 
     Keys.onPressed:
@@ -31,6 +36,20 @@ BaseScreen
         {
             // green - next image
             nextImage();
+        }
+        else if (event.key === Qt.Key_F3 || event.key === Qt.Key_P)
+        {
+            // green - toggle slideshow
+            _slideShow = !_slideShow;
+
+            if (_slideShow)
+                slideShow.currentIndex = currentIndex;
+            else
+            {
+                currentIndex = slideShow.currentIndex;
+                source = folderModel.get(currentIndex, "filePath");
+                updatePosition();
+            }
         }
         else
             event.accepted = false;
@@ -49,7 +68,7 @@ BaseScreen
         source: folderModel.get(currentIndex, "filePath");
         asynchronous: true
         fillMode: Image.PreserveAspectFit
-
+        visible: !_slideShow
         Keys.onLeftPressed:
         {
             prevImage();
@@ -58,6 +77,18 @@ BaseScreen
         {
             nextImage();
         }
+    }
+
+    SlideShow
+    {
+        id: slideShow
+        anchors.fill: parent
+        visible: _slideShow
+        doShuffle: false
+        doMove: false
+        doZoom: false
+
+        onImageChanged: { root.currentIndex = index; updatePosition(); }
     }
 
     Item
