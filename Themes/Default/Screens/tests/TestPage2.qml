@@ -1,7 +1,8 @@
-import QtQuick 2.0
-import QtQuick.Window 2.0
-import QtQuick.Layouts 1.0
-import QtQuick.Controls 1.0
+import QtQuick
+import QtQuick.Window
+import QtQuick.Layouts
+import QtQuick.Controls
+
 import Base 1.0
 import Models 1.0
 import Dialogs 1.0
@@ -20,7 +21,7 @@ BaseScreen
         treeView.setFocusedNode("Root ~ Media");
     }
 
-    Keys.onPressed:
+    Keys.onPressed: event =>
     {
         event.accepted = true;
 
@@ -49,12 +50,12 @@ BaseScreen
             if (node && node.type === SourceTreeModel.NodeType.Browser_Bookmark)
             {
                 // add new bookmark
-                stack.push({item: mythUtils.findThemeFile("Screens/settings/BrowserBookmarkEditor.qml"), properties:{bookmarkIndex: -1, bookmarkList: playerSources.browserBookmarksList}});
+                stack.push(mythUtils.findThemeFile("Screens/settings/BrowserBookmarkEditor.qml"), {bookmarkIndex: -1, bookmarkList: playerSources.browserBookmarksList});
             }
             else if (node && node.type === SourceTreeModel.NodeType.TivoTV_Channel)
             {
                 // add new tivo channel
-                stack.push({item: mythUtils.findThemeFile("Screens/settings/TivoChannelEditor.qml"), properties:{channelIndex: -1, channelList: playerSources.tivoChannelList}});
+                stack.push(mythUtils.findThemeFile("Screens/settings/TivoChannelEditor.qml"), {channelIndex: -1, channelList: playerSources.tivoChannelList});
             }
         }
         else if (event.key === Qt.Key_F5 || event.key === Qt.Key_E)
@@ -66,14 +67,14 @@ BaseScreen
                 // edit existing bookmark
                 var bookmarkId = node.bookmarkid;
                 var bookmarkIndex = playerSources.browserBookmarksList.getIndexFromId(bookmarkId);
-                stack.push({item: mythUtils.findThemeFile("Screens/settings/BrowserBookmarkEditor.qml"), properties:{bookmarkIndex: bookmarkIndex, bookmarkList: playerSources.browserBookmarksList}});
+                stack.push(mythUtils.findThemeFile("Screens/settings/BrowserBookmarkEditor.qml"), {bookmarkIndex: bookmarkIndex, bookmarkList: playerSources.browserBookmarksList});
             }
             else if (node && node.type === SourceTreeModel.NodeType.TivoTV_Channel)
             {
                 // edit tivo channel
                 var chanId = node.chanid;
                 var chanIndex = playerSources.tivoChannelList.getIndexFromId(chanId);
-                stack.push({item: mythUtils.findThemeFile("Screens/settings/TivoChannelEditor.qml"), properties:{channelIndex: chanIndex, channelList: playerSources.tivoChannelList}});
+                stack.push(mythUtils.findThemeFile("Screens/settings/TivoChannelEditor.qml"), {channelIndex: chanIndex, channelList: playerSources.tivoChannelList});
             }
         }
         else if (event.key === Qt.Key_F6 || event.key === Qt.Key_D)
