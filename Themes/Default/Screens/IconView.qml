@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import Models 1.0
-import Qt.labs.folderlistmodel 2.1
+import Qt.labs.folderlistmodel 2.15
 import Base 1.0
 
 BaseScreen
@@ -14,6 +14,15 @@ BaseScreen
         setHelp("https://mythqml.net/help/image_browser.php#top");
         showTime(false);
         showTicker(false);
+    }
+
+    Image
+    {
+        id: backgroundImage
+        anchors.fill: parent
+        source: ''
+        fillMode: Image.PreserveAspectFit
+        asynchronous: true
     }
 
     BaseBackground
@@ -73,6 +82,25 @@ BaseScreen
             id: folderModel
             folder: settings.picturePath
             nameFilters: ["*.jpg", "*.png", "*.JPG", "*.PNG"]
+        }
+
+        FolderListModel
+        {
+            id: childFolderModel
+            folder: folderModel.get(imageList.currentIndex, "filePath")
+
+            nameFilters: ["*.jpg", "*.png", "*.JPG", "*.PNG"]
+            showDirs: false
+            onStatusChanged:
+            {
+                if (status == FolderListModel.Ready)
+                {
+                    if (childFolderModel.count)
+                        backgroundImage.source = childFolderModel.get(0, "filePath");
+                    else
+                        backgroundImage.source = "";
+                }
+           }
         }
 
         model: folderModel
