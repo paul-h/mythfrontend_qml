@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import Base 1.0
 import Models 1.0
+import Dialogs 1.0
 
 BaseScreen
 {
@@ -82,11 +83,29 @@ BaseScreen
     {
         id: haMenuFileEdit
         x: xscale(300); y: yscale(200)
-        width: parent.width - x - xscale(20)
+        width: parent.width - x - xscale(80)
         height: yscale(50)
         text: settings.haMenuFile
         KeyNavigation.up: haAPITokenEdit;
         KeyNavigation.down: saveButton;
+        KeyNavigation.right: haMenuFileButton;
+    }
+
+    BaseButton
+    {
+        id: haMenuFileButton;
+        x: parent.width - xscale(70)
+        y: yscale(200);
+        width: xscale(50); height: yscale(50)
+        text: "X";
+        KeyNavigation.up: haAPITokenEdit
+        KeyNavigation.left: haMenuFileEdit
+        KeyNavigation.down: saveButton
+        onClicked:
+        {
+            //TODO should show the current location in the dialog
+            fileDialog.show();
+        }
     }
 
     BaseButton
@@ -106,6 +125,30 @@ BaseScreen
         greenText: "Save"
         yellowText: ""
         blueText: "Help"
+    }
+
+    FileDirectoryDialog
+    {
+        id: fileDialog
+
+        property bool searchWebsites: true
+        title: "Choose a menu file"
+        message: ""
+
+        onAccepted:
+        {
+            haMenuFileButton.focus = true;
+        }
+        onCancelled:
+        {
+            haMenuFileButton.focus = true;
+        }
+
+        onItemSelected:
+        {
+            haMenuFileEdit.text = itemText;
+            haMenuFileButton.focus = true;
+        }
     }
 
     function save()
