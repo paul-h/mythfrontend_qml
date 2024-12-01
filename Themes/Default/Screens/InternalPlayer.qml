@@ -26,6 +26,7 @@ BaseScreen
     property int    defaultCurrentFeed: 0
 
     property bool isFullScreen: width === window.width
+    property alias exitOnPlaybackEnded: playerLayout.exitOnPlaybackEnded
 
     property bool _actionsEnabled: !window.showingZMAlerts && (playerLayout.browser.focus || playerLayout.mediaPlayer1.focus || playerLayout.mediaPlayer2.focus || playerLayout.mediaPlayer3.focus || playerLayout.mediaPlayer4.focus);
 
