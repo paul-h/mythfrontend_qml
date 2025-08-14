@@ -125,6 +125,13 @@ Item
 
     JSONListModel
     {
+        id: logoModel
+        source: "https://iptv-org.github.io/api/logos.json"
+        onLoaded: loadChannels()
+    }
+
+    JSONListModel
+    {
         id: channelModel
 
         property alias genreList: root.genreList;
@@ -138,7 +145,7 @@ Item
         function myparser(json, query, jsonModel, workerScript, parserData)
         {
             // tell the WorkerScript to run the parser
-            var models = {'countryModel': countryModel.model, 'languageModel': languageModel.model, 'streamModel': streamModel.model, 'categoryModel': categoryModel.model, 'guideModel': guideModel.model};
+            var models = {'countryModel': countryModel.model, 'languageModel': languageModel.model, 'streamModel': streamModel.model, 'categoryModel': categoryModel.model, 'guideModel': guideModel.model, 'logoModel': logoModel.model};
             var lists = {'categoryList': root.genreList, 'countryList': root.countryList, 'languageList': root.languageList};
             var msg = {'json': json, 'query': query, 'jsonModel': jsonModel, 'models': models, 'lists': lists};
 
@@ -149,7 +156,9 @@ Item
     function loadChannels()
     {
         // only load the channels when we have all the other data loaded
-        if (categoryModel.count > 0 && countryModel.count > 0 && languageModel.count > 0 && streamModel.count > 0 && guideModel.count > 0)
+        //if (categoryModel.count > 0 && countryModel.count > 0 && languageModel.count > 0 && streamModel.count > 0 && logoModel.count > 0 && guideModel.count > 0)
+        //    channelModel.source = "https://iptv-org.github.io/api/channels.json"
+        if (categoryModel.count > 0 && countryModel.count > 0 && languageModel.count > 0 && streamModel.count > 0 && logoModel.count > 0)
             channelModel.source = "https://iptv-org.github.io/api/channels.json"
     }
 
