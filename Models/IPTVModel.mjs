@@ -15,6 +15,7 @@ WorkerScript.onMessage = function(msg)
     var countryModel = msg.models.countryModel;
     var streamModel = msg.models.streamModel;
     var guideModel = msg.models.guideModel;
+    var logoModel = msg.models.logoModel;
 
     var categoryList = msg.lists.categoryList;
     var countryList = msg.lists.countryList;
@@ -25,6 +26,7 @@ WorkerScript.onMessage = function(msg)
     var countryMap = createCountryMap(countryModel);
     var streamMap = createStreamMap(streamModel);
     var guideMap = createGuideMap(guideModel);
+    var logoMap = createLogoMap(logoModel);
 
     var categories = [];
     categoryList.clear();
@@ -43,7 +45,7 @@ WorkerScript.onMessage = function(msg)
         var id = channel.id;
         var title = channel.name;
         var url = streamMap.get(id);
-        var icon = channel.logo;
+        var icon = logoMap.get(id);
         var category = "";
         var country = countryMap.get(channel.country);
         var language = "";
@@ -58,7 +60,8 @@ WorkerScript.onMessage = function(msg)
         if (countries.indexOf(country) < 0)
             countries.push(country);
 
-        language = getLanguages(languages, languageMap, channel.languages.toString());
+        if (channel.languages)
+            language = getLanguages(languages, languageMap, channel.languages.toString());
 
         if (xmltvurl === undefined)
             xmltvurl = "";
@@ -150,6 +153,18 @@ function createStreamMap(model)
 }
 
 function createGuideMap(model)
+{
+    var map = new Map();
+
+    for (var x = 0; x < model.count; x++)
+    {
+        map.set(model.get(x).channel, model.get(x).url);
+    }
+
+    return map;
+}
+
+function createLogoMap(model)
 {
     var map = new Map();
 
