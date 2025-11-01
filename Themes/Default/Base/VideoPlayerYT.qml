@@ -74,7 +74,7 @@ Item
         focus: visible
         enabled: visible
         backgroundColor: "black"
-        url: if (visible) mythUtils.findThemeFile("HTML/YouTube.html"); else "";
+        url: if (visible) "https://mythqml.net/yt_player/YouTube.html"; else "";
         settings.pluginsEnabled: true
 //        settings.playbackRequiresUserGesture: false
 
