@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # mdk-sdk version to install
-MDK_VERSION="v0.29.1"
+MDK_VERSION="v0.35.0"
 
 # default architecture
 ARCH="amd64"
