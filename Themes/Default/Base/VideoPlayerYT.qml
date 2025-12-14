@@ -78,14 +78,7 @@ Item
         settings.pluginsEnabled: true
 //        settings.playbackRequiresUserGesture: false
 
-        profile:  WebEngineProfile
-                  {
-                      storageName: "YouTube"
-                      offTheRecord: false
-                      httpCacheType: WebEngineProfile.DiskHttpCache
-                      persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
-                      httpUserAgent: "Mozilla/5.0 (SMART-TV; Linux; Tizen 5.0) AppleWebKit/538.1 (KHTML, like Gecko) Version/5.0 NativeTVAds Safari/538.1"
-                  }
+        profile: playerSources.youtubeWEProfile
 
         onLoadingChanged:
         {
