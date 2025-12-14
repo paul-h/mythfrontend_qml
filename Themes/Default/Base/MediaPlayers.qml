@@ -2090,7 +2090,7 @@ FocusScope
 
         if (player === undefined)
         {
-            log.error(Verbose.GUI, "createQmlVLCPlayer: failed to create Youtube player");
+            log.error(Verbose.GUI, "createYoutubePlayer: failed to create Youtube player");
         }
 
         player.showMessage.connect(root.showMessage);
