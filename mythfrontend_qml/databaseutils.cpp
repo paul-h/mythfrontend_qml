@@ -437,7 +437,7 @@ bool DatabaseUtils::updateMediaItem(QObject *metadata)
                   "tagline = :TAGLINE, genres = :CATEGORIES, inetref = :INETREF, website = :WEBSITE, contenttype = :CONTENTTYPE, nsfw = :NSFW, studio = :STUDIO, "
                   "coverart = :COVERART, fanart = :FANART, banner = :BANNER, screenshot = :SCREENSHOT, front = :FRONT, back = :BACK, channum = :CHANNUM, "
                   "callsign = :CALLSIGN, startts = :STARTTS, releasedate = :RELEASEDATE, runtime = :RUNTIME, runtimesecs = :RUNTIMESECS, status = :STATUS "
-                  "WHERE id = :ID;");
+                  "WHERE mediaid = :MEDIAID;");
 
     query.bindValue(":TITLE", metadata->property("title").toString());
     query.bindValue(":SUBTITLE", metadata->property("subtitle").toString());
@@ -445,7 +445,7 @@ bool DatabaseUtils::updateMediaItem(QObject *metadata)
     query.bindValue(":SEASON", metadata->property("season").toString());
     query.bindValue(":EPISODE", metadata->property("episode").toString());
     query.bindValue(":TAGLINE", metadata->property("tagline").toString());
-    query.bindValue(":CATEGORIES", metadata->property("categories").toString());
+    query.bindValue(":CATEGORIES", metadata->property("categoriesJSON").toString());
     query.bindValue(":INETREF", metadata->property("inetref").toString());
     query.bindValue(":WEBSITE", metadata->property("website").toString());
     query.bindValue(":CONTENTTYPE", metadata->property("contentType").toString());
@@ -464,13 +464,15 @@ bool DatabaseUtils::updateMediaItem(QObject *metadata)
     query.bindValue(":RUNTIME", metadata->property("runtime").toString());
     query.bindValue(":RUNTIMESECS", metadata->property("runtimesecs").toString());
     query.bindValue(":STATUS", metadata->property("status").toString());
-    query.bindValue(":ID", metadata->property("id").toString());
+    query.bindValue(":MEDIAID", metadata->property("mediaid").toString());
 
     if (!query.exec())
     {
-        gContext->m_logger->error(Verbose::GENERAL, QString("SqlQueryModel::update ERROR: %1 - %2").arg(query.lastError().text()).arg(query.executedQuery()));
+        gContext->m_logger->error(Verbose::GENERAL, QString("DatabaseUtils::updateMediaItem ERROR: %1 - %2").arg(query.lastError().text()).arg(query.executedQuery()));
         return false;
     }
+
+    gContext->m_logger->info(Verbose::GENERAL, QString("MEDIAID is: %1, DESCRIPTION is: %2").arg(metadata->property("mediaid").toString()).arg(metadata->property("description").toString()));
 
     getMythQMLDatabase().commit();
 
