@@ -94,7 +94,7 @@ BaseScreen
 
     JSONListModel
     {
-        id: usageData2021Model
+        id: usageData2022Model
 
         query: "$.data.consumptionRange[*]"
 
@@ -145,7 +145,7 @@ BaseScreen
             var day = 1;
             var total = 0;
 
-            year2021Set.remove(0, year2021Set.count);
+            year2022Set.remove(0, year2022Set.count);
 
             for (var x = 0; x < model.count; x++)
             {
@@ -169,46 +169,9 @@ BaseScreen
 
                     total += value;
 
-                    year2021Set.append(value);
+                    year2022Set.append(value);
 
                     day++;
-                }
-            }
-
-            if (show === "Cost")
-                total2021.text = "2021 Total: £" + total.toFixed(2);
-            else
-                total2021.text = "2021 Total: " + total.toFixed(2) + "kWh";
-        }
-    }
-
-    JSONListModel
-    {
-        id: usageData2022Model
-
-        query: "$.data.consumptionRange[*]"
-
-        onLoaded:
-        {
-            var total = 0;
-
-            year2022Set.remove(0, year2022Set.count);
-
-            for (var x = 0; x < model.count; x++)
-            {
-                if ((model.get(x).fuel === "gas" && fuel === "Gas") || (model.get(x).fuel === "electricity" && fuel === "Electric") || (model.get(x).fuel === "total" && fuel === "Both"))
-                {
-                    var value = 0
-                    if (show === "Cost")
-                        value = model.get(x).cost;
-                    else
-                        value = model.get(x).energy;
-
-                    valueAxis.max = Math.max(valueAxis.max, value);
-
-                    total += value;
-
-                    year2022Set.append(value);
                 }
             }
 
@@ -330,6 +293,42 @@ BaseScreen
         }
     }
 
+    JSONListModel
+    {
+        id: usageData2026Model
+
+        query: "$.data.consumptionRange[*]"
+
+        onLoaded:
+        {
+            var total = 0;
+
+            year2026Set.remove(0, year2026Set.count);
+
+            for (var x = 0; x < model.count; x++)
+            {
+                if ((model.get(x).fuel === "gas" && fuel === "Gas") || (model.get(x).fuel === "electricity" && fuel === "Electric") || (model.get(x).fuel === "total" && fuel === "Both"))
+                {
+                    var value = 0
+                    if (show === "Cost")
+                        value = model.get(x).cost;
+                    else
+                        value = model.get(x).energy;
+
+                    total += value;
+
+                    valueAxis.max = Math.max(valueAxis.max, value);
+
+                    year2026Set.append(value);
+                }
+            }
+
+            if (show === "Cost")
+                total2026.text = "2026 Total: £" + total.toFixed(2);
+            else
+                total2026.text = "2026 Total: " + total.toFixed(2) + "kWh";
+        }
+    }
     LabelText
     {
         id: title
@@ -344,7 +343,7 @@ BaseScreen
 
     InfoText
     {
-        id: total2021
+        id: total2022
         x: xscale(40)
         y: yscale(75)
         width: xscale(240)
@@ -354,7 +353,7 @@ BaseScreen
 
     InfoText
     {
-        id: total2022
+        id: total2023
         x: xscale(280)
         y: yscale(75)
         width: xscale(240)
@@ -365,7 +364,7 @@ BaseScreen
 
     InfoText
     {
-        id: total2023
+        id: total2024
         x: xscale(520)
         y: yscale(75)
         width: xscale(240)
@@ -376,7 +375,7 @@ BaseScreen
 
     InfoText
     {
-        id: total2024
+        id: total2025
         x: xscale(760)
         y: yscale(75)
         width: xscale(240)
@@ -387,7 +386,7 @@ BaseScreen
 
     InfoText
     {
-        id: total2025
+        id: total2026
         x: xscale(1000)
         y: yscale(75)
         width: xscale(240)
@@ -399,7 +398,7 @@ BaseScreen
     ChartView
     {
         id: chartView
-        title: "Energy Usage for January 2021"
+        title: "Energy Usage for January 2022"
         titleFont: Qt.font({pointSize: xscale(12), bold:true});
         titleColor: "magenta"
         x: xscale(10)
@@ -440,13 +439,6 @@ BaseScreen
 
             BarSet
             {
-                id: year2021Set
-                label: "2021"
-                labelFont: Qt.font({pointSize: xscale(6), bold: true});
-                labelColor: "dark blue"
-            }
-            BarSet
-            {
                 id: year2022Set
                 label: "2022"
                 labelFont: Qt.font({pointSize: xscale(6), bold: true});
@@ -462,7 +454,7 @@ BaseScreen
             BarSet
             {
                 id: year2024Set
-                label: "2024"
+                label: "2025"
                 labelFont: Qt.font({pointSize: xscale(6), bold: true});
                 labelColor: "dark blue"
             }
@@ -470,6 +462,13 @@ BaseScreen
             {
                 id: year2025Set
                 label: "2025"
+                labelFont: Qt.font({pointSize: xscale(6), bold: true});
+                labelColor: "dark blue"
+            }
+            BarSet
+            {
+                id: year2026Set
+                label: "2026"
                 labelFont: Qt.font({pointSize: xscale(6), bold: true});
                 labelColor: "dark blue"
             }
@@ -487,37 +486,30 @@ BaseScreen
 
     function loadData(month)
     {
-        usageData2021Model.json = "";
         usageData2022Model.json = "";
         usageData2023Model.json = "";
         usageData2024Model.json = "";
         usageData2025Model.json = "";
+        usageData2026Model.json = "";
 
-        year2021Set.remove(0, year2021Set.count);
         year2022Set.remove(0, year2022Set.count);
         year2023Set.remove(0, year2023Set.count);
         year2024Set.remove(0, year2024Set.count);
         year2025Set.remove(0, year2025Set.count);
+        year2026Set.remove(0, year2026Set.count);
 
-        total2021.text = "2021 Total: N/A";
         total2022.text = "2022 Total: N/A";
         total2023.text = "2023 Total: N/A";
         total2024.text = "2024 Total: N/A";
         total2025.text = "2025 Total: N/A";
+        total2026.text = "2026 Total: N/A";
 
         dateAxis.clear();
         valueAxis.max = 1;
 
-        // load 2021
-        jsonFile.source = settings.energyDataDir + "/2021_" + (month < 10 ? "0" : "") + month + ".json";
-        var json = jsonFile.read();
-        json = json.replace(/"tou": null/g, '"tou": false');
-        json = json.replace(/: null/g, ':0');
-        usageData2021Model.json = json;
-
         // load 2022
         jsonFile.source = settings.energyDataDir + "/2022_" + (month < 10 ? "0" : "") + month + ".json";
-        json = jsonFile.read();
+        var json = jsonFile.read();
         json = json.replace(/"tou": null/g, '"tou": false');
         json = json.replace(/: null/g, ':0');
         usageData2022Model.json = json;
@@ -542,5 +534,12 @@ BaseScreen
         json = json.replace(/"tou": null/g, '"tou": false');
         json = json.replace(/: null/g, ':0');
         usageData2025Model.json = json;
+
+        // load 2026
+        jsonFile.source = settings.energyDataDir + "/2026_" + (month < 10 ? "0" : "") + month + ".json";
+        json = jsonFile.read();
+        json = json.replace(/"tou": null/g, '"tou": false');
+        json = json.replace(/: null/g, ':0');
+        usageData2026Model.json = json;
     }
 }
