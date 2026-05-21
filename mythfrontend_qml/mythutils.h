@@ -34,7 +34,10 @@ class MythUtils : public QObject
     Q_INVOKABLE QString properties(QObject *item, bool linebreak);
     Q_INVOKABLE QString compressStr(const QString &str);
     Q_INVOKABLE QString unCompressStr(const QString &str);
-    Q_INVOKABLE bool writeMetadataXML(const QString &mxmlFile, QObject *metadata);
+    Q_INVOKABLE bool writeMetadataXML(const QString &mxmlFile, const QString &metadata);
+    Q_INVOKABLE bool writeMetadataJSON(const QString &jsonFile, const QString &metadata);
+    Q_INVOKABLE int countFiles(const QString &path);
+    Q_INVOKABLE QString readTextFile(const QString &textFile);
 
   private:
     QQmlApplicationEngine *m_engine;
