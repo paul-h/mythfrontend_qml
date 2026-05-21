@@ -41,7 +41,7 @@ class DatabaseUtils : public QObject
                                     double zoom, bool fullscreen, int layout, const QString &exec);
     Q_INVOKABLE void deleteMenuItem(int itemid);
 
-    Q_INVOKABLE bool updateMediaItem(QObject *metadata);
+    Q_INVOKABLE bool updateMediaItem(const QString &metadata);
 
     bool initMythDB(void);
     bool initMythQMLDB(void);
