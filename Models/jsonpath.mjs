@@ -89,10 +89,17 @@ export function jsonPath(obj, expr, arg) {
 
 export function parseJSONString(jsonString, jsonPathQuery)
 {
-    var objectArray = JSON.parse(jsonString);
+   try
+   {
+      var objectArray = JSON.parse(jsonString);
+   }
+   catch(e)
+   {
+      return undefined
+   }
 
-    if ( jsonPathQuery !== "" )
-        objectArray = jsonPath(objectArray, jsonPathQuery);
+   if ( jsonPathQuery !== "" )
+      objectArray = jsonPath(objectArray, jsonPathQuery);
 
-    return objectArray;
+   return objectArray;
 }
