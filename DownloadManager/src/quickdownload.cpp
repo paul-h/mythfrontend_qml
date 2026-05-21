@@ -323,8 +323,25 @@ void QuickDownload::onFinished()
         start(QUrl(url));
         return;
     } else {
+        QVariant mimeType = _networkReply->header(QNetworkRequest::ContentTypeHeader);
+        gContext->m_logger->info(Verbose::GENERAL, "QuickDownload: File mimetype was " + mimeType.toString());
+        QString actualFilename = _saveFile->fileName();
+
+        if (mimeType.isValid())
+        {
+            QMimeDatabase mimeDB;
+            QMimeType mimeTypeDB = mimeDB.mimeTypeForName(mimeType.toString());
+            gContext->m_logger->info(Verbose::GENERAL, "QuickDownload: File extension for URL is " + mimeTypeDB.name() + ", extension: " + mimeTypeDB.preferredSuffix());
+            if (mimeTypeDB.preferredSuffix() != "")
+            {
+                QFileInfo info(_saveFile->fileName());
+                actualFilename = info.path() + "/" + info.completeBaseName() + "." + mimeTypeDB.preferredSuffix();
+                _saveFile->setFileName(actualFilename);
+            }
+        }
         if(_saveFile->commit()) {
             gContext->m_logger->info(Verbose::NETWORK, "QuickDownload: File was saved to " + _saveFile->fileName());
+
             shutdownSaveFile();
             setProgress(1.0);
             setRunning(false);
@@ -343,7 +360,8 @@ void QuickDownload::onFinished()
                     QFile::remove(destination);
                 }
             }
-            emit finished();
+
+            emit finished(actualFilename);
         } else {
             if(_saveFile)
                 _saveFile->cancelWriting();
