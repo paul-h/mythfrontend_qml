@@ -64,4 +64,9 @@ public:
     {
         return QProcess::exitCode();
     }
+
+    Q_INVOKABLE qint64 write(const QString &data)
+    {
+        return QProcess::write(data.toStdString().c_str());
+    }
 };
