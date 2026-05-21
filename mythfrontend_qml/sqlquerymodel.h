@@ -10,6 +10,7 @@ public:
 
     Q_PROPERTY(QString sql READ sql WRITE setSql NOTIFY sqlChanged)
     Q_PROPERTY(QString database READ database WRITE setDatabase NOTIFY databaseChanged)
+    Q_PROPERTY(int count READ getCount NOTIFY countChanged)
 
     Q_INVOKABLE void reload(void);
     Q_INVOKABLE QVariant get(int row, const QString &field) const;
@@ -25,9 +26,12 @@ public:
     void setDatabase(const QString &database);
     QString database(void);
 
+    int getCount(void);
+
 signals:
     void sqlChanged(const QString &sql);
     void databaseChanged(const QString &database);
+    void countChanged(int count);
 
 private:
     void generateRoleNames();
