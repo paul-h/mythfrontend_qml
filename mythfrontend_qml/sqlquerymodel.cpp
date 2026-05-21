@@ -41,6 +41,11 @@ QString SqlQueryModel::database(void)
     return m_database;
 }
 
+int SqlQueryModel::getCount()
+{
+    return rowCount();
+}
+
 void SqlQueryModel::setQuery(const QString &query, const QSqlDatabase &db)
 {
     QSqlQueryModel::setQuery(query, db);

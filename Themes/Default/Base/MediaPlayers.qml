@@ -1780,8 +1780,8 @@ FocusScope
         // if a RailCam feed add 'On The Camera Today/Tomorrow' webpages
         if (player === "RailCam" || feedHasRailCamData())
         {
-            browserURLList.append({"title": "RailCam - On the cameras today", "url": "http://news.railcam.uk/index.php/category/today/", "width" : 500, "zoom": 1.0});
-            browserURLList.append({"title": "RailCam - On the cameras tomorrow", "url": "http://news.railcam.uk/index.php/category/tomorrow/", "width" : 500, "zoom": 1.0});
+            browserURLList.append({"title": "RailCam - On the cameras today", "url": "https://railcamlive.wordpress.com/category/today/", "width" : 500, "zoom": 1.0});
+            browserURLList.append({"title": "RailCam - On the cameras tomorrow", "url": "https://railcamlive.wordpress.com/category/tomorrow/", "width" : 500, "zoom": 1.0});
         }
 
         // if the feed is LiveTV see if we can find any info for the current program
