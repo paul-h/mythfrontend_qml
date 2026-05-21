@@ -19,7 +19,11 @@ Item
     property var countryList: ListModel{}
     property var languageList: ListModel{}
 
+    property bool finishedLoading: false
+    property bool _enabled: false
+
     signal loaded();
+    signal loadingStatus(int status);
 
     property list<QtObject> iptvFilter:
     [
@@ -87,47 +91,43 @@ Item
     JSONListModel
     {
         id: categoryModel
-
-        source: "https://iptv-org.github.io/api/categories.json"
-        onLoaded: loadChannels()
+        source: ""
     }
 
     JSONListModel
     {
         id: languageModel
-
-        source: "https://iptv-org.github.io/api/languages.json"
-        onLoaded: loadChannels()
+        source: ""
     }
 
     JSONListModel
     {
         id: countryModel
-
-        source: "https://iptv-org.github.io/api/countries.json"
-        onLoaded: loadChannels()
+        source: ""
     }
 
     JSONListModel
     {
         id: streamModel
-
-        source: "https://iptv-org.github.io/api/streams.json"
-        onLoaded: loadChannels()
+        source: ""
     }
 
     JSONListModel
     {
         id: guideModel
-        source: "https://iptv-org.github.io/api/guides.json"
-        onLoaded: loadChannels()
+        source: ""
     }
 
     JSONListModel
     {
         id: logoModel
-        source: "https://iptv-org.github.io/api/logos.json"
-        onLoaded: loadChannels()
+        source: ""
+    }
+
+    JSONListModel
+    {
+        id: feedsModel
+        source: ""
     }
 
     JSONListModel
@@ -145,24 +145,58 @@ Item
         function myparser(json, query, jsonModel, workerScript, parserData)
         {
             // tell the WorkerScript to run the parser
-            var models = {'countryModel': countryModel.model, 'languageModel': languageModel.model, 'streamModel': streamModel.model, 'categoryModel': categoryModel.model, 'guideModel': guideModel.model, 'logoModel': logoModel.model};
+            var models = {'countryModel': countryModel.model, 'languageModel': languageModel.model, 'streamModel': streamModel.model, 'categoryModel': categoryModel.model, 'guideModel': guideModel.model, 'logoModel': logoModel.model, 'feedsModel': feedsModel.model };
             var lists = {'categoryList': root.genreList, 'countryList': root.countryList, 'languageList': root.languageList};
-            var msg = {'json': json, 'query': query, 'jsonModel': jsonModel, 'models': models, 'lists': lists};
+            var msg = {model: "IPTVModel", 'json': json, 'query': query, 'jsonModel': jsonModel, 'models': models, 'lists': lists};
 
             workerScript.sendMessage(msg);
         }
+
+        onLoaded: root.loaded();
+        onLoadingStatus: root.loadingStatus(status);
     }
 
-    function loadChannels()
+    function isEnabled()
     {
-        // only load the channels when we have all the other data loaded
-        //if (categoryModel.count > 0 && countryModel.count > 0 && languageModel.count > 0 && streamModel.count > 0 && logoModel.count > 0 && guideModel.count > 0)
-        //    channelModel.source = "https://iptv-org.github.io/api/channels.json"
-        if (categoryModel.count > 0 && countryModel.count > 0 && languageModel.count > 0 && streamModel.count > 0 && logoModel.count > 0)
-            channelModel.source = "https://iptv-org.github.io/api/channels.json"
+        return _enabled;
     }
 
-    function expandNode(tree, path, node)
+    function enableModel(enable)
+    {
+        if (enable === _enabled)
+            return
+
+        _enabled = enable;
+
+        if (enable)
+        {
+            loadingStatus(XmlListModel.Loading);
+            log.info(Verbose.GENERAL, "IPTVModel: enabled");
+
+            categoryModel.source = "https://mythqml.net/download.php?f=categories.json&v=" + version + "&s=" + systemid;
+            languageModel.source = "https://mythqml.net/download.php?f=languages.json&v=" + version + "&s=" + systemid;
+            countryModel.source = "https://mythqml.net/download.php?f=countries.json&v=" + version + "&s=" + systemid;
+            streamModel.source = "https://mythqml.net/download.php?f=streams.json&v=" + version + "&s=" + systemid;
+            //guideModel.source = "https://mythqml.net/download.php?f=guides.json&v=" + version + "&s=" + systemid;
+            logoModel.source = "https://mythqml.net/download.php?f=logos.json&v=" + version + "&s=" + systemid;
+            feedsModel.source = "https://mythqml.net/download.php?f=feeds.json&v=" + version + "&s=" + systemid;
+            channelModel.source = "https://mythqml.net/download.php?f=iptv_channels.json&v=" + version + "&s=" + systemid;
+        }
+        else
+        {
+            log.info(Verbose.GENERAL, "IPTVModel: disabled");
+            categoryModel.source = "";
+            languageModel.source = "";
+            countryModel.source = "";
+            streamModel.source = "";
+            guideModel.source = "";
+            logoModel.source = "";
+            feedsModel.source = "";
+            channelModel.source = "";
+        }
+    }
+
+     function expandNode(tree, path, node)
     {
         var chan;
         var x;

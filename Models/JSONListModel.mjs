@@ -11,10 +11,15 @@ WorkerScript.onMessage = function(msg)
 
     jsonModel.clear();
 
-    for( const key in objectArray)
+    if (typeof objectArray === 'object')
+        jsonModel.append( objectArray );
+    else
     {
-        var jo = objectArray[key];
-        jsonModel.append( jo );
+        for( const key in objectArray)
+        {
+            var jo = objectArray[key];
+             jsonModel.append( jo );
+        }
     }
 
     jsonModel.sync();
