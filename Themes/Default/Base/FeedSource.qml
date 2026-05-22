@@ -62,7 +62,7 @@ Item
 
     onSortChanged:
     {
-        if (!_switchingFeed)
+        if (!_switchingFeed && feedName !== "")
         {
             var filter = "";
 
@@ -595,8 +595,7 @@ Item
                 feedList.sourceModel.loadingStatus.disconnect(handleModelStatusChange);
 
             feedList.sourceModel = playerSources.iptvList.model;
-            handleModelStatusChange(XmlListModel.Ready);
-            //playerSources.iptvList.model.loadingStatus.connect(handleModelStatusChange);
+            playerSources.iptvList.loadingStatus.connect(handleModelStatusChange);
         }
     }
 
