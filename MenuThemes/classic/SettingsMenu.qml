@@ -84,4 +84,10 @@ ListModel
         loaderSource:"settings/HASettingsEditor.qml"
         waterMark: "watermark/keys.png"
     }
+    ListElement
+    {
+        menutext: "Menu Editor"
+        loaderSource:"settings/MenuSettingsEditor.qml"
+        waterMark: "watermark/keys.png"
+    }
 }
