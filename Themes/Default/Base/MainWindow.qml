@@ -385,7 +385,7 @@ Window
             anchors.fill: parent
             enabled: true;
             cursorShape: Qt.BlankCursor
-
+            hoverEnabled: true
             preventStealing: true
             propagateComposedEvents: true
 
@@ -409,6 +409,34 @@ Window
             Component.onCompleted:
             {
                 createInitialItem();
+            }
+
+            delegate: StackViewDelegate
+            {
+                function transitionFinished(properties)
+                {
+                    properties.exitItem.opacity = 1
+                }
+
+                pushTransition: StackViewTransition
+                {
+                    PropertyAnimation
+                    {
+                        target: enterItem
+                        property: "opacity"
+                        from: 0
+                        to: 1
+                        duration: 500
+                    }
+                    PropertyAnimation
+                    {
+                        target: exitItem
+                        property: "opacity"
+                        from: 1
+                        to: 0
+                        duration: 500
+                    }
+                }
             }
 
             onCurrentItemChanged:
