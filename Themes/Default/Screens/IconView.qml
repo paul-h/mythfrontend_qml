@@ -2,6 +2,7 @@ import QtQuick
 import Qt.labs.folderlistmodel
 
 import Models 1.0
+import Qt.labs.folderlistmodel 2.1
 import Base 1.0
 
 BaseScreen

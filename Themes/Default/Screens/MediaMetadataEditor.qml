@@ -32,7 +32,7 @@ BaseScreen
     QtObject
     {
         id: metadata
-        property string id
+        property int    mediaid
         property string mediatype
         property string folder
         property string filename
@@ -43,6 +43,7 @@ BaseScreen
         property string season
         property string episode
         property string tagline
+        property string categoriesJSON
         property string categories
         property string contentType
         property bool   nsfw
@@ -73,7 +74,7 @@ BaseScreen
         setHelp("https://mythqml.net/help/media_metadata_editor.php#top");
 
         // save the metadata
-        metadata.id = sqlModel.get(currentIndex, "id");
+        metadata.mediaid = sqlModel.get(currentIndex, "mediaid");
         metadata.mediatype = sqlModel.get(currentIndex, "mediatype");
         metadata.folder = sqlModel.get(currentIndex, "folder");
         metadata.filename = sqlModel.get(currentIndex, "filename");
@@ -84,6 +85,7 @@ BaseScreen
         metadata.season = sqlModel.get(currentIndex, "season");
         metadata.episode = sqlModel.get(currentIndex, "episode");
         metadata.tagline = sqlModel.get(currentIndex, "tagline");
+        metadata.categoriesJSON = sqlModel.get(currentIndex, "genres");
         metadata.categories = JSON.parse(sqlModel.get(currentIndex, "genres")).join(", ");
         metadata.contentType = sqlModel.get(currentIndex, "contenttype");
         metadata.nsfw = sqlModel.get(currentIndex, "nsfw");
@@ -441,7 +443,7 @@ BaseScreen
             {
                 _lastEdit = coverartEdit;
                 _lastButton = coverartButton;
-                fileDialog.show();
+                fileDialog.showSelected(coverartEdit.text);
             }
         }
 
@@ -487,7 +489,7 @@ BaseScreen
             {
                 _lastEdit = fanartEdit;
                 _lastButton = fanartButton;
-                fileDialog.show();
+                fileDialog.showSelected(fanartEdit.text);
             }
         }
 
@@ -533,7 +535,7 @@ BaseScreen
             {
                 _lastEdit = bannerEdit;
                 _lastButton = bannerButton;
-                fileDialog.show();
+                fileDialog.showSelected(bannerEdit.text);
             }
         }
 
@@ -579,7 +581,7 @@ BaseScreen
             {
                 _lastEdit = screenshotEdit;
                 _lastButton = screenshotButton;
-                fileDialog.show();
+                fileDialog.showSelected(screenshotEdit.text);
             }
         }
 
@@ -625,7 +627,7 @@ BaseScreen
             {
                 _lastEdit = frontEdit;
                 _lastButton = frontButton;
-                fileDialog.show();
+                fileDialog.showSelected(frontEdit.text);
             }
         }
 
@@ -671,7 +673,7 @@ BaseScreen
             {
                 _lastEdit = backEdit;
                 _lastButton = backButton;
-                fileDialog.show();
+                fileDialog.showSelected(backEdit.text);
             }
         }
 
@@ -1173,7 +1175,7 @@ BaseScreen
                     else
                         showNotification("Looks like our Helper Service is not running.", settings.osdTimeoutMedium);
                 }
-                else if (type = "SCRIPT")
+                else if (type == "SCRIPT")
                     // TODO
                     ;
             }
@@ -1494,7 +1496,8 @@ BaseScreen
         }
         catStr = catStr + ']'
 
-        metadata.categories = catStr;
+        metadata.categoriesJSON = catStr;          // we save this to the DB
+        metadata.categories = categoriesEdit.text; // we save this to the MXML file
         metadata.contentType = typeEdit.text;
         metadata.nsfw = nsfwCheck.checked;
         metadata.inetref = inetrefEdit.text;
@@ -1558,7 +1561,7 @@ BaseScreen
 
             if (tmdbConfig === undefined)
             {
-                tmdbConfig = resultJson["Result"]["config"];
+                tmdbConfig = resultJson["result"]["config"];
             }
 
             if (imdbSearchResult !== undefined && tmdbSearchResult != undefined)
@@ -1803,7 +1806,7 @@ BaseScreen
                 var images = imdbMetadata.images
                 for (var x = 0; x < images.length; x++)
                 {
-                    searchResultModel.append({"source": "IMDB image", "item": images[x].caption, "data": images[x].url, "icon": images[x].url});
+                    searchResultModel.append({"source": "IMDB images", "item": images[x].caption, "data": images[x].url, "icon": images[x].url});
                 }
             }
 
@@ -1843,16 +1846,19 @@ BaseScreen
                 var images = imdbMetadata.images
                 for (var x = 0; x < images.length; x++)
                 {
-                    searchResultModel.append({"source": "IMDB poster: ", "item": images[x].caption, "data": images[x].url, "icon": images[x].url});
+                    searchResultModel.append({"source": "IMDB images: ", "item": images[x].caption, "data": images[x].url, "icon": images[x].url});
                 }
             }
 
             if (fanart)
             {
                 var posters = fanart.movie.moviebackground;
-                for (var x = 0; x < posters.length; x++)
+                if (posters)
                 {
-                    searchResultModel.append({"source": "FANART background", "item": posters[x].url, "data": posters[x].url, "icon": posters[x].url});
+                    for (var x = 0; x < posters.length; x++)
+                    {
+                        searchResultModel.append({"source": "FANART background", "item": posters[x].url, "data": posters[x].url, "icon": posters[x].url});
+                    }
                 }
             }
         }
@@ -1879,9 +1885,12 @@ BaseScreen
             if (fanart)
             {
                 var banners = fanart.movie.moviebanner;
-                for (var x = 0; x < banners.length; x++)
+                if (banners)
                 {
-                    searchResultModel.append({"source": "FANART image", "item": banners[x].url, "data": banners[x].url, "icon": banners[x].url});
+                    for (var x = 0; x < banners.length; x++)
+                    {
+                        searchResultModel.append({"source": "FANART image", "item": banners[x].url, "data": banners[x].url, "icon": banners[x].url});
+                    }
                 }
             }
         }
@@ -1912,7 +1921,7 @@ BaseScreen
                 var images = imdbMetadata.images
                 for (var x = 0; x < images.length; x++)
                 {
-                    searchResultModel.append({"source": "TMDB studio: ", "item": "IMDB image: " + images[x].caption, "data": images[x].url, "icon": images[x].url});
+                    searchResultModel.append({"source": "IMDB images: ", "item": "IMDB image: " + images[x].caption, "data": images[x].url, "icon": images[x].url});
                 }
             }
         }
@@ -1943,7 +1952,7 @@ BaseScreen
                 var images = imdbMetadata.images
                 for (var x = 0; x < images.length; x++)
                 {
-                    searchResultModel.append({"source": "TMDB studio: ", "item": "IMDB image: " + images[x].caption, "data": images[x].url, "icon": images[x].url});
+                    searchResultModel.append({"source": "IMDB images: ", "item": "IMDB image: " + images[x].caption, "data": images[x].url, "icon": images[x].url});
                 }
             }
         }
@@ -1974,7 +1983,7 @@ BaseScreen
                 var images = imdbMetadata.images
                 for (var x = 0; x < images.length; x++)
                 {
-                    searchResultModel.append({"source": "TMDB studio: ", "item": "IMDB image: " + images[x].caption, "data": images[x].url, "icon": images[x].url});
+                    searchResultModel.append({"source": "IMDB images: ", "item": "IMDB image: " + images[x].caption, "data": images[x].url, "icon": images[x].url});
                 }
             }
         }
@@ -1983,6 +1992,10 @@ BaseScreen
         {
             searchDialog.model = searchResultModel;
             searchDialog.show();
+        }
+        else
+        {
+            showNotification("No results found for this item.", settings.osdTimeoutMedium);
         }
     }
 }

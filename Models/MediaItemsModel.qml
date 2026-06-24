@@ -168,7 +168,7 @@ Item
                 if (mediaType === "" && contentType === "" && genre === "" && nsfw === "")
                 {
                     // get the full list of genres
-                    mediaItemsModel.sql = "select DISTINCT(value) FROM mediaitems, json_each(genres) ORDER BY value;"
+                    mediaItemsModel.sql = "SELECT DISTINCT(value) FROM mediaitems, json_each(genres) ORDER BY value;"
                     for (x = 0; x < mediaItemsModel.rowCount(); x++)
                     {
                         node.subNodes.append({"parent": node, "itemTitle": mediaItemsModel.get(x, "value"), "itemData": mediaItemsModel.get(x, "value"), "checked": false, "expanded": false, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Media_Filter_Genre})

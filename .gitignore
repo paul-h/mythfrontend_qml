@@ -3,3 +3,4 @@ Makefile
 Mythfrontend_QML*
 mythfrontend_qml.pro.user
 .qtc_clangd
+.vscode

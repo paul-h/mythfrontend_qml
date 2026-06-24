@@ -430,45 +430,60 @@ void DatabaseUtils::deleteMenuItem(int itemid)
     getMythQMLDatabase().commit();
 }
 
-bool DatabaseUtils::updateMediaItem(QObject *metadata)
+bool DatabaseUtils::updateMediaItem(const QString &metadata)
 {
     QSqlQuery query(getMythQMLDatabase());
     query.prepare("UPDATE mediaitems SET title = :TITLE, subtitle = :SUBTITLE, description = :DESCRIPTION, season = :SEASON, episode = :EPISODE, "
                   "tagline = :TAGLINE, genres = :CATEGORIES, inetref = :INETREF, website = :WEBSITE, contenttype = :CONTENTTYPE, nsfw = :NSFW, studio = :STUDIO, "
                   "coverart = :COVERART, fanart = :FANART, banner = :BANNER, screenshot = :SCREENSHOT, front = :FRONT, back = :BACK, channum = :CHANNUM, "
                   "callsign = :CALLSIGN, startts = :STARTTS, releasedate = :RELEASEDATE, runtime = :RUNTIME, runtimesecs = :RUNTIMESECS, status = :STATUS "
-                  "WHERE id = :ID;");
+                  "WHERE mediaid = :MEDIAID;");
 
-    query.bindValue(":TITLE", metadata->property("title").toString());
-    query.bindValue(":SUBTITLE", metadata->property("subtitle").toString());
-    query.bindValue(":DESCRIPTION", metadata->property("description").toString());
-    query.bindValue(":SEASON", metadata->property("season").toString());
-    query.bindValue(":EPISODE", metadata->property("episode").toString());
-    query.bindValue(":TAGLINE", metadata->property("tagline").toString());
-    query.bindValue(":CATEGORIES", metadata->property("categories").toString());
-    query.bindValue(":INETREF", metadata->property("inetref").toString());
-    query.bindValue(":WEBSITE", metadata->property("website").toString());
-    query.bindValue(":CONTENTTYPE", metadata->property("contentType").toString());
-    query.bindValue(":NSFW", metadata->property("nsfw").toInt());
-    query.bindValue(":STUDIO", metadata->property("studio").toString());
-    query.bindValue(":COVERART", metadata->property("coverart").toString());
-    query.bindValue(":FANART", metadata->property("fanart").toString());
-    query.bindValue(":BANNER", metadata->property("banner").toString());
-    query.bindValue(":SCREENSHOT", metadata->property("screenshot").toString());
-    query.bindValue(":FRONT", metadata->property("front").toString());
-    query.bindValue(":BACK", metadata->property("back").toString());
-    query.bindValue(":CHANNUM", metadata->property("channum").toString());
-    query.bindValue(":CALLSIGN", metadata->property("callsign").toString());
-    query.bindValue(":STARTTS", metadata->property("startts").toString());
-    query.bindValue(":RELEASEDATE", metadata->property("releasedate").toString());
-    query.bindValue(":RUNTIME", metadata->property("runtime").toString());
-    query.bindValue(":RUNTIMESECS", metadata->property("runtimesecs").toString());
-    query.bindValue(":STATUS", metadata->property("status").toString());
-    query.bindValue(":ID", metadata->property("id").toString());
+    QJsonParseError parseError;
+    QJsonDocument jsonDoc;
+    jsonDoc = QJsonDocument::fromJson(metadata.toUtf8(), &parseError);
+    if (parseError.error != QJsonParseError::NoError){
+        qWarning() << "Parse error at " << parseError.offset << ":" << parseError.errorString();
+        return false;
+    }
+
+    QJsonObject jsonObj;
+    jsonObj = jsonDoc.object();
+    query.bindValue(":TITLE", jsonObj["title"].toString());
+    query.bindValue(":SUBTITLE", jsonObj["subtitle"].toString());
+    query.bindValue(":DESCRIPTION", jsonObj["description"].toString());
+    query.bindValue(":SEASON", jsonObj["season"].toString());
+    query.bindValue(":EPISODE", jsonObj["episode"].toString());
+    query.bindValue(":TAGLINE", jsonObj["tagline"].toString());
+
+    QJsonDocument catDoc(jsonObj["categories"].toArray());
+    query.bindValue(":CATEGORIES", catDoc.toJson(QJsonDocument::Compact));
+
+    QJsonDocument inetrefDoc(jsonObj["inetref"].toObject());
+    query.bindValue(":INETREF", inetrefDoc.toJson(QJsonDocument::Compact));
+
+    query.bindValue(":WEBSITE", jsonObj["website"].toString());
+    query.bindValue(":CONTENTTYPE", jsonObj["contentType"].toString());
+    query.bindValue(":NSFW", jsonObj["nsfw"].toInt());
+    query.bindValue(":STUDIO", jsonObj["studio"].toString());
+    query.bindValue(":COVERART", jsonObj["coverart"].toString());
+    query.bindValue(":FANART", jsonObj["fanart"].toString());
+    query.bindValue(":BANNER", jsonObj["banner"].toString());
+    query.bindValue(":SCREENSHOT", jsonObj["screenshot"].toString());
+    query.bindValue(":FRONT", jsonObj["front"].toString());
+    query.bindValue(":BACK", jsonObj["back"].toString());
+    query.bindValue(":CHANNUM", jsonObj["channum"].toString());
+    query.bindValue(":CALLSIGN", jsonObj["callsign"].toString());
+    query.bindValue(":STARTTS", jsonObj["startts"].toString());
+    query.bindValue(":RELEASEDATE", jsonObj["releasedate"].toString());
+    query.bindValue(":RUNTIME", jsonObj["runtime"].toString());
+    query.bindValue(":RUNTIMESECS", jsonObj["runtimesecs"].toString());
+    query.bindValue(":STATUS", jsonObj["status"].toString());
+    query.bindValue(":MEDIAID", jsonObj["mediaid"].toInt());
 
     if (!query.exec())
     {
-        gContext->m_logger->error(Verbose::GENERAL, QString("SqlQueryModel::update ERROR: %1 - %2").arg(query.lastError().text()).arg(query.executedQuery()));
+        gContext->m_logger->error(Verbose::GENERAL, QString("DatabaseUtils::updateMediaItem ERROR: %1 - %2").arg(query.lastError().text()).arg(query.executedQuery()));
         return false;
     }
 

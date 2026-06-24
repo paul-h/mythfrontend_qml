@@ -9,6 +9,8 @@ import QtQml.XmlListModel
 
 Item
 {
+    id: root
+
     property string source: ""
     property string json: ""
     property string query: ""
@@ -20,10 +22,13 @@ Item
     property ListModel model: jsonModel
     property alias count: jsonModel.count
     property alias dynamicRoles: jsonModel.dynamicRoles
+   
+    property int status: XmlListModel.Null
 
     property bool debug: false
-
+    
     signal loaded()
+    signal loadingStatus(int status);
 
     ListModel
     {
@@ -41,12 +46,14 @@ Item
         {
             if (msg.status === "Ready")
             {
-                jsonModel.loadingStatus(XmlListModel.Ready);
+                status = XmlListModel.Ready
+                loadingStatus(XmlListModel.Ready);
                 loaded();
             }
             else if (msg.status === "Loading")
             {
-                jsonModel.loadingStatus(XmlListModel.Loading);
+                status = XmlListModel.Loading
+                loadingStatus(XmlListModel.Loading);
             }
         }
     }
@@ -68,7 +75,8 @@ Item
 
     function updateJSONModel()
     {
-        jsonModel.loadingStatus(XmlListModel.Loading);
+        status = XmlListModel.Loading
+        loadingStatus(XmlListModel.Loading);
 
         jsonModel.clear();
 

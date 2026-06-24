@@ -17,6 +17,7 @@ Item
 
     property bool showHeader: false
     property bool showBrowser: false
+    property bool exitOnPlaybackEnded: false
 
     property int browserWidth: xscale(350)
     property double browserZoom: 1.0
@@ -435,7 +436,7 @@ Item
             enabled: visible
 
             onFocusChanged: if (focus) changeFocus(this);
-            onPlaybackEnded: if (layout === 1) { stop(); stack.pop(); }
+            onPlaybackEnded: if (layout === 1 && exitOnPlaybackEnded) { stop(); stack.pop(); }
             Tracer { color: Qt.rgba(Math.random(), Math.random(), Math.random(), 1)}
         }
 

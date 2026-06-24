@@ -5,6 +5,8 @@ import mythqml.net 1.0
 
 Item
 {
+    id: root
+    objectName: "basescreen"
     property var    defaultFocusItem: undefined
     property var    previousFocusItem: undefined
 

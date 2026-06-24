@@ -57,10 +57,9 @@ ListModel
     ListElement
     {
         menutext:"Web"
-        loaderSource: "WebBrowser.qml"
+        loaderSource: "ThemedMenu.qml"
         waterMark: "watermark/browser.png"
-        url: "https://www.google.co.uk"
-        zoom: 1.0
+        menuSource: "database://web_browser|Web Browser Menu|title/title_info_center.png"
     }
     ListElement
     {
@@ -74,7 +73,7 @@ ListModel
         menutext:"Home Assistant"
         loaderSource: "ThemedMenu.qml"
         waterMark: "watermark/home_assistant.svg"
-        menuSource: "setting://HAMenuFile"
+        menuSource: "database://home_assistant|Home Assistant Menu|title/title_info_center.png"
     }
     ListElement
     {

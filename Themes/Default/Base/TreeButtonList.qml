@@ -11,9 +11,10 @@ FocusScope
     property int columns: 1
     property int spacing: 5
 
-    property var sourceTree: undefined
+    property var sourceTree: null
     property string basePath: ""
     property var model: treeModel
+    property string separator: " ~ "
 
     property var lists: [];
 
@@ -165,6 +166,7 @@ FocusScope
 
     function nodeClickedHandler(nodeID, index)
     {
+        console.log("nodeClickedHandler nodeID: " + nodeID + ", index: " + index)
         objRoot.nodeClicked(lists[nodeID].model.get(index));
     }
 
@@ -179,7 +181,7 @@ FocusScope
         if (path === "" || node === undefined)
             return;
 
-        if (sourceTree !== undefined)
+        if (sourceTree !== undefined && sourceTree !== null)
         {
             if (!node.expanded)
             {
@@ -334,7 +336,7 @@ FocusScope
             return;
         }
 
-        var list = path.split(" ~ ");
+        var list = path.split(separator);
         var node = model;
         var found = false;
 
@@ -376,7 +378,7 @@ FocusScope
 
     function getNodeFromPath(path)
     {
-        var list = path.split(" ~ ");
+        var list = path.split(separator);
         var node = sourceTree.model;
         var found = false;
 
@@ -505,12 +507,12 @@ FocusScope
         return lists[_focusedList].model.get(lists[_focusedList].currentIndex);
     }
 
-    function getActiveNodePath(useData, separator)
+    function getActiveNodePath(useData, useSeparator)
     {
         var result;
 
-        if (separator === undefined)
-            separator = " ~ ";
+        if (useSeparator === undefined)
+            useSeparator = separator;
 
         if (lists.length == 0 ||  lists[0].model.get(lists[0].currentIndex) === undefined)
             return "";
@@ -519,7 +521,7 @@ FocusScope
         {
             var nodeText = (useData ? lists[i].model.get(lists[i].currentIndex).itemData : lists[i].model.get(lists[i].currentIndex).itemTitle);
             if (i > 0)
-                result = result + separator + nodeText;
+                result = result + useSeparator + nodeText;
             else
                 result = nodeText;
         }

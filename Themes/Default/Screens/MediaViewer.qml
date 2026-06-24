@@ -20,12 +20,15 @@ BaseScreen
     property bool showNSFW: false
     property bool sortReversed: false
     property string contentType: "ALL"
+    property string genre: "<All Genres>"
 
     // one of VLC or MDK
     property string _playerToUse: dbUtils.getSetting("InternalPlayer", settings.hostName, "VLC");
     // one of coverart, fanart, banner, screenshot, front or back
     property string _currentArtwork: "coverart"
     property alias _showArtwork: previewImage.visible
+
+    property var genreList: ListModel{}
 
     closeOnEscape: !_showArtwork
 
@@ -47,6 +50,7 @@ BaseScreen
         sortReversed = (dbUtils.getSetting("MediaViewerSortReversed", settings.hostName, "false") == "true");
         contentType = dbUtils.getSetting("MediaViewerContentType", settings.hostName, "ALL");
         mediaType = dbUtils.getSetting("MediaViewerMediaType", settings.hostName, "VIDEO");
+        genre = dbUtils.getSetting("MediaViewerGenre", settings.hostName, "All");
 
         if (sortField === "datemodified")
             footer.redText = "Sort (Modified)";
@@ -56,8 +60,8 @@ BaseScreen
             footer.redText = "Sort (Name)";
 
         footer.greenText = "Order (" + (sortReversed ? "Z-A" : "A-Z") + ")";
-        footer.yellowText = "Show (" + contentType + ")";
-        footer.blueText = "Media Type (" + mediaType + ")";
+        footer.yellowText = "Genre (" + (genre == "<All Genres>" ? "All" : genre) + ")";
+        footer.blueText = "Show (" + contentType + ")";
 
         updateSQL();
     }
@@ -68,13 +72,14 @@ BaseScreen
         dbUtils.setSetting("MediaViewerSortReversed", settings.hostName, (sortReversed ? "true" : "false"));
         dbUtils.setSetting("MediaViewerContentType", settings.hostName, contentType);
         dbUtils.setSetting("MediaViewerMediaType", settings.hostName, mediaType);
+        dbUtils.setSetting("MediaViewerGenre", settings.hostName, genre);
     }
 
     SqlQueryModel
     {
         id: mediaItemsModel
 
-        sql: "SELECT * FROM mediaitems WHERE mediatype = '" + mediaType + "' ORDER BY " + sortField + (sortReversed ? " DESC" : " ASC");
+        sql: "SELECT * FROM mediaitems";
 
         onSqlChanged:
         {
@@ -82,6 +87,21 @@ BaseScreen
                 fetchMore(index(-1, -1));
 
             updateMetadata();
+        }
+    }
+
+    SqlQueryModel
+    {
+        id: genreModel
+
+        sql: "SELECT DISTINCT(value) FROM mediaitems, json_each(genres) ORDER BY value;"
+
+        onSqlChanged:
+        {
+            while (canFetchMore(index(-1, -1)))
+                fetchMore(index(-1, -1));
+
+            updateGenreList();
         }
     }
 
@@ -96,6 +116,7 @@ BaseScreen
             url: ""
             player: ""
             duration: ""
+            description: ""
         }
     }
 
@@ -199,6 +220,13 @@ BaseScreen
         else if (event.key === Qt.Key_F3)
         {
             // yellow
+            updateGenreList();
+            searchDialog.model = genreList;
+            searchDialog.showSelected(genre);
+        }
+        else if (event.key === Qt.Key_F4)
+        {
+            // blue
             if (contentType === "ALL")
                 contentType = "MOVIE";
             else if (contentType === "MOVIE")
@@ -208,17 +236,7 @@ BaseScreen
             else if (contentType === "ADULT")
                 contentType = "ALL";
 
-            footer.yellowText = "Show (" + contentType + ")";
-            updateSQL();
-        }
-        else if (event.key === Qt.Key_F4)
-        {
-            if (mediaType == "VIDEO")
-                mediaType = "DVD";
-            else if (mediaType == "DVD")
-                mediaType = "VIDEO";
-
-            footer.blueText = "Media Type (" + mediaType + ")";
+            footer.blueText = "Show (" + contentType + ")";
             updateSQL();
         }
         else if (event.key === Qt.Key_F5)
@@ -437,9 +455,25 @@ BaseScreen
         {
             var folder = "file://" + model.get(currentIndex, "folder");
             var filename = model.get(currentIndex, "filename")
-            mediaModel.get(0).title = model.get(currentIndex, "title");
+            var title = model.get(currentIndex, "title");
+            var subtitle = model.get(currentIndex, "subtitle");
+            mediaModel.get(0).title = title + (subtitle != "" ? " - " + subtitle: "");
             mediaModel.get(0).url = folder + '/' + filename;
             mediaModel.get(0).player = _playerToUse;
+            mediaModel.get(0).description = model.get(currentIndex, "description");
+
+            if (model.get(currentIndex, "front") != "")
+                mediaModel.get(0).icon = findVideoImage(folder + "/" + filename, model.get(currentIndex, "front"), "front");
+            else if (model.get(currentIndex, "back") != "")
+                mediaModel.get(0).icon = findVideoImage(folder + "/" + filename, model.get(currentIndex, "back"), "back");
+            else if (model.get(currentIndex, "coverart") != "")
+                mediaModel.get(0).icon = findVideoImage(folder + "/" + filename, model.get(currentIndex, "coverart"), "coverart");
+            else if (model.get(currentIndex, "fanart") != "")
+                mediaModel.get(0).icon = findVideoImage(folder + "/" + filename, model.get(currentIndex, "fanart"), "fanart");
+            else if (model.get(currentIndex, "screenshot") != "")
+                mediaModel.get(0).icon = findVideoImage(folder + "/" + filename, model.get(currentIndex, "screenshot"), "screenshot");
+            else
+                mediaModel.get(0).icon = mythUtils.findThemeFile("images/no_image.png")
 
             if (filename == "VIDEO_TS")
             {
@@ -526,7 +560,7 @@ BaseScreen
     InfoText
     {
         id: videoReleaseDate
-        x: _xscale(650); y: yscale(630); width: _xscale(280)
+        x: _xscale(640); y: yscale(630); width: _xscale(300)
         fontColor: "grey"
         horizontalAlignment: Text.AlignRight
     }
@@ -548,7 +582,7 @@ BaseScreen
     Image
     {
         id: websiteIcon
-        x: _xscale(940); y: yscale(635); width: xscale(32); height: yscale(32)
+        x: _xscale(950); y: yscale(635); width: xscale(32); height: yscale(32)
         source: mythUtils.findThemeFile("images/website.png")
     }
 
@@ -572,7 +606,7 @@ BaseScreen
         width: parent.width
         redText: "Sort (" + (sortField === "title" ? "Name" : "Modified") + ")"
         greenText: "Order (" + (sortReversed ? "Z-A" : "A-Z") + ")"
-        yellowText: "Show (" + contentType + ")"
+        yellowText: "Genre (" + genre + ")"
         blueText: "Media Type (" + mediaType + ")";
 
     }
@@ -733,15 +767,43 @@ BaseScreen
         onResultText:
         {
             showNotification("Scanning folder: " + text);
-            sendCommandToHelper("Scan Folder: " + text)
+            sendCommandToHelper('{ "commandType":  "Scan Folder", "path": "' +  text + '"}');
+        }
+    }
+
+    SearchListDialog
+    {
+        id: searchDialog
+
+        title: "Choose a Genre"
+        message: ""
+        onAccepted: videoList.focus = true;
+        onCancelled: videoList.focus = true;
+
+        onItemSelected:
+        {
+            if (itemText != "<All Genres>")
+            {
+                genre = itemText;
+                footer.yellowText = "Genre (" + itemText + ")";
+                updateSQL();
+            }
+            else
+            {
+                genre = "<All Genres>";
+                footer.yellowText = "Genre (All)";
+                updateSQL();
+            }
+
+            videoList.focus = true;
         }
     }
 
     function showInfo()
     {
         var infoText = videoDesc.text.replace(/\n/g, "<br>") +
-                "<br>Folder: " + mediaItemsModel.get(videoList.currentIndex, "folder") +
-                "<br>Filename: " + mediaItemsModel.get(videoList.currentIndex, "filename");
+                "<br><br>Folder: " + mediaItemsModel.get(videoList.currentIndex, "folder") +
+                "<br><br>Filename: " + mediaItemsModel.get(videoList.currentIndex, "filename");
         infoDialog.infoText = infoText;
         infoDialog.show(videoList);
     }
@@ -765,23 +827,39 @@ BaseScreen
 
     function updatePreviewImage()
     {
+        var folder = mediaItemsModel.get(videoList.currentIndex, "folder");
+        var filename = mediaItemsModel.get(videoList.currentIndex, "filename");
+
         if (_currentArtwork === "coverart")
         {
-            //if (mediaItemsModel.get(videoList.currentIndex, "coverart") !== "")
-                previewImage.source = mediaItemsModel.get(videoList.currentIndex, "coverart");
-            //else
-            //    previewImage.source = ""
+            var coverart = mediaItemsModel.get(videoList.currentIndex, "coverart");
+            previewImage.source = findVideoImage(folder + "/" + filename, coverart, "coverart");
         }
         else if (_currentArtwork === "fanart")
-            previewImage.source = mediaItemsModel.get(videoList.currentIndex, "fanart");
+        {
+            var fanart = mediaItemsModel.get(videoList.currentIndex, "fanart");
+            previewImage.source = findVideoImage(folder + "/" + filename, fanart, "fanart");
+        }
         else if (_currentArtwork === "screenshot")
-            previewImage.source = mediaItemsModel.get(videoList.currentIndex, "screenshot");
+        {
+            var screenshot = mediaItemsModel.get(videoList.currentIndex, "screenshot");
+            previewImage.source = findVideoImage(folder + "/" + filename, screenshot, "screenshot");
+        }
         else if (_currentArtwork === "banner")
-            previewImage.source = mediaItemsModel.get(videoList.currentIndex, "banner");
+        {
+            var banner =  mediaItemsModel.get(videoList.currentIndex, "banner");
+            previewImage.source = findVideoImage(folder + "/" + filename, banner, "banner");
+        }
         else if (_currentArtwork === "front")
-            previewImage.source = mediaItemsModel.get(videoList.currentIndex, "front");
+        {
+            var front = mediaItemsModel.get(videoList.currentIndex, "front");
+            previewImage.source = findVideoImage(folder + "/" + filename, front, "front");
+        }
         else if (_currentArtwork === "back")
-            previewImage.source = mediaItemsModel.get(videoList.currentIndex, "back");
+        {
+            var back = mediaItemsModel.get(videoList.currentIndex, "back");
+            previewImage.source = findVideoImage(folder + "/" + filename, back, "back");
+        }
     }
 
     function showMetadataEditor()
@@ -792,11 +870,71 @@ BaseScreen
 
     function updateSQL()
     {
-        var where = contentType == "ALL" ? "" : " AND contenttype = '" + contentType + "'";
-        var where2 = " AND nsfw = " + (showNSFW ? "1" : "0");
-        var orderby = " ORDER BY " + sortField + (sortReversed ? " DESC" : " ASC");
-        var sql = "SELECT * FROM mediaitems WHERE mediatype = '" + mediaType + "' " + where + where2 + orderby;
-        mediaItemsModel.sql = sql;
+        var newSQL = "SELECT * FROM mediaitems";
+        var whereAdded = false;
+
+        if (genre !== "All" && genre != "<All Genres>")
+            newSQL = newSQL + ", json_each(mediaitems.genres)";
+
+        if (mediaType !== "")
+        {
+            if (whereAdded)
+                newSQL = newSQL + " AND mediatype = '" + mediaType + "'";
+            else
+            {
+                whereAdded = true;
+                newSQL = newSQL + " WHERE mediatype = '" + mediaType + "'";
+            }
+        }
+
+        if (contentType !== "" && contentType !== "ALL")
+        {
+            if (whereAdded)
+                newSQL = newSQL + " AND contenttype = '" + contentType + "'";
+            else
+            {
+                whereAdded = true;
+                newSQL = newSQL + " WHERE contenttype = '" + contentType + "'";
+            }
+        }
+
+        if (showNSFW)
+        {
+            if (whereAdded)
+                newSQL = newSQL + " AND nsfw = " + (showNSFW ? 1 : 0);
+            else
+            {
+                whereAdded = true;
+                newSQL = newSQL + " WHERE nsfw = " + (showNSFW ? 1 : 0);
+            }
+        }
+
+        if (genre !== "" && genre !== "<All Genres>")
+        {
+            if (whereAdded)
+                newSQL = newSQL + " AND json_each.value = '" + genre + "'";
+            else
+            {
+                whereAdded = true;
+                newSQL = newSQL + " WHERE json_each.value = '" + genre + "'";
+            }
+        }
+
+        newSQL = newSQL + " ORDER BY " + sortField + (sortReversed ? " DESC" : " ASC" + ", season, episode");
+
+        mediaItemsModel.sql =  newSQL;
+    }
+
+    function updateGenreList()
+    {
+        genreList.clear();
+
+        genreList.append({"item": "<All Genres>"});
+
+        for (var x = 0; x < genreModel.rowCount(); x++)
+        {
+            genreList.append({"item": genreModel.get(x, "value")});
+        }
     }
 
     function feedChanged(filter, index)
@@ -920,19 +1058,21 @@ BaseScreen
             videoCategory.text = genreJson.join(", ");
 
             var season = mediaItemsModel.get(videoList.currentIndex, "season");
-            var episode = mediaItemsModel.get(videoList.currentIndex, "episode") ? mediaItemsModel.get(videoList.currentIndex, "episode") : 0;
+            var episode = mediaItemsModel.get(videoList.currentIndex, "episode");
             var res = "";
 
-            if (season > 0)
-                res = "Season: " + season + " ";
-            if (episode > 0)
-                res += " Episode: " + episode;
+            if (season > 0 && episode > 0)
+                res = "Season: " + season + " Episode: " + episode;
+            else if (season == 0 && episode > 0)
+                res = "Episode: " + episode + " (Special)";
+            else if (season > 0 && episode == 0)
+                res = "Season: " + season + " (special)";
 
             videoEpisode.text = res;
 
             videoLength.text = mediaItemsModel.get(videoList.currentIndex, "runtime") ? mediaItemsModel.get(videoList.currentIndex, "runtime") : "";
 
-            videoReleaseDate.text = mediaItemsModel.get(videoList.currentIndex, "releasedate") ? "Release Date: " + mediaItemsModel.get(videoList.currentIndex, "releasedate") : "";
+            videoReleaseDate.text = mediaItemsModel.get(videoList.currentIndex, "releasedate") ? mediaItemsModel.get(videoList.currentIndex, "releasedate") : "";
 
             websiteIcon.visible = ((mediaItemsModel.get(videoList.currentIndex, "website") !== "" ) ? true : false);
             hashIcon.visible = ((mediaItemsModel.get(videoList.currentIndex, "hash") !== "" ) ? true : false);

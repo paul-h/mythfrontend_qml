@@ -75,6 +75,7 @@ FocusScope
 
             onMediaStatusChanged: mediaStatus =>
             {
+                log.debug(Verbose.PLAYBACK, "VideoPlayerMDK: mediaStatus: " + mediaStatus);
                 if (mediaStatus == (MDKPlayer.MediaStatusEnd + MDKPlayer.MediaPrepared + MDKPlayer.MediaBuffered))
                 {
                     log.debug(Verbose.PLAYBACK, "VideoPlayerMDK: mediaStatus: Ended");
@@ -88,7 +89,7 @@ FocusScope
                 else if (mediaStatus & MDKPlayer.MediaStatusUnloaded)
                 {
                     log.debug(Verbose.PLAYBACK, "VideoPlayerMDK: mediaStatus: Unloaded");
-                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Unknown);
+                    root.mediaStatusChanged(MediaPlayers.MediaStatus.Ended);
                 }
                 else if (mediaStatus == (MDKPlayer.MediaStatusLoaded + MDKPlayer.MediaStatusPrepared + MDKPlayer.MediaStatusBuffered))
                 {

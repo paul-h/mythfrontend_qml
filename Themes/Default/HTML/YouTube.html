@@ -35,14 +35,14 @@
             {
                 player = new YT.Player('player',
                 {
-                height: window.innerHeight,
-                width: window.innerWidth,
-                playerVars: { 'autoplay': 1, 'controls': 0 },
-                events:
-                {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange
-                }
+                    height: window.innerHeight,
+                    width: window.innerWidth,
+                    playerVars: { 'autoplay': 1, 'controls': 0 },
+                    events:
+                    {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
+                    }
                 });
 
                 var iframe = document.getElementsByTagName("iframe")[0];
@@ -52,6 +52,7 @@
                 iframe.style.frameborder = "0"
                 iframe.style.margin = "0"
                 iframe.style.border = "solid 0px #000000"
+                iframe.referrerpolicy="strict-origin-when-cross-origin"
             }
 
             // 4. The API will call this function when the video player is ready.

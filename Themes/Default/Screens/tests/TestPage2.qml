@@ -60,6 +60,7 @@ BaseScreen
         }
         else if (event.key === Qt.Key_F5 || event.key === Qt.Key_E)
         {
+            // edit existing bookmark
             var node = treeView.getActiveNode();
 
             if (node && node.type === SourceTreeModel.NodeType.Browser_Bookmark)

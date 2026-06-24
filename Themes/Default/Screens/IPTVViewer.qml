@@ -27,7 +27,14 @@ BaseScreen
         showTitle(true, "IPTV Channel Viewer");
         setHelp("https://mythqml.net/help/iptv_channelviewer.php#top");
 
-        feedSource.sort = "Title"
+        if (!playerSources.iptvList.isEnabled())
+        {
+            var message = "Loading IPTV channels.\nPlease Wait...";
+            var timeOut = settings.osdTimeoutMedium;
+            showBusyDialog(message, timeOut);
+
+            playerSources.iptvList.enableModel(true);
+        }
 
         // we no longer support QtAV player
         if (_playerToUse === "QtAV")
@@ -38,8 +45,16 @@ BaseScreen
 
         var filter = feedSource.sort + "," + feedSource.genre + "," + feedSource.country + "," + feedSource.language;
         feedSource.switchToFeed("IPTV", filter, 0);
+        feedSource.sort = "Title"
 
-        feedSource.feedModelLoaded.connect(function() { iptvGrid.currentIndex = 0; });
+        feedSource.feedModelLoaded.connect(
+            function()
+            {
+                hideBusyDialog();
+                iptvGrid.currentIndex = 0;
+                iptvGrid.forceActiveFocus();
+            }
+        );
 
         iptvGrid.currentIndex = 0;
     }
@@ -554,6 +569,10 @@ BaseScreen
 
     function getIconURL(iconURL)
     {
+        if (!iconURL.startsWith("http://") && !iconURL.startsWith("https://"))
+            return settings.configPath + "iptv/icons/" + iconURL;
+
+
         if (iconURL && iconURL != "")
             return iconURL;
 
@@ -562,9 +581,6 @@ BaseScreen
 
     function updateChannelDetails()
     {
-        if (iptvGrid.currentIndex === -1)
-            return;
-
         title.text = iptvGrid.model.get(iptvGrid.currentIndex).title;
 
         // description

@@ -7,22 +7,19 @@ WorkerScript.onMessage = function(msg)
     var json = msg.json;
     var query = msg.query;
     var jsonModel = msg.jsonModel;
-    var debug = msg.debug
-
-    if (debug)
-        console.log(json);
-
     var objectArray = parseJSONString(json, query);
 
     jsonModel.clear();
 
-    for( const key in objectArray)
+    if (typeof objectArray === 'object')
+        jsonModel.append( objectArray );
+    else
     {
-        var jo = objectArray[key];
-        jsonModel.append( jo );
-
-        if (debug)
-            console.log("key: " + key + ", object: " + jo);
+        for( const key in objectArray)
+        {
+            var jo = objectArray[key];
+             jsonModel.append( jo );
+        }
     }
 
     jsonModel.sync();

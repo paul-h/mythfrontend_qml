@@ -306,14 +306,27 @@ function compareVersion(v1, v2)
     return 0;
 }
 
+function getFilename(filePath)
+{
+    return filePath.split(/(\\|\/)/g).pop();
+}
+
 function getPath(filePath)
 {
-    return filePath.substring(0, filePath.lastIndexOf("/"));
+    if (filePath !== undefined)
+        return filePath.substring(0, filePath.lastIndexOf("/"));
+
+    return ""
 }
 
 function basename(path)
 {
-    return (path.slice(path.lastIndexOf("/")+1))
+    return (path.slice(path.lastIndexOf("/") + 1))
+}
+
+function replaceExtension(filePath, newExtension)
+{
+    return removeExtension(filePath) + newExtension;
 }
 
 function removeExtension(path)

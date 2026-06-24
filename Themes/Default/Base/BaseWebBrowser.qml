@@ -1,7 +1,6 @@
-import QtQuick
-import QtQuick.Controls
-import QtWebEngine
-
+import QtQuick 2.0
+import QtQuick.Controls 1.5
+import QtWebEngine 1.5
 import Base 1.0
 import Dialogs 1.0
 
@@ -132,7 +131,7 @@ FocusScope
         settings.pluginsEnabled: true
         settings.javascriptEnabled: true
         settings.javascriptCanOpenWindows: true
-        //settings.scrollAnimatorEnabled: true // Requires Qt6.8
+        settings.scrollAnimatorEnabled: true // Requires Qt6.8
         settings.allowRunningInsecureContent: true
         settings.localContentCanAccessRemoteUrls: true
 
