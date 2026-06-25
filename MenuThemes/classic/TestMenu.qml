@@ -80,4 +80,10 @@ ListModel
         loaderSource: "tests/TestQTPlayer.qml"
         waterMark: "watermark/setup.png"
     }
+    ListElement
+    {
+        menutext:"Web Player Test"
+        loaderSource: "tests/TestWebPlayer.qml"
+        waterMark: "watermark/setup.png"
+    }
 }
