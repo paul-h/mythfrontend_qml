@@ -11,6 +11,10 @@ FocusScope
     property alias position: mediaPlayer.position
     property alias duration: mediaPlayer.duration
 
+    property alias volume: mediaPlayer.audioOutput.volume
+    property alias muted: mediaPlayer.audioOutput.muted
+    property alias playing: mediaPlayer.playing
+
     property bool playbackStarted: false
     property bool loop: false
 

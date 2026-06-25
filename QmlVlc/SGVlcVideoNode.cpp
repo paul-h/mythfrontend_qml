@@ -142,6 +142,11 @@ QSGMaterialShader* QSGVlcVideoFrameMaterial::createShader() const
     return new QSGVlcVideoFrameMaterialShader;
 }
 
+QSGMaterialShader* QSGVlcVideoFrameMaterial::createShader(QSGRendererInterface::RenderMode) const
+{
+    return new QSGVlcVideoFrameMaterialShader;
+}
+
 int QSGVlcVideoFrameMaterial::compare( const QSGMaterial* other ) const
 {
     const QSGVlcVideoFrameMaterial* m =

@@ -252,6 +252,7 @@ BaseScreen
 
                 property bool selected: GridView.isCurrentItem
                 property bool focused: GridView.view.focus
+                property string iconURL: ""
 
                 x: 0
                 y: 0
@@ -263,7 +264,7 @@ BaseScreen
                     asynchronous: true
                     anchors.fill: parent
                     anchors.margins: xscale(5)
-                    source: getIconURL(icon);
+                    source: parent.iconURL
                     onStatusChanged: if (status == Image.Error) source = mythUtils.findThemeFile("images/no_image.png");
                 }
                 LabelText
@@ -309,6 +310,8 @@ BaseScreen
                     opacity: 1.0
                     source: mythUtils.findThemeFile("images/new.png");
                 }
+
+                Component.onCompleted: iconURL = getIconURL(icon);
             }
         }
 

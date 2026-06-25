@@ -137,12 +137,13 @@ BaseScreen
             property bool selected: ListView.isCurrentItem
             property bool focused: videoList.focus
             property real itemSize: videoList.itemWidth
+            property string iconURL: ""
 
             Image
             {
                 id: icon
                 x: xscale(10); y: yscale(10); width: parent.height - xscale(20); height: parent.height - yscale(20)
-                source: findArticleImage(index)
+                source: parent.iconURL;
             }
 
             ListText
@@ -155,6 +156,8 @@ BaseScreen
                 text: mythUtils.replaceHtmlChar(title)
                 multiline: true
             }
+
+            Component.onCompleted: iconURL = findArticleImage(index);
         }
     }
 

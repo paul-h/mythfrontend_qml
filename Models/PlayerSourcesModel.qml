@@ -63,8 +63,11 @@ Item
         property string filename: settings.bankingDataDir.replace("file://", "") + "/transactions.db"
     }
 
-    Component.onCompleted: dbUtils.addDatabase(database);
-
+    Component.onCompleted:
+    {
+        dbUtils.addDatabase(database);
+        createWebEngineProfiles();
+    }
 
     /* ----------------------------------------------- Shared Sorters  --------------------------------------------------- */
     property list<QtObject> titleSorter:
@@ -321,34 +324,48 @@ Item
         id: radioBrowserModel
     }
 
-    /* ------------------------------------------------- Shared WebEngine Profiles --------------------------------------------------*/
-    WebEngineProfile
+    /* ------------------------------------------------- Shared WebEngine Profiles Prototypes --------------------------------------------*/
+    WebEngineProfilePrototype
     {
-        id: mythqmlBrowserProfile
+        id: mythqmlBrowserProfilePrototype
         storageName: "MythQML"
-        offTheRecord: false
         httpCacheType: WebEngineProfile.DiskHttpCache
         persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
     }
 
-    WebEngineProfile
+    property WebEngineProfile mythqmlBrowserProfile
+
+    WebEngineProfilePrototype
     {
-        id: netflixBrowserProfile
+        id: netflixBrowserProfilePrototype
         storageName: "Netflix"
-        offTheRecord: false
         httpCacheType: WebEngineProfile.DiskHttpCache
         persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
-        httpUserAgent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/112.0.1"
     }
 
-    WebEngineProfile
+    property WebEngineProfile netflixBrowserProfile
+
+    WebEngineProfilePrototype
     {
-        id: youtubeBrowserProfile
+        id: youtubeBrowserProfilePrototype
         storageName: "YouTube"
-        offTheRecord: false
         httpCacheType: WebEngineProfile.DiskHttpCache
         persistentCookiesPolicy: WebEngineProfile.AllowPersistentCookies
-        httpUserAgent: "Mozilla/5.0 (SMART-TV; Linux; Tizen 8.0) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/7.0 Chrome/108.0.5359.1 TV Safari/537.36"
+    }
+
+    property WebEngineProfile youtubeBrowserProfile
+
+    function createWebEngineProfiles()
+    {
+        mythqmlBrowserProfile = mythqmlBrowserProfilePrototype.instance();
+
+        netflixBrowserProfile = netflixBrowserProfilePrototype.instance();
+        netflixWEProfile.offTheRecord = false;
+        netflixBrowserProfile.httpUserAgent = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/112.0.1";
+
+        youtubeBrowserProfile = youtubeBrowserProfilePrototype.instance();
+        youtubeBrowserProfile.offTheRecord = false;
+        youtubeBrowserProfile.httpUserAgent = "Mozilla/5.0 (SMART-TV; Linux; Tizen 8.0) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/7.0 Chrome/108.0.5359.1 TV Safari/537.36";
     }
 
     /*-------------------------------------------------------------------------------------------------------------------------------*/

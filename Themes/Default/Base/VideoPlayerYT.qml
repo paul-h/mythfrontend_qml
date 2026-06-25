@@ -1,6 +1,5 @@
-import QtQuick 2.0
-import QmlVlc 0.1
-import QtWebEngine 1.3
+import QtQuick
+import QtWebEngine
 
 Item
 {
@@ -80,9 +79,9 @@ Item
 
         profile: playerSources.youtubeWEProfile
 
-        onLoadingChanged:
+        onLoadingChanged: loadingInfo =>
         {
-            if (loadRequest.status === WebEngineLoadRequest.LoadSucceededStatus && root.source !== "")
+            if (loadingInfo.status === WebEngineView.LoadSucceededStatus && root.source !== "")
             {
                 _playerLoaded = true;
                 runJavaScript("loadVideo(" + root.source + ")");

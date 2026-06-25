@@ -133,8 +133,8 @@ Item
         //FIXME Qt6
         XmlListModelRole { name: "title"; elementName: "concat(ChanNum/string(), xs:string(' - '), ChannelName/string())" }
         XmlListModelRole { name: "player"; elementName: "xs:string('VLC')" }
-        XmlListModelRole { name: "url"; elementName: "concat(xs:string('myth://type=livetv:server=" + root._ip + "'), xs:string(':encoder=1:channum='), ChanNum/string(), xs:string(':pin=" + root._pin + "'))" }
-        XmlListModelRole { name: "icon"; elementName: "concat(xs:string('" + settings.masterBackend + "'), xs:string('Guide/GetChannelIcon?ChanId='), ChanId/string())" }
+        //XmlListModelRole { name: "url"; elementName: "concat(xs:string('myth://type=livetv:server=" + root._ip + "'), xs:string(':encoder=1:channum='), ChanNum/string(), xs:string(':pin=" + root._pin + "'))" }
+        //XmlListModelRole { name: "icon"; elementName: "concat(xs:string('" + settings.masterBackend + "'), xs:string('Guide/GetChannelIcon?ChanId='), ChanId/string())" }
 
         onStatusChanged:
         {

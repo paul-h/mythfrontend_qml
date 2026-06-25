@@ -24,7 +24,7 @@ packagesExist(libVLCQtQml) {
 INCLUDEPATH += ../mdk-sdk/
 
 QT += qml quick sql xml svg
-QT += core5compat widgets
+QT += core5compat widgets multimedia
 
 contains(QT_MAJOR_VERSION, 5) {
     QT += webengine

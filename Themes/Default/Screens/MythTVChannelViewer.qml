@@ -233,7 +233,7 @@ BaseScreen
             }
             else
             {
-                var item = stack.push(Qt.resolvedUrl("InternalPlayer.qml"), defaultFeedSource:  "Live TV", defaultFilter: filter, defaultCurrentFeed: channelGrid.currentIndex});
+                var item = stack.push(Qt.resolvedUrl("InternalPlayer.qml"), {defaultFeedSource:  "Live TV", defaultFilter: filter, defaultCurrentFeed: channelGrid.currentIndex});
                 item.feedChanged.connect(feedChanged);
             }
                 event.accepted = true;

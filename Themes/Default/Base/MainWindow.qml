@@ -1,9 +1,10 @@
-import QtQuick 2.4
-import QtQuick.Window 2.2
-import QtMultimedia 5.4
-import QtQuick.Controls 1.4
-import QtQuick.XmlListModel 2.0
-import QtWebSockets 1.0
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Window
+import QtMultimedia
+import QtQml.XmlListModel
+import QtWebSockets
+
 import Process 1.0
 import Base 1.0
 import Dialogs 1.0
@@ -288,9 +289,9 @@ Window
     Process
     {
         id: tickerProcess
-        onFinished:
+        onFinished: exitStatus =>
         {
-            if (exitStatus == Process.NormalExit)
+            if (exitStatus === Process.NormalExit)
                 tickerModel.reload()
         }
     }
@@ -392,11 +393,11 @@ Window
             onShowMouseChanged: if (showMouse) cursorShape = Qt.ArrowCursor; else cursorShape = Qt.BlankCursor;
             onAutoHideChanged: mouseTimer.stop();
 
-            onClicked: mouse.accepted = false;
-            onPressed: mouse.accepted = false;
-            onReleased: mouse.accepted = false;
-            onDoubleClicked: mouse.accepted = false;
-            onPressAndHold: mouse.accepted = false;
+            onClicked: mouse => mouse.accepted = false;
+            onPressed: mouse => mouse.accepted = false;
+            onReleased: mouse => mouse.accepted = false;
+            onDoubleClicked: mouse => mouse.accepted = false;
+            onPressAndHold: mouse => mouse.accepted = false;
         }
 
         StackView
@@ -411,34 +412,47 @@ Window
                 createInitialItem();
             }
 
-            delegate: StackViewDelegate
+            pushEnter: Transition 
             {
-                function transitionFinished(properties)
+                PropertyAnimation 
                 {
-                    properties.exitItem.opacity = 1
-                }
-
-                pushTransition: StackViewTransition
-                {
-                    PropertyAnimation
-                    {
-                        target: enterItem
-                        property: "opacity"
-                        from: 0
-                        to: 1
-                        duration: 500
-                    }
-                    PropertyAnimation
-                    {
-                        target: exitItem
-                        property: "opacity"
-                        from: 1
-                        to: 0
-                        duration: 500
-                    }
+                    property: "opacity"
+                    from: 0
+                    to:1
+                    duration: 200
                 }
             }
-
+            pushExit: Transition 
+            {
+                PropertyAnimation 
+                {
+                    property: "opacity"
+                    from: 1
+                    to:0
+                    duration: 200
+                }
+            }
+            popEnter: Transition 
+            {
+                PropertyAnimation 
+                {
+                    property: "opacity"
+                    from: 0
+                    to:1
+                    duration: 200
+                }
+            }
+            popExit: Transition 
+            {
+                PropertyAnimation 
+                {
+                    property: "opacity"
+                    from: 1
+                    to:0
+                    duration: 200
+                }
+            }
+            
             onCurrentItemChanged:
             {
                 if (currentItem)
@@ -450,7 +464,7 @@ Window
                 }
             }
 
-            Keys.onPressed:
+            Keys.onPressed: event =>
             {
                 if (event.key === Qt.Key_F1)
                 {

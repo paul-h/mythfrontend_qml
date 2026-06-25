@@ -124,7 +124,7 @@ BaseScreen
         {
             if (event.key === Qt.Key_E)
             {
-                stack.push(Qt.resolvedUrl("MythVideoMetadataEditor.qml"), videosModel:  model, currentIndex: currentIndex});
+                stack.push(Qt.resolvedUrl("MythVideoMetadataEditor.qml"), {videosModel:  model, currentIndex: currentIndex});
                 event.accepted = true;
             }
             else if (event.key === Qt.Key_M)
@@ -140,7 +140,7 @@ BaseScreen
         Keys.onReturnPressed:
         {
             var filterList = filterTitle + "," + filterType + "," + filterGenres;
-            var item = stack.push(Qt.resolvedUrl("InternalPlayer.qml"), defaultFeedSource:  "Videos", defaultFilter:  filterList, defaultCurrentFeed: currentIndex});
+            var item = stack.push(Qt.resolvedUrl("InternalPlayer.qml"), {defaultFeedSource:  "Videos", defaultFilter:  filterList, defaultCurrentFeed: currentIndex});
             item.feedChanged.connect(feedChanged);
             event.accepted = true;
         }

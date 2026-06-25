@@ -1,5 +1,5 @@
-import QtQuick 2.0
-import QtWebEngine 1.3
+import QtQuick
+import QtWebEngine
 
 Item
 {
@@ -11,13 +11,10 @@ Item
     // private properties
     property int _volume: 100
 
-    anchors.fill: parent
-
     WebEngineView
     {
         id: webPlayer
         anchors.fill: parent
-//        anchors.margins: playerBorder.border.width
         settings.pluginsEnabled: true
         settings.javascriptEnabled: true
         settings.javascriptCanOpenWindows: true
@@ -25,7 +22,7 @@ Item
 
         Component.onCompleted: settings.playbackRequiresUserGesture = false;
 
-        onNewViewRequested:
+        onNewWindowRequested: request =>
         {
             var website = request.requestedUrl.toString();
             var zoom = zoomFactor;
@@ -34,15 +31,14 @@ Item
             else
                 stack.push({item: mythUtils.findThemeFile("Screens/WebBrowser.qml"), properties:{url: website, zoomFactor: zoom}});
         }
-        onFullScreenRequested: request.accept();
-        onNavigationRequested: request.action = WebEngineNavigationRequest.AcceptRequest;
-//        profile: youtubeWebProfile
+        onFullScreenRequested: request => request.accept();
+        onNavigationRequested: request => request.action = WebEngineNavigationRequest.AcceptRequest;
 
-        onLoadingChanged:
+        onLoadingChanged: loadingInfo =>
         {
-            if (loadRequest.status === WebEngineLoadRequest.LoadSucceededStatus)
+            if (loadingInfo.status === WebEngineView.LoadSucceededStatus)
             {
-                var feedurl = loadRequest.url.toString();
+                var feedurl = loadingInfo.url.toString();
 
                 if (feedurl !== "")
                 {
@@ -102,13 +98,11 @@ Item
     function toggleMute()
     {
         webPlayer.audioMuted = !webPlayer.audioMuted;
-        webPlayer.triggerWebAction(WebEngineView.ToggleMediaMute);
     }
 
     function setMute(mute)
     {
         webPlayer.audioMuted = mute;
-        webPlayer.triggerWebAction(WebEngineView.ToggleMediaMute);
     }
 
     function changeVolume(amount)

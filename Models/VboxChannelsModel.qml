@@ -15,7 +15,7 @@ XmlListModel
                 settings.vboxFreesatIP + "/cgi-bin/HttpControl/HttpControlApp?OPTION=1&Method=GetXmltvChannelsList&FromChIndex=FirstChannel&ToChIndex=LastChannel"
 
     query: "/tv/channel"
-    XmlListModelRole { name: "id"; elementName: "" elementName: "id"}
+    XmlListModelRole { name: "id"; elementName: "id"}
     XmlListModelRole { name: "name"; elementName: "display-name[1]" }
     XmlListModelRole { name: "type"; elementName: "display-name[2]" }
     XmlListModelRole { name: "flags"; elementName: "display-name[3]" }

@@ -26,7 +26,8 @@
 #pragma once
 
 #include <memory>
-
+#include <GL/gl.h>
+#include <GL/glu.h>
 #include <QSGGeometryNode>
 #include <QSGGeometry>
 #include <QSGMaterial>
@@ -66,6 +67,7 @@ public:
 
     virtual QSGMaterialType* type() const;
     virtual QSGMaterialShader* createShader() const;
+    virtual QSGMaterialShader* createShader(QSGRendererInterface::RenderMode) const;
     virtual int compare( const QSGMaterial *other ) const;
 
     void setFrame( const std::shared_ptr<const QmlVlcI420Frame>& frame );

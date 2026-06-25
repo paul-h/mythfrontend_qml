@@ -57,7 +57,7 @@ XmlListModel
         http.open("GET", url + params, true);
 
         // Send the proper header information along with the request
-        http.setRequestHeader("Accept", "application/xml");
+        http.setRequestHeader("Accept", "application/json");
         http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         http.setRequestHeader("Content-length", params.length);
 
@@ -96,7 +96,7 @@ XmlListModel
         http.open("GET", url + params, true);
 
         // Send the proper header information along with the request
-        http.setRequestHeader("Accept", "application/xml");
+        http.setRequestHeader("Accept", "application/json");
         http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         http.setRequestHeader("Content-length", params.length);
 
@@ -135,7 +135,7 @@ XmlListModel
         http.open("GET", url + params, true);
 
         // Send the proper header information along with the request
-        http.setRequestHeader("Accept", "application/xml");
+        http.setRequestHeader("Accept", "application/json");
         http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         http.setRequestHeader("Content-length", params.length);
 

@@ -119,7 +119,7 @@ BaseScreen
             {
                 var website = webvideoGrid.model.get(webvideoGrid.currentIndex).website;
                 var zoom = xscale(webvideoGrid.model.get(webvideoGrid.currentIndex).zoom);
-                stack.push(Qt.resolvedUrl("WebBrowser.qml"), url: website, zoomFactor: zoom});
+                stack.push(Qt.resolvedUrl("WebBrowser.qml"), {url: website, zoomFactor: zoom});
             }
 
             returnSound.play();

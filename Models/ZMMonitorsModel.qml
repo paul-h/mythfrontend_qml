@@ -1,5 +1,6 @@
-import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQml.XmlListModel
+
 import "../Util.js" as Util
 import mythqml.net 1.0
 
@@ -31,24 +32,29 @@ Item
         property bool _updating: false
 
         query: "/response/monitors"
-        XmlRole { name: "id"; query: "Monitor/Id/number()"; isKey: true }
-        XmlRole { name: "name"; query: "Monitor/Name/string()" }
-        XmlRole { name: "monfunction"; query: "Monitor/Function/string()"; isKey: true }
-        XmlRole { name: "monenabled"; query: "xs:boolean(Monitor/Enabled)"; isKey: true }
-        XmlRole { name: "path"; query: "Monitor/Path/string()" }
-        XmlRole { name: "device"; query: "Monitor/Device/string()" }
-        XmlRole { name: "channel"; query: "Monitor/Channel/string()" }
-        XmlRole { name: "host"; query: "Monitor/Host/string()" }
-        XmlRole { name: "totalevents"; query: "Event_Summary/TotalEvents/number()"; isKey: true }
-        XmlRole { name: "totaleventsdiskspace"; query: "Event_Summary/TotalEventDiskSpace/number()"; isKey: true }
+        //XmlListModelRole { name: "id"; elementName: "Monitor/Id/number()"; isKey: true }
+        XmlListModelRole { name: "id"; elementName: "Monitor/Id/number()"}
+        XmlListModelRole { name: "name"; elementName: "Monitor/Name/string()" }
+        //XmlListModelRole { name: "monfunction"; elementName: "Monitor/Function/string()"; isKey: true }
+        //XmlListModelRole { name: "monenabled"; elementName: "xs:boolean(Monitor/Enabled)"; isKey: true }
+        XmlListModelRole { name: "monfunction"; elementName: "Monitor/Function/string()"}
+        XmlListModelRole { name: "monenabled"; elementName: "xs:boolean(Monitor/Enabled)"}
+        XmlListModelRole { name: "path"; elementName: "Monitor/Path/string()" }
+        XmlListModelRole { name: "device"; elementName: "Monitor/Device/string()" }
+        XmlListModelRole { name: "channel"; elementName: "Monitor/Channel/string()" }
+        XmlListModelRole { name: "host"; elementName: "Monitor/Host/string()" }
+        // XmlListModelRole { name: "totalevents"; elementName: "Event_Summary/TotalEvents/number()"; isKey: true }
+        // XmlListModelRole { name: "totaleventsdiskspace"; elementName: "Event_Summary/TotalEventDiskSpace/number()"; isKey: true }
+        XmlListModelRole { name: "totalevents"; elementName: "Event_Summary/TotalEvents/number()"}
+        XmlListModelRole { name: "totaleventsdiskspace"; elementName: "Event_Summary/TotalEventDiskSpace/number()" }
 
 
-        XmlRole { name: "title"; query: "Monitor/Name/string()" }
-        XmlRole { name: "player"; query: "xs:string('WebBrowser')" }
-        XmlRole { name: "url"; query: "concat(xs:string('http://" + settings.zmIP + "'),
-                                          xs:string('/zm/cgi-bin/nph-zms?scale=300&amp;mode=jpeg&amp;maxfps=5&amp;buffer=1000&amp;monitor='),
-                                          Monitor/Id/string(),
-                                          xs:string('&amp;user=" + settings.zmUserName + "&amp;pass=" + settings.zmPassword + "'))" }
+        XmlListModelRole { name: "title"; elementName: "Monitor/Name/string()" }
+        XmlListModelRole { name: "player"; elementName: "xs:string('WebBrowser')" }
+        // QT6 XmlListModelRole { name: "url"; elementName: "concat(xs:string('http://" + settings.zmIP + "'),
+        //                                  xs:string('/zm/cgi-bin/nph-zms?scale=300&amp;mode=jpeg&amp;maxfps=5&amp;buffer=1000&amp;monitor='),
+        //                                  Monitor/Id/string(),
+        //                                  xs:string('&amp;user=" + settings.zmUserName + "&amp;pass=" + settings.zmPassword + "'))" }
 
         onStatusChanged:
         {
@@ -88,6 +94,16 @@ Item
 
             loadingStatus(status);
         }
+
+        function get(i)
+        {
+            var o = {}
+            for (var j = 0; j < roles.length; ++j)
+            {
+                o[roles[j].name] = data(index(i,0), Qt.UserRole + j)
+            }
+            return o
+        }
     }
 
     Timer
@@ -98,6 +114,9 @@ Item
         {
             if (zmMonitorsModel._updating)
                 return;
+
+            // QT6 - remove
+            return;
 
             for (var x = 0; x < root.monitorsStatus.count; x++)
             {

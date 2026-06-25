@@ -388,7 +388,7 @@ BaseScreen
             mediaModel.get(0).url = url;
             mediaModel.get(0).player = (_useMythProtocol ? "VLC" : "MDK");
             playerSources.adhocList = mediaModel;
-            stack.push(Qt.resolvedUrl("InternalPlayer.qml"), defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0});
+            stack.push(Qt.resolvedUrl("InternalPlayer.qml"), {defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0});
             event.accepted = true;
             returnSound.play();
         }

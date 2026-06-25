@@ -120,12 +120,13 @@ BaseScreen
             property bool selected: ListView.isCurrentItem
             property bool focused: articleList.focus
             property real itemSize: articleList.itemWidth
+            property string iconUrl: ""
 
             Image
             {
                 id: icon
                 x: xscale(10); y: yscale(10); width: parent.height - xscale(20); height: parent.height - yscale(20)
-                source: findArticleImage(index)
+                source: parent.iconUrl
             }
 
             ListText
@@ -147,6 +148,7 @@ BaseScreen
                 anchors.centerIn: parent
             }
 
+            Component.onCompleted: iconUrl = findArticleImage(index);
         }
     }
 
@@ -214,10 +216,10 @@ BaseScreen
 
         if (feedModel.get(index).image !== "")
             return feedModel.get(index).image;
-        else if (feedModel.get(index).mediaContentUrl !== "")
-            return feedModel.get(index).mediaContentUrl;
-        else if (feedModel.get(index).mediaContentUrl2 !== "")
-            return feedModel.get(index).mediaContentUrl2;
+        // else if (feedModel.get(index).mediaContentUrl !== "")
+        //     return feedModel.get(index).mediaContentUrl;
+        // else if (feedModel.get(index).mediaContentUrl2 !== "")
+        //     return feedModel.get(index).mediaContentUrl2;
         else if (feedModel.get(index).enclosureType === "image" && feedModel.get(index).enclosureUrl !== "")
             return feedModel.get(index).enclosureUrl;
         else if (rssFeedsModel.data(rssFeedsModel.index(feedList.currentIndex, 2)) !== "")

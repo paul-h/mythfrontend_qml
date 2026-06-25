@@ -126,7 +126,7 @@ Item
         XmlListModelRole { name: "Trailer"; elementName: "Trailer" }
 
         XmlListModelRole { name: "title"; elementName: "Title" }
-        XmlListModelRole { name: "url"; elementName: "concat(xs:string('myth://type=video:server='), HostName/string(), xs:string(':pin=" + videoModel._pin + "'), xs:string(':port=6543:sgroup=video:filename='), FileName/string())" } //FIXME
+        //QT6 XmlListModelRole { name: "url"; elementName: "concat(xs:string('myth://type=video:server='), HostName/string(), xs:string(':pin=" + videoModel._pin + "'), xs:string(':port=6543:sgroup=video:filename='), FileName/string())" } //FIXME
         XmlListModelRole { name: "player"; elementName: "xs:string('VLC')" } //FIXME
 
         onStatusChanged: status =>

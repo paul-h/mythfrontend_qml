@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import Base 1.0
-import QtGraphicalEffects 1.12
-import QmlVlc 0.1
+//import QtGraphicalEffects 1.12
+//import QmlVlc 0.1
 import "../../../Models"
 import mythqml.net 1.0
 
@@ -18,7 +18,7 @@ BaseDialog
     property alias volume: streamPlayer.volume
     property bool muteAudio: false
 
-    property alias mrl: streamPlayer.mrl
+    property alias mrl: streamPlayer.source
 
     property string trackArtistTitle: ""
     property int trackStart: 0
@@ -70,11 +70,12 @@ BaseDialog
         id: playedModel
     }
 
-    VlcPlayer
+    //VlcPlayer
+    VideoPlayerQT
     {
         id: streamPlayer
 
-        onTimeChanged: if (trackArtistTitle != undefined && playedModel.get(0) !== undefined && trackArtistTitle === playedModel.get(0).trackArtistTitle) playedModel.get(0).length = time - trackStart;
+        //onTimeChanged: if (trackArtistTitle != undefined && playedModel.get(0) !== undefined && trackArtistTitle === playedModel.get(0).trackArtistTitle) playedModel.get(0).length = time - trackStart;
 
         Component.onCompleted:
         {
@@ -84,9 +85,9 @@ BaseDialog
             else
                 volume = 80;
 
-            audio.mute = false;
+            muted = false;
 
-            playlist.mode = VlcPlaylist.Loop;
+            //playlist.mode = VlcPlaylist.Loop;
         }
 
         Component.onDestruction:
@@ -94,58 +95,129 @@ BaseDialog
 
         }
 
-        onPlayingChanged: muteTimer.start()
+        //onPlayingChanged: muteTimer.start()
 
-        onStateChanged:
+        onPlaybackStatusChanged:
         {
-            if (state === VlcPlayer.NothingSpecial)
+            if (playbackState === MediaPlayer.PlayingState)
             {
-                log.debug(Verbose.PLAYBACK, "streamPlayer state: Nothing Special - " + mrl);
-                status.text = "Idle";
-            }
-            else if (state === VlcPlayer.Opening)
-            {
-                log.debug(Verbose.PLAYBACK, "streamPlayer state: Opening - " + mrl);
-                status.text = "Opening";
-            }
-            else if (state === VlcPlayer.Buffering)
-            {
-                log.debug(Verbose.PLAYBACK, "streamPlayer state: Buffering - " + mrl);
-                //status.text = "Buffering";
-            }
-            else if (state === VlcPlayer.Playing)
-            {
-                log.debug(Verbose.PLAYBACK, "streamPlayer state: Playing - " + mrl);
+                log.debug(Verbose.PLAYBACK, "streamPlayer state: Playing - " + source);
                 muteTimer.start();
                 status.text = "Playing";
                 if (root.state !== "show" && streamList == radioStreamList)
                     showNotification("Playing audio stream.<br>" + streamList.get(streamList.currentItem).title);
             }
-            else if (state === VlcPlayer.Paused)
+            else if (playBackState === MediaPlayer.PausedState)
             {
-                log.debug(Verbose.PLAYBACK, "streamPlayer state: Paused - " + mrl);
+                log.debug(Verbose.PLAYBACK, "streamPlayer state: Paused - " + source);
                 status.text = "Paused";
             }
-            else if (state === VlcPlayer.Stopped)
+            else if (state === MediaPlayer.Stopped)
             {
-                log.debug(Verbose.PLAYBACK, "streamPlayer state: Stopped - " + mrl);
+                log.debug(Verbose.PLAYBACK, "streamPlayer state: Stopped - " + source);
                 status.text = "Stopped";
             }
-            else if (state === VlcPlayer.Ended)
+        }
+
+        onMediaStatusChanged:
+        {
+            if (mediaStatus === MediaPlayer.NoMedia)
             {
-                log.debug(Verbose.PLAYBACK, "streamPlayer state: Ended - " + mrl);
+                log.debug(Verbose.PLAYBACK, "streamPlayer state: no media - " + source);
+                status.text = "Idle";
+            }
+            else if (mediaStatus === MediaPlayer.LoadingMedia)
+            {
+                log.debug(Verbose.PLAYBACK, "streamPlayer state: loading - " + source);
+                status.text = "Loading";
+            }
+            else if (mediaStatus === MediaPlayer.LoadedMedia)
+            {
+                log.debug(Verbose.PLAYBACK, "streamPlayer state: loaded - " + source);
+                status.text = "Loaded";
+            }
+            else if (state === MediaPlayer.Stalled)
+            {
+                log.debug(Verbose.PLAYBACK, "streamPlayer state: Stalled - " + source);
+                status.text = "Stalled";
+            }
+            else if (state === MediaPlayer.BufferingMedia)
+            {
+                log.debug(Verbose.PLAYBACK, "streamPlayer state: Buffering Media - " + source);
+                //status.text = "Buffering";
+            }
+            else if (state === MediaPlayer.BufferedMedia)
+            {
+                log.debug(Verbose.PLAYBACK, "streamPlayer state: Buffered Media - " + source);
+                //status.text = "Buffered";
+            }
+            else if (state === MediaPlayer.EndOfMedia)
+            {
+                log.debug(Verbose.PLAYBACK, "streamPlayer state: End Of Media - " + source);
                 status.text = "Ended";
             }
-            else if (state === VlcPlayer.Error)
+            else if (state === MediaPlayer.InvalidMedia)
             {
-                log.debug(Verbose.PLAYBACK, "streamPlayer state: Error - " + mrl);
+                log.debug(Verbose.PLAYBACK, "streamPlayer state: Invalid Media - " + mrl);
                 if (root.state !== "show")
                     showNotification("Failed to play audio stream.<br>" + streamList.get(streamList.currentItem).title);
                 trackArtistTitle = "Error: Failed to play audio stream.";
-                playlist.mode = VlcPlaylist.Normal;
+                //playlist.mode = VlcPlaylist.Normal;
 
             }
+
         }
+
+        // onStateChanged:
+        // {
+        //     if (state === VlcPlayer.NothingSpecial)
+        //     {
+        //         log.debug(Verbose.PLAYBACK, "streamPlayer state: Nothing Special - " + mrl);
+        //         status.text = "Idle";
+        //     }
+        //     else if (state === VlcPlayer.Opening)
+        //     {
+        //         log.debug(Verbose.PLAYBACK, "streamPlayer state: Opening - " + mrl);
+        //         status.text = "Opening";
+        //     }
+        //     else if (state === VlcPlayer.Buffering)
+        //     {
+        //         log.debug(Verbose.PLAYBACK, "streamPlayer state: Buffering - " + mrl);
+        //         //status.text = "Buffering";
+        //     }
+        //     else if (state === VlcPlayer.Playing)
+        //     {
+        //         log.debug(Verbose.PLAYBACK, "streamPlayer state: Playing - " + mrl);
+        //         muteTimer.start();
+        //         status.text = "Playing";
+        //         if (root.state !== "show" && streamList == radioStreamList)
+        //             showNotification("Playing audio stream.<br>" + streamList.get(streamList.currentItem).title);
+        //     }
+        //     else if (state === VlcPlayer.Paused)
+        //     {
+        //         log.debug(Verbose.PLAYBACK, "streamPlayer state: Paused - " + mrl);
+        //         status.text = "Paused";
+        //     }
+        //     else if (state === VlcPlayer.Stopped)
+        //     {
+        //         log.debug(Verbose.PLAYBACK, "streamPlayer state: Stopped - " + mrl);
+        //         status.text = "Stopped";
+        //     }
+        //     else if (state === VlcPlayer.Ended)
+        //     {
+        //         log.debug(Verbose.PLAYBACK, "streamPlayer state: Ended - " + mrl);
+        //         status.text = "Ended";
+        //     }
+        //     else if (state === VlcPlayer.Error)
+        //     {
+        //         log.debug(Verbose.PLAYBACK, "streamPlayer state: Error - " + mrl);
+        //         if (root.state !== "show")
+        //             showNotification("Failed to play audio stream.<br>" + streamList.get(streamList.currentItem).title);
+        //         trackArtistTitle = "Error: Failed to play audio stream.";
+        //         playlist.mode = VlcPlaylist.Normal;
+
+        //     }
+        // }
     }
 
     Timer
@@ -168,7 +240,7 @@ BaseDialog
     Timer
     {
         interval: 1000; running: true; repeat: true
-        onTriggered: if (trackArtistTitle != streamPlayer.mediaDescription.nowPlaying) trackArtistTitle = streamPlayer.mediaDescription.nowPlaying;
+        //onTriggered: if (trackArtistTitle != streamPlayer.mediaDescription.nowPlaying) trackArtistTitle = streamPlayer.mediaDescription.nowPlaying;
     }
 
     Keys.onPressed:
@@ -551,7 +623,7 @@ BaseDialog
 
     function isPlaying()
     {
-        return streamPlayer.state === VlcPlayer.Playing;
+        return streamPlayer.playing
     }
 
     function suspendPlayback()

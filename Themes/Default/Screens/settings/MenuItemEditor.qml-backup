@@ -1,0 +1,308 @@
+import QtQuick
+import Base 1.0
+import Dialogs 1.0
+import Models 1.0
+
+BaseScreen
+{
+    defaultFocusItem: menuEdit
+
+    property int itemIndex: -1
+    property var itemList: undefined
+    property var defaults: {"menu": "", "position": 0, "menuText": "", "loaderSource": "", "waterMark": "", "url": "", "zoom": 1.0, "fullscreen": 0, "layout": 0, "exec": ""};
+    Component.onCompleted:
+    {
+        setHelp("https://mythqml.net/help/settings_menu_editor.php#top");
+        showTime(true);
+        showTicker(false);
+
+        if (itemIndex === -1)
+        {
+            // we are adding a new menu item
+            showTitle(true, "Add Menu Item");
+            menuEdit.text = defaults.menu;
+            positionEdit.text = defaults.position;
+            menuTextEdit.text = defaults.menuText;
+            loaderSourceEdit.text = defaults.loaderSource;
+            waterMarkEdit.text = defaults.waterMark;
+            urlEdit.text = defaults.url;
+            zoomEdit.text = defaults.zoom;
+            fullscreenEdit.text = defaults.fullscreen;
+            layoutEdit.text = defaults.layout
+            execEdit.text = defaults.exec
+        }
+        else
+        {
+            // we are amending an existing menu item
+            showTitle(true, "Edit Menu Item");
+            menuEdit.text = itemList.model.get(itemIndex).menu;
+            positionEdit.text = itemList.model.get(itemIndex).position;
+            menuTextEdit.text = itemList.model.get(itemIndex).menutext;
+            loaderSourceEdit.text = itemList.model.get(itemIndex).loaderSource;
+            waterMarkEdit.text = itemList.model.get(itemIndex).waterMark;
+            urlEdit.text = itemList.model.get(itemIndex).url;
+            zoomEdit.text = itemList.model.get(itemIndex).zoom;
+            fullscreenEdit.text = itemList.model.get(itemIndex).fullscreen;
+            layoutEdit.text = itemList.model.get(itemIndex).layout;
+            execEdit.text = itemList.model.get(itemIndex).exec;
+        }
+    }
+
+    Keys.onPressed:
+    {
+        event.accepted = true;
+
+        if (event.key === Qt.Key_F1)
+        {
+            // RED - cancel
+            returnSound.play();
+            stack.pop();
+        }
+        else if (event.key === Qt.Key_F2)
+        {
+            // GREEN - save
+            save();
+        }
+        else if (event.key === Qt.Key_F3)
+        {
+
+        }
+        else if (event.key === Qt.Key_F4)
+        {
+            // BLUE - help
+            window.showHelp();
+        }
+        else
+            event.accepted = false;
+    }
+
+    LabelText
+    {
+        x: xscale(30); y: yscale(100)
+        text: "Menu:"
+    }
+
+    BaseEdit
+    {
+        id: menuEdit
+        x: xscale(300); y: yscale(100)
+        width: parent.width - x - xscale(80)
+        height: yscale(50)
+        text: ""
+        KeyNavigation.up: saveButton
+        KeyNavigation.down: positionEdit
+    }
+
+    LabelText
+    {
+        x: xscale(30); y: yscale(150)
+        text: "Position:"
+    }
+
+    BaseEdit
+    {
+        id: positionEdit
+        x: xscale(300); y: yscale(150)
+        width: parent.width - x - xscale(20)
+        height: yscale(50)
+        text: ""
+        KeyNavigation.up: menuEdit;
+        KeyNavigation.down: menuTextEdit;
+    }
+
+    LabelText
+    {
+        x: xscale(30); y: yscale(200)
+        text: "Menu Text:"
+    }
+
+    BaseEdit
+    {
+        id: menuTextEdit
+        x: xscale(300); y: yscale(200)
+        width: parent.width - x - xscale(80)
+        height: yscale(50)
+        text: ""
+        KeyNavigation.up: positionEdit;
+        KeyNavigation.down: loaderSourceEdit;
+    }
+
+    LabelText
+    {
+        x: xscale(30); y: yscale(250)
+        text: "Loader Source:"
+    }
+
+    BaseEdit
+    {
+        id: loaderSourceEdit
+        x: xscale(300); y: yscale(250)
+        width: parent.width - x - xscale(20)
+        height: yscale(50)
+        text: ""
+        KeyNavigation.up: menuTextEdit;
+        KeyNavigation.down: waterMarkEdit;
+    }
+
+    LabelText
+    {
+        x: xscale(30); y: yscale(300)
+        text: "Watermark:"
+    }
+
+    BaseEdit
+    {
+        id: waterMarkEdit
+        x: xscale(300); y: yscale(300)
+        width: parent.width - x - xscale(20)
+        height: yscale(50)
+        text: ""
+        KeyNavigation.up: loaderSourceEdit;
+        KeyNavigation.down: urlEdit;
+    }
+
+    LabelText
+    {
+        x: xscale(30); y: yscale(350)
+        text: "Url:"
+    }
+
+    BaseEdit
+    {
+        id: urlEdit
+        x: xscale(300); y: yscale(350)
+        width: parent.width - x - xscale(20)
+        height: yscale(50)
+        text: ""
+        KeyNavigation.up: waterMarkEdit;
+        KeyNavigation.down: zoomEdit;
+    }
+
+    LabelText
+    {
+        x: xscale(30); y: yscale(400)
+        text: "Zoom:"
+    }
+
+    BaseEdit
+    {
+        id: zoomEdit
+        x: xscale(300); y: yscale(400)
+        width: parent.width - x - xscale(20)
+        height: yscale(50)
+        text: ""
+        KeyNavigation.up: urlEdit;
+        KeyNavigation.down: fullscreenEdit;
+    }
+
+    LabelText
+    {
+        x: xscale(30); y: yscale(450)
+        text: "Fullscreen:"
+    }
+
+    BaseEdit
+    {
+        id: fullscreenEdit
+        x: xscale(300); y: yscale(450)
+        width: parent.width - x - xscale(20)
+        height: yscale(50)
+        text: ""
+        KeyNavigation.up: zoomEdit;
+        KeyNavigation.down: layoutEdit;
+    }
+
+    LabelText
+    {
+        x: xscale(30); y: yscale(500)
+        text: "Layout:"
+    }
+
+    BaseEdit
+    {
+        id: layoutEdit
+        x: xscale(300); y: yscale(500)
+        width: parent.width - x - xscale(20)
+        height: yscale(50)
+        text: ""
+        KeyNavigation.up: fullscreenEdit;
+        KeyNavigation.down: execEdit;
+    }
+
+    LabelText
+    {
+        x: xscale(30); y: yscale(550)
+        text: "Exec:"
+    }
+
+    BaseEdit
+    {
+        id: execEdit
+        x: xscale(300); y: yscale(550)
+        width: parent.width - x - xscale(20)
+        height: yscale(50)
+        text: ""
+        KeyNavigation.up: layoutEdit;
+        KeyNavigation.down: saveButton;
+    }
+
+    Image
+    {
+        id: watermarkImage
+        x: xscale(300)
+        y: yscale(600)
+        width: xscale(100)
+        height: yscale(100)
+        source: ""
+        asynchronous: true
+    }
+
+    BaseButton
+    {
+        id: saveButton;
+        x: parent.width - width - xscale(50); y: yscale(600);
+        text: "Save";
+        KeyNavigation.up: execEdit
+        KeyNavigation.down: menuEdit
+        onClicked: save()
+    }
+
+    Footer
+    {
+        id: footer
+        redText: "Cancel"
+        greenText: "Save"
+        yellowText: ""
+        blueText: "Help"
+    }
+
+    function save()
+    {
+        var menu = menuEdit.text;
+        var position = parseInt(positionEdit.text);
+        var menuText = menuTextEdit.text;
+        var loaderSource = loaderSourceEdit.text;
+        var waterMark = waterMarkEdit.text;
+        var url = urlEdit.text;
+        var zoom = parseFloat(zoomEdit.text);
+        var fullscreen = (fullscreenEdit.text === "1" || fullscreenEdit.text === "TRUE" || fullscreenEdit.text === "true");
+        var layout = parseInt(layoutEdit.text);
+        var exec = execEdit.text;
+
+        if (itemIndex === -1)
+        {
+            // we need to add a new menu item
+            var bookmarkid = dbUtils.addMenuItem(menu, position, menuText, loaderSource, waterMark, url, zoom, fullscreen, layout, exec);
+            itemList.loadFromDB();
+        }
+        else
+        {
+            // we need to update a menu item
+            dbUtils.updateMenuItem(itemList.model.get(itemIndex).itemid, menu, position, menuText, loaderSource, waterMark, url, zoom, fullscreen, layout, exec);
+            itemList.loadFromDB();
+        }
+
+        returnSound.play();
+        stack.pop();
+    }
+}

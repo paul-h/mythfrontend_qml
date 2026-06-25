@@ -1,8 +1,9 @@
-import QtQuick 2.10
-import QtQuick.Controls 1.4
-import QtQuick.Layouts 1.0
-import QtWebEngine 1.5
-import QtQuick.XmlListModel 2.0
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import QtWebEngine
+import QtQml.XmlListModel
+
 import Base 1.0
 import Process 1.0
 import Models 1.0
@@ -768,7 +769,7 @@ FocusScope
                     id: recordingIcon
                     x: _xscale(900); y: _yscale(130); width: xscale(32); height: yscale(32)
                     source: mythUtils.findThemeFile("images/recording.png")
-                    visible: (guideModel.count > 0 && guideModel.get(0).RecordingStatus === "Recording")
+                    //visible: (guideModel.count > 0 && guideModel.get(0).RecordingStatus === "Recording")
                 }
             }
 
@@ -2064,10 +2065,8 @@ FocusScope
     {
         var player = createPlayer(playerRect, mythUtils.findThemeFile("Base/VideoPlayerWeb.qml"),
                                   {
-                                      "id": "webPlayer",
                                       "anchors.fill" : playerRect,
                                       "anchors.margins" : playerBorder.border.width,
-                                      "audioMuted" : false,
                                       "profile" : playerSources.youtubeWEProfile
                                   });
 
@@ -2083,7 +2082,6 @@ FocusScope
     {
         var player = createPlayer(playerRect, mythUtils.findThemeFile("Base/VideoPlayerYT.qml"),
                                   {
-                                    "id" : "youtubePlayer",
                                     "anchors.fill" : playerRect,
                                     "anchors.margins" : playerBorder.border.width
                                   });
@@ -2104,7 +2102,6 @@ FocusScope
     {
         var player = createPlayer(playerRect, mythUtils.findThemeFile("Base/VideoPlayerQmlVLC.qml"),
                                   {
-                                    "id" : "vlcPlayer",
                                     "anchors.fill" : playerRect,
                                     "anchors.margins" : playerBorder.border.width
                                   });
@@ -2125,7 +2122,6 @@ FocusScope
     {
         var player = createPlayer(playerRect, mythUtils.findThemeFile("Base/VideoPlayerMDK.qml"),
                                   {
-                                    "id" : "mdkPlayer",
                                     "anchors.fill" : playerRect,
                                     "anchors.margins" : playerBorder.border.width
                                   });
@@ -2146,7 +2142,6 @@ FocusScope
     {
         var player = createPlayer(playerRect, mythUtils.findThemeFile("Base/VideoPlayerTivo.qml"),
                                   {
-                                    "id" : "tivoPlayer",
                                     "anchors.fill" : playerRect,
                                     "anchors.margins" : playerBorder.border.width
                                   });
@@ -2193,7 +2188,6 @@ FocusScope
         {
             var object = component.createObject(parent, properties);
             videoPlayer = object;
-
             videoPlayer.setMute(muted);
             videoPlayer.setVolume(volume);
 

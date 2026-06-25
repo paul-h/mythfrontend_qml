@@ -4,13 +4,27 @@ Item
 {
     id: listHighlight
 
+    width: ListView.view ? ListView.view.width : 500
+    y: ListView.view.currentItem.y
+
+    Behavior on y
+    {
+        SpringAnimation
+        {
+            spring: 5
+            damping: 0.2
+            duration: 150
+        }
+    }
+    height: ListView.view ? ListView.view.currentItem.height : 50
     Rectangle
     {
-        width: ListView.view ? ListView.view.width : 0
-        height: yscale(50)
+        width: parent.width
+        height: parent.height
+
         color:
         {
-            if (ListView.view && ListView.view.focus)
+            if (parent.ListView.view && parent.ListView.view.focus)
             {
                 theme.lvRowBackgroundFocusedSelected;
             }

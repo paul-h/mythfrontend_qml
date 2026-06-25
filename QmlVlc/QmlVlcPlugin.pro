@@ -7,7 +7,9 @@ PLUGIN_IMPORT_PATH = RSATom/QmlVlc
 
 TEMPLATE = lib
 CONFIG += qt plugin
-QT += qml quick
+QT += qml quick core5compat
+
+QMAKE_CXXFLAGS_RELEASE += -fpermissive
 
 target.path = $$[QT_INSTALL_QML]/$$PLUGIN_IMPORT_PATH
 INSTALLS += target

@@ -61,6 +61,8 @@ void FileIO::setSource(const QString& source)
 
     if (m_source.startsWith("file://"))
         m_source.remove("file://");
+
+    emit sourceChanged(source);
 }
 
 bool FileIO::fileExists(void)
