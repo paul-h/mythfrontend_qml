@@ -532,11 +532,11 @@ BaseScreen
 
     Action
     {
-        shortcut: "," // skip back 30 seconds
+        shortcut: "," // skip back 10 seconds
         enabled: _actionsEnabled
         onTriggered:
         {
-            getActivePlayer().skipBack(30000);
+            getActivePlayer().skipBack(10000);
             getActivePlayer().showInfo(true);
         }
     }

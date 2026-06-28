@@ -23,6 +23,7 @@
 #include "fileio.h"
 #include "accessmanagerfactory.h"
 #include "quickdownload.h"
+#include "helper.h"
 
 // shared
 #include "context.h"
@@ -66,7 +67,11 @@ int main(int argc, char *argv[])
     // setting this can help debug or find where the problem is
     //qputenv("QT_FATAL_WARNINGS", "1");
 
+    qputenv("QML_XHR_ALLOW_FILE_READ", QByteArray("1"));
+
     qInstallMessageHandler(messageHandler);
+
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
@@ -158,6 +163,10 @@ int main(int argc, char *argv[])
     // create the optional jumpto property
     QString jumpto = parser.value(jumpOption);
     gContext->m_engine->rootContext()->setContextProperty("jumpto", QString(jumpto));
+
+    // create the helper thread
+    HelperController helper;
+    gContext->m_engine->rootContext()->setContextProperty("helper", &helper);
 
     // override the Network Access Manager
     MythQmlNetworkAccessManagerFactory networkManagerFactory;

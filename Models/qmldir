@@ -9,6 +9,7 @@ FileBrowserModel 1.0 FileBrowserModel.qml
 FuelBillsModel 1.0 FuelBillsModel.qml
 HAJsonModel 1.0 HAJsonModel.qml
 IPTVModel 1.0 IPTVModel.qml
+JSONModel 1.0 JSONModel.qml
 JSONListModel 1.0 JSONListModel.qml
 JumpModel 1.0 JumpModel.qml
 MediaItemsModel 1.0 MediaItemsModel.qml
