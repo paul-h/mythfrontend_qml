@@ -37,24 +37,23 @@ QFile outFile("log_file.txt");
 
 void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
-    QByteArray localMsg = msg.toLocal8Bit();
     const char *file = context.file ? context.file : "";
     const char *function = context.function ? context.function : "";
     switch (type) {
     case QtDebugMsg:
-        gContext->m_logger->debug(Verbose::QT, QString("Debug: %1 (%2:%3, %4)").arg(localMsg).arg(file).arg(context.line).arg(function));
+        gContext->m_logger->debug(Verbose::QT, QString("Debug: %1 (%2:%3, %4)").arg(msg).arg(file).arg(context.line).arg(function));
         break;
     case QtInfoMsg:
-        gContext->m_logger->info(Verbose::QT, QString("Info: %1 (%2:%3, %4)").arg(localMsg).arg(file).arg(context.line).arg(function));
+        gContext->m_logger->info(Verbose::QT, QString("Info: %1 (%2:%3, %4)").arg(msg).arg(file).arg(context.line).arg(function));
         break;
     case QtWarningMsg:
-        gContext->m_logger->warning(Verbose::QT, QString("Warning: %1 (%2:%3, %4)").arg(localMsg).arg(file).arg(context.line).arg(function));
+        gContext->m_logger->warning(Verbose::QT, QString("Warning: %1 (%2:%3, %4)").arg(msg).arg(file).arg(context.line).arg(function));
         break;
     case QtCriticalMsg:
-        gContext->m_logger->critical(Verbose::QT, QString("Critical: %1 (%2:%3, %4)").arg(localMsg).arg(file).arg(context.line).arg(function));
+        gContext->m_logger->critical(Verbose::QT, QString("Critical: %1 (%2:%3, %4)").arg(msg).arg(file).arg(context.line).arg(function));
         break;
     case QtFatalMsg:
-        gContext->m_logger->critical(Verbose::QT, QString("Fatal: %1 (%2:%3, %4)").arg(localMsg).arg(file).arg(context.line).arg(function));
+        gContext->m_logger->critical(Verbose::QT, QString("Fatal: %1 (%2:%3, %4)").arg(msg).arg(file).arg(context.line).arg(function));
         break;
     }
 }
