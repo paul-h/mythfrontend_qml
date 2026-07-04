@@ -3,7 +3,7 @@
 */
 
 import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import mythqml.net 1.0
 
 Item
 {
@@ -14,7 +14,9 @@ Item
 
     property var jsonObj: undefined
 
-    property int status:  XmlListModel.Null
+    property int status:  JSONListModel.Null
+
+    property bool debug: false
 
     signal loaded()
     signal loadingStatus(int status);
@@ -26,8 +28,8 @@ Item
 
      function doLoad()
     {
-        status = XmlListModel.Loading
-        loadingStatus(XmlListModel.Loading);
+        status = JSONListModel.Loading
+        loadingStatus(JSONListModel.Loading);
 
         var url = source;
         var params= "";
@@ -63,11 +65,14 @@ Item
                 str = str.replace(/: null/g, ':""');
 
                 json = str;
-                console.log(json);
+
+                if (debug)
+                    log.info(Verbose.MODEL, "JSONModel: result - " + json);
+
                 jsonObj = JSON.parse(str);
 
-                status = XmlListModel.Ready
-                loadingStatus(XmlListModel.Ready);
+                status = JSONListModel.Ready
+                loadingStatus(JSONListModel.Ready);
                 loaded();
             }
         }

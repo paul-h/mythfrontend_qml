@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+
 import "../Util.js" as Util
 import mythqml.net 1.0
 
@@ -8,105 +8,98 @@ Item
     id: root
 
     property string token
-    property XmlListModel model: zmMonitorsModel
-    property alias source: zmMonitorsModel.source
+    property ListModel model: zmMonitorsModel
     property alias count: zmMonitorsModel.count
-
-    property ListModel monitorsStatus: ListModel {}
-
     property bool showAlertDialog: true
 
     signal loaded();
     signal loadingStatus(int status);
     signal monitorStatus(int monitorId, string status);
 
-    XmlListModel
+    ListModel
     {
         id: zmMonitorsModel
 
-        source: if (root.token !== "") "http://" + settings.zmIP + "/zm/api/monitors.xml?token=" + root.token; else ""
+        signal loadingStatus(int status);
+    }
 
-        signal loadingStatus(int status)
+    JSONListModel
+    {
+        id: jsonModel
+        source: ""
+        query: "$.monitors[*]"
+        debug: false
 
-        property bool _updating: false
-
-        query: "/response/monitors"
-        XmlRole { name: "id"; query: "Monitor/Id/number()"; isKey: true }
-        XmlRole { name: "name"; query: "Monitor/Name/string()" }
-        XmlRole { name: "monfunction"; query: "Monitor/Function/string()"; isKey: true }
-        XmlRole { name: "monenabled"; query: "xs:boolean(Monitor/Enabled)"; isKey: true }
-        XmlRole { name: "path"; query: "Monitor/Path/string()" }
-        XmlRole { name: "device"; query: "Monitor/Device/string()" }
-        XmlRole { name: "channel"; query: "Monitor/Channel/string()" }
-        XmlRole { name: "host"; query: "Monitor/Host/string()" }
-        XmlRole { name: "totalevents"; query: "Event_Summary/TotalEvents/number()"; isKey: true }
-        XmlRole { name: "totaleventsdiskspace"; query: "Event_Summary/TotalEventDiskSpace/number()"; isKey: true }
-
-
-        XmlRole { name: "title"; query: "Monitor/Name/string()" }
-        XmlRole { name: "player"; query: "xs:string('WebBrowser')" }
-        XmlRole { name: "url"; query: "concat(xs:string('http://" + settings.zmIP + "'),
-                                          xs:string('/zm/cgi-bin/nph-zms?scale=300&amp;mode=jpeg&amp;maxfps=5&amp;buffer=1000&amp;monitor='),
-                                          Monitor/Id/string(),
-                                          xs:string('&amp;user=" + settings.zmUserName + "&amp;pass=" + settings.zmPassword + "'))" }
-
-        onStatusChanged:
+        onLoadingStatus:
         {
-            if (status == XmlListModel.Ready)
+            if (status == JSONListModel.Ready)
             {
-                log.debug(Verbose.MODEL, "ZMMonitorsModel: READY - Found " + count + " monitors");
-
-                _updating = true;
-
-                // create the monitor status list
-                root.monitorsStatus.clear();
-
-                for (var x = 0; x < count; x++)
-                {
-                    root.monitorsStatus.append({"monitorId": get(x).id, "name": get(x).name,  "status": "Idle"});
-                }
-
-                root.loaded();
-
-                _updating = false;
+                root.loadingStatus(JSONListModel.Loading);
+                zmMonitorsModel.loadingStatus(JSONListModel.Loading);
+                root.doLoad();
             }
-
-            if (status === XmlListModel.Loading)
-            {
-                log.debug(Verbose.MODEL, "ZMMonitorsModel: LOADING - " + source);
-            }
-
-            if (status === XmlListModel.Error)
-            {
-                log.error(Verbose.MODEL, "ZMMonitorsModel: ERROR: " + errorString() + " - " + source);
-            }
-
-            if (status === XmlListModel.Null)
-            {
-                log.debug(Verbose.MODEL, "ZMMonitorsModel: NULL - " + source);
-            }
-
-            loadingStatus(status);
         }
+    }
+
+    function load()
+    {
+        if (playerSources.zmToken === "")
+        {
+            log.error(Verbose.MODEL, "ZMMonitorsModel: dont have an API token - Aborting.")
+            return
+        }
+
+        jsonModel.source = "http://" + settings.zmIP + "/zm/api/monitors.json?token=" + playerSources.zmToken
+    }
+
+    function doLoad()
+    {
+        // copy the monitors list to our ListModel
+        for (var x = 0; x < jsonModel.count; x++)
+        {
+            var monitor = jsonModel.get(x).Monitor;
+            var id = monitor.Id;
+            var name = monitor.Name;
+            var monfunction = monitor.Function;
+            var monenabled = monitor.Enabled;
+            var path = monitor.Path;
+            var device = monitor.Device;
+            var channel = monitor.Channel;
+            var host = monitor.Host;
+
+            var eventSummary = jsonModel.get(x).Event_Summary;
+            var totalevents = eventSummary.TotalEvents == "" ? 0 : eventSummary.TotalEvents;
+            var totaleventdiskspace = eventSummary.TotalEventDiskSpace == "" ? 0 : eventSummary.TotalEventDiskSpace;
+
+            var title = monitor.Name;
+            var player = "WebBrowser"
+            var url = "http://" + settings.zmIP + "/zm/cgi-bin/nph-zms?scale=300&mode=jpeg&maxfps=5&buffer=1000&monitor="
+                       + id + "&user=" + settings.zmUserName + "&pass=" + settings.zmPassword;
+            var status = "Idle";
+
+            zmMonitorsModel.append({"id": id, "name": name, "monfunction": monfunction, "monenabled": monenabled, "path": path, "device": device,
+                                    "channel": channel, "host": host, "totalevents": totalevents, "totaleventdiskspace": totaleventdiskspace,
+                                    "title": title, "player": player, "url": url, "status": status})
+        }
+
+        updateStatusTimer.running = true;
+
+        root.loaded()
+        root.loadingStatus(JSONListModel.Ready)
+        zmMonitorsModel.loadingStatus(JSONListModel.Ready)
     }
 
     Timer
     {
         id: updateStatusTimer
-        interval: 1000; running: (zmMonitorsModel.status === XmlListModel.Ready); repeat: true
+        interval: 1000; running: false;  repeat: true
         onTriggered:
         {
-            if (zmMonitorsModel._updating)
-                return;
-
-            for (var x = 0; x < root.monitorsStatus.count; x++)
+            for (var x = 0; x < zmMonitorsModel.count; x++)
             {
-                getAlarmStatus(root.monitorsStatus.get(x).monitorId,
+                getAlarmStatus(zmMonitorsModel.get(x).id,
                     function (monitorId, monStatus)
                     {
-                        if (zmMonitorsModel._updating)
-                            return;
-
                         var index = lookupMonitorIndex(monitorId);
                         if (index === -1)
                         {
@@ -114,10 +107,10 @@ Item
                             return;
                         }
 
-                        if (monStatus !== root.monitorsStatus.get(index).status)
+                        if (monStatus !== zmMonitorsModel.get(index).status)
                         {
-                            log.debug(Verbose.MODEL, "ZMMonitorsModel: monitor " + root.monitorsStatus.get(index).monitorId + " status changed " + root.monitorsStatus.get(index).status + " -> " + monStatus);
-                            root.monitorsStatus.get(index).status = monStatus;
+                            log.debug(Verbose.MODEL, "ZMMonitorsModel: monitor " + zmMonitorsModel.get(index).id + " status changed " + zmMonitorsModel.get(index).status + " -> " + monStatus);
+                            zmMonitorsModel.get(index).status = monStatus;
 
                             if (monStatus === "Alarm" && root.showAlertDialog)
                                 window.showZMAlert(monitorId);
@@ -138,9 +131,9 @@ Item
 
     function lookupMonitorIndex(id)
     {
-        for (var x = 0; x < root.monitorsStatus.count; x++)
+        for (var x = 0; x < zmMonitorsModel.count; x++)
         {
-            if (id == root.monitorsStatus.get(x).monitorId)
+            if (id == zmMonitorsModel.get(x).id)
                 return x;
         }
 
@@ -161,8 +154,8 @@ Item
     function forceAlarm(monitorID)
     {
         var http = new XMLHttpRequest();
-        var url = "http://" + settings.zmIP + "/zm/api/monitors/alarm/id:" + monitorID + "/command:on.json?token=" + zmToken;
-        var params = ""; //"token=" + playerSources.zmToken;
+        var url = "http://" + settings.zmIP + "/zm/api/monitors/alarm/id:" + monitorID + "/command:on.json?token=" + playerSources.zmToken;
+        var params = "";
 
         http.withCredentials = true;
         http.open("GET", url, true);
@@ -188,8 +181,8 @@ Item
     function cancelAlarm(monitorID)
     {
         var http = new XMLHttpRequest();
-        var url = "http://" + settings.zmIP + "/zm/api/monitors/alarm/id:" + monitorID + "/command:off.json?token=" + zmToken;
-        var params = ""; //"token=" + playerSources.zmToken;
+        var url = "http://" + settings.zmIP + "/zm/api/monitors/alarm/id:" + monitorID + "/command:off.json?token=" + playerSources.zmToken;
+        var params = "";
 
         http.withCredentials = true;
         http.open("GET", url, true);
@@ -215,7 +208,7 @@ Item
     function getAlarmStatus(monitorId, callback)
     {
         var http = new XMLHttpRequest();
-        var url = "http://" + settings.zmIP + "/zm/api/monitors/alarm/id:" + monitorId + "/command:status.json?token=" + zmToken;
+        var url = "http://" + settings.zmIP + "/zm/api/monitors/alarm/id:" + monitorId + "/command:status.json?token=" + playerSources.zmToken;
         var params = "";
 
         http.withCredentials = true;
@@ -276,7 +269,7 @@ Item
 
     function reload()
     {
-        zmMonitorsModel.reload();
+        load();
     }
 
     function expandNode(tree, path, node)

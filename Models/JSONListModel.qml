@@ -5,7 +5,7 @@
  */
 
 import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import mythqml.net 1.0
 
 Item
 {
@@ -23,10 +23,20 @@ Item
     property alias count: jsonModel.count
     property alias dynamicRoles: jsonModel.dynamicRoles
 
-    property int status:  XmlListModel.Null
+    property int status:  JSONListModel.Null
+
+    property bool debug: false
 
     signal loaded()
     signal loadingStatus(int status);
+
+    enum Status
+    {
+        Null,
+        Ready,
+        Loading,
+        Error
+    }
 
     ListModel
     {
@@ -42,14 +52,14 @@ Item
         {
             if (messageObject.status === "Ready")
             {
-                status = XmlListModel.Ready
-                loadingStatus(XmlListModel.Ready);
+                status = JSONListModel.Ready
+                loadingStatus(JSONListModel.Ready);
                 loaded();
             }
             else if (messageObject.status === "Loading")
             {
-                status = XmlListModel.Loading
-                loadingStatus(XmlListModel.Loading);
+                status = JSONListModel.Loading
+                loadingStatus(JSONListModel.Loading);
             }
         }
     }
@@ -71,13 +81,16 @@ Item
 
     function updateJSONModel()
     {
-        status = XmlListModel.Loading
-        loadingStatus(XmlListModel.Loading);
+        status = JSONListModel.Loading
+        loadingStatus(JSONListModel.Loading);
 
         jsonModel.clear();
 
         if ( json === "" )
             return;
+
+        if (debug)
+            log.info(Verbose.MODEL,  "JSONListModel: json is: " + json);
 
         if (parser !== undefined)
         {
