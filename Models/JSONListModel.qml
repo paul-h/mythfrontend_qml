@@ -48,7 +48,7 @@ Item
         id: workerScript
         source: "JSONListModel.mjs"
 
-        onMessage:
+        onMessage: messageObject =>
         {
             if (messageObject.status === "Ready")
             {

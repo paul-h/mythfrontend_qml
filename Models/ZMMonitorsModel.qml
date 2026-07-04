@@ -30,7 +30,7 @@ Item
         query: "$.monitors[*]"
         debug: false
 
-        onLoadingStatus:
+        onLoadingStatus: status =>
         {
             if (status == JSONListModel.Ready)
             {
