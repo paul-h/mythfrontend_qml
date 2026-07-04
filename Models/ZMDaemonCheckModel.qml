@@ -9,7 +9,7 @@ JSONModel
     source: "http://" + settings.zmIP + "/zm/api/host/daemonCheck.json?token=" + playerSources.zmToken
     debug: false
 
-    property bool running: if (count) get(0).running; else false
+    property bool running: false
 
     onLoaded: running = jsonObj.result
 
