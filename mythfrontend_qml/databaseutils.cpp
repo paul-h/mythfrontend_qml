@@ -430,6 +430,58 @@ void DatabaseUtils::deleteMenuItem(int itemid)
     getMythQMLDatabase().commit();
 }
 
+// HDMI sources
+
+int DatabaseUtils::addHDMISource(const QString &name, const QString &parameters)
+{
+    gContext->m_logger->debug(Verbose::DATABASE, QString("DatabaseUtils::addHDMISource: name is: %1, parameters is: %2").arg(name).arg(parameters));
+
+    QSqlQuery query(getMythQMLDatabase());
+    query.prepare("INSERT INTO hdmisources (name, parameters) VALUES (:NAME, :PARAMETERS);");
+    query.bindValue(":NAME", name);
+    query.bindValue(":PARAMETERS", parameters);
+
+    if (!query.exec())
+    {
+        gContext->m_logger->error(Verbose::GENERAL, QString("DatabaseUtils::addHDMISource ERROR: %1 - %2").arg(query.lastError().text()).arg(query.executedQuery()));
+        return -1;
+    }
+
+    getMythQMLDatabase().commit();
+
+    return query.lastInsertId().toInt();
+}
+
+void DatabaseUtils::updateHDMISource(int itemid, const QString &name, const QString &parameters)
+{
+    gContext->m_logger->debug(Verbose::DATABASE, QString("DatabaseUtils::updateHDMISource: itemid is %1, name is: %2, parameters is: %3").arg(itemid).arg(name).arg(parameters));
+
+    QSqlQuery query(getMythQMLDatabase());
+    query.prepare("UPDATE hdmisources SET name = :NAME, parameters = :PARAMETERS WHERE itemid = :ITEMID;");
+    query.bindValue(":NAME", name);
+    query.bindValue(":PARAMETERS", parameters);
+    query.bindValue(":ITEMID", itemid);
+
+    if (!query.exec())
+    {
+        gContext->m_logger->error(Verbose::GENERAL, QString("DatabaseUtils::updateHDMISource ERROR: %1 - %2").arg(query.lastError().text()).arg(query.executedQuery()));
+    }
+
+    getMythQMLDatabase().commit();
+}
+
+void DatabaseUtils::deleteHDMISource(int itemid)
+{
+    gContext->m_logger->debug(Verbose::DATABASE, QString("DatabaseUtils::deleteHDMISource: itemid is: %1").arg(itemid));
+
+    QSqlQuery query(getMythQMLDatabase());
+    query.prepare("DELETE FROM hdmisources WHERE itemid = :ITEMID;");
+    query.bindValue(0, itemid);
+    query.exec();
+
+    getMythQMLDatabase().commit();
+}
+
 bool DatabaseUtils::updateMediaItem(const QString &metadata)
 {
     QSqlQuery query(getMythQMLDatabase());
@@ -725,6 +777,17 @@ bool DatabaseUtils::initMythQMLDB(void)
                               ");")))
     {
         gContext->m_logger->error(Verbose::GENERAL, "Context: Failed to create menuitems table error - " + q.lastError().text());
+        return false;
+    }
+
+    if (!q.exec(QLatin1String("CREATE TABLE IF NOT EXISTS hdmisources ("
+                              "itemid INTEGER NOT NULL,"
+                              "name TEXT NOT NULL,"
+                              "parameters TEXT NOT NULL,"
+                              "PRIMARY KEY(itemid AUTOINCREMENT)"
+                              ");")))
+    {
+        gContext->m_logger->error(Verbose::GENERAL, "Context: Failed to create hdmisources table error - " + q.lastError().text());
         return false;
     }
 
