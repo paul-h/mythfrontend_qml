@@ -70,8 +70,6 @@ int main(int argc, char *argv[])
 
     qInstallMessageHandler(messageHandler);
 
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-
     QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
     QtWebEngineQuick::initialize();
