@@ -1,34 +1,31 @@
 import QtQuick
-import QtQml.XmlListModel
 
 import mythqml.net 1.0
 
-XmlListModel
+JSONModel
 {
     id: zmDaemonCheckModel
 
+    source: "http://" + settings.zmIP + "/zm/api/host/daemonCheck.json?token=" + playerSources.zmToken
+    debug: false
+
     property bool running: if (count) get(0).running; else false
 
-    signal loaded();
-
-    source: "http://" + settings.zmIP + "/zm/api/host/daemonCheck.xml?token=" + playerSources.zmToken
-    query: "/response"
-    XmlRole { name: "running"; query: "xs:boolean(result)" }
+    onLoaded: running = jsonObj.result
 
     onStatusChanged:
     {
-        if (status == XmlListModel.Ready)
+        if (status == JSONListModel.Ready)
         {
-            log.debug(Verbose.MODEL, "ZMDaemonCheckModel: READY - Found " + count + " daemon check items");
-            loaded();
+            log.debug(Verbose.MODEL, "ZMDaemonCheckModel: READY - " + source);
         }
 
-        if (status === XmlListModel.Loading)
+        if (status === JSONListModel.Loading)
         {
             log.debug(Verbose.MODEL, "ZMDaemonCheckModel: LOADING - " + source);
         }
 
-        if (status === XmlListModel.Error)
+        if (status === JSONListModel.Error)
         {
             log.error(Verbose.MODEL, "ZMDaemonCheckModel: ERROR - " + errorString() + " - " + source);
         }

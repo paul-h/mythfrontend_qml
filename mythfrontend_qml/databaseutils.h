@@ -35,11 +35,17 @@ class DatabaseUtils : public QObject
     Q_INVOKABLE void updateTivoChannel(int chanid,int channo, const QString &name, int plus1, const QString &category, const QString &definition, int sdid, const QString &icon);
     Q_INVOKABLE void deleteTivoChannel(int chanid);
 
+    // menu items
     Q_INVOKABLE int  addMenuItem(const QString &menu, int position, const QString &menuText, const QString &loaderSource, const QString &waterMark, const QString &url,
                                  double zoom, bool fullscreen, int layout, const QString &exec);
     Q_INVOKABLE void updateMenuItem(int itemid,const QString &menu, int position, const QString &menuText, const QString &loaderSource, const QString &waterMark, const QString &url,
                                     double zoom, bool fullscreen, int layout, const QString &exec);
     Q_INVOKABLE void deleteMenuItem(int itemid);
+
+    // HDMI source
+    Q_INVOKABLE int  addHDMISource(const QString &name, const QString &parameters);
+    Q_INVOKABLE void updateHDMISource(int itemid, const QString &name, const QString &parameters);
+    Q_INVOKABLE void deleteHDMISource(int itemid);
 
     Q_INVOKABLE bool updateMediaItem(const QString &metadata);
 

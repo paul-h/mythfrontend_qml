@@ -1,93 +1,62 @@
 import QtQuick
-import QtQml.XmlListModel
 
 import mythqml.net 1.0
-import FileIO 1.0
 
 Item
 {
     id: root
 
+    signal loaded();
+
     property string ip: settings.zmIP
     property string user: settings.zmUserName
     property string password: settings.zmPassword
+    property string token: ""
 
-    signal loaded();
+    property var json: undefined
 
-    FileIO
+    Component.onCompleted:
     {
-        id: loginFile
-        source: settings.configPath + "zmLogin.xml"
-        onError: console.log(msg)
+        getToken();
     }
 
-    XmlListModel
-    {
-        id: zmLoginModel
-
-        query: "/response"
-        XmlListModelRole { name: "credentials"; elementName: "credentials" }
-        XmlListModelRole { name: "append_password"; elementName: "append_password" }
-        XmlListModelRole { name: "version"; elementName: "version" }
-        XmlListModelRole { name: "apiversion"; elementName: "apiversion" }
-        XmlListModelRole { name: "access_token"; elementName: "access_token" }
-
-        onStatusChanged:
-        {
-            if (status == XmlListModel.Ready)
-            {
-                log.debug(Verbose.MODEL, "ZMLoginModel: READY - Found " + count + " login responses");
-                root.loaded();
-            }
-
-            if (status === XmlListModel.Loading)
-            {
-                log.debug(Verbose.MODEL, "ZMLoginModel: LOADING - " + source);
-            }
-
-            if (status === XmlListModel.Error)
-            {
-                log.error(Verbose.MODEL, "ZMLoginModel: ERROR: " + errorString() + " - " + source);
-            }
-        }
-    }
-
-    function getLogin()
+    function getToken()
     {
         var http = new XMLHttpRequest();
-        var url = "http://" + ip + "/zm/api/host/login.xml";
+        var url = "http://" + ip + "/zm/api/host/login.json";
         var params = "user=" + user + "&pass=" + password;
 
         http.withCredentials = true;
         http.open("POST", url, true);
         http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
+        http.onerror = function ()
+        {
+            log.error(Verbose.MODEL,"ZMJsonModel: An error occurred during the transaction '" + http.statusText + "'");
+        };
+
         http.onreadystatechange = function()
         {
+            log.debug(Verbose.MODEL, "ZMLoginModel ready state is: " + http.readyState + ", http.status is: " + http.status)
             if (http.readyState == 4)
             {
                 if (http.status == 200)
                 {
-                    loginFile.write(http.responseText);
-                    zmLoginModel.source = loginFile.source;
+                    var json = JSON.parse(http.responseText)
+                    root.json = json
+                    root.token = json.access_token
+                    log.debug(Verbose.MODEL, "ZMJsonModel getToken: token is: " + json.access_token)
+
+                    loaded();
                 }
                 else
                 {
-                    log.error(Verbose.MODEL, "ZMLoginModel: ERROR: getLogin() got status " + http.statusText);
-                    log.error(Verbose.MODEL, "ZMLoginModel: ERROR: getLogin() got response '" + http.responseText + "'")
+                    log.error(Verbose.MODEL, "ZMJsonModel.getToken: ERROR: got status '" + http.statusText + "' - " + http.responseText)
+                    log.error(Verbose.MODEL, "Headers '" + http.getAllResponseHeaders())
                 }
             }
         }
-        http.send(params);
-    }
 
-    function get(i)
-    {
-        var o = {}
-        for (var j = 0; j <  zmLoginModel.roles.length; ++j)
-        {
-            o[zmLoginModel.roles[j].name] = zmLoginModel.data(zmLoginModel.index(i, 0), Qt.UserRole + j)
-        }
-        return o
+        http.send(params);
     }
 }

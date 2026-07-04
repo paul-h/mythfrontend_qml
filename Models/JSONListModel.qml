@@ -5,7 +5,7 @@
  */
 
 import QtQuick
-import QtQml.XmlListModel
+import mythqml.net 1.0
 
 Item
 {
@@ -22,19 +22,25 @@ Item
     property ListModel model: jsonModel
     property alias count: jsonModel.count
     property alias dynamicRoles: jsonModel.dynamicRoles
-   
-    property int status: XmlListModel.Null
+
+    property int status:  JSONListModel.Null
 
     property bool debug: false
-    
+
     signal loaded()
     signal loadingStatus(int status);
+
+    enum Status
+    {
+        Null,
+        Ready,
+        Loading,
+        Error
+    }
 
     ListModel
     {
         id: jsonModel
-
-        signal loadingStatus(int status);
     }
 
     WorkerScript
@@ -42,18 +48,18 @@ Item
         id: workerScript
         source: "JSONListModel.mjs"
 
-        onMessage: msg =>
+        onMessage:
         {
-            if (msg.status === "Ready")
+            if (messageObject.status === "Ready")
             {
-                status = XmlListModel.Ready
-                loadingStatus(XmlListModel.Ready);
+                status = JSONListModel.Ready
+                loadingStatus(JSONListModel.Ready);
                 loaded();
             }
-            else if (msg.status === "Loading")
+            else if (messageObject.status === "Loading")
             {
-                status = XmlListModel.Loading
-                loadingStatus(XmlListModel.Loading);
+                status = JSONListModel.Loading
+                loadingStatus(JSONListModel.Loading);
             }
         }
     }
@@ -75,13 +81,16 @@ Item
 
     function updateJSONModel()
     {
-        status = XmlListModel.Loading
-        loadingStatus(XmlListModel.Loading);
+        status = JSONListModel.Loading
+        loadingStatus(JSONListModel.Loading);
 
         jsonModel.clear();
 
         if ( json === "" )
             return;
+
+        if (debug)
+            log.info(Verbose.MODEL,  "JSONListModel: json is: " + json);
 
         if (parser !== undefined)
         {
@@ -127,8 +136,7 @@ Item
                 // convert null to empty string to stop QT spamming the logs
                 str = str.replace(/:null/g, ':""');
                 str = str.replace(/: null/g, ':""');
-                if (debug)
-                    console.log(str);
+
                 json = str;
             }
         }

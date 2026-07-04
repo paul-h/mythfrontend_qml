@@ -170,7 +170,7 @@ BaseScreen
             {
                 x: _xscale(1025)
                 width: _xscale(150); height: yscale(50)
-                text: if (totalevents > 0) Util.formatFileSize(totaleventsdiskspace, false); else "0B"
+                text: if (totalevents > 0) Util.formatFileSize(totaleventdiskspace, false); else "0B"
                 horizontalAlignment: Text.AlignRight
             }
         }
@@ -221,7 +221,7 @@ BaseScreen
         {
             if (playerSources.zmCameraList.get(x).totalevents > 0)
             {
-                used += playerSources.zmCameraList.get(x).totaleventsdiskspace;
+                used += playerSources.zmCameraList.get(x).totaleventdiskspace;
                 events += playerSources.zmCameraList.get(x).totalevents;
             }
         }
