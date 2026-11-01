@@ -1,6 +1,6 @@
 #app version
 VERSION = 0.0.14.alpha
-BRANCH = master
+BRANCH = qt6
 
 PREFIX = /usr
 

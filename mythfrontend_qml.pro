@@ -1,8 +1,8 @@
 PREFIX = /usr
 
 #check QT major version
-contains(QT_MAJOR_VERSION, 4) {
-        error("Must build against Qt5")
+contains(QT_MAJOR_VERSION, 5) {
+        error("Must build against Qt6")
 }
 
 
