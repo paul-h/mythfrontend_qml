@@ -1,4 +1,4 @@
-mythfrontend-qml (3:0.0.14.alpha~master) noble; urgency=medium
+mythfrontend-qml (3:0.0.14.alpha~qt6) noble; urgency=medium
 
   * Bump the version
 
