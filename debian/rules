@@ -7,4 +7,4 @@ export VERBOSE=1
 	dh $@
 
 override_dh_auto_configure:
-	qmake
+	qmake6
