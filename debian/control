@@ -26,7 +26,7 @@ Depends: python3,
          python3-lxml,
          python3-streamlink,
          streamlink,
-         libqt5webenginecore5,
+         libqt6webenginecore6,
          qml6-module-qtmultimedia,
          qml6-module-qtqml-xmllistmodel,
          qml6-module-qt-labs-folderlistmodel,
@@ -42,7 +42,6 @@ Depends: python3,
          libqt6sql6-sqlite,
          libqt6xml6q,
          libqt6svg6
-
 Description: Personal video recorder application (QML client)
  NOTE: THIS SOFTWARE IS STILL IN ALPHA PRODUCTION AND IS NOT FULLY FUNCTIONAL.
  .
