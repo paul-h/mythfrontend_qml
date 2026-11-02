@@ -43,7 +43,7 @@ Depends: python3,
          vlc,
          libqt6sql6-mysql,
          libqt6sql6-sqlite,
-         libqt6xml6q,
+         libqt6xml6,
          libqt6svg6
 Description: Personal video recorder application (QML client)
  NOTE: THIS SOFTWARE IS STILL IN ALPHA PRODUCTION AND IS NOT FULLY FUNCTIONAL.
