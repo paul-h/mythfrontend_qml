@@ -36,6 +36,13 @@ static bool mediaEventCallback(const mdkMediaEvent *event, void *opaque)
     return player->eventHandler(*event);
 }
 
+static bool prepareCallback(int64_t, bool *boost, void *opaque)
+{
+    QmlMDKPlayer *player = static_cast<QmlMDKPlayer *>(opaque);
+    player->play();
+    return true;
+}
+
 class VideoRendererInternal : public QQuickFramebufferObject::Renderer
 {
 public:
@@ -125,7 +132,7 @@ void QmlMDKPlayer::setSource(const QString &s)
     m_playerAPI->setMedia(m_playerAPI->object, s.toUtf8().data());
     m_source = s;
     emit sourceChanged();
-    play();
+    //play();
 }
 
 void QmlMDKPlayer::updatePosition(void)
@@ -266,6 +273,21 @@ qint64 QmlMDKPlayer::duration(void)
 
     return m_duration;
 }
+
+void QmlMDKPlayer::playFrom(qint64 position)
+{
+    if (!m_playerAPI)
+        return;
+
+    if (playerState() == PlayerStatePlaying || playerState() == PlayerStatePaused)
+        stop();
+
+    mdkPrepareCallback callback;
+    callback.cb = prepareCallback;
+    callback.opaque = this;
+    m_playerAPI->prepare(m_playerAPI->object, position, callback, MDKSeekFlag::MDK_SeekFlag_FromStart);
+}
+
 
 void QmlMDKPlayer::play()
 {
