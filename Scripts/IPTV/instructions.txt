@@ -1,5 +1,5 @@
 This script will download all the IPTV channel JSON files from the iptv-org
-github repo and copy them to a ftp server. A copy is also saved to a
+github repo and copy them to a web server. A copy is also saved to a
 database for easy access.
 
 In addition all the icons that are stored on imgur, which are inaccessible

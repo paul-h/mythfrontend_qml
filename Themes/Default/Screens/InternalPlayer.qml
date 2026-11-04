@@ -25,6 +25,7 @@ BaseScreen
     property string defaultFeedSource: "Live TV"
     property string defaultFilter: ""
     property int    defaultCurrentFeed: 0
+    property int    bookmark: 0
 
     property bool isFullScreen: width === window.width
     property alias exitOnPlaybackEnded: playerLayout.exitOnPlaybackEnded
@@ -1011,6 +1012,7 @@ BaseScreen
 
     function feedSourceLoaded()
     {
+        playerLayout.mediaPlayer1.bookmark = bookmark;
         playerLayout.mediaPlayer1.play();
     }
 }

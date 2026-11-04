@@ -25,12 +25,14 @@ FocusScope
     // one of Internal, VLC, MDK, WebBrowser, YouTube, YouTubeTV, RailCam, StreamLink, StreamBuffer, Tivo
     property string player: ""
     property var videoPlayer: undefined
+    property int bookmark: 0
 
     property bool showBorder: true
     property bool showTitle: true
     property bool muteAudio: false
     property bool showRailcamApproach: false
     property bool showRailcamDiagram: false
+    property bool saveBookmark: true
 
     // private properties
     property int _mediaStatus: MediaPlayers.MediaStatus.Unknown
@@ -1144,7 +1146,8 @@ FocusScope
 
         if (playbackStatus === MediaPlayers.PlaybackStatus.Stopped)
         {
-
+            if (saveBookmark && videoPlayer.canSaveBookmark)
+                doSaveBookmark();
         }
         else if (playbackStatus === MediaPlayers.PlaybackStatus.Playing)
         {
@@ -1321,6 +1324,10 @@ FocusScope
                     videoID = "'" + newURL.slice(pos + 1, pos + 12) + "'";
 
             videoPlayer.source = videoID;
+            if (bookmark)
+                videoPlayer.playFrom(bookmark);
+            else
+                videoPlayer.play();
         }
         else if (root.player === "StreamLink" || root.player === "StreamBuffer")
         {
@@ -1330,6 +1337,10 @@ FocusScope
         else if (root.player === "FFMPEG" || root.player === "MDK")
         {
             videoPlayer.source = newURL;
+            if (bookmark)
+                videoPlayer.playFrom(bookmark);
+            else
+                videoPlayer.play();
         }
         else if (root.player === "Tivo")
         {
@@ -2199,5 +2210,17 @@ FocusScope
         }
 
         return undefined;
+    }
+
+    function doSaveBookmark()
+    {
+        var url = videoPlayer.source;
+        var position = videoPlayer.getPosition();
+        var date = Qt.formatDateTime(new Date(Date.now()), "yyyy-MM-ddThh:mm:ss");
+
+        if (dbUtils.haveVideoBookmark(url))
+            dbUtils.updateVideoBookmark(url, position, date);
+        else
+            dbUtils.addVideoBookmark(url, position, date);
     }
 }

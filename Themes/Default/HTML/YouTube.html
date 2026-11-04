@@ -37,7 +37,7 @@
                 {
                     height: window.innerHeight,
                     width: window.innerWidth,
-                    playerVars: { 'autoplay': 1, 'controls': 0 },
+                    playerVars: { 'autoplay': 1, 'controls': 0, 'cc_load_policy': 3 },
                     events:
                     {
                         'onReady': onPlayerReady,
@@ -82,6 +82,12 @@
             function setSize(width, height)
             {
                 player.setSize(width, height);
+            }
+
+            function playFrom(position)
+            {
+                player.playVideo();
+                player.seekTo(position, true);
             }
 
             function playVideo()

@@ -47,6 +47,13 @@ class DatabaseUtils : public QObject
     Q_INVOKABLE void updateHDMISource(int itemid, const QString &name, const QString &parameters);
     Q_INVOKABLE void deleteHDMISource(int itemid);
 
+    // video bookmarks
+    Q_INVOKABLE void addVideoBookmark(const QString &url, const QString &bookmark, const QString &date_modified);
+    Q_INVOKABLE void updateVideoBookmark(const QString &url, const QString &bookmark, const QString &date_modified);
+    Q_INVOKABLE void deleteVideoBookmark(const QString &url);
+    Q_INVOKABLE bool haveVideoBookmark(const QString &url);
+    Q_INVOKABLE int  getVideoBookmark(const QString &url);
+
     Q_INVOKABLE bool updateMediaItem(const QString &metadata);
 
     bool initMythDB(void);

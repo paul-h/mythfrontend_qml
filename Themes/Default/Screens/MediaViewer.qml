@@ -86,6 +86,7 @@ BaseScreen
             while (canFetchMore(index(-1, -1)))
                 fetchMore(index(-1, -1));
 
+            videoList.currentIndex = 0;
             updateMetadata();
         }
     }
@@ -286,16 +287,23 @@ BaseScreen
             popupMenu.clearMenuItems();
             extrasModel.clear();
 
-            if ((mediaItemsModel.get(videoList.currentIndex, "extras") !== ""))
+            if (mediaItemsModel.get(videoList.currentIndex, "extras") !== "{}")
             {
-                popupMenu.addMenuItem("", "Extras", "EXTRAS");
-                var extrasJson = JSON.parse(mediaItemsModel.get(videoList.currentIndex, "extras"));
-                var extras = extrasJson.extras;
+                var extrasJSON = JSON.parse(mediaItemsModel.get(videoList.currentIndex, "extras"));
 
-                for (var x = 0; x < extras.length; x++)
+                if ("video" in extrasJSON)
                 {
-                     popupMenu.addMenuItem("0", extras[x].name, "EXTRA:" + x);
-                    extrasModel.append({"no": x, "title": extras[x].name, "icon": mythUtils.findThemeFile("images/extras.png"), "url": extras[x].url, "player": _playerToUse, "duration": ""})
+                    popupMenu.addMenuItem("", "Extras", "EXTRAS");
+                    popupMenu.addMenuItem("0", "Video's", "VIDEOS");
+
+                    var videos = extrasJSON["video"];
+
+                    for (var x = 0; x < videos.length; x++)
+                    {
+                        popupMenu.addMenuItem("0,0", videos[x].name, "EXTRA:" + x);
+                        var url = mediaItemsModel.get(videoList.currentIndex, "folder") + videos[x].url;
+                        extrasModel.append({"no": x, "title": videos[x].name, "icon": mythUtils.findThemeFile("images/extras.png"), "url": url, "player": _playerToUse, "duration": ""})
+                    }
                 }
             }
 
@@ -453,50 +461,58 @@ BaseScreen
 
         Keys.onReturnPressed: event =>
         {
-            var folder = "file://" + model.get(currentIndex, "folder");
-            var filename = model.get(currentIndex, "filename")
-            var title = model.get(currentIndex, "title");
-            var subtitle = model.get(currentIndex, "subtitle");
-            mediaModel.get(0).title = title + (subtitle != "" ? " - " + subtitle: "");
-            mediaModel.get(0).url = folder + '/' + filename;
-            mediaModel.get(0).player = _playerToUse;
-            mediaModel.get(0).description = model.get(currentIndex, "description");
-
-            if (model.get(currentIndex, "front") != "")
-                mediaModel.get(0).icon = findVideoImage(folder + "/" + filename, model.get(currentIndex, "front"), "front");
-            else if (model.get(currentIndex, "back") != "")
-                mediaModel.get(0).icon = findVideoImage(folder + "/" + filename, model.get(currentIndex, "back"), "back");
-            else if (model.get(currentIndex, "coverart") != "")
-                mediaModel.get(0).icon = findVideoImage(folder + "/" + filename, model.get(currentIndex, "coverart"), "coverart");
-            else if (model.get(currentIndex, "fanart") != "")
-                mediaModel.get(0).icon = findVideoImage(folder + "/" + filename, model.get(currentIndex, "fanart"), "fanart");
-            else if (model.get(currentIndex, "screenshot") != "")
-                mediaModel.get(0).icon = findVideoImage(folder + "/" + filename, model.get(currentIndex, "screenshot"), "screenshot");
-            else
-                mediaModel.get(0).icon = mythUtils.findThemeFile("images/no_image.png")
-
-            if (filename == "VIDEO_TS")
+            if (model.get(currentIndex, "filename") == "" )
             {
-                playDVD(folder + '/' + filename)
+                // we have a collection or TV series
+                updateSQL();
             }
             else
             {
-                if (filename.endsWith(".ISO") || filename.endsWith(".iso") || filename.endsWith(".IMG") || filename.endsWith(".img"))
+                var folder = "file://" + model.get(currentIndex, "folder");
+                var filename = model.get(currentIndex, "filename")
+                var title = model.get(currentIndex, "title");
+                var subtitle = model.get(currentIndex, "subtitle");
+                mediaModel.get(0).title = title + (subtitle != "" ? " - " + subtitle: "");
+                mediaModel.get(0).url = folder + '/' + filename;
+                mediaModel.get(0).player = _playerToUse;
+                mediaModel.get(0).description = model.get(currentIndex, "description");
+
+                if (model.get(currentIndex, "front") != "")
+                    mediaModel.get(0).icon = findVideoImage(folder + "/" + filename, model.get(currentIndex, "front"), "front");
+                else if (model.get(currentIndex, "back") != "")
+                    mediaModel.get(0).icon = findVideoImage(folder + "/" + filename, model.get(currentIndex, "back"), "back");
+                else if (model.get(currentIndex, "coverart") != "")
+                    mediaModel.get(0).icon = findVideoImage(folder + "/" + filename, model.get(currentIndex, "coverart"), "coverart");
+                else if (model.get(currentIndex, "fanart") != "")
+                    mediaModel.get(0).icon = findVideoImage(folder + "/" + filename, model.get(currentIndex, "fanart"), "fanart");
+                else if (model.get(currentIndex, "screenshot") != "")
+                    mediaModel.get(0).icon = findVideoImage(folder + "/" + filename, model.get(currentIndex, "screenshot"), "screenshot");
+                else
+                    mediaModel.get(0).icon = mythUtils.findThemeFile("images/no_image.png")
+
+                if (filename == "VIDEO_TS")
                 {
-                    playDVD(model.get(currentIndex, "filePath"))
+                    playDVD(folder + '/' + filename)
                 }
                 else
                 {
-                    if (root.isPanel)
+                    if (filename.endsWith(".ISO") || filename.endsWith(".iso") || filename.endsWith(".IMG") || filename.endsWith(".img"))
                     {
-                        internalPlayer.previousFocusItem = videoList;
-                        playerSources.adhocList = mediaModel;
-                        feedSelected("Adhoc", "", 0);
+                        playDVD(model.get(currentIndex, "filePath"))
                     }
                     else
                     {
-                        playerSources.adhocList = mediaModel;
-                        stack.push(Qt.resolvedUrl("InternalPlayer.qml"), {defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0});
+                        if (root.isPanel)
+                        {
+                            internalPlayer.previousFocusItem = videoList;
+                            playerSources.adhocList = mediaModel;
+                            feedSelected("Adhoc", "", 0);
+                        }
+                        else
+                        {
+                            playerSources.adhocList = mediaModel;
+                            stack.push(Qt.resolvedUrl("InternalPlayer.qml"), {defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0});
+                        }
                     }
                 }
             }
@@ -864,7 +880,41 @@ BaseScreen
 
     function showMetadataEditor()
     {
-        var item = stack.push(Qt.resolvedUrl("MediaMetadataEditor.qml"), {sqlModel: mediaItemsModel, currentIndex: videoList.currentIndex});
+        var metadata = {
+            "mediaid": mediaItemsModel.get(videoList.currentIndex, "mediaid"),
+            "mediatype": mediaItemsModel.get(videoList.currentIndex, "mediatype"),
+            "folder": mediaItemsModel.get(videoList.currentIndex, "folder"),
+            "filename": mediaItemsModel.get(videoList.currentIndex, "filename"),
+            "hash": mediaItemsModel.get(videoList.currentIndex, "hash"),
+            "title": mediaItemsModel.get(videoList.currentIndex, "title"),
+            "subtitle": mediaItemsModel.get(videoList.currentIndex, "subtitle"),
+            "description": mediaItemsModel.get(videoList.currentIndex, "description"),
+            "season": mediaItemsModel.get(videoList.currentIndex, "season"),
+            "episode": mediaItemsModel.get(videoList.currentIndex, "episode"),
+            "tagline": mediaItemsModel.get(videoList.currentIndex, "tagline"),
+            "categories": JSON.parse(mediaItemsModel.get(videoList.currentIndex, "genres")),
+            "contenttype": mediaItemsModel.get(videoList.currentIndex, "contenttype"),
+            "nsfw": mediaItemsModel.get(videoList.currentIndex, "nsfw"),
+            "inetref": JSON.parse(mediaItemsModel.get(videoList.currentIndex, "inetref")),
+            "website": mediaItemsModel.get(videoList.currentIndex, "website"),
+            "studio": mediaItemsModel.get(videoList.currentIndex, "studio"),
+            "coverart": mediaItemsModel.get(videoList.currentIndex, "coverart"),
+            "fanart": mediaItemsModel.get(videoList.currentIndex, "fanart"),
+            "banner": mediaItemsModel.get(videoList.currentIndex, "banner"),
+            "screenshot": mediaItemsModel.get(videoList.currentIndex, "screenshot"),
+            "front": mediaItemsModel.get(videoList.currentIndex, "front"),
+            "back": mediaItemsModel.get(videoList.currentIndex, "back"),
+            "channum": mediaItemsModel.get(videoList.currentIndex, "channum"),
+            "callsign": mediaItemsModel.get(videoList.currentIndex, "callsign"),
+            "startts": mediaItemsModel.get(videoList.currentIndex, "startts"),
+            "releasedate": mediaItemsModel.get(videoList.currentIndex, "releasedate"),
+            "runtime": mediaItemsModel.get(videoList.currentIndex, "runtime"),
+            "runtimesecs": mediaItemsModel.get(videoList.currentIndex, "runtimesecs"),
+            "status": mediaItemsModel.get(videoList.currentIndex, "status"),
+            "extras": JSON.parse(mediaItemsModel.get(videoList.currentIndex, "extras"))
+        };
+
+        var item = stack.push(Qt.resolvedUrl("MediaMetadataEditor.qml"), {metadata: metadata});
         item.saved.connect(reloadModel);
     }
 
@@ -875,6 +925,13 @@ BaseScreen
 
         if (genre !== "All" && genre != "<All Genres>")
             newSQL = newSQL + ", json_each(mediaitems.genres)";
+
+        if (videoList.model.get(videoList.currentIndex, "filename") == "")
+            newSQL = newSQL + " WHERE parent = " + videoList.model.get(videoList.currentIndex, "mediaid");
+        else
+            newSQL = newSQL + " WHERE parent IS NULL"
+
+        whereAdded = true
 
         if (mediaType !== "")
         {
@@ -920,7 +977,10 @@ BaseScreen
             }
         }
 
-        newSQL = newSQL + " ORDER BY " + sortField + (sortReversed ? " DESC" : " ASC" + ", season, episode");
+        newSQL = newSQL + " ORDER BY " + sortField + (sortReversed ? " DESC" : " ASC");
+
+        if (sortField === "title")
+            newSQL = newSQL + ", season, episode";
 
         mediaItemsModel.sql =  newSQL;
     }
@@ -1076,7 +1136,7 @@ BaseScreen
 
             websiteIcon.visible = ((mediaItemsModel.get(videoList.currentIndex, "website") !== "" ) ? true : false);
             hashIcon.visible = ((mediaItemsModel.get(videoList.currentIndex, "hash") !== "" ) ? true : false);
-            extrasIcon.visible = ((mediaItemsModel.get(videoList.currentIndex, "extras") !== "" ) ? true : false);
+            extrasIcon.visible = ((mediaItemsModel.get(videoList.currentIndex, "extras") !== "{}" ) ? true : false);
             fileStatus.text = mediaItemsModel.get(videoList.currentIndex, "status")
         }
     }

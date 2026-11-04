@@ -54,6 +54,10 @@ Window
     property bool _savedShowVideo: false
     property bool _savedShowSlideShow: false;
 
+    // save these so we don't have to keep looking for them
+    property string _defaultCoverArt: mythUtils.findThemeFile("images/grid_noimage.png");
+    property string _defaultNoImage: mythUtils.findThemeFile("images/no_image.png");
+
     property alias stack: stack
 
     Component.onCompleted:
@@ -1552,5 +1556,113 @@ Window
                     break;
             }
         }
+    }
+
+    function findVideoImage(videoFilename, imageFilename, type)
+    {
+        var defaultImage
+
+        if (type === "coverart")
+            defaultImage = _defaultCoverArt;
+        else
+            defaultImage = _defaultNoImage;
+
+        // if no filename given try to find one in the same folder
+        if (imageFilename === "" || imageFilename == undefined)
+        {
+            var result = mythUtils.findThemeFile(videoFilename + ".png");
+
+            if (result === "")
+                result = mythUtils.findThemeFile(videoFilename + ".jpg");
+
+            if (result === "")
+                result = mythUtils.findThemeFile(Util.removeExtension(videoFilename) + ".png");
+
+            if (result === "")
+                result = mythUtils.findThemeFile(Util.removeExtension(videoFilename) + ".jpg");
+
+            if (result === "")
+                result = defaultImage
+
+            return "file://" +result;
+        }
+
+        // if we are given a local file try that
+        if (imageFilename.startsWith("file://"))
+        {
+            if (mythUtils.fileExists(imageFilename.replace("file://", "")))
+                return imageFilename;
+            else
+                return defaultImage;
+        }
+
+        // if we have an http URL use that
+        if (imageFilename.startsWith("http://") || imageFilename.startsWith("https://"))
+            return imageFilename;
+
+        // if we just have a filename it could be a local file or myth storage group image
+        var path = Util.getPath(videoFilename);
+        var fullPath = path + "/" + imageFilename;
+
+        if (mythUtils.fileExists(fullPath))
+            return fullPath;
+
+        fullPath = videoFilename + "/Artwork/" + imageFilename;
+
+        if (mythUtils.fileExists(fullPath))
+            return fullPath;
+
+        fullPath = path + "/Artwork/" + imageFilename;
+
+        if (mythUtils.fileExists(fullPath))
+            return fullPath;
+
+        // assume it must be a myth storage group image
+        // if (type === "screenshot")
+        // {
+        //     //FIXME: this should be a setting
+        //     var screenshotFolder = "/storage/disk1a/my_storagegroups/screenshots";
+        //     if (mythUtils.fileExists(screenshotFolder + "/" + imageFilename))
+        //         return screenshotFolder + "/" + imageFilename;
+
+        //     // last resort
+        //     return settings.masterBackend + "Content/GetImageFile?StorageGroup=Screenshot&FileName=" + imageFilename
+        // }
+
+        // if (type === "banner")
+        // {
+        //     //FIXME: this should be a setting
+        //     var bannerFolder = "/storage/disk1a/my_storagegroups/banners";
+        //     if (mythUtils.fileExists(bannerFolder + "/" + imageFilename))
+        //         return bannerFolder + "/" + imageFilename;
+
+        //     // last resort
+        //     return settings.masterBackend + "Content/GetImageFile?StorageGroup=Banner&FileName=" + imageFilename
+
+        // }
+        // if (type === "fanart")
+        // {
+        //     //FIXME: this should be a setting
+        //     var fanartFolder = "/storage/disk1a/my_storagegroups/fanart";
+        //     if (mythUtils.fileExists(fanartFolder + "/" + imageFilename))
+        //         return fanartFolder + "/" + imageFilename;
+
+        //     // last resort
+        //     return settings.masterBackend + "Content/GetImageFile?StorageGroup=Fanart&FileName=" + imageFilename
+        // }
+
+        // if (type === "coverart")
+        // {
+        //     //FIXME: this should be a setting
+        //     var coverartFolder = "/storage/disk1a/my_storagegroups/coverart/";
+        //     if (mythUtils.fileExists(coverartFolder + "/" + imageFilename))
+        //         return coverartFolder + "/" + imageFilename;
+
+        //     // last resort
+        //     return settings.masterBackend + "Content/GetImageFile?StorageGroup=Coverart&FileName=" + imageFilename
+        // }
+
+        // if we get here just use the default icon
+        return defaultImage;
     }
 }

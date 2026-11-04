@@ -16,6 +16,7 @@ Item
     property alias nameFilters: folderModel.nameFilters
 
     // private
+    property bool _folderLock: false
     property var _nodeMap: new Map()
 
     signal loaded();
@@ -52,6 +53,24 @@ Item
         sourceModel: fileModel
     }
 
+    WorkerScript
+    {
+        id: workerScript
+        source: "FileBrowserModel.mjs"
+
+        onMessage:
+        {
+            if (messageObject.status === "Ready")
+            {
+
+            }
+            else if (messageObject.status === "Loading")
+            {
+
+            }
+        }
+    }
+
     FolderListModel
     {
         id: folderModel
@@ -61,8 +80,40 @@ Item
         showOnlyReadable: true
         onStatusChanged:
         {
+            var statusStr = "Unknown";
+            if (status === FolderListModel.Ready)
+                statusStr = "Ready";
+            else if (status === FolderListModel.Null)
+                statusStr = "Null";
+            else if (status === FolderListModel.Loading)
+                statusStr = "Loading";
+
             if (folderModel.status == FolderListModel.Ready)
-                doLoad(folder.toString())
+            {
+                _folderLock = true;
+
+                var folderPath = folder.toString();
+
+                doLoad(folderPath)
+                loaded();
+
+                // if there is an associated node load that
+                if (_nodeMap.has(folderPath))
+                    expandDirNode(folderPath);
+
+                // if there are nodes waiting process the next one
+                if (_nodeMap.size)
+                {
+                    var newFolder = _nodeMap.keys().next().value;
+                    if (newFolder != undefined)
+                    {
+                        //folder = "";
+                        folder = newFolder;
+                    }
+                }
+
+                _folderLock = false;
+            }
         }
     }
 
@@ -87,16 +138,8 @@ Item
                               "fileIsDir": folderModel.get(x, "fileIsDir")
                              });
         }
-
-        expandDirNode(folder);
-
-        // remove this folder from map and start the next one if available
-        _nodeMap.delete(folder);
-        var newFolder = _nodeMap.keys().next().value;
-
-        if (newFolder !== undefined)
-            folderModel.folder = newFolder;
     }
+
 
     function expandNode(tree, path, node)
     {
@@ -114,15 +157,17 @@ Item
             else
                 folder = node.itemData;
 
-            _nodeMap.set(folder, node);
+            if (!_nodeMap.has(folder))
+            {
+                _nodeMap.set(folder, node);
+                node.subNodes.append({"parent": node, "itemTitle": "Loading ...", "itemData": "Loading", "checked": false, "expanded": true, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Loading})
+            }
 
-            if (folderModel.status != FolderListModel.Loading)
+            if (!_folderLock && folderModel.status != FolderListModel.Loading)
             {
                 folderModel.folder = "";
                 folderModel.folder = folder;
             }
-
-            node.subNodes.append({"parent": node, "itemTitle": "Loading ...", "itemData": "Loading", "checked": false, "expanded": true, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.Loading})
         }
     }
 
@@ -131,33 +176,28 @@ Item
         if (!_nodeMap.has(folder))
             return;
 
-        if (folderModel.status == FolderListModel.Ready)
+        var node = _nodeMap.get(folder);
+        node.subNodes.clear();
+
+        if (fileModel.count > 0)
         {
-            var node = _nodeMap.get(folder);
-
-            node.subNodes.clear();
-
-            if (fileModel.count > 0)
+            for (var x = 0; x < fileModel.count; x++)
             {
-                for (var x = 0; x < fileModel.count; x++)
-                {
-                    var fileNode = fileModel.get(x);
-
-                    node.subNodes.append({
-                                             "parent": node, "itemTitle": fileNode.fileName, "itemData": fileNode.fileUrl, "checked": false, "expanded": fileNode.fileIsDir ? false : true,
-                                             "icon": findCoverImage(fileNode), "subNodes": [], type: fileNode.fileIsDir ?  SourceTreeModel.NodeType.FileBrowser_Directory : SourceTreeModel.NodeType.FileBrowser_File,
-                                             "title": fileNode.fileBaseName, "player": "VLC", "url": fileNode.fileUrl, "fileIsDir": fileNode.fileIsDir, "filePath": fileNode.filePath
-                                          })
-                }
+                var fileNode = fileModel.get(x);
+                node.subNodes.append({
+                                         "parent": node, "itemTitle": fileNode.fileName, "itemData": fileNode.fileUrl, "checked": false, "expanded": fileNode.fileIsDir ? false : true,
+                                         "icon": findCoverImage(fileNode), "subNodes": [], type: fileNode.fileIsDir ?  SourceTreeModel.NodeType.FileBrowser_Directory : SourceTreeModel.NodeType.FileBrowser_File,
+                                         "title": fileNode.fileBaseName, "player": "VLC", "url": fileNode.fileUrl, "fileIsDir": fileNode.fileIsDir, "filePath": fileNode.filePath
+                                     })
             }
-            else
-            {
-                node.subNodes.append({"parent": node, "itemTitle": "No Files found!", "itemData": "NoFiles", "checked": false, "expanded": true, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.No_Result})
-            }
-
-            node.expanded = true;
-            _nodeMap.delete(folder);
         }
+        else
+        {
+            node.subNodes.append({"parent": node, "itemTitle": "No Files found!", "itemData": "NoFiles", "checked": false, "expanded": true, "icon": "", "subNodes": [], type: SourceTreeModel.NodeType.No_Result})
+        }
+
+        node.expanded = true;
+        _nodeMap.delete(folder);
     }
 
     function findCoverImage(fileNode)

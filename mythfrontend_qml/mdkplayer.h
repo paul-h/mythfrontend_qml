@@ -50,6 +50,7 @@ public:
     virtual ~QmlMDKPlayer();
     Renderer *createRenderer() const;
 
+    Q_INVOKABLE void playFrom(qint64 position);
     Q_INVOKABLE void play();
     Q_INVOKABLE void stop();
     Q_INVOKABLE void pause();

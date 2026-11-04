@@ -53,7 +53,7 @@ BaseScreen
     {
         id: hdmiSourcesModel
 
-        sql: "SELECT itemid, name, parameters FROM hdmisources";
+        sql: "SELECT itemid, name, parameters FROM hdmisources ORDER BY name";
 
         database: "mythqml"
 
