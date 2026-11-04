@@ -482,6 +482,97 @@ void DatabaseUtils::deleteHDMISource(int itemid)
     getMythQMLDatabase().commit();
 }
 
+// video bookmark
+
+void DatabaseUtils::addVideoBookmark(const QString &url, const QString &bookmark, const QString &date_modified)
+{
+    gContext->m_logger->debug(Verbose::DATABASE,
+                              QString("DatabaseUtils::addVideoBookmark: url is: %1, bookmark is: %2, date_modified is: %3").arg(url).arg(bookmark).arg(date_modified));
+
+    QSqlQuery query(getMythQMLDatabase());
+    query.prepare("INSERT INTO videobookmarks (url, bookmark, date_modified) "
+                  "VALUES (:URL, :BOOKMARK, :DATE_MODIFIED);");
+    query.bindValue(":URL", url);
+    query.bindValue(":BOOKMARK", bookmark);
+    query.bindValue(":DATE_MODIFIED", date_modified);
+
+    if (!query.exec())
+    {
+        gContext->m_logger->error(Verbose::GENERAL, QString("DatabaseUtils::addVideoBookmark ERROR: %1 - %2").arg(query.lastError().text()).arg(query.executedQuery()));
+        return;
+    }
+
+    getMythQMLDatabase().commit();
+}
+
+void DatabaseUtils::updateVideoBookmark(const QString &url, const QString &bookmark, const QString &date_modified)
+{
+    gContext->m_logger->debug(Verbose::DATABASE,
+                              QString("DatabaseUtils::updateVideoBookmark: url is: %1, bookmark is: %2, date_modified is: %3").arg(url).arg(bookmark).arg(date_modified));
+
+    QSqlQuery query(getMythQMLDatabase());
+    query.prepare("UPDATE videobookmarks SET bookmark = :BOOKMARK, date_modified = :DATE_MODIFIED "
+                  "WHERE url = :URL;");
+    query.bindValue(":BOOKMARK", bookmark);
+    query.bindValue(":DATE_MODIFIED", date_modified);
+    query.bindValue(":URL", url);
+
+    if (!query.exec())
+    {
+        gContext->m_logger->error(Verbose::GENERAL, QString("DatabaseUtils::updateVideoBookmark ERROR: %1 - %2").arg(query.lastError().text()).arg(query.executedQuery()));
+    }
+
+    getMythQMLDatabase().commit();
+}
+
+void DatabaseUtils::deleteVideoBookmark(const QString &url)
+{
+    gContext->m_logger->debug(Verbose::DATABASE, QString("DatabaseUtils::deleteVideoBookmark: url is: %1").arg(url));
+
+    QSqlQuery query(getMythQMLDatabase());
+    query.prepare("DELETE FROM videobookmarks WHERE url = :URL;");
+    query.bindValue(0, url);
+    query.exec();
+
+    getMythQMLDatabase().commit();
+}
+
+bool DatabaseUtils::haveVideoBookmark(const QString &url)
+{
+    gContext->m_logger->debug(Verbose::DATABASE, QString("DatabaseUtils::haveVideoBookmark: url is: %1").arg(url));
+
+    QSqlQuery query(getMythQMLDatabase());
+    query.prepare("SELECT COUNT(*) FROM videobookmarks WHERE url = :URL;");
+    query.bindValue(0, url);
+    query.exec();
+
+    int rows = 0;
+    if (query.next())
+        rows = query.value(0).toInt();
+
+    gContext->m_logger->debug(Verbose::DATABASE, QString("DatabaseUtils::haveVideoBookmark: size is: %1").arg(rows));
+
+    return (rows > 0);
+}
+
+int DatabaseUtils::getVideoBookmark(const QString &url)
+{
+    gContext->m_logger->debug(Verbose::DATABASE, QString("DatabaseUtils::getVideoBookmark: url is: %1").arg(url));
+
+    QSqlQuery query(getMythQMLDatabase());
+    query.prepare("SELECT bookmark FROM videobookmarks WHERE url = :URL;");
+    query.bindValue(0, url);
+    query.exec();
+
+    int bookmark = 0;
+    if (query.next())
+        bookmark = query.value(0).toInt();
+
+    gContext->m_logger->debug(Verbose::DATABASE, QString("DatabaseUtils::getVideoBookmark: bookmark is: %1").arg(bookmark));
+
+    return bookmark;
+}
+
 bool DatabaseUtils::updateMediaItem(const QString &metadata)
 {
     QSqlQuery query(getMythQMLDatabase());
@@ -788,6 +879,17 @@ bool DatabaseUtils::initMythQMLDB(void)
                               ");")))
     {
         gContext->m_logger->error(Verbose::GENERAL, "Context: Failed to create hdmisources table error - " + q.lastError().text());
+        return false;
+    }
+
+    if (!q.exec(QLatin1String("CREATE TABLE IF NOT EXISTS videobookmarks ("
+                              "url TEXT NOT NULL,"
+                              "bookmark TEXT NOT NULL,"
+                              "date_modified TEXT NOT NULL,"
+                              "PRIMARY KEY(url)"
+                              ");")))
+    {
+        gContext->m_logger->error(Verbose::GENERAL, "Context: Failed to create videobookmarks table error - " + q.lastError().text());
         return false;
     }
 

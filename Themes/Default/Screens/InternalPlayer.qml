@@ -24,6 +24,7 @@ BaseScreen
     property string defaultFeedSource: "Live TV"
     property string defaultFilter: ""
     property int    defaultCurrentFeed: 0
+    property int    bookmark: 0
 
     property bool isFullScreen: width === window.width
     property alias exitOnPlaybackEnded: playerLayout.exitOnPlaybackEnded
@@ -59,10 +60,10 @@ BaseScreen
         playerLayout.mediaPlayer3.setVolume(volume);
         playerLayout.mediaPlayer4.setVolume(volume);
 
-        playerLayout.mediaPlayer1.browserURLListChanged.connect(updateBrowser());
-        playerLayout.mediaPlayer2.browserURLListChanged.connect(updateBrowser());
-        playerLayout.mediaPlayer3.browserURLListChanged.connect(updateBrowser());
-        playerLayout.mediaPlayer4.browserURLListChanged.connect(updateBrowser());
+        playerLayout.mediaPlayer1.browserURLListChanged.connect(updateBrowser);
+        playerLayout.mediaPlayer2.browserURLListChanged.connect(updateBrowser);
+        playerLayout.mediaPlayer3.browserURLListChanged.connect(updateBrowser);
+        playerLayout.mediaPlayer4.browserURLListChanged.connect(updateBrowser);
 
         getActivePlayer().showInfo(true);
         getActivePlayer().updateRadioFeedList();
@@ -1010,6 +1011,7 @@ BaseScreen
 
     function feedSourceLoaded()
     {
+        playerLayout.mediaPlayer1.bookmark = bookmark;
         playerLayout.mediaPlayer1.play();
     }
 }
