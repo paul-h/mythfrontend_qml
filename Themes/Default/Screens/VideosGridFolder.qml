@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.XmlListModel 2.0
+import QtQml.XmlListModel
 import Qt.labs.folderlistmodel 2.15
 import Base 1.0
 import Process 1.0
@@ -327,7 +327,7 @@ BaseScreen
 
         delegate: folderDelegate
 
-        Keys.onReturnPressed:
+        Keys.onReturnPressed: event =>
         {
             var url = model.get(currentIndex).url;
 
@@ -347,9 +347,9 @@ BaseScreen
                     rightSound.play();
 
                     if (root.isPanel)
-                        panelStack.push({item: Qt.resolvedUrl("VideosGridFolder.qml"), properties:{folder: url, sortField: sortField, sortReversed: sortReversed}});
+                        panelStack.push(Qt.resolvedUrl("VideosGridFolder.qml"), {folder: url, sortField: sortField, sortReversed: sortReversed});
                     else
-                        stack.push({item: Qt.resolvedUrl("VideosGridFolder.qml"), properties:{folder: url, sortField: sortField, sortReversed: sortReversed}});
+                        stack.push(Qt.resolvedUrl("VideosGridFolder.qml"), {folder: url, sortField: sortField, sortReversed: sortReversed});
                 }
             }
             else
@@ -507,7 +507,7 @@ BaseScreen
             else
             {
                 playerSources.adhocList = playbackModel;
-                stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0, bookmark: 0}});
+                stack.push(Qt.resolvedUrl("InternalPlayer.qml"), {defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0, bookmark: 0});
             }
         }
 
@@ -523,7 +523,7 @@ BaseScreen
             else
             {
                 playerSources.adhocList = playbackModel;
-                stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0, bookmark: bookmark}});
+                stack.push(Qt.resolvedUrl("InternalPlayer.qml"), {defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0, bookmark: bookmark});
             }
         }
 

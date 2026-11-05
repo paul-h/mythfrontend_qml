@@ -35,21 +35,21 @@ BaseScreen
     {
          id: openSound
          source: mythUtils.findThemeFile("sounds/advent_open.wav")
-         volume: soundEffectsVolume
+         volume: soundEffectsVolume / 100
     }
 
     SoundEffect
     {
          id: closeSound
          source: mythUtils.findThemeFile("sounds/advent_close.wav")
-         volume: soundEffectsVolume
+         volume: soundEffectsVolume / 100
     }
 
     SoundEffect
     {
          id: notyetSound
          source: mythUtils.findThemeFile("sounds/downer.wav")
-         volume: soundEffectsVolume
+         volume: soundEffectsVolume / 100
     }
 
     AdventCalendarModel
