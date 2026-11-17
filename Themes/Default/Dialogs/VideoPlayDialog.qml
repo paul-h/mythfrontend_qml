@@ -11,6 +11,8 @@ BaseDialog
     signal play
     signal playFrom
 
+    width: xscale(800); height: yscale(500)
+
     content: Item
     {
         anchors.fill: parent
