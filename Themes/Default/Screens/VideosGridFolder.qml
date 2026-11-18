@@ -493,8 +493,6 @@ BaseScreen
         message: ""
         image: ""
 
-        width: xscale(800); height: yscale(500)
-
         onPlay:
         {
             videoList.focus = true;

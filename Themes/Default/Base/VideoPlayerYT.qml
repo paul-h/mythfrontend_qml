@@ -1,10 +1,13 @@
 import QtQuick
 import QtWebEngine
+import mythqml.net 1.0
 
 Item
 {
     id: root
     property string source: ""
+    property int bookmark: 0
+    property bool canSaveBookmark: true
     property bool loop: false
     property bool playbackStarted: false
 
@@ -27,6 +30,7 @@ Item
         if (playerState === -1) // unstarted
         {
             root.mediaStatusChanged(MediaPlayers.MediaStatus.Loading);
+            root.playbackStatusChanged(MediaPlayers.PlaybackStatus.Stopped); // ???
         }
 
         if (playerState === 0) // ended
@@ -61,7 +65,7 @@ Item
     onSourceChanged:
     {
          if (_playerLoaded)
-            browser.runJavaScript("loadVideo(" + source + ");");
+            browser.runJavaScript("loadVideo(" + getVideoID() + "," + bookmark + ")");
     }
 
     WebEngineView
@@ -84,12 +88,17 @@ Item
             if (loadingInfo.status === WebEngineView.LoadSucceededStatus && root.source !== "")
             {
                 _playerLoaded = true;
-                runJavaScript("loadVideo(" + root.source + ")");
-                browser.runJavaScript("changeVolume(" + root._volume + ");");
-                browser.runJavaScript("setMute(" + root._muteAudio + ");");
+                runJavaScript("loadVideo(" + getVideoID() + "," + (bookmark / 1000) + ")");
+                runJavaScript("changeVolume(" + root._volume + ");");
+                runJavaScript("setMute(" + root._muteAudio + ");");
                 statusUpdateTimer.start();
                 setSize(width, height);
             }
+        }
+
+        onJavaScriptConsoleMessage:
+        {
+            log.debug(Verbose.PLAYBACK, "VideoPlayerYT JS: " + message);
         }
 
         Component.onCompleted: settings.playbackRequiresUserGesture = false;
@@ -110,6 +119,17 @@ Item
         }
     }
 
+    function getVideoID()
+    {
+        var videoID = "''";
+        var pos = source.indexOf("=");
+
+        if (pos > 0)
+            videoID = "'" + source.slice(pos + 1, pos + 12) + "'";
+
+        return videoID;
+    }
+
     function setSize(width, height)
     {
         if (_playerLoaded)
@@ -121,6 +141,14 @@ Item
         return root.playerState === 1;
     }
 
+    function playFrom(position)
+    {
+        bookmark = position;
+
+        if (_playerLoaded && !isPlaying())
+            browser.runJavaScript("playFrom(" + (position / 1000) +");");
+    }
+
     function play()
     {
         if (_playerLoaded && !isPlaying())
@@ -130,7 +158,10 @@ Item
     function stop()
     {
         if (_playerLoaded  && isPlaying())
+        {
             browser.runJavaScript("stopVideo();");
+            root.playbackStatusChanged(MediaPlayers.PlaybackStatus.Stopped);
+        }
     }
 
     function pause()

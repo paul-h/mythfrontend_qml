@@ -1318,16 +1318,9 @@ FocusScope
         }
         else if (root.player === "YouTube")
         {
-            var videoID = "''";
-            var pos = newURL.indexOf("=");
-            if (pos > 0)
-                    videoID = "'" + newURL.slice(pos + 1, pos + 12) + "'";
-
-            videoPlayer.source = videoID;
-            if (bookmark)
-                videoPlayer.playFrom(bookmark);
-            else
-                videoPlayer.play();
+            videoPlayer.bookmark = bookmark;
+            videoPlayer.source = newURL;
+            videoPlayer.play();
         }
         else if (root.player === "StreamLink" || root.player === "StreamBuffer")
         {

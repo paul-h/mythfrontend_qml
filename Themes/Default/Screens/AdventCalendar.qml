@@ -210,7 +210,7 @@ BaseScreen
                                 onRunningChanged:
                                 {
                                     if (!running && delegate.isOpen)
-                                        playDialog.show(calendarGrid);
+                                        showPlayDialog();
 
                                     if (running)
                                         delegate.z = 99;
@@ -297,23 +297,30 @@ BaseScreen
         onCancelled: calendarGrid.focus = true
     }
 
-    AdventPlayDialog
+    VideoPlayDialog
     {
         id: playDialog
 
-        title: if (calendarModel.model.get(calendarGrid.currentIndex)) "Day " + calendarModel.model.get(calendarGrid.currentIndex).day; else "";
-        message: if (calendarModel.model.get(calendarGrid.currentIndex)) calendarModel.model.get(calendarGrid.currentIndex).title +  "\nDuration: " + calendarModel.model.get(calendarGrid.currentIndex).duration ; else "";
-        image: if (calendarModel.model.get(calendarGrid.currentIndex)) calendarModel.model.get(calendarGrid.currentIndex).icon; else "";
+        title: ""
+        message: ""
+        image: ""
+        bookmark: 0
 
-        width: xscale(600); height: yscale(500)
-
-        onAccepted:
+        onPlay:
         {
             calendarModel.model.get(calendarGrid.currentIndex).opened = true
             dbUtils.setSetting("Advent" + calendarModel.calendarIndex + "Day" + calendarGrid.currentIndex, settings.hostName,  "opened");
             calendarGrid.focus = true;
             playerSources.adhocList = calendarGrid.model;
-            stack.push(Qt.resolvedUrl("InternalPlayer.qml"), {defaultFeedSource:  "Advent Calendar", defaultFilter:  "", defaultCurrentFeed: calendarGrid.currentIndex, exitOnPlaybackEnded: true});
+            stack.push(Qt.resolvedUrl("InternalPlayer.qml"), {defaultFeedSource:  "Advent Calendar", defaultFilter:  "", defaultCurrentFeed: calendarGrid.currentIndex, exitOnPlaybackEnded: true, bookmark: 0});
+        }
+        onPlayFrom:
+        {
+            calendarModel.model.get(calendarGrid.currentIndex).opened = true
+            dbUtils.setSetting("Advent" + calendarModel.calendarIndex + "Day" + calendarGrid.currentIndex, settings.hostName,  "opened");
+            calendarGrid.focus = true;
+            playerSources.adhocList = calendarGrid.model;
+            stack.push(Qt.resolvedUrl("InternalPlayer.qml"), {defaultFeedSource:  "Advent Calendar", defaultFilter:  "", defaultCurrentFeed: calendarGrid.currentIndex, exitOnPlaybackEnded: true, bookmark: bookmark});
         }
         onCancelled:
         {
@@ -368,6 +375,19 @@ BaseScreen
         popupMenu.show();
     }
 
+    function showPlayDialog()
+    {
+        var day = calendarModel.model.get(calendarGrid.currentIndex);
+        if (day)
+        {
+            playDialog.title = "Day " + day.day;
+            playDialog.message = day.title +  "\nDuration: " + day.duration;
+            playDialog.image =  day.icon;
+            playDialog.bookmark = dbUtils.getVideoBookmark(calendarModel.model.get(calendarGrid.currentIndex).url);;
+            playDialog.show(calendarGrid);
+        }
+    }
+
     function openWindow()
     {
         var date = new Date;
@@ -387,7 +407,7 @@ BaseScreen
                 footer.redText = "Close Window";
             }
             else
-                playDialog.show();
+                showPlayDialog();
         }
     }
 
