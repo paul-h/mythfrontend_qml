@@ -110,7 +110,9 @@ Item
             {
                 // use the VLC player by default
                 var player = get(x).player === "Internal" ? "VLC" : get(x).player;
-                listModel.append({"day": get(x).day, "title": get(x).title, "icon": get(x).icon, "url": get(x).url, "player": player, "duration": get(x).duration, "opened": false});
+                var bookmark = dbUtils.getVideoBookmark(get(x).url);
+                listModel.append({"day": get(x).day, "title": get(x).title, "icon": get(x).icon, "url": get(x).url, "player": player,
+                                  "duration": get(x).duration, "opened": false, "bookmark": bookmark});
             }
 
             // send loaded signal
