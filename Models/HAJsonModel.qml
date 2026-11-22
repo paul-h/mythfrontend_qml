@@ -51,7 +51,7 @@ Item
                 if (http.status == 200)
                 {
                     var json = JSON.parse(http.responseText)
-                    if (typeof(callback === 'function'))
+                    if (typeof(callback) === 'function')
                         callback(json)
                     else
                         log.info(Verbose.MODEL, "HAJsonModel: reply - \n" + JSON.stringify(json, null, 4));

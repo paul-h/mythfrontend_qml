@@ -7,6 +7,7 @@ FocusScope
     id: root
 
     property alias source: mediaplayer.source
+    property bool canSaveBookmark: true
     property bool playbackStarted: false
 
     signal showMessage(string message, int timeOut)
@@ -53,7 +54,7 @@ FocusScope
                         vfilter = "w3fdif"
                         break;
                     default:
-                        vfilter =""
+                        vfilter = ""
                         break;
                 }
 
@@ -129,6 +130,11 @@ FocusScope
     function isPlaying()
     {
         return mediaplayer.playerState == MDKPlayer.PlayerStatePlaying;
+    }
+
+    function playFrom(position)
+    {
+        mediaplayer.playFrom(position);
     }
 
     function play()

@@ -25,7 +25,8 @@ public:
         PLAYBACK =    0x00000100,
         NETWORK =     0x00000200,
         LIBVLC =      0x00000400,
-        TELNET =      0x00000800
+        TELNET =      0x00000800,
+        QT =          0x00001000
     };
     Q_ENUM(Value)
 

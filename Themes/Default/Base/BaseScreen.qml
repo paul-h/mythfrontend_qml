@@ -14,6 +14,8 @@ Item
 
     property bool   isPanel: (parent.objectName == "panelstack" || parent.objectName == "themedpanel")
 
+    signal screenClosed()
+
     // private properties
     property double _wmult: width / 1280
     property double _hmult: height / 720
@@ -26,6 +28,8 @@ Item
     property bool _showImage: !showVideo
     property bool _muteAudio: false
     property string _helpURL: "https://mythqml.net/help/general.php#top"
+
+    Component.onDestruction: screenClosed()
 
     function _xscale(x)
     {

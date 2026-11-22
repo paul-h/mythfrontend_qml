@@ -172,8 +172,6 @@ BaseScreen
             Item
             {
                 id: delegate
-                property bool isOpen: opened
-                property string iconURL: icon
 
                 x: xscale(5)
                 y: yscale(5)
@@ -184,7 +182,18 @@ BaseScreen
                     id: image
                     anchors.fill: parent
                     opacity: 1.0
-                    source: delegate.iconURL
+                    source: icon
+                }
+                Image
+                {
+                    id: bookmarkIcon
+                    x: xscale(5)
+                    y: delegate.height - yscale(30)
+                    width: xscale(25)
+                    height: yscale(25)
+                    visible: (bookmark > 0)
+                    opacity: 1.0
+                    source: mythUtils.findThemeFile("images/bookmark.png")
                 }
                 Image
                 {
@@ -199,7 +208,7 @@ BaseScreen
                         origin.x: 0
                         origin.y: calwindow.height / 2
                         axis { x: 0; y: 1; z: 0 }
-                        angle: delegate.isOpen ? -90 : 0
+                        angle: opened ? -90 : 0
                         Behavior on angle
                         {
                             NumberAnimation
@@ -208,8 +217,8 @@ BaseScreen
                                 duration: 1500
                                 onRunningChanged:
                                 {
-                                    if (!running && delegate.isOpen)
-                                        playDialog.show(calendarGrid);
+                                    if (!running && opened)
+                                        showPlayDialog();
 
                                     if (running)
                                         delegate.z = 99;
@@ -269,6 +278,11 @@ BaseScreen
                     dbUtils.setSetting("Advent" + calendarModel.calendarIndex + "Day" + i, settings.hostName,  "closed");
                 }
             }
+            else if (itemText == "Clear Bookmark")
+            {
+                dbUtils.deleteVideoBookmark(calendarModel.model.get(calendarGrid.currentIndex).url);
+                calendarModel.model.get(calendarGrid.currentIndex).bookmark = 0;
+            }
             else if (itemData !== "")
             {
                 calendarModel.calendarIndex = itemData;
@@ -296,23 +310,32 @@ BaseScreen
         onCancelled: calendarGrid.focus = true
     }
 
-    AdventPlayDialog
+    VideoPlayDialog
     {
         id: playDialog
 
-        title: if (calendarModel.model.get(calendarGrid.currentIndex)) "Day " + calendarModel.model.get(calendarGrid.currentIndex).day; else "";
-        message: if (calendarModel.model.get(calendarGrid.currentIndex)) calendarModel.model.get(calendarGrid.currentIndex).title +  "\nDuration: " + calendarModel.model.get(calendarGrid.currentIndex).duration ; else "";
-        image: if (calendarModel.model.get(calendarGrid.currentIndex)) calendarModel.model.get(calendarGrid.currentIndex).icon; else "";
+        title: ""
+        message: ""
+        image: ""
+        bookmark: 0
 
-        width: xscale(600); height: yscale(500)
-
-        onAccepted:
+        onPlay:
         {
             calendarModel.model.get(calendarGrid.currentIndex).opened = true
             dbUtils.setSetting("Advent" + calendarModel.calendarIndex + "Day" + calendarGrid.currentIndex, settings.hostName,  "opened");
             calendarGrid.focus = true;
             playerSources.adhocList = calendarGrid.model;
-            stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Advent Calendar", defaultFilter:  "", defaultCurrentFeed: calendarGrid.currentIndex, exitOnPlaybackEnded: true}});
+            var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Advent Calendar", defaultFilter:  "", defaultCurrentFeed: calendarGrid.currentIndex, exitOnPlaybackEnded: true, bookmark: 0}});
+            item.screenClosed.connect(handleScreenClosed);
+        }
+        onPlayFrom:
+        {
+            calendarModel.model.get(calendarGrid.currentIndex).opened = true
+            dbUtils.setSetting("Advent" + calendarModel.calendarIndex + "Day" + calendarGrid.currentIndex, settings.hostName,  "opened");
+            calendarGrid.focus = true;
+            playerSources.adhocList = calendarGrid.model;
+            var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Advent Calendar", defaultFilter:  "", defaultCurrentFeed: calendarGrid.currentIndex, exitOnPlaybackEnded: true, bookmark: bookmark}});
+            item.screenClosed.connect(handleScreenClosed);
         }
         onCancelled:
         {
@@ -350,6 +373,9 @@ BaseScreen
 
         popupMenu.addMenuItem("", "Close All Windows");
 
+        if (dbUtils.getVideoBookmark(calendarModel.model.get(calendarGrid.currentIndex).url))
+            popupMenu.addMenuItem("", "Clear Bookmark");
+
         popupMenu.show();
     }
 
@@ -365,6 +391,19 @@ BaseScreen
         }
 
         popupMenu.show();
+    }
+
+    function showPlayDialog()
+    {
+        var day = calendarModel.model.get(calendarGrid.currentIndex);
+        if (day)
+        {
+            playDialog.title = "Day " + day.day;
+            playDialog.message = day.title +  "\nDuration: " + day.duration;
+            playDialog.image =  day.icon;
+            playDialog.bookmark = dbUtils.getVideoBookmark(calendarModel.model.get(calendarGrid.currentIndex).url);
+            playDialog.show(calendarGrid);
+        }
     }
 
     function openWindow()
@@ -386,7 +425,7 @@ BaseScreen
                 footer.redText = "Close Window";
             }
             else
-                playDialog.show();
+                showPlayDialog();
         }
     }
 
@@ -395,5 +434,11 @@ BaseScreen
         closeSound.play();
         calendarModel.model.get(calendarGrid.currentIndex).opened = false;
         footer.redText = "Open Window";
+    }
+
+    function handleScreenClosed()
+    {
+        var bookmark = dbUtils.getVideoBookmark(calendarModel.model.get(calendarGrid.currentIndex).url);
+        calendarModel.model.get(calendarGrid.currentIndex).bookmark = bookmark;
     }
 }

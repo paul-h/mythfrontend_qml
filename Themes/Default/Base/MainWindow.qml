@@ -53,6 +53,10 @@ Window
     property bool _savedShowVideo: false
     property bool _savedShowSlideShow: false;
 
+    // save these so we don't have to keep looking for them
+    property string _defaultCoverArt: mythUtils.findThemeFile("images/grid_noimage.png");
+    property string _defaultNoImage: mythUtils.findThemeFile("images/no_image.png");
+
     property alias stack: stack
 
     Component.onCompleted:
@@ -65,6 +69,16 @@ Window
 
         if (needPlayerSources)
             loadPlayerSources();
+    }
+
+    Component.onDestruction:
+    {
+        if (mythqmlHelperProcess.getState() === Process.Running)
+        {
+            log.info(Verbose.GENERAL, "killing mythqmlHelperProcess");
+            mythqmlHelperProcess.kill();
+             mythqmlHelperProcess.waitForFinished(10000);
+        }
     }
 
     Connections
@@ -179,42 +193,164 @@ Window
 
     WebSocket
     {
-        id: webSocket
+        id: mythWebSocket
         url: "ws://" + settings.masterIP + ":" + settings.websocketPort
+
         onTextMessageReceived:
         {
-            log.debug(Verbose.WEBSOCKET, "WebSocket: Received message - " + message)
+            log.debug(Verbose.WEBSOCKET, "Myth WebSocket: Received message - " + message)
         }
+
         onStatusChanged:
         {
-            if (webSocket.status == WebSocket.Error)
+            if (status == WebSocket.Error)
             {
-                log.error(Verbose.WEBSOCKET, "WebSocket: Error - " + webSocket.errorString + " (" + url + ")");
+                log.error(Verbose.WEBSOCKET, "Myth WebSocket: Error - " + errorString + " (" + url + ")");
 
                 // the old server used a different port lets try that
                 if (settings.masterPort === settings.websocketPort)
                 {
                     settings.websocketPort = settings.websocketPort + 5;
-                    log.error(Verbose.WEBSOCKET, "WebSocket: trying old websocket port (" + settings.websocketPort + ")");
+                    log.error(Verbose.WEBSOCKET, "Myth WebSocket: trying old websocket port (" + settings.websocketPort + ")");
                 }
             }
-            else if (webSocket.status == WebSocket.Connecting)
+            else if (status == WebSocket.Connecting)
             {
-                log.debug(Verbose.WEBSOCKET, "WebSocket: connecting");
+                log.debug(Verbose.WEBSOCKET, "Myth WebSocket: connecting");
             }
-            else if (webSocket.status == WebSocket.Open)
+            else if (status == WebSocket.Open)
             {
-                log.debug(Verbose.WEBSOCKET, "WebSocket: Open");
-                webSocket.sendTextMessage("WS_EVENT_ENABLE");
-                webSocket.sendTextMessage("WS_EVENT_SET_FILTER LIVETV_CHAIN RECORDING_LIST_CHANGE UPDATE_FILE_SIZE SCHEDULE_CHANGE");
+                log.debug(Verbose.WEBSOCKET, "Myth WebSocket: Open");
+                sendTextMessage("WS_EVENT_ENABLE");
+                sendTextMessage("WS_EVENT_SET_FILTER LIVETV_CHAIN RECORDING_LIST_CHANGE UPDATE_FILE_SIZE SCHEDULE_CHANGE");
             }
-            else if (webSocket.status == WebSocket.Closed)
+            else if (status == WebSocket.Closed)
             {
-                log.debug(Verbose.WEBSOCKET, "WebSocket: closed")
+                log.debug(Verbose.WEBSOCKET, "Myth WebSocket: closed")
             }
         }
 
         active: true
+    }
+
+    Process
+    {
+        id: mythqmlHelperProcess
+        onStateChanged:
+        {
+            console.log("mythqmlHelperProcess state changed to: " + state);
+            if (state === Process.Running)
+            {
+                console.log("making helperWebsocket active");
+                helperWebSocket.active = true;
+            }
+        }
+
+        onReadyReadStandardOutput:
+        {
+            var stdOut = readAllStandardOutput();
+            console.log("mythqmlHelperProcess - stdOut: " + stdOut);
+        }
+
+        onReadyReadStandardError:
+        {
+            console.log("mythqmlHelperProcess - stdError: " + readAllStandardError());
+        }
+    }
+
+    WebSocket
+    {
+        id: helperWebSocket
+        property int tries: 0 // number of times we tried to start the websocket server
+
+        url: "ws://localhost:8765" //settings.speechWebSocketUrl
+
+        onTextMessageReceived:
+        {
+            log.debug(Verbose.WEBSOCKET, "Helper WebSocket: Received message - " + message)
+            //print("WebSocket message: " + message);
+            // the helper sends a JSON string
+            var messageJson = JSON.parse(message)
+            var messageType = messageJson.messageType;
+
+            if (messageType === "Message")
+                log.info(Verbose.GENERAL, "helperWebSocket: " + messageJson.message);
+            if (messageType === "Jump To")
+                handleJumpTo(messageJson);
+            else if (messageType === "Key Press")
+                handleKeypress(messageJson)
+            else if (messageType === "Search")
+                handleSearch(messageJson);
+            else if (messageType === "Command")
+                handleCommand(messageJson);
+            else if (messageType === "YouTube Search")
+                log.info(Verbose.GENERAL, messageJson)
+            else if (messageType === "Result")
+                handleResult(messageJson)
+        }
+
+        onStatusChanged:
+        {
+            log.info(Verbose.GENERAL, "helperWebSocket status changes to: " + status);
+
+            if (status == WebSocket.Error)
+            {
+                log.error(Verbose.WEBSOCKET, "Helper WebSocket: Error - " + errorString)
+            }
+            else if (status == WebSocket.Connecting)
+            {
+                log.debug(Verbose.WEBSOCKET, "Helper WebSocket: connecting");
+            }
+            else if (status == WebSocket.Open)
+            {
+                tries = 0;
+                log.debug(Verbose.WEBSOCKET, "Helper WebSocket: Open");
+                //sendTextMessage('{ "commandType": "Help" }');
+                //sendTextMessage('{ "commandType": "Say", "message": "Helper service is connected" }');
+            }
+            else if (status == WebSocket.Closed)
+            {
+                log.debug(Verbose.WEBSOCKET, "Helper WebSocket: closed")
+            }
+        }
+
+        active: true
+    }
+
+    Timer
+    {
+        id: helperWSTimer
+        interval: 5000; running: true; repeat: true
+        onTriggered:
+        {
+            //log.info(Verbose.GENERAL, "helperWSTimer triggered, helperWebSocket.status is: " + helperWebSocket.status + ", tries: " + helperWebSocket.tries);
+            if (helperWebSocket.status !== WebSocket.Open && helperWebSocket.tries < 5)
+            {
+                running = false;
+
+                //                helperWebSocket.active = true;
+                helperWebSocket.active = false;
+
+                if (mythqmlHelperProcess.getState() === Process.Running)
+                {
+                    log.info(Verbose.GENERAL, "killing mythqmlHelperProcess");
+                    mythqmlHelperProcess.kill();
+                    mythqmlHelperProcess.waitForFinished(10000);
+                }
+
+                helperWebSocket.tries++;
+                //log.info(Verbose.GENERAL, "running mythqml-helper.py script");
+                //mythqmlHelperProcess.start(settings.sharePath.replace("file://", "") + "/qml/Scripts/helper/mythqml-helper.py", []);
+            }
+
+            if (helperWebSocket.tries >= 5)
+            {
+                running = false;
+                showNotification("ERROR: unable to connect to the helper websocket server!!");
+            }
+            else
+                running = true;
+        }
     }
 
     function xscale(x)
@@ -1385,8 +1521,13 @@ Window
 
     function sendCommandToHelper(command)
     {
-        if (helperWebSocket.active)
-            helperWebSocket.sendTextMessage(command);
+        if (!isHelperAvailable())
+        {
+            showNotification("ERROR: Cannot send command to helper. Make sure it is running.", settings.osdTimeoutMedium);
+            return;
+        }
+
+        helperWebSocket.sendTextMessage(command);
     }
 
     function isHelperAvailable()
@@ -1538,5 +1679,113 @@ Window
                     break;
             }
         }
+    }
+
+    function findVideoImage(videoFilename, imageFilename, type)
+    {
+        var defaultImage
+
+        if (type === "coverart")
+            defaultImage = _defaultCoverArt;
+        else
+            defaultImage = _defaultNoImage;
+
+        // if no filename given try to find one in the same folder
+        if (imageFilename === "" || imageFilename == undefined)
+        {
+            var result = mythUtils.findThemeFile(videoFilename + ".png");
+
+            if (result === "")
+                result = mythUtils.findThemeFile(videoFilename + ".jpg");
+
+            if (result === "")
+                result = mythUtils.findThemeFile(Util.removeExtension(videoFilename) + ".png");
+
+            if (result === "")
+                result = mythUtils.findThemeFile(Util.removeExtension(videoFilename) + ".jpg");
+
+            if (result === "")
+                result = defaultImage
+
+            return "file://" +result;
+        }
+
+        // if we are given a local file try that
+        if (imageFilename.startsWith("file://"))
+        {
+            if (mythUtils.fileExists(imageFilename.replace("file://", "")))
+                return imageFilename;
+            else
+                return defaultImage;
+        }
+
+        // if we have an http URL use that
+        if (imageFilename.startsWith("http://") || imageFilename.startsWith("https://"))
+            return imageFilename;
+
+        // if we just have a filename it could be a local file or myth storage group image
+        var path = Util.getPath(videoFilename);
+        var fullPath = path + "/" + imageFilename;
+
+        if (mythUtils.fileExists(fullPath))
+            return fullPath;
+
+        fullPath = videoFilename + "/Artwork/" + imageFilename;
+
+        if (mythUtils.fileExists(fullPath))
+            return fullPath;
+
+        fullPath = path + "/Artwork/" + imageFilename;
+
+        if (mythUtils.fileExists(fullPath))
+            return fullPath;
+
+        // assume it must be a myth storage group image
+        // if (type === "screenshot")
+        // {
+        //     //FIXME: this should be a setting
+        //     var screenshotFolder = "/storage/disk1a/my_storagegroups/screenshots";
+        //     if (mythUtils.fileExists(screenshotFolder + "/" + imageFilename))
+        //         return screenshotFolder + "/" + imageFilename;
+
+        //     // last resort
+        //     return settings.masterBackend + "Content/GetImageFile?StorageGroup=Screenshot&FileName=" + imageFilename
+        // }
+
+        // if (type === "banner")
+        // {
+        //     //FIXME: this should be a setting
+        //     var bannerFolder = "/storage/disk1a/my_storagegroups/banners";
+        //     if (mythUtils.fileExists(bannerFolder + "/" + imageFilename))
+        //         return bannerFolder + "/" + imageFilename;
+
+        //     // last resort
+        //     return settings.masterBackend + "Content/GetImageFile?StorageGroup=Banner&FileName=" + imageFilename
+
+        // }
+        // if (type === "fanart")
+        // {
+        //     //FIXME: this should be a setting
+        //     var fanartFolder = "/storage/disk1a/my_storagegroups/fanart";
+        //     if (mythUtils.fileExists(fanartFolder + "/" + imageFilename))
+        //         return fanartFolder + "/" + imageFilename;
+
+        //     // last resort
+        //     return settings.masterBackend + "Content/GetImageFile?StorageGroup=Fanart&FileName=" + imageFilename
+        // }
+
+        // if (type === "coverart")
+        // {
+        //     //FIXME: this should be a setting
+        //     var coverartFolder = "/storage/disk1a/my_storagegroups/coverart/";
+        //     if (mythUtils.fileExists(coverartFolder + "/" + imageFilename))
+        //         return coverartFolder + "/" + imageFilename;
+
+        //     // last resort
+        //     return settings.masterBackend + "Content/GetImageFile?StorageGroup=Coverart&FileName=" + imageFilename
+        // }
+
+        // if we get here just use the default icon
+        return defaultImage;
     }
 }

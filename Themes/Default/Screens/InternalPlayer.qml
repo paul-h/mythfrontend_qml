@@ -24,6 +24,7 @@ BaseScreen
     property string defaultFeedSource: "Live TV"
     property string defaultFilter: ""
     property int    defaultCurrentFeed: 0
+    property int    bookmark: 0
 
     property bool isFullScreen: width === window.width
     property alias exitOnPlaybackEnded: playerLayout.exitOnPlaybackEnded
@@ -31,6 +32,7 @@ BaseScreen
     property bool _actionsEnabled: !window.showingZMAlerts && (playerLayout.browser.focus || playerLayout.mediaPlayer1.focus || playerLayout.mediaPlayer2.focus || playerLayout.mediaPlayer3.focus || playerLayout.mediaPlayer4.focus);
 
     signal feedChanged(string feedSource, string filter, int index)
+    signal playbackEnded()
 
     Component.onCompleted:
     {
@@ -44,6 +46,7 @@ BaseScreen
 
         playerLayout.mediaPlayer1.feed.feedModelLoaded.connect(feedSourceLoaded);
         playerLayout.mediaPlayer1.feed.switchToFeed(defaultFeedSource, defaultFilter, defaultCurrentFeed);
+        playerLayout.mediaPlayer1.playbackEnded.connect(handlePlaybackEnded);
 
         setLayout(layout);
 
@@ -59,10 +62,10 @@ BaseScreen
         playerLayout.mediaPlayer3.setVolume(volume);
         playerLayout.mediaPlayer4.setVolume(volume);
 
-        playerLayout.mediaPlayer1.browserURLListChanged.connect(updateBrowser());
-        playerLayout.mediaPlayer2.browserURLListChanged.connect(updateBrowser());
-        playerLayout.mediaPlayer3.browserURLListChanged.connect(updateBrowser());
-        playerLayout.mediaPlayer4.browserURLListChanged.connect(updateBrowser());
+        playerLayout.mediaPlayer1.browserURLListChanged.connect(updateBrowser);
+        playerLayout.mediaPlayer2.browserURLListChanged.connect(updateBrowser);
+        playerLayout.mediaPlayer3.browserURLListChanged.connect(updateBrowser);
+        playerLayout.mediaPlayer4.browserURLListChanged.connect(updateBrowser);
 
         getActivePlayer().showInfo(true);
         getActivePlayer().updateRadioFeedList();
@@ -531,11 +534,11 @@ BaseScreen
 
     Action
     {
-        shortcut: "," // skip back 30 seconds
+        shortcut: "," // skip back 10 seconds
         enabled: _actionsEnabled
         onTriggered:
         {
-            getActivePlayer().skipBack(30000);
+            getActivePlayer().skipBack(10000);
             getActivePlayer().showInfo(true);
         }
     }
@@ -1010,6 +1013,13 @@ BaseScreen
 
     function feedSourceLoaded()
     {
+        playerLayout.mediaPlayer1.bookmark = bookmark;
         playerLayout.mediaPlayer1.play();
+    }
+
+    function handlePlaybackEnded()
+    {
+        console.log("InternalPlayer: sending playbackEnded signal");
+        playbackEnded();
     }
 }

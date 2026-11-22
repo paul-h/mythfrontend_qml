@@ -38,6 +38,12 @@ ListModel
     }
     ListElement
     {
+        menutext: "HDMI Sources Settings"
+        loaderSource:"settings/HDMISourcesEditor.qml"
+        waterMark: "watermark/keys.png"
+    }
+    ListElement
+    {
         menutext: "Virgin Tivo Settings"
         loaderSource:"settings/TivoSettingsEditor.qml"
         waterMark: "watermark/keys.png"

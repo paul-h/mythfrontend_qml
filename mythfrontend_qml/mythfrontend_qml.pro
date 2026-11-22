@@ -45,7 +45,7 @@ QMAKE_CLEAN += $(TARGET)
 # Input
 HEADERS += sqlquerymodel.h databaseutils.h urlinterceptor.h settings.h mythutils.h process.h downloadmanager.h accessmanagerfactory.h
 HEADERS += mythincrementalmodel.h recordingsmodel.h zmeventsmodel.h eventlistener.h context.h logger.h
-HEADERS += mdkapi.h mdkplayer.h svgimage.h qttelnet.h telnet.h fileio.h
+HEADERS += mdkapi.h mdkplayer.h svgimage.h qttelnet.h telnet.h fileio.h helper.h
 
 SOURCES += main.cpp
 SOURCES += sqlquerymodel.cpp databaseutils.cpp urlinterceptor.cpp settings.cpp mythutils.cpp downloadmanager.cpp

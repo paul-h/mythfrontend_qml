@@ -17,7 +17,7 @@ BaseDialog
 
     signal itemSelected(string itemText)
 
-    Component.onCompleted: treeView.setFocusedNode("Root ~ FileBrowser");
+    Component.onCompleted: treeView.setFocusedNode("Root/FileBrowser");
 
     function reset()
     {
@@ -39,7 +39,7 @@ BaseDialog
 
     function showSelected(selectedItem, focusItem)
     {
-        treeView.highlightMoveDuration = 0
+        //treeView.highlightMoveDuration = 0
 
         fileEdit.text = ""
         fileEdit.focus = true
@@ -47,19 +47,14 @@ BaseDialog
 
         if (selectedItem)
         {
-            for (var x = 0; x < listProxyModel.count; x++)
-            {
-                if (selectedItem == listProxyModel.get(x, displayField))
-                {
-                    treeView.currentIndex = x;
-                    break;
-                }
-            }
+            var filepath = "/storage/data1/shared/video";
+            var route = "Root/FileBrowser" + filepath;
+            treeView.setFocusedNode(route);
         }
 
         _show(focusItem);
 
-        treeView.highlightMoveDuration = 1500
+        //treeView.highlightMoveDuration = 1500
     }
 
     Component
@@ -162,6 +157,7 @@ BaseDialog
                 spacing: xscale(10)
                 sourceTree: sourceTree
                 model: sourceTree.model
+                separator: "/"
 
                 onNodeSelected:
                 {
@@ -175,7 +171,11 @@ BaseDialog
 
                 onNodeClicked:
                 {
-                    fileEdit.text = getActiveNodePath(false, "/");
+                    fileDialog.state = "";
+                    var filename = getActiveNodePath(false, "/");
+                    filename = filename.replace("Root/File Browser", "");
+                    fileEdit.text = filename;
+                    fileDialog.itemSelected(filename);
                 }
 
                 KeyNavigation.up: fileEdit;

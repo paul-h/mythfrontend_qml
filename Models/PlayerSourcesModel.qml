@@ -208,14 +208,7 @@ Item
     {
         id: zmLogin
 
-        property string token: ""
-        Component.onCompleted: getLogin()
-
-        onLoaded:
-        {
-            token = get(0).access_token;
-            zmMonitorsModel.token = token;
-        }
+        onLoaded: zmMonitorsModel.load()
     }
 
     ZMMonitorsModel

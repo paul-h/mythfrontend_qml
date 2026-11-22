@@ -52,6 +52,22 @@ BaseScreen
         {
             videoPlayer.toggleMute();
         }
+        else if (event.key === Qt.Key_F1)
+        {
+            videoPlayer.playFrom(10*1000);
+        }
+        else if (event.key === Qt.Key_F2)
+        {
+            videoPlayer.playFrom(30*1000);
+        }
+        else if (event.key === Qt.Key_F3)
+        {
+            videoPlayer.playFrom((60*5)*1000);
+        }
+        else if (event.key === Qt.Key_F4)
+        {
+            videoPlayer.playFrom((60*10)*1000);
+        }
         else if (event.key === Qt.Key_BracketLeft)
         {
             videoPlayer.changeVolume(-1);

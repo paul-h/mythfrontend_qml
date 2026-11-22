@@ -23,6 +23,7 @@
 #include "fileio.h"
 #include "accessmanagerfactory.h"
 #include "quickdownload.h"
+#include "helper.h"
 
 // shared
 #include "context.h"
@@ -34,16 +35,37 @@ Context *gContext = nullptr;
 MDKAPI  *gMDKAPI = nullptr;
 QFile outFile("log_file.txt");
 
+void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    const char *file = context.file ? context.file : "";
+    const char *function = context.function ? context.function : "";
+    switch (type) {
+    case QtDebugMsg:
+        gContext->m_logger->debug(Verbose::QT, QString("Debug: %1 (%2:%3, %4)").arg(msg).arg(file).arg(context.line).arg(function));
+        break;
+    case QtInfoMsg:
+        gContext->m_logger->info(Verbose::QT, QString("Info: %1 (%2:%3, %4)").arg(msg).arg(file).arg(context.line).arg(function));
+        break;
+    case QtWarningMsg:
+        gContext->m_logger->warning(Verbose::QT, QString("Warning: %1 (%2:%3, %4)").arg(msg).arg(file).arg(context.line).arg(function));
+        break;
+    case QtCriticalMsg:
+        gContext->m_logger->critical(Verbose::QT, QString("Critical: %1 (%2:%3, %4)").arg(msg).arg(file).arg(context.line).arg(function));
+        break;
+    case QtFatalMsg:
+        gContext->m_logger->critical(Verbose::QT, QString("Fatal: %1 (%2:%3, %4)").arg(msg).arg(file).arg(context.line).arg(function));
+        break;
+    }
+}
+
 int main(int argc, char *argv[])
 {
-//    outFile.open(QIODevice::WriteOnly | QIODevice::Append);
+        // setting this can help debug or find where the problem is
+    //qputenv("QT_FATAL_WARNINGS", "1");
 
-//    // redirect stdout
-//    dup2(outFile.handle(), STDOUT_FILENO);
+    qputenv("QML_XHR_ALLOW_FILE_READ", QByteArray("1"));
 
-//    // redirect stderr
-//    dup2(STDOUT_FILENO, STDERR_FILENO);
-
+    qInstallMessageHandler(messageHandler);
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
@@ -69,7 +91,7 @@ int main(int argc, char *argv[])
     // add verbose option
     QCommandLineOption verboseOption(QStringList() << "d" << "verbose",
                                      QCoreApplication::translate("main", "Set verbose levels one or more of ALL, GENERAL, MODEL, PROCESS, GUI, "
-                                                                             "DATABASE, FILE, WEBSOCKET, SERVICESAPI, PLAYBACK, NETWORK, LIBVLC, TELNET."),
+                                                                             "DATABASE, FILE, WEBSOCKET, SERVICESAPI, PLAYBACK, NETWORK, LIBVLC, TELNET, QT."),
                                      QCoreApplication::translate("main", "verbose"));
     parser.addOption(verboseOption);
 
@@ -137,9 +159,14 @@ int main(int argc, char *argv[])
     QString jumpto = parser.value(jumpOption);
     gContext->m_engine->rootContext()->setContextProperty("jumpto", QString(jumpto));
 
+    // create the helper thread
+    HelperController helper;
+    gContext->m_engine->rootContext()->setContextProperty("helper", &helper);
+
     // override the Network Access Manager
     MythQmlNetworkAccessManagerFactory networkManagerFactory;
     gContext->m_engine->setNetworkAccessManagerFactory(&networkManagerFactory);
+
     qQuickDownloadMaster->setNetworkAccessManager(gContext->m_engine->networkAccessManager());
 
     gContext->m_engine->clearComponentCache();

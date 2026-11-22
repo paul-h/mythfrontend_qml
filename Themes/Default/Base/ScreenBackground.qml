@@ -45,6 +45,7 @@ Item
     function setVideo(video)
     {
         videoPlayer.source = video;
+        videoPlayer.play();
     }
 
     function pauseVideo(pause)
