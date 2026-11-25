@@ -25,6 +25,7 @@ BaseScreen
     property string defaultFilter: ""
     property int    defaultCurrentFeed: 0
     property int    bookmark: 0
+    property bool   saveBookmark: false
 
     property bool isFullScreen: width === window.width
     property alias exitOnPlaybackEnded: playerLayout.exitOnPlaybackEnded

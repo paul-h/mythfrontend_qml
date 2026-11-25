@@ -325,7 +325,8 @@ BaseScreen
             dbUtils.setSetting("Advent" + calendarModel.calendarIndex + "Day" + calendarGrid.currentIndex, settings.hostName,  "opened");
             calendarGrid.focus = true;
             playerSources.adhocList = calendarGrid.model;
-            var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Advent Calendar", defaultFilter:  "", defaultCurrentFeed: calendarGrid.currentIndex, exitOnPlaybackEnded: true, bookmark: 0}});
+            var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Advent Calendar", defaultFilter:  "", defaultCurrentFeed: calendarGrid.currentIndex,
+                                   exitOnPlaybackEnded: true, bookmark: 0, saveBookmark: true}});
             item.screenClosed.connect(handleScreenClosed);
         }
         onPlayFrom:
@@ -334,7 +335,8 @@ BaseScreen
             dbUtils.setSetting("Advent" + calendarModel.calendarIndex + "Day" + calendarGrid.currentIndex, settings.hostName,  "opened");
             calendarGrid.focus = true;
             playerSources.adhocList = calendarGrid.model;
-            var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Advent Calendar", defaultFilter:  "", defaultCurrentFeed: calendarGrid.currentIndex, exitOnPlaybackEnded: true, bookmark: bookmark}});
+            var item = stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Advent Calendar", defaultFilter:  "", defaultCurrentFeed: calendarGrid.currentIndex,
+                                   exitOnPlaybackEnded: true, bookmark: bookmark, saveBookmark: true}});
             item.screenClosed.connect(handleScreenClosed);
         }
         onCancelled:
