@@ -31,7 +31,7 @@ FocusScope
     property bool muteAudio: false
     property bool showRailcamApproach: false
     property bool showRailcamDiagram: false
-    property bool saveBookmark: true
+    property bool saveBookmark: false
 
     // private properties
     property int _mediaStatus: MediaPlayers.MediaStatus.Unknown

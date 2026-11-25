@@ -505,7 +505,7 @@ BaseScreen
             else
             {
                 playerSources.adhocList = playbackModel;
-                stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0, bookmark: 0}});
+                stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0, bookmark: 0, saveBookmark: true}});
             }
         }
 
@@ -521,7 +521,7 @@ BaseScreen
             else
             {
                 playerSources.adhocList = playbackModel;
-                stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0, bookmark: bookmark}});
+                stack.push({item: Qt.resolvedUrl("InternalPlayer.qml"), properties:{defaultFeedSource:  "Adhoc", defaultFilter:  "", defaultCurrentFeed: 0, bookmark: bookmark, saveBookmark: true}});
             }
         }
 
