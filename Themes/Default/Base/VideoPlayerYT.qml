@@ -7,7 +7,7 @@ Item
 {
     id: root
     property string source: ""
-    property int bookmark: 0
+    property int bookmark: undefined
     property bool canSaveBookmark: true
     property bool loop: false
     property bool playbackStarted: false
@@ -89,7 +89,12 @@ Item
             if (loadRequest.status === WebEngineLoadRequest.LoadSucceededStatus && root.source !== "")
             {
                 _playerLoaded = true;
-                runJavaScript("loadVideo(" + getVideoID() + "," + (bookmark / 1000) + ")");
+
+                if (bookmark)
+                    runJavaScript("loadVideo(" + getVideoID() + "," + (bookmark / 1000) + ")");
+                else
+                    runJavaScript("loadVideo(" + getVideoID() + ")");
+
                 runJavaScript("changeVolume(" + root._volume + ");");
                 runJavaScript("setMute(" + root._muteAudio + ");");
                 statusUpdateTimer.start();

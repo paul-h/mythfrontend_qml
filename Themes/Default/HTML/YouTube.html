@@ -31,7 +31,7 @@
             //    after the API code downloads.
             var player;
             var videoId;
-            var bookmark;
+            var bookmark = undefined;
             function onYouTubeIframeAPIReady()
             {
                 player = new YT.Player('player',
@@ -62,10 +62,10 @@
                 playerReady = true;
                 if (videoId)
                 {
-                    player.loadVideoById({'videoId': videoId, 'suggestedQuality': 'default'});
-
                     if (bookmark)
-                        player.seekTo(bookmark, true);
+                         player.loadVideoById({'videoId': videoId, 'startSeconds': bookmark, 'suggestedQuality': 'default'});
+                    else
+                        player.loadVideoById({'videoId': videoId, 'suggestedQuality': 'default'});
                 }
             }
 
@@ -172,7 +172,11 @@
 
                 if (playerReady)
                 {
-                    player.loadVideoById({'videoId': videoId, 'startSeconds': bookmark, 'suggestedQuality': 'default'});
+                    if (bookmark)
+                        player.loadVideoById({'videoId': videoId, 'startSeconds': bookmark, 'suggestedQuality': 'default'});
+                    else
+                        player.loadVideoById({'videoId': videoId, 'suggestedQuality': 'default'});
+
                     player.playVideo();
                 }
             }
