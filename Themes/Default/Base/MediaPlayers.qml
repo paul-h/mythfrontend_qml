@@ -2214,12 +2214,21 @@ FocusScope
     function doSaveBookmark()
     {
         var url = videoPlayer.source;
+        var duration = videoPlayer.getDuration();
         var position = videoPlayer.getPosition();
         var date = Qt.formatDateTime(new Date(Date.now()), "yyyy-MM-ddThh:mm:ss");
 
-        if (dbUtils.haveVideoBookmark(url))
-            dbUtils.updateVideoBookmark(url, position, date);
+        // only save the bookmark if we are less than 5% from the end
+        if (duration - position > (duration / 100) * 5)
+        {
+            if (dbUtils.haveVideoBookmark(url))
+                dbUtils.updateVideoBookmark(url, position, date);
+            else
+                dbUtils.addVideoBookmark(url, position, date);
+        }
         else
-            dbUtils.addVideoBookmark(url, position, date);
+        {
+            dbUtils.deleteVideoBookmark(url);
+        }
     }
 }
